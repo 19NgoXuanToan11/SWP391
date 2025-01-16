@@ -1,6 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-const LoginPage = () => {
+export function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-pink-100 to-pink-200 p-4">
       <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden">
@@ -94,17 +95,15 @@ const LoginPage = () => {
         <div className="text-center pb-8 px-8">
           <p className="text-gray-600">
             Don't have an account?{" "}
-            <a
-              href="#"
+            <Link
+              to="/register"
               className="text-pink-600 font-medium hover:text-pink-500"
             >
               Sign up
-            </a>
+            </Link>
           </p>
         </div>
       </div>
     </div>
   );
-};
-
-export default LoginPage;
+}

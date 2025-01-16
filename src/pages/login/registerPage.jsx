@@ -1,10 +1,14 @@
+import { Link } from "react-router-dom";
+
 export function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-pink-100 to-pink-200 p-4">
       <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden">
         {/* Header Section */}
         <div className="text-center p-8 bg-pink-50">
-          <h2 className="text-3xl font-bold text-pink-600 mb-2">Create Account</h2>
+          <h2 className="text-3xl font-bold text-pink-600 mb-2">
+            Create Account
+          </h2>
           <p className="text-gray-600">Join us today and start your journey</p>
         </div>
 
@@ -18,13 +22,15 @@ export function RegisterPage() {
             />
             Sign up with Google
           </button>
-          
+
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or register with email</span>
+              <span className="px-2 bg-white text-gray-500">
+                Or register with email
+              </span>
             </div>
           </div>
         </div>
@@ -34,7 +40,10 @@ export function RegisterPage() {
           <div className="space-y-5">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   First Name
                 </label>
                 <input
@@ -45,7 +54,10 @@ export function RegisterPage() {
                 />
               </div>
               <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Last Name
                 </label>
                 <input
@@ -58,7 +70,10 @@ export function RegisterPage() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Email Address
               </label>
               <input
@@ -70,7 +85,10 @@ export function RegisterPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Password
               </label>
               <input
@@ -82,7 +100,10 @@ export function RegisterPage() {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Confirm Password
               </label>
               <input
@@ -100,11 +121,11 @@ export function RegisterPage() {
                 className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
               />
               <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
-                I agree to the{' '}
+                I agree to the{" "}
                 <a href="#" className="text-pink-600 hover:text-pink-500">
                   Terms of Service
-                </a>{' '}
-                and{' '}
+                </a>{" "}
+                and{" "}
                 <a href="#" className="text-pink-600 hover:text-pink-500">
                   Privacy Policy
                 </a>
@@ -123,10 +144,13 @@ export function RegisterPage() {
         {/* Footer */}
         <div className="text-center pb-8 px-8">
           <p className="text-gray-600">
-            Already have an account?{' '}
-            <a href="#" className="text-pink-600 font-medium hover:text-pink-500">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-pink-600 font-medium hover:text-pink-500"
+            >
               Sign in
-            </a>
+            </Link>
           </p>
         </div>
       </div>
