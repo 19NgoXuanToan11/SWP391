@@ -22,9 +22,12 @@ export function ProductsSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-6"
+            className="text-5xl md:text-6xl font-bold mb-6"
           >
-            Discover Your Beauty
+            Discover Your{" "}
+            <span className="bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+              Beauty
+            </span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -39,15 +42,15 @@ export function ProductsSection() {
 
         {/* Category Tabs */}
         <div className="flex justify-center mb-16">
-          <div className="inline-flex bg-pink-200 backdrop-blur-xl rounded-2xl p-2 shadow-lg">
+          <div className="inline-flex bg-gradient-to-r from-pink-100/80 to-purple-100/80 backdrop-blur-xl rounded-3xl p-2.5 shadow-lg border border-white/20">
             {["skincare", "makeup", "body", "hair"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-8 py-4 rounded-xl text-sm font-medium transition-all duration-300 ${
+                className={`px-10 py-4 rounded-2xl text-sm font-medium transition-all duration-500 ${
                   activeTab === tab
-                    ? "bg-white text-gray-900 shadow-md"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "bg-white text-gray-900 shadow-lg ring-1 ring-pink-200/50"
+                    : "text-gray-600 hover:text-gray-800 hover:bg-white/30"
                 }`}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
