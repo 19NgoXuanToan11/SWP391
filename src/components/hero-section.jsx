@@ -1,10 +1,22 @@
+import { useState } from "react";
 import img1 from "../assets/pictures/1.jpg";
 import img2 from "../assets/pictures/2.jpg";
 import img3 from "../assets/pictures/3.jpg";
 import img4 from "../assets/pictures/4.jpg";
+import img5 from "../assets/pictures/5.jpg";
+import img6 from "../assets/pictures/6.jpg";
+import img7 from "../assets/pictures/7.jpg";
+import img8 from "../assets/pictures/8.jpg";
 
 export function HeroSection() {
-  const images = [img1, img2, img3, img4];
+  const [hoveredImage, setHoveredImage] = useState(null);
+
+  const imageCollections = [
+    { default: img1, hover: img5 },
+    { default: img2, hover: img6 },
+    { default: img3, hover: img7 },
+    { default: img4, hover: img8 },
+  ];
 
   return (
     <section className="relative bg-gradient-to-br from-mint-50 to-pink-50 py-20">
@@ -17,26 +29,28 @@ export function HeroSection() {
       <div className="relative container mx-auto px-4 z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Text Content */}
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight">
-                Be <span className="text-pink-500">comfortable</span> in your
-                skin
+          <div className="space-y-10">
+            <div className="space-y-6">
+              <h1 className="text-4xl md:text-5xl xl:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
+                Discover Your <br />
+                <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+                  Natural Beauty
+                </span>
               </h1>
-              <p className="text-lg text-gray-600 md:text-xl max-w-2xl">
-                Your journey into skin care starts here. We build customized
-                health and wellness plans after careful assessment of your skin
-                condition.
+              <p className="text-lg text-gray-600 md:text-xl max-w-2xl leading-relaxed">
+                Embark on a transformative skincare journey tailored just for
+                you. Our expert aestheticians create bespoke beauty rituals that
+                nurture and enhance your skin's natural radiance.
               </p>
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-4">
-              <button className="px-8 py-3 bg-pink-500 text-white rounded-full font-semibold hover:bg-pink-600 transition-colors duration-300">
-                Get Started
+            <div className="flex flex-wrap gap-6">
+              <button className="px-10 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/40 transition-all duration-300">
+                Begin Your Journey
               </button>
-              <button className="px-8 py-3 border-2 border-pink-200 text-pink-500 rounded-full font-semibold hover:bg-pink-100 transition-colors duration-300">
-                Learn More
+              <button className="px-10 py-4 bg-white/80 backdrop-blur-sm border border-pink-100 text-gray-900 rounded-full font-medium hover:bg-white hover:border-pink-200 hover:scale-105 hover:shadow-lg transition-all duration-300">
+                Explore Services
               </button>
             </div>
           </div>
@@ -44,27 +58,35 @@ export function HeroSection() {
           {/* Image Grid */}
           <div className="relative">
             <div className="grid grid-cols-2 gap-4">
-              {images.map((image, i) => {
-                console.log("Image path:", image);
+              {imageCollections.map((collection, index) => (
+                <div
+                  key={index}
+                  className="group relative aspect-square overflow-hidden rounded-2xl shadow-lg transition-transform duration-300 hover:scale-105"
+                  onMouseEnter={() => setHoveredImage(index)}
+                  onMouseLeave={() => setHoveredImage(null)}
+                >
+                  {/* Default Image */}
+                  <img
+                    src={collection.default}
+                    alt={`Skincare Treatment ${index + 1}`}
+                    className={`h-full w-full object-cover transition-opacity duration-500 ${
+                      hoveredImage === index ? "opacity-0" : "opacity-100"
+                    }`}
+                    style={{ position: "absolute", top: 0, left: 0 }}
+                  />
 
-                return (
-                  <div
-                    key={i}
-                    className="group relative aspect-square overflow-hidden rounded-2xl shadow-lg transition-transform duration-300 hover:scale-105"
-                  >
-                    <img
-                      src={image}
-                      alt={`Skincare Treatment ${i + 1}`}
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      onError={(e) => {
-                        console.error(`Error loading image ${i + 1}:`, e);
-                        console.log("Failed image path:", e.target.src);
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
-                );
-              })}
+                  {/* Hover Image */}
+                  <img
+                    src={collection.hover}
+                    alt={`Skincare Treatment ${index + 1} Hover`}
+                    className={`h-full w-full object-cover transition-opacity duration-500 ${
+                      hoveredImage === index ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
+              ))}
             </div>
           </div>
         </div>
