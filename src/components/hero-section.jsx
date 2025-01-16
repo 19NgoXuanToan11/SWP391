@@ -1,82 +1,65 @@
 export function HeroSection() {
   return (
-    <section
-      style={{
-        position: "relative",
-        backgroundColor: "#f0fdf9", // mint-50 equivalent
-        padding: "5rem 0",
-      }}
-    >
-      <div
-        style={{
-          position: "relative",
-          zIndex: 10,
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "0 1rem",
-        }}
-      >
-        <div
-          style={{
-            display: "grid",
-            gap: "2rem",
-            gridTemplateColumns: window.innerWidth > 1024 ? "1fr 1fr" : "1fr",
-          }}
-        >
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
-          >
-            <h1
-              style={{
-                fontSize:
-                  window.innerWidth > 1280
-                    ? "3.75rem"
-                    : window.innerWidth > 640
-                    ? "3rem"
-                    : "2.25rem",
-                fontWeight: "bold",
-                letterSpacing: "-0.05em",
-                color: "#ec4899", // pink-500
-              }}
-            >
-              Be comfortable in your skin
-            </h1>
-            <p
-              style={{
-                fontSize: "1.125rem",
-                color: "#666666",
-              }}
-            >
-              Your journey into skin care starts here. We build customized
-              health and wellness plans after careful assessment of your skin
-              condition.
-            </p>
+    <section className="relative bg-gradient-to-br from-mint-50 to-pink-50 py-20">
+      {/* Background decoration */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-pink-100 rounded-full opacity-20 blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-mint-100 rounded-full opacity-20 blur-3xl" />
+      </div>
+
+      <div className="relative container mx-auto px-4 z-10">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Text Content */}
+          <div className="space-y-8">
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight">
+                Be <span className="text-pink-500">comfortable</span> in your
+                skin
+              </h1>
+              <p className="text-lg text-gray-600 md:text-xl max-w-2xl">
+                Your journey into skin care starts here. We build customized
+                health and wellness plans after careful assessment of your skin
+                condition.
+              </p>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap gap-4">
+              <button className="px-8 py-3 bg-pink-500 text-white rounded-full font-semibold hover:bg-pink-600 transition-colors duration-300">
+                Get Started
+              </button>
+              <button className="px-8 py-3 border-2 border-pink-500 text-pink-500 rounded-full font-semibold hover:bg-pink-50 transition-colors duration-300">
+                Learn More
+              </button>
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="flex items-center gap-8 pt-4">
+              <div className="flex items-center gap-2">
+                <span className="text-3xl font-bold text-gray-900">5k+</span>
+                <span className="text-sm text-gray-600">Happy Clients</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-3xl font-bold text-gray-900">98%</span>
+                <span className="text-sm text-gray-600">Success Rate</span>
+              </div>
+            </div>
           </div>
-          <div style={{ position: "relative" }}>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
-                gap: "1rem",
-              }}
-            >
+
+          {/* Image Grid */}
+          <div className="relative">
+            <div className="grid grid-cols-2 gap-4">
               {[1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
-                  style={{
-                    overflow: "hidden",
-                    borderRadius: "9999px", // rounded-full
-                  }}
+                  className="group relative aspect-square overflow-hidden rounded-2xl shadow-lg transition-transform duration-300 hover:scale-105"
                 >
                   <img
-                    src={`https://via.placeholder.com/200x200?text=Treatment${i}`}
+                    src={`/images/treatment-${i}.jpg`}
                     alt={`Skincare Treatment ${i}`}
-                    style={{
-                      height: "100%",
-                      width: "100%",
-                      objectFit: "cover",
-                    }}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
               ))}
             </div>
