@@ -1,154 +1,192 @@
-const skinTypes = [
-  {
-    title: "Oily skin",
-    description:
-      "High amount of sebum, skin exhibits continuing oiliness throughout the day and appears shiny or greasy.",
-    image: "https://via.placeholder.com/400x300?text=OilySkin",
-  },
-  {
-    title: "Acne skin",
-    description:
-      "Acne is a common skin condition characterized by whiteheads, blackheads, and inflammation of the skin.",
-    image: "https://via.placeholder.com/400x300?text=AcneSkin",
-  },
-  {
-    title: "Dry skin",
-    description:
-      "To keep the skin healthy and hydrated, use a gentle cleanser and apply a healthy water lock in spread cream.",
-    image: "https://via.placeholder.com/400x300?text=DrySkin",
-  },
-];
-
 export function SkinTypes() {
+  const skinTypes = [
+    {
+      title: "Oily Skin",
+      description:
+        "High amount of sebum production, leading to shine and enlarged pores.",
+      symptoms: [
+        "Shiny appearance",
+        "Enlarged pores",
+        "Prone to acne",
+        "Thick skin texture",
+      ],
+      recommendations: [
+        "Use oil-free products",
+        "Try salicylic acid",
+        "Regular exfoliation",
+      ],
+      image: "/images/oily-skin.jpg",
+      color: "emerald",
+    },
+    {
+      title: "Dry Skin",
+      description:
+        "Lacks natural moisture, resulting in tightness and potential flaking.",
+      symptoms: [
+        "Rough texture",
+        "Flaking",
+        "Tight feeling",
+        "Fine lines visible",
+      ],
+      recommendations: [
+        "Rich moisturizers",
+        "Gentle cleansers",
+        "Hydrating serums",
+      ],
+      image: "/images/dry-skin.jpg",
+      color: "amber",
+    },
+    {
+      title: "Combination Skin",
+      description:
+        "Mix of oily and dry areas, typically oily T-zone with dry cheeks.",
+      symptoms: [
+        "Oily T-zone",
+        "Dry cheeks",
+        "Variable pore size",
+        "Occasional breakouts",
+      ],
+      recommendations: [
+        "Zone-specific care",
+        "Balanced products",
+        "Gentle toning",
+      ],
+      image: "/images/combination-skin.jpg",
+      color: "violet",
+    },
+  ];
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-pink-100 to-pink-200 p-4">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden">
-        {/* Header Section */}
-        <div className="text-center p-8 bg-pink-50">
-          <h2 className="text-3xl font-bold text-pink-600 mb-2">Create Account</h2>
-          <p className="text-gray-600">Join us today and start your journey</p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 py-16 px-4 sm:px-6 lg:px-8">
+      {/* Header Section */}
+      <div className="max-w-7xl mx-auto text-center mb-16">
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          Understanding Your <span className="text-blue-600">Skin Type</span>
+        </h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Discover your skin type and get personalized recommendations for the
+          perfect skincare routine.
+        </p>
+      </div>
 
-        {/* Social Register Button */}
-        <div className="px-8 pt-6">
-          <button className="w-full mb-4 py-3 px-4 bg-white border border-gray-300 text-gray-700 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors">
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
-              alt="Google Logo"
-              className="h-5 w-5"
-            />
-            Sign up with Google
-          </button>
-          
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
+      {/* Skin Types Grid */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {skinTypes.map((type) => (
+          <div
+            key={type.title}
+            className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+          >
+            {/* Image Container */}
+            <div className="relative h-64 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
+              <img
+                src={type.image}
+                alt={type.title}
+                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
+              />
+              <h3 className="absolute bottom-4 left-6 text-2xl font-bold text-white z-20">
+                {type.title}
+              </h3>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or register with email</span>
+
+            {/* Content */}
+            <div className="p-6 space-y-6">
+              <p className="text-gray-600 leading-relaxed">
+                {type.description}
+              </p>
+
+              {/* Symptoms */}
+              <div>
+                <h4 className="text-lg font-semibold text-gray-900 mb-3">
+                  Common Symptoms
+                </h4>
+                <ul className="space-y-2">
+                  {type.symptoms.map((symptom) => (
+                    <li
+                      key={symptom}
+                      className="flex items-center text-gray-600"
+                    >
+                      <svg
+                        className="w-5 h-5 text-blue-500 mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      {symptom}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Recommendations */}
+              <div>
+                <h4 className="text-lg font-semibold text-gray-900 mb-3">
+                  Recommendations
+                </h4>
+                <ul className="space-y-2">
+                  {type.recommendations.map((rec) => (
+                    <li key={rec} className="flex items-center text-gray-600">
+                      <svg
+                        className="w-5 h-5 text-green-500 mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 10V3L4 14h7v7l9-11h-7z"
+                        />
+                      </svg>
+                      {rec}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Action Button */}
+              <button className="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Get Personalized Routine
+              </button>
             </div>
           </div>
-        </div>
+        ))}
+      </div>
 
-        {/* Register Form */}
-        <form className="px-8 pb-8">
-          <div className="space-y-5">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  id="firstName"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  placeholder="First name"
-                />
-              </div>
-              <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  id="lastName"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  placeholder="Last name"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                placeholder="Enter your email"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                placeholder="Create a password"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                placeholder="Confirm your password"
-              />
-            </div>
-
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="terms"
-                className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
-              />
-              <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
-                I agree to the{' '}
-                <a href="#" className="text-pink-600 hover:text-pink-500">
-                  Terms of Service
-                </a>{' '}
-                and{' '}
-                <a href="#" className="text-pink-600 hover:text-pink-500">
-                  Privacy Policy
-                </a>
-              </label>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-3 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors font-medium"
-            >
-              Create Account
-            </button>
-          </div>
-        </form>
-
-        {/* Footer */}
-        <div className="text-center pb-8 px-8">
-          <p className="text-gray-600">
-            Already have an account?{' '}
-            <a href="#" className="text-pink-600 font-medium hover:text-pink-500">
-              Sign in
-            </a>
+      {/* Call to Action */}
+      <div className="max-w-3xl mx-auto mt-16 text-center">
+        <div className="bg-blue-50 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Not sure about your skin type?
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Take our comprehensive skin analysis quiz to get a detailed
+            assessment and personalized recommendations.
           </p>
+          <button className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors duration-200">
+            Take the Quiz
+            <svg
+              className="w-5 h-5 ml-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
