@@ -5,173 +5,62 @@ import {
   ContactsOutlined,
   LoginOutlined,
 } from "@ant-design/icons";
+import blackWhiteLogo from "../assets/pictures/black_white_on_trans.png";
 
 export function SiteHeader() {
   return (
-    <header
-      style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 50,
-        width: "100%",
-        borderBottom: "1px solid #e5e7eb",
-        backgroundColor: "rgba(255, 255, 255, 0.95)",
-        backdropFilter: "blur(8px)",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "0 1rem",
-          height: "64px",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ marginRight: "2rem" }}>
+    <header className="sticky top-0 z-50 w-full border-b-2 border-pink-100 bg-white/98 backdrop-blur-lg h-[120px] flex items-center shadow-sm">
+      <div className="max-w-7xl mx-auto px-10 w-full flex items-center">
+        <div className="mr-14">
           <a
             href="/"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              textDecoration: "none",
-            }}
+            className="flex items-center no-underline transform transition-transform duration-300 hover:scale-102"
           >
-            <span
-              style={{
-                fontSize: "1.25rem",
-                fontWeight: "bold",
-                color: "#ec4899", // pink-500
-              }}
-            >
-              Beauty & Care 
-            </span>
+            <img
+              src={blackWhiteLogo}
+              alt="Beauty & Care Logo"
+              className="h-[150px] w-auto my-4"
+            />
           </a>
         </div>
-        <nav
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1.5rem",
-            }}
-          >
+
+        <nav className="flex-1 flex items-center justify-between">
+          <div className="flex items-center gap-10">
             <a
               href="/"
-              style={{
-                fontSize: "0.875rem",
-                fontWeight: "500",
-                color: "#666666",
-                textDecoration: "none",
-                transition: "color 0.2s",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.25rem",
-              }}
-              onMouseOver={(e) => (e.target.style.color = "#ec4899")}
-              onMouseOut={(e) => (e.target.style.color = "#666666")}
+              className="flex items-center gap-2 px-3 py-2 text-[0.95rem] font-medium text-gray-600 rounded-lg transition-all duration-300 hover:text-pink-500 hover:bg-pink-50"
             >
-              <HomeOutlined /> Home
+              <HomeOutlined className="text-lg" /> Home
             </a>
+
             <a
               href="/about"
-              style={{
-                fontSize: "0.875rem",
-                fontWeight: "500",
-                color: "#666666",
-                textDecoration: "none",
-                transition: "color 0.2s",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.25rem",
-              }}
-              onMouseOver={(e) => (e.target.style.color = "#ec4899")}
-              onMouseOut={(e) => (e.target.style.color = "#666666")}
+              className="flex items-center gap-2 px-3 py-2 text-[0.95rem] font-medium text-gray-600 rounded-lg transition-all duration-300 hover:text-pink-500 hover:bg-pink-50"
             >
-              <UserOutlined /> About
+              <UserOutlined className="text-lg" /> About
             </a>
+
             <a
               href="/product"
-              style={{
-                fontSize: "0.875rem",
-                fontWeight: "500",
-                color: "#666666",
-                textDecoration: "none",
-                transition: "color 0.2s",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.25rem",
-              }}
-              onMouseOver={(e) => (e.target.style.color = "#ec4899")}
-              onMouseOut={(e) => (e.target.style.color = "#666666")}
+              className="flex items-center gap-2 px-3 py-2 text-[0.95rem] font-medium text-gray-600 rounded-lg transition-all duration-300 hover:text-pink-500 hover:bg-pink-50"
             >
-              <ShoppingOutlined /> Product
+              <ShoppingOutlined className="text-lg" /> Product
             </a>
+
             <a
               href="/contact"
-              style={{
-                fontSize: "0.875rem",
-                fontWeight: "500",
-                color: "#666666",
-                textDecoration: "none",
-                transition: "color 0.2s",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.25rem",
-              }}
-              onMouseOver={(e) => (e.target.style.color = "#ec4899")}
-              onMouseOut={(e) => (e.target.style.color = "#666666")}
+              className="flex items-center gap-2 px-3 py-2 text-[0.95rem] font-medium text-gray-600 rounded-lg transition-all duration-300 hover:text-pink-500 hover:bg-pink-50"
             >
-              <ContactsOutlined /> Contact
+              <ContactsOutlined className="text-lg" /> Contact
             </a>
           </div>
-          <div style={{ display: "flex", gap: "1rem" }}>
-            <button
-              style={{
-                backgroundColor: "transparent",
-                border: "none",
-                color: "#ec4899",
-                padding: "0.5rem 1rem",
-                cursor: "pointer",
-                fontSize: "0.875rem",
-                fontWeight: "500",
-                transition: "background-color 0.2s",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.25rem",
-              }}
-              onMouseOver={(e) => (e.target.style.backgroundColor = "#f3f4f6")}
-              onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
-            >
+
+          <div className="flex items-center gap-6 ml-10">
+            <button className="flex items-center gap-2 px-5 py-2.5 text-[0.95rem] font-medium text-pink-500 border-1.5 border-pink-500 rounded-lg transition-all duration-300 hover:bg-pink-50 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20">
               <LoginOutlined /> Sign In
             </button>
-            <button
-              style={{
-                backgroundColor: "#ec4899",
-                border: "none",
-                color: "white",
-                padding: "0.5rem 1rem",
-                cursor: "pointer",
-                fontSize: "0.875rem",
-                fontWeight: "500",
-                borderRadius: "0.375rem",
-                transition: "background-color 0.2s",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.25rem",
-              }}
-              onMouseOver={(e) => (e.target.style.backgroundColor = "#db2777")}
-              onMouseOut={(e) => (e.target.style.backgroundColor = "#ec4899")}
-            >
+
+            <button className="flex items-center gap-2 px-5 py-2.5 text-[0.95rem] font-medium text-white bg-pink-500 rounded-lg shadow-pink-500/20 shadow-md transition-all duration-300 hover:bg-pink-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-500/30 focus:outline-none focus:ring-2 focus:ring-pink-500/20">
               Sign Up
             </button>
           </div>
