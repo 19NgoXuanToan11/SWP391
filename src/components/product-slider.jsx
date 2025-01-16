@@ -49,7 +49,7 @@ export function ProductSlider() {
   useEffect(() => {
     // Log để kiểm tra position
     console.log("Current position:", position);
-    
+
     const interval = setInterval(() => {
       setPosition((prev) => {
         const newPosition = (prev - 1) % (products.length * 320);
@@ -84,7 +84,12 @@ export function ProductSlider() {
             >
               {/* Duplicate products array for infinite scroll effect */}
               {[...products, ...products, ...products].map((product, index) => {
-                console.log("Rendering product:", product.name, "with image:", product.image);
+                console.log(
+                  "Rendering product:",
+                  product.name,
+                  "with image:",
+                  product.image
+                );
                 return (
                   <div
                     key={`${product.id}-${index}`}
@@ -96,7 +101,9 @@ export function ProductSlider() {
                           src={product.image}
                           alt={product.name}
                           className="w-full h-full object-cover"
-                          onError={(e) => console.error("Image failed to load:", e)}
+                          onError={(e) =>
+                            console.error("Image failed to load:", e)
+                          }
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </div>
@@ -104,7 +111,9 @@ export function ProductSlider() {
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">
                           {product.name}
                         </h3>
-                        <p className="text-gray-600 mb-4">{product.description}</p>
+                        <p className="text-gray-600 mb-4">
+                          {product.description}
+                        </p>
                         <div className="flex items-center justify-between">
                           <span className="text-pink-500 font-bold">
                             {product.price}
