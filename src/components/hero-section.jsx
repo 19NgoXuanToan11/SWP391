@@ -39,18 +39,6 @@ export function HeroSection() {
                 Learn More
               </button>
             </div>
-
-            {/* Trust Indicators */}
-            <div className="flex items-center gap-8 pt-4">
-              <div className="flex items-center gap-2">
-                <span className="text-3xl font-bold text-gray-900">5k+</span>
-                <span className="text-sm text-gray-600">Happy Clients</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-3xl font-bold text-gray-900">98%</span>
-                <span className="text-sm text-gray-600">Success Rate</span>
-              </div>
-            </div>
           </div>
 
           {/* Image Grid */}

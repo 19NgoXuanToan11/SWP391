@@ -10,9 +10,9 @@ export function SiteFooter() {
               Beauty & Care
             </h3>
             <p className="text-gray-400 mb-8 leading-relaxed max-w-md">
-              Chuyên gia chăm sóc sắc đẹp của bạn. Với đội ngũ chuyên nghiệp và
-              các sản phẩm cao cấp, chúng tôi cam kết mang đến trải nghiệm làm
-              đẹp tốt nhất cho bạn.
+              Your beauty care expert. With a professional team and premium
+              products, we are committed to providing you with the best beauty
+              experience.
             </p>
             {/* Social Links */}
             <div className="flex space-x-5">
@@ -62,15 +62,15 @@ export function SiteFooter() {
           {/* Quick Links */}
           <div className="lg:col-span-2">
             <div className="w-full flex flex-col space-y-6">
-              <h4 className="text-lg font-semibold text-white">Dịch Vụ</h4>
+              <h4 className="text-lg font-semibold text-white">Services</h4>
               <ul className="space-y-4">
                 {[
-                  "Chăm sóc da",
+                  "Skincare",
                   "Massage",
                   "Spa",
-                  "Trang điểm",
-                  "Điều trị mụn",
-                  "Trẻ hóa da",
+                  "Makeup",
+                  "Acne Treatment",
+                  "Skin Rejuvenation",
                 ].map((item) => (
                   <li key={item}>
                     <a
@@ -87,14 +87,14 @@ export function SiteFooter() {
 
           <div className="lg:col-span-2">
             <div className="w-full flex flex-col space-y-6">
-              <h4 className="text-lg font-semibold text-white">Công Ty</h4>
+              <h4 className="text-lg font-semibold text-white">Company</h4>
               <ul className="space-y-4">
                 {[
-                  "Về chúng tôi",
-                  "Đội ngũ",
-                  "Liên hệ",
-                  "Tuyển dụng",
-                  "Đối tác",
+                  "About Us",
+                  "Team",
+                  "Contact",
+                  "Careers",
+                  "Partners",
                   "Blog",
                 ].map((item) => (
                   <li key={item}>
@@ -112,7 +112,7 @@ export function SiteFooter() {
 
           {/* Contact */}
           <div className="lg:col-span-3">
-            <h4 className="text-lg font-semibold text-white mb-6">Liên Hệ</h4>
+            <h4 className="text-lg font-semibold text-white mb-6">Contact</h4>
             <ul className="space-y-4">
               <li className="flex items-center space-x-3 text-gray-400">
                 <svg
@@ -167,9 +167,9 @@ export function SiteFooter() {
                   />
                 </svg>
                 <span>
-                  123 Đường ABC,
+                  123 ABC Street,
                   <br />
-                  Quận XYZ, TP.HCM
+                  XYZ District, HCMC
                 </span>
               </li>
             </ul>
@@ -180,19 +180,19 @@ export function SiteFooter() {
         <div className="border-t border-gray-800 pt-8 pb-12">
           <div className="max-w-2xl mx-auto text-center">
             <h5 className="text-xl font-semibold text-white mb-3">
-              Đăng ký nhận tin
+              Subscribe to Our Newsletter
             </h5>
             <p className="text-gray-400 mb-6">
-              Nhận thông tin về các ưu đãi và dịch vụ mới nhất của chúng tôi
+              Get the latest updates on our offers and services.
             </p>
             <form className="flex flex-col sm:flex-row gap-3 justify-center">
               <input
                 type="email"
-                placeholder="Nhập email của bạn"
+                placeholder="Enter your email"
                 className="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 flex-grow max-w-md"
               />
               <button className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:opacity-90 transition-opacity duration-300">
-                Đăng ký
+                Subscribe
               </button>
             </form>
           </div>
@@ -209,13 +209,13 @@ export function SiteFooter() {
                 href="#"
                 className="text-gray-400 hover:text-pink-500 text-sm transition-colors duration-300"
               >
-                Điều khoản
+                Terms
               </a>
               <a
                 href="#"
                 className="text-gray-400 hover:text-pink-500 text-sm transition-colors duration-300"
               >
-                Chính sách bảo mật
+                Privacy Policy
               </a>
             </div>
           </div>
