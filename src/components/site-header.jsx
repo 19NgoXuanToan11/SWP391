@@ -46,7 +46,7 @@ export function SiteHeader() {
                 color: "#ec4899", // pink-500
               }}
             >
-              Skincare
+              Beauty & Care 
             </span>
           </a>
         </div>
@@ -134,25 +134,47 @@ export function SiteHeader() {
               <ContactsOutlined /> Contact
             </a>
           </div>
-          <button
-            style={{
-              backgroundColor: "transparent",
-              border: "none",
-              color: "#ec4899",
-              padding: "0.5rem 1rem",
-              cursor: "pointer",
-              fontSize: "0.875rem",
-              fontWeight: "500",
-              transition: "background-color 0.2s",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.25rem",
-            }}
-            onMouseOver={(e) => (e.target.style.backgroundColor = "#f3f4f6")}
-            onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
-          >
-            <LoginOutlined /> Sign In
-          </button>
+          <div style={{ display: "flex", gap: "1rem" }}>
+            <button
+              style={{
+                backgroundColor: "transparent",
+                border: "none",
+                color: "#ec4899",
+                padding: "0.5rem 1rem",
+                cursor: "pointer",
+                fontSize: "0.875rem",
+                fontWeight: "500",
+                transition: "background-color 0.2s",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.25rem",
+              }}
+              onMouseOver={(e) => (e.target.style.backgroundColor = "#f3f4f6")}
+              onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
+            >
+              <LoginOutlined /> Sign In
+            </button>
+            <button
+              style={{
+                backgroundColor: "#ec4899",
+                border: "none",
+                color: "white",
+                padding: "0.5rem 1rem",
+                cursor: "pointer",
+                fontSize: "0.875rem",
+                fontWeight: "500",
+                borderRadius: "0.375rem",
+                transition: "background-color 0.2s",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.25rem",
+              }}
+              onMouseOver={(e) => (e.target.style.backgroundColor = "#db2777")}
+              onMouseOut={(e) => (e.target.style.backgroundColor = "#ec4899")}
+            >
+              Sign Up
+            </button>
+          </div>
         </nav>
       </div>
     </header>
