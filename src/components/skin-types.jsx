@@ -1,3 +1,7 @@
+import oilySkin from "../assets/pictures/oily_skin.jpg";
+import drySkin from "../assets/pictures/dry_skin.jpg";
+import combinationSkin from "../assets/pictures/combination_skin.jpg";
+
 export function SkinTypes() {
   const skinTypes = [
     {
@@ -15,8 +19,8 @@ export function SkinTypes() {
         "Try salicylic acid",
         "Regular exfoliation",
       ],
-      image: "/images/oily-skin.jpg",
-      color: "emerald",
+      image: oilySkin,
+      color: "rose",
     },
     {
       title: "Dry Skin",
@@ -33,7 +37,7 @@ export function SkinTypes() {
         "Gentle cleansers",
         "Hydrating serums",
       ],
-      image: "/images/dry-skin.jpg",
+      image: drySkin,
       color: "amber",
     },
     {
@@ -51,17 +55,17 @@ export function SkinTypes() {
         "Balanced products",
         "Gentle toning",
       ],
-      image: "/images/combination-skin.jpg",
-      color: "violet",
+      image: combinationSkin,
+      color: "pink",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 py-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-pink-50 py-16 px-4 sm:px-6 lg:px-8">
       {/* Header Section */}
       <div className="max-w-7xl mx-auto text-center mb-16">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-          Understanding Your <span className="text-blue-600">Skin Type</span>
+          Understanding Your <span className="text-pink-500">Skin Type</span>
         </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
           Discover your skin type and get personalized recommendations for the
@@ -107,7 +111,7 @@ export function SkinTypes() {
                       className="flex items-center text-gray-600"
                     >
                       <svg
-                        className="w-5 h-5 text-blue-500 mr-2"
+                        className="w-5 h-5 text-pink-400 mr-2"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -134,7 +138,7 @@ export function SkinTypes() {
                   {type.recommendations.map((rec) => (
                     <li key={rec} className="flex items-center text-gray-600">
                       <svg
-                        className="w-5 h-5 text-green-500 mr-2"
+                        className="w-5 h-5 text-rose-400 mr-2"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -153,7 +157,7 @@ export function SkinTypes() {
               </div>
 
               {/* Action Button */}
-              <button className="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+              <button className="w-full py-3 px-4 bg-gradient-to-r from-rose-400 to-pink-500 text-white rounded-xl font-medium hover:from-rose-500 hover:to-pink-600 transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2">
                 Get Personalized Routine
               </button>
             </div>
@@ -163,7 +167,7 @@ export function SkinTypes() {
 
       {/* Call to Action */}
       <div className="max-w-3xl mx-auto mt-16 text-center">
-        <div className="bg-blue-50 rounded-2xl p-8">
+        <div className="bg-pink-50 rounded-2xl p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Not sure about your skin type?
           </h2>
@@ -171,7 +175,7 @@ export function SkinTypes() {
             Take our comprehensive skin analysis quiz to get a detailed
             assessment and personalized recommendations.
           </p>
-          <button className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors duration-200">
+          <button className="inline-flex items-center px-6 py-3 bg-pink-500 text-white font-medium rounded-xl hover:bg-pink-600 transition-colors duration-200">
             Take the Quiz
             <svg
               className="w-5 h-5 ml-2"
