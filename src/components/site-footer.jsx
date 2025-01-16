@@ -61,40 +61,53 @@ export function SiteFooter() {
 
           {/* Quick Links */}
           <div className="lg:col-span-2">
-            <h4 className="text-lg font-semibold text-white mb-6">Dịch Vụ</h4>
-            <ul className="space-y-4">
-              {["Chăm sóc da", "Massage", "Spa", "Trang điểm"].map((item) => (
-                <li key={item}>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-pink-500 transition-colors duration-300 flex items-center group"
-                  >
-                    <span className="w-1 h-1 bg-pink-500 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                    {item}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div className="lg:col-span-2">
-            <h4 className="text-lg font-semibold text-white mb-6">Công Ty</h4>
-            <ul className="space-y-4">
-              {["Về chúng tôi", "Đội ngũ", "Liên hệ", "Tuyển dụng"].map(
-                (item) => (
+            <div className="w-full flex flex-col space-y-6">
+              <h4 className="text-lg font-semibold text-white">Dịch Vụ</h4>
+              <ul className="space-y-4">
+                {[
+                  "Chăm sóc da",
+                  "Massage",
+                  "Spa",
+                  "Trang điểm",
+                  "Điều trị mụn",
+                  "Trẻ hóa da",
+                ].map((item) => (
                   <li key={item}>
                     <a
                       href="#"
-                      className="text-gray-400 hover:text-pink-500 transition-colors duration-300 flex items-center group"
+                      className="text-gray-400 hover:text-pink-500 transition-colors duration-300"
                     >
-                      <span className="w-1 h-1 bg-pink-500 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                       {item}
                     </a>
                   </li>
-                )
-              )}
-            </ul>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="lg:col-span-2">
+            <div className="w-full flex flex-col space-y-6">
+              <h4 className="text-lg font-semibold text-white">Công Ty</h4>
+              <ul className="space-y-4">
+                {[
+                  "Về chúng tôi",
+                  "Đội ngũ",
+                  "Liên hệ",
+                  "Tuyển dụng",
+                  "Đối tác",
+                  "Blog",
+                ].map((item) => (
+                  <li key={item}>
+                    <a
+                      href="#"
+                      className="text-gray-400 hover:text-pink-500 transition-colors duration-300"
+                    >
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Contact */}
