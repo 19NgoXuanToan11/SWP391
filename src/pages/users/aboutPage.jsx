@@ -1,7 +1,6 @@
 import React from "react";
-import "./aboutPage.css";
 
-const AboutPage = () => {
+export function AboutPage() {
   return (
     <div className="about-container">
       <h1 className="about-title">Về Chúng Tôi</h1>
@@ -45,6 +44,4 @@ const AboutPage = () => {
       </section>
     </div>
   );
-};
-
-export default AboutPage;
+}
