@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b-2 border-pink-100 bg-white/98 backdrop-blur-lg h-[120px] flex items-center shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b-2 bg-white/98 backdrop-blur-lg h-[120px] flex items-center shadow-sm">
       <div className="max-w-7xl mx-auto px-10 w-full flex items-center">
         <div className="mr-14">
           <Link
