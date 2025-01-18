@@ -5,7 +5,7 @@ import { LoginPage } from "../pages/login/loginPage";
 import { RegisterPage } from "../pages/login/registerPage";
 import { AboutPage } from "../pages/users/aboutPage";
 import { ContactPage } from "../pages/users/contactPage";
-import { ProductsPage } from "../pages/admin/productsPage";
+import { ProductsPage } from "../pages/users/productPage";
 
 export const router = createBrowserRouter([
   {
