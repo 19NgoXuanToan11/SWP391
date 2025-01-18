@@ -59,59 +59,6 @@ export function AboutPage() {
           </div>
         </motion.section>
 
-        {/* Our Skills Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="flex items-center"
-        >
-          <div className="w-1/2 text-left">
-            <div className="flex justify-center">
-              <h2 className="text-4xl font-semibold mb-10 text-center">
-                Our Skills
-              </h2>
-            </div>
-            <div className="mb-4">
-              <p className="mb-2 text-lg">Video Editing</p>
-              <div className="bg-gray-700 rounded-full h-4 relative overflow-hidden">
-                <div className="bg-yellow-500 h-full w-[85%] absolute top-0 left-0"></div>
-              </div>
-            </div>
-            <div className="mb-4">
-              <p className="mb-2 text-lg">Videography</p>
-              <div className="bg-gray-700 rounded-full h-4 relative overflow-hidden">
-                <div className="bg-yellow-500 h-full w-[90%] absolute top-0 left-0"></div>
-              </div>
-            </div>
-            <div className="mb-4">
-              <p className="mb-2 text-lg">Branding</p>
-              <div className="bg-gray-700 rounded-full h-4 relative overflow-hidden">
-                <div className="bg-yellow-500 h-full w-[77%] absolute top-0 left-0"></div>
-              </div>
-            </div>
-          </div>
-
-          <div className="w-1/2 grid grid-cols-2 gap-4 text-center items-center">
-            <div>
-              <h3 className="text-3xl font-bold">20+</h3>
-              <p className="text-gray-400">Years Of Experience</p>
-            </div>
-            <div>
-              <h3 className="text-3xl font-bold">1,000+</h3>
-              <p className="text-gray-400">Projects Done</p>
-            </div>
-            <div>
-              <h3 className="text-3xl font-bold">300+</h3>
-              <p className="text-gray-400">Satisfied Clients</p>
-            </div>
-            <div>
-              <h3 className="text-3xl font-bold">64</h3>
-              <p className="text-gray-400">Certified Awards</p>
-            </div>
-          </div>
-        </motion.section>
-
         {/* Call to Action Section */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
@@ -122,13 +69,16 @@ export function AboutPage() {
         >
           <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
-        <div className="relative z-10 text-white text-center">
-          <h2 className="text-4xl font-bold mb-4">About Us</h2>
-          <p className="mb-6">We are dedicated to providing high-quality skincare products that enhance your natural beauty.</p>
-          <button className="bg-red-300 text-black font-semibold py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 hover:opacity-40">
-            Get Started
-          </button>
-        </div>
+          <div className="relative z-10 text-white text-center">
+            <h2 className="text-4xl font-bold mb-4">About Us</h2>
+            <p className="mb-6">
+              We are dedicated to providing high-quality skincare products that
+              enhance your natural beauty.
+            </p>
+            <button className="bg-red-300 text-black font-semibold py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 hover:opacity-40">
+              Get Started
+            </button>
+          </div>
         </motion.section>
       </div>
     </div>
