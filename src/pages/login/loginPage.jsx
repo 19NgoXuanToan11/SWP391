@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { FaGoogle, FaFacebook, FaGithub } from "react-icons/fa";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import background from "../../assets/pictures/background_login.jpg";
+import { loginAPI } from "../../services/api/loginAPI";
+import { toast } from "react-toastify";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -17,22 +19,15 @@ export function LoginPage() {
   });
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    try {
-      const response = await fakeAuthAPI(formData.email, formData.password);
-      if (response.success) {
-        navigate("/");
-      } else {
-        alert(response.message);
-      }
-    } catch (error) {
-      console.error("Authentication error:", error);
-      alert("Đã xảy ra lỗi trong quá trình xác thực.");
-    } finally {
-      setLoading(false);
+    if (formData.email === "" || formData.password === "") {
+      toast.error("Vui lòng nhập đầy đủ thông tin");
+      return;
     }
+
+    const response = await loginAPI(formData.email, formData.password);
+    console.log(response);
   };
 
   const handleNavigateToRegister = () => {
@@ -73,7 +68,7 @@ export function LoginPage() {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
                   Email
@@ -127,6 +122,7 @@ export function LoginPage() {
               <button
                 type="submit"
                 className="w-full py-2.5 px-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl transition-all transform hover:translate-y-[-1px] hover:shadow-lg hover:from-pink-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500/40 active:scale-[0.99]"
+                onClick={handleLogin}
               >
                 {loading ? (
                   <div className="flex items-center justify-center">
