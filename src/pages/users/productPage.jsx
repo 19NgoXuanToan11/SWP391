@@ -27,6 +27,48 @@ const products = [
     image: productImage3,
     description: "Mô tả ngắn gọn về sản phẩm 3.",
   },
+  {
+    id: 4,
+    name: "Sản phẩm 1",
+    price: "1.500.000đ",
+    image: productImage1,
+    description: "Mô tả ngắn gọn về sản phẩm 1.",
+  },
+  {
+    id: 5,
+    name: "Sản phẩm 2",
+    price: "1.000.000đ",
+    image: productImage2,
+    description: "Mô tả ngắn gọn về sản phẩm 2.",
+  },
+  {
+    id: 6,
+    name: "Sản phẩm 3",
+    price: "300.000đ",
+    image: productImage3,
+    description: "Mô tả ngắn gọn về sản phẩm 3.",
+  },
+  {
+    id: 7,
+    name: "Sản phẩm 1",
+    price: "800.000đ",
+    image: productImage1,
+    description: "Mô tả ngắn gọn về sản phẩm 1.",
+  },
+  {
+    id: 8,
+    name: "Sản phẩm 2",
+    price: "2.000.000đ",
+    image: productImage2,
+    description: "Mô tả ngắn gọn về sản phẩm 2.",
+  },
+  {
+    id: 9,
+    name: "Sản phẩm 3",
+    price: "900.000đ",
+    image: productImage3,
+    description: "Mô tả ngắn gọn về sản phẩm 3.",
+  },
 ];
 
 export function ProductsPage() {
