@@ -8,9 +8,9 @@ export default function ProductDetailPage() {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="max-w-2xl bg-white p-6 rounded-lg shadow-lg">
         <h1 className="text-2xl font-bold mb-4">
-          Chi tiết sản phẩm {productId}
+          Chi tiết sản phẩm: {productId}
         </h1>
-        <p>Hiển thị thông tin chi tiết sản phẩm tại đây...</p>
+        <p>Thông tin chi tiết sản phẩm sẽ được hiển thị tại đây.</p>
       </div>
     </div>
   );
