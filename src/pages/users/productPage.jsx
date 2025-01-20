@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import productImage1 from "../../assets/pictures/1.jpg"; // Hình ảnh sản phẩm 1
 import productImage2 from "../../assets/pictures/2.jpg"; // Hình ảnh sản phẩm 2
 import productImage3 from "../../assets/pictures/3.jpg"; // Hình ảnh sản phẩm 3
+import { useNavigate } from "react-router-dom";
 
 const products = [
   {
@@ -29,46 +30,100 @@ const products = [
 ];
 
 export function ProductsPage() {
+  const navigate = useNavigate();
+
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0); // Cuộn lên đầu trang
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-white py-20">
-      <div className="max-w-7xl mx-auto px-4">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">
-          Our Products
-        </h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => (
-            <motion.div
-              key={product.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                  {product.name}
-                </h2>
-                <p className="text-gray-600 mb-4">{product.description}</p>
-                <span className="text-lg font-bold text-pink-500">
-                  {product.price}
-                </span>
-                <div className="mt-4">
-                  <button className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors duration-300">
-                    Thêm vào giỏ
-                  </button>
+    <div className="min-h-screen bg-gray-100">
+      <div className="max-w-7xl mx-auto p-4">
+        <div className="grid grid-cols-4 gap-4">
+          {/* Sidebar */}
+          <div className="col-span-1 bg-white rounded-lg p-4 shadow-md">
+            <h2 className="text-lg font-semibold mt-6 mb-4">Thương hiệu</h2>
+            <input
+              type="text"
+              placeholder="Tìm kiếm"
+              className="w-full border rounded-lg p-2 mb-4"
+            />
+            <ul className="space-y-2">
+              <li className="text-gray-600 hover:text-pink-500 cursor-pointer">
+                Chanel
+              </li>
+              <li className="text-gray-600 hover:text-pink-500 cursor-pointer">
+                Dior
+              </li>
+              <li className="text-gray-600 hover:text-pink-500 cursor-pointer">
+                Cocoon
+              </li>
+              <li className="text-gray-600 hover:text-pink-500 cursor-pointer">
+                Maybelline
+              </li>
+              <li className="text-gray-600 hover:text-pink-500 cursor-pointer">
+                L'Oréal
+              </li>
+              <li className="text-gray-600 hover:text-pink-500 cursor-pointer">
+                Estee Lauder
+              </li>
+              <li className="text-gray-600 hover:text-pink-500 cursor-pointer">
+                MAC Cosmetics
+              </li>
+              <li className="text-gray-600 hover:text-pink-500 cursor-pointer">
+                Clinique
+              </li>
+              <li className="text-gray-600 hover:text-pink-500 cursor-pointer">
+                Bobbi Brown
+              </li>
+              <li className="text-gray-600 hover:text-pink-500 cursor-pointer">
+                Lancome
+              </li>
+            </ul>
+          </div>
+
+          {/* Products List */}
+          <div className="col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {products.map((product) => (
+              <div
+                key={product.id}
+                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => handleProductClick(product.id)}
+              >
+                <div className="relative">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-48 object-cover"
+                  />
+                  {product.discount && (
+                    <span className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-lg">
+                      {product.discount}
+                    </span>
+                  )}
+                </div>
+                <div className="p-4">
+                  <h2 className="text-lg font-semibold text-gray-800">
+                    {product.name}
+                  </h2>
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="text-pink-500 font-bold">
+                      {product.price}
+                    </span>
+                    {product.originalPrice && (
+                      <span className="text-gray-400 line-through text-sm">
+                        {product.originalPrice}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
-            </motion.div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>

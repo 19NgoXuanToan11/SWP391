@@ -20,8 +20,19 @@ export function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Thêm logic xử lý đăng nhập/đăng ký ở đây
-    setTimeout(() => setLoading(false), 1500); // Demo loading
+    try {
+      const response = await fakeAuthAPI(formData.email, formData.password);
+      if (response.success) {
+        navigate("/");
+      } else {
+        alert(response.message);
+      }
+    } catch (error) {
+      console.error("Authentication error:", error);
+      alert("Đã xảy ra lỗi trong quá trình xác thực.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleNavigateToRegister = () => {
@@ -140,21 +151,12 @@ export function LoginPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
-                {[
-                  { icon: <FaGoogle />, color: "text-red-500" },
-                  { icon: <FaFacebook />, color: "text-blue-500" },
-                  { icon: <FaGithub />, color: "text-gray-700" },
-                ].map((social, index) => (
-                  <button
-                    key={index}
-                    className="p-2.5 rounded-xl border border-gray-200 bg-white/50 hover:bg-white hover:shadow-md hover:scale-[1.02] transition-all"
-                  >
-                    <div className={`${social.color} flex justify-center`}>
-                      {social.icon}
-                    </div>
-                  </button>
-                ))}
+              <div className="flex justify-center">
+                <button className="py-4 px-20 rounded-xl border border-gray-200 bg-white/50 hover:bg-white hover:shadow-md hover:scale-[1.02] transition-all">
+                  <div className="text-red-500 flex justify-center">
+                    <FaGoogle />
+                  </div>
+                </button>
               </div>
             </div>
 

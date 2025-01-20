@@ -121,24 +121,6 @@ export function RegisterPage() {
                 />
               </div>
 
-              {/* Terms and Conditions */}
-              <div className="flex items-center space-x-2 mt-2">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-500"
-                />
-                <span className="text-sm text-gray-600">
-                  I agree to the{" "}
-                  <a href="#" className="text-pink-500 hover:text-pink-600">
-                    Terms
-                  </a>{" "}
-                  and{" "}
-                  <a href="#" className="text-pink-500 hover:text-pink-600">
-                    Privacy Policy
-                  </a>
-                </span>
-              </div>
-
               {/* Submit Button */}
               <button
                 type="submit"
@@ -166,21 +148,12 @@ export function RegisterPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 mt-6">
-              {[
-                { icon: <FaGoogle />, color: "text-red-500" },
-                { icon: <FaFacebook />, color: "text-blue-500" },
-                { icon: <FaGithub />, color: "text-gray-700" },
-              ].map((social, index) => (
-                <button
-                  key={index}
-                  className="p-2.5 rounded-xl border border-gray-300 bg-white/50 hover:bg-white hover:shadow-md hover:scale-[1.02] transition-all"
-                >
-                  <div className={`${social.color} flex justify-center`}>
-                    {social.icon}
-                  </div>
-                </button>
-              ))}
+            <div className="flex justify-center mt-6">
+              <button className="py-4 px-20 rounded-xl border border-gray-300 bg-white/50 hover:bg-white hover:shadow-md hover:scale-[1.02] transition-all">
+                <div className="text-red-500 flex justify-center">
+                  <FaGoogle />
+                </div>
+              </button>
             </div>
           </div>
 
