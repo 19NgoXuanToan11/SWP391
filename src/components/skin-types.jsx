@@ -1,6 +1,7 @@
 import oilySkin from "../assets/pictures/oily_skin.jpg";
 import drySkin from "../assets/pictures/dry_skin.jpg";
 import combinationSkin from "../assets/pictures/combination_skin.jpg";
+import { Link } from "react-router-dom";
 
 export function SkinTypes() {
   const skinTypes = [
@@ -175,6 +176,7 @@ export function SkinTypes() {
             Take our comprehensive skin analysis quiz to get a detailed
             assessment and personalized recommendations.
           </p>
+          <Link to="/quiz-landing">
           <button className="inline-flex items-center px-6 py-3 bg-pink-500 text-white font-medium rounded-xl hover:bg-pink-600 transition-colors duration-200">
             Take the Quiz
             <svg
@@ -191,6 +193,7 @@ export function SkinTypes() {
               />
             </svg>
           </button>
+          </Link>
         </div>
       </div>
     </div>
