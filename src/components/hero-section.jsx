@@ -7,6 +7,7 @@ import img5 from "../assets/pictures/5.jpg";
 import img6 from "../assets/pictures/6.jpg";
 import img7 from "../assets/pictures/7.jpg";
 import img8 from "../assets/pictures/8.jpg";
+import { Link } from "react-router-dom";
 
 export function HeroSection() {
   const [hoveredImage, setHoveredImage] = useState(null);
@@ -45,13 +46,18 @@ export function HeroSection() {
             </div>
 
             {/* CTA Buttons */}
+           
             <div className="flex flex-wrap gap-6">
-              <button className="px-10 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/40 transition-all duration-300">
+            <Link to="/product">
+            <button className="px-10 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/40 transition-all duration-300">
                 Begin Your Journey
               </button>
-              <button className="px-10 py-4 bg-white/80 backdrop-blur-sm border border-pink-100 text-gray-900 rounded-full font-medium hover:bg-white hover:border-pink-200 hover:scale-105 hover:shadow-lg transition-all duration-300">
+            </Link>
+            <Link to="/quiz">
+            <button className="px-10 py-4 bg-white/80 backdrop-blur-sm border border-pink-100 text-gray-900 rounded-full font-medium hover:bg-white hover:border-pink-200 hover:scale-105 hover:shadow-lg transition-all duration-300">
                 Explore Services
               </button>
+            </Link>
             </div>
           </div>
 
