@@ -14,6 +14,24 @@ export function Sidebar() {
         <button className="w-full bg-pink-500 text-white py-2 rounded-lg font-semibold hover:bg-pink-600 mb-4">
           Reset All Filters
         </button>
+
+                {/* Price Range */}
+                <div className="mb-6">
+          <h3 className="text-lg font-bold mb-2">Price Range</h3>
+          <div className="flex items-center space-x-2">
+            <input
+              type="number"
+              placeholder="0"
+              className="w-full px-2 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+            />
+            <span>-</span>
+            <input
+              type="number"
+              placeholder="1000"
+              className="w-full px-2 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+            />
+          </div>
+        </div>
   
         {/* Brands */}
         <div className="mb-6">
@@ -21,7 +39,7 @@ export function Sidebar() {
           <div className="space-y-2">
             <label className="flex items-center space-x-2">
               <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
-              <span>Brand A (120)</span>
+              <span>La Roche-Posay (120)</span>
             </label>
             <label className="flex items-center space-x-2">
               <input
@@ -29,11 +47,39 @@ export function Sidebar() {
                 defaultChecked
                 className="text-pink-500 focus:ring-pink-500"
               />
-              <span>Brand B (85)</span>
+              <span>L’Oréal (85)</span>
             </label>
             <label className="flex items-center space-x-2">
               <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
-              <span>Brand C (64)</span>
+              <span>Innisfree (64)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>Laneige (59)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>Artistry (25)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>Hada Labo (40)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>Shiseido (10)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>Obagi (72)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>Dear Klairs (33)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>Perfect Diary Beauty (120)</span>
             </label>
           </div>
         </div>
@@ -62,28 +108,6 @@ export function Sidebar() {
               <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
               <span>Face (65)</span>
             </label>
-            <label className="pl-6 flex items-center space-x-2">
-              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
-              <span>Eyes (45)</span>
-            </label>
-          </div>
-        </div>
-  
-        {/* Price Range */}
-        <div className="mb-6">
-          <h3 className="text-lg font-bold mb-2">Price Range</h3>
-          <div className="flex items-center space-x-2">
-            <input
-              type="number"
-              placeholder="0"
-              className="w-full px-2 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-            />
-            <span>-</span>
-            <input
-              type="number"
-              placeholder="1000"
-              className="w-full px-2 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-            />
           </div>
         </div>
   
@@ -93,34 +117,92 @@ export function Sidebar() {
           <div className="space-y-2">
             <label className="flex items-center space-x-2">
               <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
-              <span>Dry (89)</span>
+              <span>Normal/All Skin Types (118)</span>
             </label>
             <label className="flex items-center space-x-2">
               <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
-              <span>Oily (102)</span>
+              <span>Oily/Combination (41)</span>
             </label>
             <label className="flex items-center space-x-2">
               <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
-              <span>Combination (145)</span>
+              <span>Sensitive (35)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>Dry/Combination (22)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>Acne (19)</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Capacity */}
+        <div className="mb-6">
+          <h3 className="text-lg font-bold mb-2">Capacity</h3>
+          <div className="space-y-2">
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>5ml(1)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>105ml (1)</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Gender */}
+        <div className="mb-6">
+          <h3 className="text-lg font-bold mb-2">Gender</h3>
+          <div className="space-y-2">
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>Male and Female (19)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>Female (7)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>Male (2)</span>
             </label>
           </div>
         </div>
   
-        {/* Features */}
+        {/* Brand Origin */}
         <div>
-          <h3 className="text-lg font-bold mb-2">Features</h3>
+          <h3 className="text-lg font-bold mb-2">Brand Origin</h3>
           <div className="space-y-2">
             <label className="flex items-center space-x-2">
               <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
-              <span>Vegan (78)</span>
+              <span>Korea (82)</span>
             </label>
             <label className="flex items-center space-x-2">
               <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
-              <span>Cruelty-free (156)</span>
+              <span>France (59)</span>
             </label>
             <label className="flex items-center space-x-2">
               <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
-              <span>Natural (92)</span>
+              <span>USA (43)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>Japan (36)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>Vietnam (24)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>Germany (16)</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="text-pink-500 focus:ring-pink-500" />
+              <span>China (7)</span>
             </label>
           </div>
         </div>
