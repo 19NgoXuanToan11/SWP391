@@ -6,8 +6,10 @@ import { RegisterPage } from "../pages/login/registerPage";
 import { AboutPage } from "../pages/users/aboutPage";
 import { ContactPage } from "../pages/users/contactPage";
 import { ProductsPage } from "../pages/users/productPage";
+import ProductDetailPage from "../pages/users/productdetailPage";
 import { QuizPage } from "../pages/users/quizPage";
 import { QuizLandingPage } from "../pages/users/quizlandingPage";
+import { ForgotPasswordPage } from "../pages/login/resetPage";
 
 export const router = createBrowserRouter([
   {
@@ -39,12 +41,20 @@ export const router = createBrowserRouter([
         element: <ProductsPage />,
       },
       {
+        path: "detail",
+        element: <ProductDetailPage />,
+      },
+      {
         path: "login",
         element: <LoginPage />,
       },
       {
         path: "register",
         element: <RegisterPage />,
+      },
+      {
+        path: "reset",
+        element: <ForgotPasswordPage />,
       },
     ],
   },

@@ -18,16 +18,58 @@ export function LoginPage() {
     confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let valid = true;
+    let errors = {};
+
+    // Validate Email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email) {
+      errors.email = "Email is required";
+      valid = false;
+    } else if (!emailRegex.test(formData.email)) {
+      errors.email = "Please enter a valid email address";
+      valid = false;
+    }
+
+    // Validate Password
+    if (!formData.password) {
+      errors.password = "Password is required";
+      valid = false;
+    } else if (formData.password.length < 6) {
+      errors.password = "Password must be at least 6 characters";
+      valid = false;
+    }
+
+    // For Registration, validate password confirmation
+    if (!isLogin && formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = "Passwords do not match";
+      valid = false;
+    }
+
+    setErrors(errors);
+    return valid;
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (formData.email === "" || formData.password === "") {
-      toast.error("Vui lòng nhập đầy đủ thông tin");
-      return;
-    }
 
-    const response = await loginAPI(formData.email, formData.password);
-    console.log(response);
+    if (!validateForm()) return;
+
+    setLoading(true);
+
+    try {
+      const response = await loginAPI(formData.email, formData.password);
+      console.log(response);
+      toast.success("Login successful!");
+      navigate("/dashboard"); // Or wherever you want to navigate after login
+    } catch (error) {
+      toast.error("Login failed, please check your credentials.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleNavigateToRegister = () => {
@@ -56,53 +98,64 @@ export function LoginPage() {
 
         {/* Main Content Container */}
         <div className="h-full flex flex-col px-8 md:px-12 py-6">
-          {/* Form Section - Điều chỉnh justify-center và spacing */}
+          {/* Form Section */}
           <div className="flex-1 flex flex-col justify-center">
-            {/* Header - Chuyển vào trong form section */}
             <div className="mb-6">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                Welcome Back
+                {isLogin ? "Welcome Back" : "Create an Account"}
               </h2>
               <p className="mt-1 text-gray-600">
-                Sign in to continue your journey
+                {isLogin ? "Sign in to continue your journey" : "Sign up to start your journey"}
               </p>
             </div>
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Email
-                </label>
+                <label className="text-sm font-medium text-gray-700">Email</label>
                 <input
                   type="email"
                   className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
                   placeholder="you@example.com"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
+                {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Password
-                </label>
+                <label className="text-sm font-medium text-gray-700">Password</label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
                     placeholder="••••••••"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
-                    {showPassword ? (
-                      <HiEyeOff size={18} />
-                    ) : (
-                      <HiEye size={18} />
-                    )}
+                    {showPassword ? <HiEyeOff size={18} /> : <HiEye size={18} />}
                   </button>
                 </div>
+                {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
               </div>
+
+              {!isLogin && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Confirm Password</label>
+                  <input
+                    type="password"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
+                    placeholder="••••••••"
+                    value={formData.confirmPassword}
+                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                  />
+                  {errors.confirmPassword && <p className="text-red-500 text-xs">{errors.confirmPassword}</p>}
+                </div>
+              )}
 
               {/* Remember Me & Forgot Password */}
               <div className="flex items-center justify-between">
@@ -113,23 +166,24 @@ export function LoginPage() {
                   />
                   <span>Remember me</span>
                 </label>
-                <button className="text-sm text-pink-500 hover:text-pink-600">
-                  Forgot password?
-                </button>
+                <Link to="/reset">
+                  <button className="text-sm text-pink-500 hover:text-pink-600">
+                    Forgot password?
+                  </button>               
+                </Link>
               </div>
 
               {/* Submit Button */}
               <button
                 type="submit"
                 className="w-full py-2.5 px-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl transition-all transform hover:translate-y-[-1px] hover:shadow-lg hover:from-pink-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500/40 active:scale-[0.99]"
-                onClick={handleLogin}
               >
                 {loading ? (
                   <div className="flex items-center justify-center">
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   </div>
                 ) : (
-                  "Sign in"
+                  isLogin ? "Sign in" : "Sign up"
                 )}
               </button>
             </form>
@@ -141,9 +195,7 @@ export function LoginPage() {
                   <div className="w-full border-t border-gray-200"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">
-                    Or continue with
-                  </span>
+                  <span className="px-2 bg-white text-gray-500">Or continue with</span>
                 </div>
               </div>
 
@@ -155,16 +207,17 @@ export function LoginPage() {
                 </button>
               </div>
             </div>
-
-            {/* Sign Up Link */}
-            <div className="text-center mt-4">
-              <button
-                onClick={() => navigate("/register")}
-                className="text-sm text-gray-600 hover:text-pink-500 transition-colors"
-              >
-                Don't have an account? Sign up
-              </button>
-            </div>
+                {/* Sign Up Link */}
+                {isLogin && (
+                  <div className="text-center mt-4">
+                    <Link
+                      to="/register"
+                      className="text-sm text-gray-600 hover:text-pink-500 transition-colors"
+                    >
+                      Don't have an account? Sign up
+                    </Link>
+                  </div>
+                )}
           </div>
         </div>
       </div>

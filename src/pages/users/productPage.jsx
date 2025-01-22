@@ -1,74 +1,107 @@
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
-import productImage1 from "../../assets/pictures/1.jpg"; // Hình ảnh sản phẩm 1
-import productImage2 from "../../assets/pictures/2.jpg"; // Hình ảnh sản phẩm 2
-import productImage3 from "../../assets/pictures/3.jpg"; // Hình ảnh sản phẩm 3
+import productImage1 from "../../assets/pictures/1.jpg";
+import productImage2 from "../../assets/pictures/2.jpg";
+import productImage3 from "../../assets/pictures/3.jpg";
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../../components/sidebar";
 
 const products = [
   {
     id: 1,
-    name: "Sản phẩm 1",
-    price: "1.000.000đ",
+    name: "Retinol Cream",
+    price: "1.090.000đ",
+    originalPrice: "1.290.000đ",
+    discount: "-15%",
     image: productImage1,
-    description: "Mô tả ngắn gọn về sản phẩm 1.",
   },
   {
     id: 2,
-    name: "Sản phẩm 2",
-    price: "1.200.000đ",
+    name: "Retinol Cream",
+    price: "1.090.000đ",
+    originalPrice: "1.290.000đ",
+    discount: "-15%",
     image: productImage2,
-    description: "Mô tả ngắn gọn về sản phẩm 2.",
   },
   {
     id: 3,
-    name: "Sản phẩm 3",
-    price: "900.000đ",
+    name: "Retinol Cream",
+    price: "1.090.000đ",
+    originalPrice: "1.290.000đ",
+    discount: "-15%",
     image: productImage3,
-    description: "Mô tả ngắn gọn về sản phẩm 3.",
   },
   {
     id: 4,
-    name: "Sản phẩm 1",
-    price: "1.500.000đ",
+    name: "Retinol Cream",
+    price: "1.090.000đ",
+    originalPrice: "1.290.000đ",
+    discount: "-15%",
     image: productImage1,
-    description: "Mô tả ngắn gọn về sản phẩm 1.",
   },
   {
     id: 5,
-    name: "Sản phẩm 2",
-    price: "1.000.000đ",
+    name: "Retinol Cream",
+    price: "1.090.000đ",
+    originalPrice: "1.290.000đ",
+    discount: "-15%",
     image: productImage2,
-    description: "Mô tả ngắn gọn về sản phẩm 2.",
   },
   {
     id: 6,
-    name: "Sản phẩm 3",
-    price: "300.000đ",
+    name: "Retinol Cream",
+    price: "1.090.000đ",
+    originalPrice: "1.290.000đ",
+    discount: "-15%",
     image: productImage3,
-    description: "Mô tả ngắn gọn về sản phẩm 3.",
   },
   {
     id: 7,
-    name: "Sản phẩm 1",
-    price: "800.000đ",
+    name: "Retinol Cream",
+    price: "1.090.000đ",
+    originalPrice: "1.290.000đ",
+    discount: "-15%",
     image: productImage1,
-    description: "Mô tả ngắn gọn về sản phẩm 1.",
   },
   {
     id: 8,
-    name: "Sản phẩm 2",
-    price: "2.000.000đ",
+    name: "Retinol Cream",
+    price: "1.090.000đ",
+    originalPrice: "1.290.000đ",
+    discount: "-15%",
     image: productImage2,
-    description: "Mô tả ngắn gọn về sản phẩm 2.",
   },
   {
     id: 9,
-    name: "Sản phẩm 3",
-    price: "900.000đ",
+    name: "Retinol Cream",
+    price: "1.090.000đ",
+    originalPrice: "1.290.000đ",
+    discount: "-15%",
     image: productImage3,
-    description: "Mô tả ngắn gọn về sản phẩm 3.",
+  },
+  {
+    id: 10,
+    name: "Retinol Cream",
+    price: "1.090.000đ",
+    originalPrice: "1.290.000đ",
+    discount: "-15%",
+    image: productImage1,
+  },
+  {
+    id: 11,
+    name: "Retinol Cream",
+    price: "1.090.000đ",
+    originalPrice: "1.290.000đ",
+    discount: "-15%",
+    image: productImage2,
+  },
+  {
+    id: 12,
+    name: "Retinol Cream",
+    price: "1.090.000đ",
+    originalPrice: "1.290.000đ",
+    discount: "-15%",
+    image: productImage3,
   },
 ];
 
@@ -76,33 +109,38 @@ export function ProductsPage() {
   const navigate = useNavigate();
 
   const handleProductClick = (productId) => {
-    navigate(`/product/${productId}`);
+    if (productId) navigate(`/product/${productId}`);
+  };
+
+  const handleBuyNowClick = (productId) => {
+    if (productId) navigate(`/checkout/${productId}`);
   };
 
   useEffect(() => {
-    window.scrollTo(0, 0); // Cuộn lên đầu trang
+    window.scrollTo(0, 0);
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="max-w-7xl mx-auto p-4">
-        <div className="grid grid-cols-4 gap-4">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Sidebar */}
           <Sidebar />
 
           {/* Products List */}
-          <div className="col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product) => (
-              <div
+              <motion.div
                 key={product.id}
                 className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                onClick={() => handleProductClick(product.id)}
+                whileHover={{ scale: 1.02 }}
               >
                 <div className="relative">
                   <img
                     src={product.image}
-                    alt={product.name}
+                    alt={`Image of ${product.name}`}
                     className="w-full h-48 object-cover"
+                    onClick={() => handleProductClick(product.id)}
                   />
                   {product.discount && (
                     <span className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-lg">
@@ -124,8 +162,14 @@ export function ProductsPage() {
                       </span>
                     )}
                   </div>
+                  <button
+                    className="mt-4 w-full bg-pink-500 text-white text-sm font-semibold py-2 px-4 rounded-lg hover:bg-pink-600 transition duration-300"
+                    onClick={() => handleBuyNowClick(product.id)}
+                  >
+                    Mua Ngay
+                  </button>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

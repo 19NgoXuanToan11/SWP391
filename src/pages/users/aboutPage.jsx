@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import aboutus from "../../assets/pictures/aboutus.jpg";
 import aboutus_section from "../../assets/pictures/aboutus_section.jpg";
 import aboutus_bottom from "../../assets/pictures/aboutus_bottom.jpg";
+import { Link } from "react-router-dom";
 
 export function AboutPage() {
   useEffect(() => {
@@ -53,9 +54,11 @@ export function AboutPage() {
               thiên nhiên, giúp cung cấp độ ẩm, làm sáng và cải thiện kết cấu
               da. Hãy để làn da bạn tỏa sáng với những sản phẩm chất lượng nhất.
             </p>
-            <button className="px-6 py-2 bg-pink-600 text-white font-semibold rounded-lg hover:bg-transparent hover:text-black hover:border-2 hover:border-pink-300 transition duration-300">
-              Contact Us
-            </button>
+            <Link to="/contact">
+                <button className="px-6 py-2 bg-pink-600 text-white font-semibold rounded-lg hover:bg-transparent hover:text-black hover:border-2 hover:border-pink-300 transition duration-300">
+                  Contact Us
+                </button>
+            </Link>
           </div>
         </motion.section>
 

@@ -53,7 +53,7 @@ export function HeroSection() {
                 Begin Your Journey
               </button>
             </Link>
-            <Link to="/quiz">
+            <Link to="/quiz-landing">
             <button className="px-10 py-4 bg-white/80 backdrop-blur-sm border border-pink-100 text-gray-900 rounded-full font-medium hover:bg-white hover:border-pink-200 hover:scale-105 hover:shadow-lg transition-all duration-300">
                 Explore Services
               </button>
