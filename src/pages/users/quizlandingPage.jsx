@@ -16,18 +16,21 @@ export function QuizLandingPage() {
 
       {/* Content */}
       <div className="relative min-h-screen flex flex-col items-center justify-center px-4 text-center">
-        <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">Facial Check</h1>
+        <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
+          Facial Check
+        </h1>
 
         <p className="max-w-xl text-gray-200 mb-8">
-          True beauty shines from within, but the right skincare enhances that glow, helping you radiate confidence and embrace your natural brilliance.
+          True beauty shines from within, but the right skincare enhances that
+          glow, helping you radiate confidence and embrace your natural
+          brilliance.
         </p>
 
-<Link to="/quiz">
-<button className="px-8 py-3 bg-pink-600 text-white rounded-full font-semibold hover:bg-pink-700 transition-colors duration-300 shadow-lg hover:shadow-xl">
-          Start
-        </button>
-</Link>
-
+        <Link to="/quiz">
+          <button className="px-8 py-3 bg-pink-600 text-white rounded-full font-semibold hover:bg-pink-700 transition-colors duration-300 shadow-lg hover:shadow-xl">
+            Start
+          </button>
+        </Link>
 
         {/* Glowing Points */}
         <div className="absolute inset-0 pointer-events-none">
