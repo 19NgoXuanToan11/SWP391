@@ -17,6 +17,7 @@ import CategoryPage from "../pages/admin/categoryPage";
 import BrandsPage from "../pages/admin/brandsPage";
 import VouchersPage from "../pages/admin/vouchersPage";
 import SettingPage from "../pages/admin/settingPage";
+import CartPage from "../pages/users/cartPage";
 
 export const router = createBrowserRouter([
   {
@@ -62,6 +63,10 @@ export const router = createBrowserRouter([
       {
         path: "reset",
         element: <ForgotPasswordPage />,
+      },
+      {
+        path: "cart",
+        element: <CartPage />,
       },
       {
         path: "dashboard",
