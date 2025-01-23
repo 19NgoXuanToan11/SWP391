@@ -10,6 +10,13 @@ import ProductDetailPage from "../pages/users/productdetailPage";
 import { QuizPage } from "../pages/users/quizPage";
 import { QuizLandingPage } from "../pages/users/quizlandingPage";
 import { ForgotPasswordPage } from "../pages/login/resetPage";
+import DashboardPage from "../pages/admin/dashboardPage";
+import AccountsPage from "../pages/admin/accountsPage";
+import OrdersPage from "../pages/admin/ordersPage";
+import CategoryPage from "../pages/admin/categoryPage";
+import BrandsPage from "../pages/admin/brandsPage";
+import VouchersPage from "../pages/admin/vouchersPage";
+import SettingPage from "../pages/admin/settingPage";
 
 export const router = createBrowserRouter([
   {
@@ -55,6 +62,38 @@ export const router = createBrowserRouter([
       {
         path: "reset",
         element: <ForgotPasswordPage />,
+      },
+      {
+        path: "dashboard",
+        element: <DashboardPage />,
+      },
+      {
+        path: "account",
+        element: <AccountsPage />,
+      },
+      {
+        path: "order",
+        element: <OrdersPage />,
+      },
+      {
+        path: "category",
+        element: <CategoryPage/>,
+      },
+      {
+        path: "brand",
+        element: <BrandsPage />,
+      },
+      {
+        path: "voucher",
+        element: <VouchersPage />,
+      },
+      {
+        path: "setting",
+        element: <SettingPage />,
+      },
+      {
+        path: "abouts",
+        element: <AccountsPage />,
       },
     ],
   },

@@ -10,7 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.5.2",
+    "@heroicons/react": "^2.0.18",
+    "@ant-design/icons": "^1.2.5",
     "axios": "^1.7.9",
     "framer-motion": "^11.18.0",
     "react": "^18.3.1",

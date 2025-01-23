@@ -6,20 +6,21 @@ import { ScrollRestoration } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 function App() {
-  const pathname = useLocation();
+  const { pathname } = useLocation();
+
+  // Paths that shouldn't include the header and footer
+  const noHeaderFooterPaths = ["/login", "/register", "/dashboard", "/account", "/order", "/category", "/brand", "/voucher", "/setting", "/abouts"];
+
+  const shouldShowHeaderFooter = !noHeaderFooterPaths.includes(pathname);
 
   return (
     <div className="App">
-      {pathname.pathname !== "/login" && pathname.pathname !== "/register" && (
-        <SiteHeader />
-      )}
+      {shouldShowHeaderFooter && <SiteHeader />}
       <main>
         <ScrollRestoration />
         <Outlet />
       </main>
-      {pathname.pathname !== "/login" && pathname.pathname !== "/register" && (
-        <SiteFooter />
-      )}
+      {shouldShowHeaderFooter && <SiteFooter />}
     </div>
   );
 }
