@@ -16,16 +16,15 @@ export function QuizLandingPage() {
 
       {/* Content */}
       <div className="relative min-h-screen flex flex-col items-center justify-center px-4 text-center">
-        <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">Quiz Website</h1>
+        <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">Facial Check</h1>
 
         <p className="max-w-xl text-gray-200 mb-8">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis sint debitis, tempora magna eos est amet,
-          aliquam deseruntque quibusdam commodi eius numquam velit suscipit. Animi.
+          True beauty shines from within, but the right skincare enhances that glow, helping you radiate confidence and embrace your natural brilliance.
         </p>
 
 <Link to="/quiz">
 <button className="px-8 py-3 bg-pink-600 text-white rounded-full font-semibold hover:bg-pink-700 transition-colors duration-300 shadow-lg hover:shadow-xl">
-          Start Quiz
+          Start
         </button>
 </Link>
 
