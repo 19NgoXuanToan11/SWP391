@@ -85,7 +85,7 @@ export function ProductsPage() {
   };
 
   const handleBuyNowClick = (productId) => {
-    if (productId) navigate(`/checkout/${productId}`);
+    if (productId) navigate(`/product/${productId}`);
   };
 
   const formatPrice = (price) => {
@@ -141,7 +141,10 @@ export function ProductsPage() {
                       )}
                     </div>
                     <div className="p-4 flex flex-col flex-grow">
-                      <h2 className="text-lg font-semibold text-gray-800 mb-2">
+                      <h2
+                        className="text-lg font-semibold text-gray-800 mb-2 cursor-pointer"
+                        onClick={() => handleProductClick(product.id)}
+                      >
                         {product.name}
                       </h2>
                       <p className="text-sm text-gray-600 mb-2">
