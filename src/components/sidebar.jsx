@@ -9,6 +9,10 @@ export function Sidebar({ onFilterChange }) {
   const [selectedCapacities, setSelectedCapacities] = useState([]);
   const [selectedGenders, setSelectedGenders] = useState([]);
   const [selectedOrigins, setSelectedOrigins] = useState([]);
+  const [selectedVolumes, setSelectedVolumes] = useState([]);
+
+  // Danh sách volume cố định
+  const volumeOptions = ["30mL", "50mL", "60mL", "100mL"];
 
   // Xử lý thay đổi tìm kiếm
   const handleSearchChange = (e) => {
@@ -29,7 +33,12 @@ export function Sidebar({ onFilterChange }) {
   // Xử lý thay đổi checkbox
   const handleCheckboxChange = (type, value, setter) => {
     let newSelected;
-    if (type === "brands") {
+    if (type === "volumes") {
+      newSelected = selectedVolumes.includes(value)
+        ? selectedVolumes.filter((item) => item !== value)
+        : [...selectedVolumes, value];
+      setSelectedVolumes(newSelected);
+    } else if (type === "brands") {
       newSelected = selectedBrands.includes(value)
         ? selectedBrands.filter((item) => item !== value)
         : [...selectedBrands, value];
@@ -51,6 +60,16 @@ export function Sidebar({ onFilterChange }) {
     });
   };
 
+  // Xử lý thay đổi checkbox cho volume
+  const handleVolumeChange = (volume) => {
+    const newSelectedVolumes = selectedVolumes.includes(volume)
+      ? selectedVolumes.filter(item => item !== volume)
+      : [...selectedVolumes, volume];
+    
+    setSelectedVolumes(newSelectedVolumes);
+    applyFilters({ volumes: newSelectedVolumes });
+  };
+
   // Reset tất cả các filter
   const handleResetFilters = () => {
     setSearchTerm("");
@@ -61,6 +80,7 @@ export function Sidebar({ onFilterChange }) {
     setSelectedCapacities([]);
     setSelectedGenders([]);
     setSelectedOrigins([]);
+    setSelectedVolumes([]);
 
     onFilterChange({
       searchTerm: "",
@@ -71,6 +91,7 @@ export function Sidebar({ onFilterChange }) {
       capacities: [],
       genders: [],
       origins: [],
+      volumes: [],
     });
   };
 
@@ -85,6 +106,7 @@ export function Sidebar({ onFilterChange }) {
       capacities: selectedCapacities,
       genders: selectedGenders,
       origins: selectedOrigins,
+      volumes: selectedVolumes,
       ...changedFilter,
     });
   };
@@ -107,7 +129,7 @@ export function Sidebar({ onFilterChange }) {
         onClick={handleResetFilters}
         className="w-full bg-pink-500 text-white py-2 rounded-lg font-semibold hover:bg-pink-600 mb-4"
       >
-        Xóa bộ lọc
+        Reset Filters
       </button>
 
       {/* Price Range */}
@@ -199,6 +221,24 @@ export function Sidebar({ onFilterChange }) {
                 className="text-pink-500 focus:ring-pink-500"
               />
               <span>{type}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Volume Filter Section */}
+      <div className="mb-6">
+        <h3 className="text-lg font-bold mb-2">Volume</h3>
+        <div className="space-y-2">
+          {volumeOptions.map((volume) => (
+            <label key={volume} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+              <input
+                type="checkbox"
+                checked={selectedVolumes.includes(volume)}
+                onChange={() => handleVolumeChange(volume)}
+                className="w-4 h-4 text-pink-500 border-gray-300 rounded focus:ring-pink-500"
+              />
+              <span className="text-gray-700">{volume}</span>
             </label>
           ))}
         </div>
