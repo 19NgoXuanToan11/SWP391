@@ -1,16 +1,16 @@
-import React from 'react';
-import SidebarAdmin from '../../components/sidebaradmin';
-import { 
-  UserOutlined, 
-  ShoppingOutlined, 
+import React from "react";
+import SidebarAdmin from "../../components/sidebaradmin";
+import {
+  UserOutlined,
+  ShoppingOutlined,
   DollarOutlined,
   RiseOutlined,
   BellOutlined,
   SearchOutlined,
   CalendarOutlined,
   ArrowUpOutlined,
-  ArrowDownOutlined
-} from '@ant-design/icons';
+  ArrowDownOutlined,
+} from "@ant-design/icons";
 
 const Dashboard = () => {
   return (
@@ -21,15 +21,19 @@ const Dashboard = () => {
         {/* Header */}
         <header className="flex justify-between items-center mb-8 bg-white p-6 rounded-2xl shadow-sm backdrop-blur-md bg-opacity-80">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Welcome back, Admin!</h1>
-            <p className="text-gray-500 mt-1">Here's what's happening with your store today.</p>
+            <h1 className="text-3xl font-bold text-gray-800">
+              Welcome back, Admin!
+            </h1>
+            <p className="text-gray-500 mt-1">
+              Here's what's happening with your store today.
+            </p>
           </div>
           <div className="flex items-center space-x-6">
             <div className="relative">
               <SearchOutlined className="absolute left-3 top-3 text-gray-400" />
-              <input 
-                type="text" 
-                placeholder="Search..." 
+              <input
+                type="text"
+                placeholder="Search..."
                 className="pl-10 pr-4 py-2 w-64 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-gray-50"
               />
             </div>
@@ -40,9 +44,9 @@ const Dashboard = () => {
               </button>
             </div>
             <div className="flex items-center space-x-4 bg-gray-50 p-2 rounded-xl">
-              <img 
-                src="https://via.placeholder.com/40" 
-                alt="User" 
+              <img
+                src="https://via.placeholder.com/40"
+                alt="User"
                 className="w-10 h-10 rounded-xl border-2 border-pink-500"
               />
               <div>
@@ -57,7 +61,14 @@ const Dashboard = () => {
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center space-x-2 text-gray-600">
             <CalendarOutlined />
-            <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            <span>
+              {new Date().toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </span>
           </div>
         </div>
 
@@ -68,7 +79,9 @@ const Dashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">Total Sales</p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">$841,162</p>
+                <p className="text-3xl font-bold text-gray-800 mt-2">
+                  $841,162
+                </p>
                 <div className="flex items-center mt-4 space-x-2">
                   <span className="flex items-center text-red-500 text-sm bg-red-50 px-2 py-1 rounded-lg">
                     <ArrowDownOutlined className="mr-1" />
@@ -87,7 +100,9 @@ const Dashboard = () => {
           <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500">Total Orders</p>
+                <p className="text-sm font-medium text-gray-500">
+                  Total Orders
+                </p>
                 <p className="text-3xl font-bold text-gray-800 mt-2">123,460</p>
                 <div className="flex items-center mt-4 space-x-2">
                   <span className="flex items-center text-green-500 text-sm bg-green-50 px-2 py-1 rounded-lg">
@@ -107,8 +122,12 @@ const Dashboard = () => {
           <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500">Active Users</p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">1,014,125</p>
+                <p className="text-sm font-medium text-gray-500">
+                  Active Users
+                </p>
+                <p className="text-3xl font-bold text-gray-800 mt-2">
+                  1,014,125
+                </p>
                 <div className="flex items-center mt-4 space-x-2">
                   <span className="flex items-center text-green-500 text-sm bg-green-50 px-2 py-1 rounded-lg">
                     <ArrowUpOutlined className="mr-1" />
@@ -148,7 +167,9 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <div className="bg-white p-6 rounded-2xl shadow-lg">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-800">Sales Overview</h2>
+              <h2 className="text-xl font-bold text-gray-800">
+                Sales Overview
+              </h2>
               <select className="px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
                 <option>Last 7 days</option>
                 <option>Last 30 days</option>
@@ -162,7 +183,9 @@ const Dashboard = () => {
 
           <div className="bg-white p-6 rounded-2xl shadow-lg">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-800">Revenue Analytics</h2>
+              <h2 className="text-xl font-bold text-gray-800">
+                Revenue Analytics
+              </h2>
               <select className="px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
                 <option>This Month</option>
                 <option>Last Month</option>
@@ -189,10 +212,18 @@ const Dashboard = () => {
             <table className="w-full">
               <thead>
                 <tr className="bg-gray-50 rounded-xl">
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider rounded-l-xl">Product</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Sales</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider rounded-r-xl">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider rounded-l-xl">
+                    Product
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Price
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Sales
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider rounded-r-xl">
+                    Status
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
