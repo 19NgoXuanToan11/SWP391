@@ -103,7 +103,9 @@ export function RegisterPage() {
             <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
               Create Account
             </h2>
-            <p className="text-gray-600 text-base">Join us and start your journey today</p>
+            <p className="text-gray-600 text-base">
+              Join us and start your journey today
+            </p>
           </div>
 
           {/* Middle Section - Form */}
@@ -112,7 +114,9 @@ export function RegisterPage() {
               {/* Full Name Fields */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">First Name</label>
+                  <label className="text-sm font-medium text-gray-700">
+                    First Name
+                  </label>
                   <input
                     type="text"
                     name="firstName"
@@ -121,10 +125,14 @@ export function RegisterPage() {
                     className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
                     placeholder="John"
                   />
-                  {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
+                  {errors.firstName && (
+                    <p className="text-red-500 text-sm">{errors.firstName}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Last Name</label>
+                  <label className="text-sm font-medium text-gray-700">
+                    Last Name
+                  </label>
                   <input
                     type="text"
                     name="lastName"
@@ -133,13 +141,17 @@ export function RegisterPage() {
                     className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
                     placeholder="Doe"
                   />
-                  {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
+                  {errors.lastName && (
+                    <p className="text-red-500 text-sm">{errors.lastName}</p>
+                  )}
                 </div>
               </div>
 
               {/* Email Field */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Email</label>
+                <label className="text-sm font-medium text-gray-700">
+                  Email
+                </label>
                 <input
                   type="email"
                   name="email"
@@ -148,12 +160,16 @@ export function RegisterPage() {
                   className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
                   placeholder="you@example.com"
                 />
-                {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+                {errors.email && (
+                  <p className="text-red-500 text-sm">{errors.email}</p>
+                )}
               </div>
 
               {/* Password Field */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Password</label>
+                <label className="text-sm font-medium text-gray-700">
+                  Password
+                </label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -168,15 +184,23 @@ export function RegisterPage() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
-                    {showPassword ? <HiEyeOff size={18} /> : <HiEye size={18} />}
+                    {showPassword ? (
+                      <HiEyeOff size={18} />
+                    ) : (
+                      <HiEye size={18} />
+                    )}
                   </button>
                 </div>
-                {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+                {errors.password && (
+                  <p className="text-red-500 text-sm">{errors.password}</p>
+                )}
               </div>
 
               {/* Confirm Password Field */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Confirm Password</label>
+                <label className="text-sm font-medium text-gray-700">
+                  Confirm Password
+                </label>
                 <input
                   type={showPassword ? "text" : "password"}
                   name="confirmPassword"
@@ -186,7 +210,9 @@ export function RegisterPage() {
                   placeholder="••••••••"
                 />
                 {errors.confirmPassword && (
-                  <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
+                  <p className="text-red-500 text-sm">
+                    {errors.confirmPassword}
+                  </p>
                 )}
               </div>
 
@@ -211,7 +237,9 @@ export function RegisterPage() {
                 <div className="w-full border-t border-gray-200"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                <span className="px-2 bg-white text-gray-500">
+                  Or continue with
+                </span>
               </div>
             </div>
 

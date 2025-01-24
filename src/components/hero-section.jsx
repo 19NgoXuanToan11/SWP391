@@ -46,18 +46,18 @@ export function HeroSection() {
             </div>
 
             {/* CTA Buttons */}
-           
+
             <div className="flex flex-wrap gap-6">
-            <Link to="/product">
-            <button className="px-10 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/40 transition-all duration-300">
-                Begin Your Journey
-              </button>
-            </Link>
-            <Link to="/quiz-landing">
-            <button className="px-10 py-4 bg-white/80 backdrop-blur-sm border border-pink-100 text-gray-900 rounded-full font-medium hover:bg-white hover:border-pink-200 hover:scale-105 hover:shadow-lg transition-all duration-300">
-                Explore Services
-              </button>
-            </Link>
+              <Link to="/product">
+                <button className="px-10 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/40 transition-all duration-300">
+                  Begin Your Journey
+                </button>
+              </Link>
+              <Link to="/quiz-landing">
+                <button className="px-10 py-4 bg-white/80 backdrop-blur-sm border border-pink-100 text-gray-900 rounded-full font-medium hover:bg-white hover:border-pink-200 hover:scale-105 hover:shadow-lg transition-all duration-300">
+                  Explore Services
+                </button>
+              </Link>
             </div>
           </div>
 

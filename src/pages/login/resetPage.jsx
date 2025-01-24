@@ -67,14 +67,18 @@ export function ForgotPasswordPage() {
             <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
               Forgot Password?
             </h2>
-            <p className="text-gray-600 text-base">Enter your email to reset your password</p>
+            <p className="text-gray-600 text-base">
+              Enter your email to reset your password
+            </p>
           </div>
 
           {/* Middle Section - Form */}
           <div className="flex-1">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Email</label>
+                <label className="text-sm font-medium text-gray-700">
+                  Email
+                </label>
                 <div className="relative">
                   <input
                     type="email"
@@ -101,18 +105,20 @@ export function ForgotPasswordPage() {
               </button>
             </form>
 
-            {success && <p className="text-green-500 text-sm mt-4">{success}</p>}
+            {success && (
+              <p className="text-green-500 text-sm mt-4">{success}</p>
+            )}
           </div>
 
           {/* Bottom Section */}
           <Link to="/login">
             <div className="text-center">
-                <button
+              <button
                 onClick={() => navigate("/login")}
                 className="text-sm text-gray-600 hover:text-pink-500 transition-colors"
-                >
+              >
                 Remember your password? Sign in
-                </button>
+              </button>
             </div>
           </Link>
         </div>

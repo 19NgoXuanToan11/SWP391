@@ -105,55 +105,84 @@ export function LoginPage() {
                 {isLogin ? "Welcome Back" : "Create an Account"}
               </h2>
               <p className="mt-1 text-gray-600">
-                {isLogin ? "Sign in to continue your journey" : "Sign up to start your journey"}
+                {isLogin
+                  ? "Sign in to continue your journey"
+                  : "Sign up to start your journey"}
               </p>
             </div>
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Email</label>
+                <label className="text-sm font-medium text-gray-700">
+                  Email
+                </label>
                 <input
                   type="email"
                   className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
                   placeholder="you@example.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                 />
-                {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
+                {errors.email && (
+                  <p className="text-red-500 text-xs">{errors.email}</p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Password</label>
+                <label className="text-sm font-medium text-gray-700">
+                  Password
+                </label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
                     placeholder="••••••••"
                     value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
-                    {showPassword ? <HiEyeOff size={18} /> : <HiEye size={18} />}
+                    {showPassword ? (
+                      <HiEyeOff size={18} />
+                    ) : (
+                      <HiEye size={18} />
+                    )}
                   </button>
                 </div>
-                {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
+                {errors.password && (
+                  <p className="text-red-500 text-xs">{errors.password}</p>
+                )}
               </div>
 
               {!isLogin && (
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Confirm Password</label>
+                  <label className="text-sm font-medium text-gray-700">
+                    Confirm Password
+                  </label>
                   <input
                     type="password"
                     className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
                     placeholder="••••••••"
                     value={formData.confirmPassword}
-                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        confirmPassword: e.target.value,
+                      })
+                    }
                   />
-                  {errors.confirmPassword && <p className="text-red-500 text-xs">{errors.confirmPassword}</p>}
+                  {errors.confirmPassword && (
+                    <p className="text-red-500 text-xs">
+                      {errors.confirmPassword}
+                    </p>
+                  )}
                 </div>
               )}
 
@@ -169,7 +198,7 @@ export function LoginPage() {
                 <Link to="/reset">
                   <button className="text-sm text-pink-500 hover:text-pink-600">
                     Forgot password?
-                  </button>               
+                  </button>
                 </Link>
               </div>
 
@@ -182,8 +211,10 @@ export function LoginPage() {
                   <div className="flex items-center justify-center">
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   </div>
+                ) : isLogin ? (
+                  "Sign in"
                 ) : (
-                  isLogin ? "Sign in" : "Sign up"
+                  "Sign up"
                 )}
               </button>
             </form>
@@ -195,7 +226,9 @@ export function LoginPage() {
                   <div className="w-full border-t border-gray-200"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                  <span className="px-2 bg-white text-gray-500">
+                    Or continue with
+                  </span>
                 </div>
               </div>
 
@@ -207,17 +240,17 @@ export function LoginPage() {
                 </button>
               </div>
             </div>
-                {/* Sign Up Link */}
-                {isLogin && (
-                  <div className="text-center mt-4">
-                    <Link
-                      to="/register"
-                      className="text-sm text-gray-600 hover:text-pink-500 transition-colors"
-                    >
-                      Don't have an account? Sign up
-                    </Link>
-                  </div>
-                )}
+            {/* Sign Up Link */}
+            {isLogin && (
+              <div className="text-center mt-4">
+                <Link
+                  to="/register"
+                  className="text-sm text-gray-600 hover:text-pink-500 transition-colors"
+                >
+                  Don't have an account? Sign up
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

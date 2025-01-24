@@ -63,9 +63,9 @@ export function Sidebar({ onFilterChange }) {
   // Xử lý thay đổi checkbox cho volume
   const handleVolumeChange = (volume) => {
     const newSelectedVolumes = selectedVolumes.includes(volume)
-      ? selectedVolumes.filter(item => item !== volume)
+      ? selectedVolumes.filter((item) => item !== volume)
       : [...selectedVolumes, volume];
-    
+
     setSelectedVolumes(newSelectedVolumes);
     applyFilters({ volumes: newSelectedVolumes });
   };
@@ -231,7 +231,10 @@ export function Sidebar({ onFilterChange }) {
         <h3 className="text-lg font-bold mb-2">Volume</h3>
         <div className="space-y-2">
           {volumeOptions.map((volume) => (
-            <label key={volume} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+            <label
+              key={volume}
+              className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-1 rounded"
+            >
               <input
                 type="checkbox"
                 checked={selectedVolumes.includes(volume)}
