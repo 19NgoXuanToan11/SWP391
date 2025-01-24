@@ -15,10 +15,14 @@ import {
 import blackWhiteLogo from "../assets/pictures/black_white_on_trans.png";
 import { Link } from "react-router-dom";
 import { Dropdown } from "antd";
+import { UserDropdown } from "./userDropdown";
+import { useGetUserProfileQuery } from "../services/api/beautyShopApi";
 
 export function SiteHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const { data: user, isLoading } = useGetUserProfileQuery();
+  const isAuthenticated = !!localStorage.getItem("token");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,37 +31,6 @@ export function SiteHeader() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const userMenu = (
-    <div className="bg-white rounded-xl shadow-lg py-2 w-52 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-      <div className="px-4 py-3 border-b border-gray-100 bg-gradient-to-r from-pink-50 to-purple-50">
-        <div className="flex items-center space-x-3">
-          <UserOutlined className="text-xl text-pink-500" />
-          <div>
-            <h3 className="text-sm font-medium text-gray-800">Tài khoản</h3>
-          </div>
-        </div>
-      </div>
-
-      <div className="py-2">
-        <Link
-          to="/login"
-          className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-all duration-200"
-        >
-          <LoginOutlined className="mr-3 text-pink-400" />
-          <span>Đăng nhập</span>
-        </Link>
-
-        <Link
-          to="/register" 
-          className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-all duration-200"
-        >
-          <UserAddOutlined className="mr-3 text-pink-400" />
-          <span>Đăng ký</span>
-        </Link>
-      </div>
-    </div>
-  );
 
   return (
     <header
@@ -134,21 +107,21 @@ export function SiteHeader() {
                 </span>
               </Link>
 
-              {/* Auth Dropdown */}
-              <div className="relative">
-                <Dropdown
-                  overlay={userMenu}
-                  trigger={["click"]}
-                  placement="bottomRight"
-                  overlayClassName="custom-dropdown"
-                >
-                  <button className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors">
-                    <span className="flex items-center justify-center w-5 h-5">
+              {/* Auth Section */}
+              <div className="flex items-center space-x-6">
+                {isAuthenticated ? (
+                  <UserDropdown user={user} />
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors"
+                    >
                       <UserOutlined className="text-lg" />
-                    </span>
-                    <span className="text-sm">Đăng nhập / Đăng ký</span>
-                  </button>
-                </Dropdown>
+                      <span className="text-sm">Đăng nhập / Đăng ký</span>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </nav>

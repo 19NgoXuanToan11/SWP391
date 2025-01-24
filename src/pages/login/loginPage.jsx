@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { FaGoogle, FaFacebook, FaGithub } from "react-icons/fa";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import background from "../../assets/pictures/background_login.jpg";
-import { loginAPI } from "../../services/api/loginAPI";
+import { useLoginMutation } from "../../services/api/beautyShopApi";
 import { toast } from "react-toastify";
 
 export function LoginPage() {
@@ -19,6 +19,7 @@ export function LoginPage() {
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [login, { isLoading }] = useLoginMutation();
 
   const validateForm = () => {
     let valid = true;
@@ -55,20 +56,12 @@ export function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) return;
-
-    setLoading(true);
-
     try {
-      const response = await loginAPI(formData.email, formData.password);
-      console.log(response);
+      const result = await login(formData).unwrap();
       toast.success("Login successful!");
-      navigate("/dashboard"); // Or wherever you want to navigate after login
+      navigate("/");
     } catch (error) {
-      toast.error("Login failed, please check your credentials.");
-    } finally {
-      setLoading(false);
+      toast.error(error.data?.message || "Login failed");
     }
   };
 
