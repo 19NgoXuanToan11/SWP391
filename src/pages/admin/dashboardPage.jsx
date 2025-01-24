@@ -81,12 +81,6 @@ const Dashboard = () => {
                 className="pl-10 pr-4 py-2 w-64 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-gray-50"
               />
             </div>
-            <div className="relative">
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-              <button className="p-3 hover:bg-gray-100 rounded-xl transition-colors">
-                <BellOutlined className="text-xl text-gray-600" />
-              </button>
-            </div>
 
             {/* Profile Dropdown */}
             <div className="relative">
