@@ -83,7 +83,7 @@ export function SiteHeader() {
             <Link 
             to="/cart"
             className="flex items-center gap-2 px-5  text-[0.95rem] font-medium text-white bg-green-500 rounded-lg shadow-green-500/20 shadow-md transition-all duration-300 hover:bg-green-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-green-500/30 focus:outline-none focus:ring-2 focus:ring-green-500/20"
-          >
+            >
             <ShoppingCartOutlined className="text-lg" />
             View Cart
           </Link>
