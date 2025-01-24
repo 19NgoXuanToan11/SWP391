@@ -48,6 +48,20 @@ const CartPage = () => {
     0
   );
 
+  const handleProceedToCheckout = () => {
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentMethodSelection = (method) => {
+    setSelectedPaymentMethod(method);
+    setShowPaymentModal(false);
+    if (method === "Cash on Delivery") {
+      alert("You selected Cash on Delivery. Payment Successful!");
+    } else {
+      alert(`You selected ${method} as your payment method.`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -201,6 +215,14 @@ const CartPage = () => {
                 </div>
               </div>
 
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full">
+            <h2 className="text-xl font-semibold mb-4">
+              Select Payment Method
+            </h2>
+            <div className="space-y-4">
               <Link to="/payment">
                 <button
                   className="w-full py-3 bg-pink-600 text-white rounded-xl font-medium 
