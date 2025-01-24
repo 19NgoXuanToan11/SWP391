@@ -19,6 +19,8 @@ import VouchersPage from "../pages/admin/vouchersPage";
 import SettingPage from "../pages/admin/settingPage";
 import CartPage from "../pages/users/cartPage";
 import PaymentPage from "../pages/users/paymentPage";
+import OrderhistoryPage from "../pages/users/orderhistoryPage";
+import CustomerOrderPage from "../pages/admin/customerorderPage";
 
 export const router = createBrowserRouter([
   {
@@ -70,6 +72,14 @@ export const router = createBrowserRouter([
         element: <CartPage />,
       },
       {
+        path: "payment",
+        element: <PaymentPage />,
+      },
+      {
+        path: "history",
+        element: <OrderhistoryPage />,
+      },
+      {
         path: "dashboard",
         element: <DashboardPage />,
       },
@@ -102,8 +112,8 @@ export const router = createBrowserRouter([
         element: <AccountsPage />,
       },
       {
-        path: "payment",
-        element: <PaymentPage />,
+        path: "customerorder",
+        element: <CustomerOrderPage />,
       },
     ],
   },

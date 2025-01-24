@@ -113,6 +113,69 @@ export function SiteHeader() {
             </div>
           </nav>
         </div>
+
+        <nav className="flex-1 flex items-center justify-between">
+          <div className="flex items-center gap-10">
+            <Link
+              to="/"
+              className="flex items-center gap-2 px-3 py-2 text-[0.95rem] font-medium text-gray-600 rounded-lg transition-all duration-300 hover:text-pink-500 hover:bg-pink-50"
+            >
+              <HomeOutlined className="text-lg" /> Home
+            </Link>
+
+            <Link
+              to="/about"
+              className="flex items-center gap-2 px-3 py-2 text-[0.95rem] font-medium text-gray-600 rounded-lg transition-all duration-300 hover:text-pink-500 hover:bg-pink-50"
+            >
+              <UserOutlined className="text-lg" /> About
+            </Link>
+
+            <Link
+              to="/product"
+              className="flex items-center gap-2 px-3 py-2 text-[0.95rem] font-medium text-gray-600 rounded-lg transition-all duration-300 hover:text-pink-500 hover:bg-pink-50"
+            >
+              <ShoppingOutlined className="text-lg" /> Product
+            </Link>
+
+            <Link
+              to="/contact"
+              className="flex items-center gap-2 px-3 py-2 text-[0.95rem] font-medium text-gray-600 rounded-lg transition-all duration-300 hover:text-pink-500 hover:bg-pink-50"
+            >
+              <ContactsOutlined className="text-lg" /> Contact
+            </Link>
+
+            <Link
+              to="/quiz-landing"
+              className="flex items-center gap-2 px-3 py-2 text-[0.95rem] font-medium text-gray-600 rounded-lg transition-all duration-300 hover:text-pink-500 hover:bg-pink-50"
+            >
+              <FileDoneOutlined className="text-lg" /> Quiz
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-6 ml-10">
+            <Link
+              to="/login"
+              className="flex items-center gap-2 px-5 py-2.5 text-[0.95rem] font-medium text-pink-500 border-1.5 border-pink-500 rounded-lg transition-all duration-300 hover:bg-pink-50 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20"
+            >
+              <LoginOutlined /> Sign In
+            </Link>
+
+            <Link
+              to="/register"
+              className="flex items-center gap-2 px-5 text-[0.95rem] font-medium text-white bg-pink-500 rounded-lg shadow-pink-500/20 shadow-md transition-all duration-300 hover:bg-pink-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-500/30 focus:outline-none focus:ring-2 focus:ring-pink-500/20"
+            >
+              Sign Up
+            </Link>
+
+            <Link 
+            to="/cart"
+            className="flex items-center gap-2 px-5  text-[0.95rem] font-medium text-white bg-green-500 rounded-lg shadow-green-500/20 shadow-md transition-all duration-300 hover:bg-green-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-green-500/30 focus:outline-none focus:ring-2 focus:ring-green-500/20"
+            >
+            <ShoppingCartOutlined className="text-lg" />
+            View Cart
+          </Link>
+          </div>
+        </nav>
       </div>
     </header>
   );

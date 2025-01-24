@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  EditOutlined,
   DeleteOutlined,
   SearchOutlined,
   FilterOutlined,
@@ -8,6 +7,7 @@ import {
   DollarOutlined,
   UserOutlined,
   ClockCircleOutlined,
+  CheckSquareOutlined,
 } from "@ant-design/icons";
 import SidebarAdmin from "../../components/sidebaradmin";
 
@@ -252,7 +252,7 @@ const OrdersPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-3">
                         <button className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors">
-                          <EditOutlined />
+                          <CheckSquareOutlined />
                         </button>
                         <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
                           <DeleteOutlined />

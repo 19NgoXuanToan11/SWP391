@@ -43,15 +43,40 @@ const Dashboard = () => {
                 <BellOutlined className="text-xl text-gray-600" />
               </button>
             </div>
-            <div className="flex items-center space-x-4 bg-gray-50 p-2 rounded-xl">
-              <img
-                src="https://via.placeholder.com/40"
-                alt="User"
-                className="w-10 h-10 rounded-xl border-2 border-pink-500"
-              />
-              <div>
-                <p className="font-semibold text-gray-800">Elana Saint</p>
-                <p className="text-sm text-gray-500">Super Admin</p>
+            <div className="relative inline-block text-left">
+              <div className="flex items-center space-x-4 bg-gray-50 p-2 rounded-xl cursor-pointer">
+                <img
+                  src="https://via.placeholder.com/40"
+                  alt="User"
+                  className="w-10 h-10 rounded-xl border-2 border-pink-500"
+                />
+                <div>
+                  <p className="font-semibold text-gray-800">Elana Saint</p>
+                  <p className="text-sm text-gray-500">Super Admin</p>
+                </div>
+              </div>
+              {/* Dropdown menu */}
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 hidden group-hover:block">
+                <div className="py-1">
+                  <a
+                    href="/profile"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                  >
+                    Profile
+                  </a>
+                  <a
+                    href="/settings"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                  >
+                    Settings
+                  </a>
+                  <a
+                    href="/logout"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                  >
+                    Logout
+                  </a>
+                </div>
               </div>
             </div>
           </div>
