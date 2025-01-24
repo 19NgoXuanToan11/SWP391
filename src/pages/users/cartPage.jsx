@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   ShoppingCartOutlined,
   DeleteOutlined,
@@ -8,6 +8,9 @@ import {
 import { Link } from "react-router-dom";
 
 const CartPage = () => {
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+
   // Example cart items (mock data)
   const cartItems = [
     {
@@ -215,23 +218,27 @@ const CartPage = () => {
                 </div>
               </div>
 
-      {/* Payment Modal */}
-      {showPaymentModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full">
-            <h2 className="text-xl font-semibold mb-4">
-              Select Payment Method
-            </h2>
-            <div className="space-y-4">
-              <Link to="/payment">
-                <button
-                  className="w-full py-3 bg-pink-600 text-white rounded-xl font-medium 
+              {/* Payment Modal */}
+              {showPaymentModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                  <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full">
+                    <h2 className="text-xl font-semibold mb-4">
+                      Select Payment Method
+                    </h2>
+                    <div className="space-y-4">
+                      <Link to="/payment">
+                        <button
+                          className="w-full py-3 bg-pink-600 text-white rounded-xl font-medium 
                                   hover:bg-transparent hover:text-black transition-all duration-300 
                                   hover:shadow-lg transform hover:-translate-y-0.5"
-                >
-                  Proceed to Checkout
-                </button>
-              </Link>
+                        >
+                          Proceed to Checkout
+                        </button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
