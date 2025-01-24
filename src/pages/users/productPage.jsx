@@ -18,7 +18,7 @@ export function ProductsPage() {
     try {
       setLoading(true);
       const response = await fetch(
-        "https://67825c20c51d092c3dcf2e82.mockapi.io/skincare"
+        "https://6793c6495eae7e5c4d8fd8d4.mockapi.io/api/skincare"
       );
       const data = await response.json();
       setProducts(data);
