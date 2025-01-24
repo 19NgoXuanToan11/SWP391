@@ -18,6 +18,7 @@ import BrandsPage from "../pages/admin/brandsPage";
 import VouchersPage from "../pages/admin/vouchersPage";
 import SettingPage from "../pages/admin/settingPage";
 import CartPage from "../pages/users/cartPage";
+import PaymentPage from "../pages/users/paymentPage";
 
 export const router = createBrowserRouter([
   {
@@ -99,6 +100,10 @@ export const router = createBrowserRouter([
       {
         path: "abouts",
         element: <AccountsPage />,
+      },
+      {
+        path: "payment",
+        element: <PaymentPage />,
       },
     ],
   },
