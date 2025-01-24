@@ -9,8 +9,7 @@ export function BlogPage() {
     {
       name: "Ms. Vân Lava",
       title: "CMO Sapa Group",
-      message:
-        "Products help increase sales by reaching the right customers.",
+      message: "Products help increase sales by reaching the right customers.",
       image: person1,
     },
     {

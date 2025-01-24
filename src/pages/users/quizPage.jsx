@@ -9,51 +9,51 @@ const questions = [
       "Da không bóng, khá khô, và có cảm giác căng ở một số khu vực",
       "Toàn bộ khuôn mặt bóng nhờn, dễ bị mụn đầu đen và mụn trứng cá",
       "Da mềm mại và dễ chịu khi chạm vào",
-      "Da khô và có các nếp nhăn rõ ràng" 
+      "Da khô và có các nếp nhăn rõ ràng",
     ],
     skinType: [
       "Da hỗn hợp",
       "Da khô",
       "Da dầu",
       "Da thường",
-      "Da khô và lão hóa"
-    ]
+      "Da khô và lão hóa",
+    ],
   },
   {
     id: 2,
     question: "Vùng trán của bạn trông như thế nào?",
     options: [
       "Da mịn, phẳng, chỉ có vài nếp nhăn nhẹ",
-      "Có vết bong tróc dọc đường chân tóc và lông mày", 
+      "Có vết bong tróc dọc đường chân tóc và lông mày",
       "Bóng nhờn, không mịn, có mụn đầu đen hoặc nốt mụn nhỏ",
       "Mịn màng, láng mượt, không có dấu hiệu bong tróc",
-      "Nhiều nếp nhăn dễ nhận thấy" 
+      "Nhiều nếp nhăn dễ nhận thấy",
     ],
     skinType: [
       "Da thường",
       "Da khô",
       "Da dầu",
       "Da hỗn hợp",
-      "Da khô và lão hóa"
-    ]
+      "Da khô và lão hóa",
+    ],
   },
   {
     id: 3,
     question: "Hãy mô tả phần má và vùng dưới mắt của bạn?",
     options: [
       "Không có vết nhăn dễ thấy, chỉ có vài vùng da khô",
-      "Da khô, kích ứng, cảm giác căng", 
+      "Da khô, kích ứng, cảm giác căng",
       "Lỗ chân lông to, nhiều mụn đầu đen hoặc đốm trắng",
-      "Mịn màng, lỗ chân lông nhỏ", 
-      "Nếp nhăn rõ rệt, da khô" 
+      "Mịn màng, lỗ chân lông nhỏ",
+      "Nếp nhăn rõ rệt, da khô",
     ],
     skinType: [
       "Da thường",
       "Da khô",
       "Da dầu",
       "Da hỗn hợp",
-      "Da khô và lão hóa"
-    ]
+      "Da khô và lão hóa",
+    ],
   },
   {
     id: 4,
@@ -63,33 +63,34 @@ const questions = [
       "Hơi đỏ, không đều về độ ẩm",
       "Thường xuyên gặp các vấn đề này",
       "Đôi khi",
-      "Hầu như không bao giờ" 
+      "Hầu như không bao giờ",
     ],
     skinType: [
       "Da hỗn hợp",
       "Da khô",
       "Da dầu",
       "Da thường",
-      "Da khô và lão hóa"
-    ]
+      "Da khô và lão hóa",
+    ],
   },
   {
     id: 5,
-    question: "Điều gì là quan trọng nhất với bạn khi lựa chọn một sản phẩm chăm sóc da?",
+    question:
+      "Điều gì là quan trọng nhất với bạn khi lựa chọn một sản phẩm chăm sóc da?",
     options: [
       "Giảm bóng dầu nhưng vẫn dưỡng ẩm tốt",
       "Nuôi dưỡng sâu và làm dịu da",
       "Thẩm thấu nhanh, cải thiện da nhanh chóng",
-      "Giữ da mềm mại và mịn màng như hiện tại", 
-      "Ngăn ngừa dấu hiệu lão hóa sớm" 
+      "Giữ da mềm mại và mịn màng như hiện tại",
+      "Ngăn ngừa dấu hiệu lão hóa sớm",
     ],
     skinType: [
       "Da dầu",
       "Da khô",
       "Da hỗn hợp",
       "Da thường",
-      "Da khô và lão hóa"
-    ]
+      "Da khô và lão hóa",
+    ],
   },
   {
     id: 6,
@@ -98,45 +99,40 @@ const questions = [
       "Một vài vết hằn do khô da",
       "Có nếp nhăn quanh mắt hoặc khóe miệng",
       "Hầu như không có nếp nhăn",
-      "Lão hóa chậm, ít nếp nhăn"
+      "Lão hóa chậm, ít nếp nhăn",
     ],
-    skinType: [
-      "Da khô",
-      "Da khô và lão hóa",
-      "Da dầu",
-      "Da hỗn hợp"
-    ]
+    skinType: ["Da khô", "Da khô và lão hóa", "Da dầu", "Da hỗn hợp"],
   },
   {
     id: 7,
     question: "Da mặt bạn đã thay đổi như thế nào trong 5 năm qua?",
     options: [
-      "Bóng dầu hơn ở vùng chữ T", 
+      "Bóng dầu hơn ở vùng chữ T",
       "Dễ bong tróc, cảm giác căng",
       "Nhiều khuyết điểm hơn",
       "Vẫn dễ chăm sóc, tình trạng tốt",
-      "Mỏng hơn, kém đàn hồi, thêm nếp nhăn"
+      "Mỏng hơn, kém đàn hồi, thêm nếp nhăn",
     ],
     skinType: [
       "Da hỗn hợp",
       "Da khô",
       "Da dầu",
       "Da thường",
-      "Da khô và lão hóa"
-    ]
+      "Da khô và lão hóa",
+    ],
   },
   {
     id: 8,
     question: "Giới tính của bạn là?",
     options: ["Nam", "Nữ"],
-    skinType: []
+    skinType: [],
   },
   {
     id: 9,
     question: "Độ tuổi của bạn là?",
     options: ["Dưới 25", "Từ 25 đến 40", "Từ 40 đến 50", "Trên 50"],
-    skinType: []
-  }
+    skinType: [],
+  },
 ];
 
 export function QuizPage() {
@@ -150,12 +146,13 @@ export function QuizPage() {
   };
 
   const handleNextQuestion = () => {
-    const selectedIndex = questions[currentQuestion].options.indexOf(selectedAnswer);
+    const selectedIndex =
+      questions[currentQuestion].options.indexOf(selectedAnswer);
     const selectedSkinType = questions[currentQuestion].skinType[selectedIndex];
 
     setSkinTypeCount((prev) => ({
       ...prev,
-      [selectedSkinType]: (prev[selectedSkinType] || 0) + 1
+      [selectedSkinType]: (prev[selectedSkinType] || 0) + 1,
     }));
 
     if (currentQuestion + 1 < questions.length) {
@@ -184,7 +181,9 @@ export function QuizPage() {
       <div className="bg-white rounded-2xl p-8 w-[80%] max-w-4xl shadow-xl">
         {showResults ? (
           <>
-            <h2 className="text-3xl font-bold text-center mb-6">Kết quả kiểm tra da</h2>
+            <h2 className="text-3xl font-bold text-center mb-6">
+              Kết quả kiểm tra da
+            </h2>
             <p className="text-xl text-center mb-6">
               Loại da của bạn là: <strong>{mostCommonSkinType}</strong>
             </p>
@@ -207,7 +206,9 @@ export function QuizPage() {
                 <div
                   className="h-full bg-gradient-to-r from-purple-600 to-pink-600 rounded-full transition-all duration-300"
                   style={{
-                    width: `${((currentQuestion + 1) / questions.length) * 100}%`,
+                    width: `${
+                      ((currentQuestion + 1) / questions.length) * 100
+                    }%`,
                   }}
                 />
               </div>
@@ -238,7 +239,9 @@ export function QuizPage() {
               disabled={!selectedAnswer}
               className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-semibold disabled:opacity-50 enabled:hover:opacity-90 transition-all"
             >
-              {currentQuestion === questions.length - 1 ? "Hoàn thành" : "Câu tiếp theo"}
+              {currentQuestion === questions.length - 1
+                ? "Hoàn thành"
+                : "Câu tiếp theo"}
             </button>
           </>
         )}

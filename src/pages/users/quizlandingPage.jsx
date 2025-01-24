@@ -18,7 +18,7 @@ export function QuizLandingPage() {
       <div className="relative min-h-screen flex flex-col items-center justify-center px-4 text-center">
         {/* Decorative Circle */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-pink-500/20 rounded-full blur-3xl" />
-        
+
         <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-white">
             Facial Check
@@ -48,7 +48,7 @@ export function QuizLandingPage() {
                 top: `${Math.random() * 100}%`,
                 left: `${Math.random() * 100}%`,
                 animationDelay: `${i * 0.5}s`,
-                boxShadow: '0 0 20px rgba(236,72,153,0.5)',
+                boxShadow: "0 0 20px rgba(236,72,153,0.5)",
               }}
             />
           ))}

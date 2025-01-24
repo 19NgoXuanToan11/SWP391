@@ -79,10 +79,12 @@ export function ProductsPage() {
 
     // Filter by volume
     if (filters.volumes && filters.volumes.length > 0) {
-      filtered = filtered.filter(product => {
+      filtered = filtered.filter((product) => {
         // Kiểm tra nếu volume của sản phẩm khớp với bất kỳ volume nào được chọn
-        return filters.volumes.some(volume => 
-          product.volume && product.volume.toLowerCase() === volume.toLowerCase()
+        return filters.volumes.some(
+          (volume) =>
+            product.volume &&
+            product.volume.toLowerCase() === volume.toLowerCase()
         );
       });
     }

@@ -55,9 +55,9 @@ export function AboutPage() {
               da. Hãy để làn da bạn tỏa sáng với những sản phẩm chất lượng nhất.
             </p>
             <Link to="/contact">
-                <button className="px-6 py-2 bg-pink-600 text-white font-semibold rounded-lg hover:bg-transparent hover:text-black hover:border-2 hover:border-pink-300 transition duration-300">
-                  Contact Us
-                </button>
+              <button className="px-6 py-2 bg-pink-600 text-white font-semibold rounded-lg hover:bg-transparent hover:text-black hover:border-2 hover:border-pink-300 transition duration-300">
+                Contact Us
+              </button>
             </Link>
           </div>
         </motion.section>

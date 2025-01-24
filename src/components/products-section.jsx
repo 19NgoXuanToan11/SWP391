@@ -151,15 +151,15 @@ export function ProductsSection() {
 
         {/* CTA Section */}
         <Link to="/product">
-            <div className="mt-20 text-center">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-medium shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/40 transition-shadow duration-300"
-              >
-                Explore All Collections
-              </motion.button>
-            </div>
+          <div className="mt-20 text-center">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-medium shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/40 transition-shadow duration-300"
+            >
+              Explore All Collections
+            </motion.button>
+          </div>
         </Link>
       </div>
     </section>
