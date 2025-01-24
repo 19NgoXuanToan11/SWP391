@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import SidebarAdmin from "../../components/sidebaradmin";
 import {
   UserOutlined,
@@ -10,6 +10,10 @@ import {
   CalendarOutlined,
   ArrowUpOutlined,
   ArrowDownOutlined,
+  QuestionCircleOutlined,
+  BulbOutlined,
+  LogoutOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import {
   LineChart,
@@ -51,6 +55,8 @@ const productCategories = [
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
 const Dashboard = () => {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
   return (
     <div className="flex min-h-screen bg-[#f8f9ff]">
       <SidebarAdmin />
@@ -80,6 +86,76 @@ const Dashboard = () => {
               <button className="p-3 hover:bg-gray-100 rounded-xl transition-colors">
                 <BellOutlined className="text-xl text-gray-600" />
               </button>
+            </div>
+
+            {/* Profile Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="flex items-center space-x-3 hover:bg-gray-100 rounded-xl transition-colors p-2"
+              >
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
+                  A
+                </div>
+                <div className="hidden md:block text-left">
+                  <p className="text-sm font-medium text-gray-700">
+                    Admin User
+                  </p>
+                  <p className="text-xs text-gray-500">Super Admin</p>
+                </div>
+              </button>
+
+              {isProfileOpen && (
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg py-2 border border-gray-100 z-50">
+                  {/* Profile Header */}
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-xl font-medium">
+                        A
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-gray-800">
+                          Admin User
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          admin@example.com
+                        </p>
+                        <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full mt-1 inline-block">
+                          Super Admin
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Menu Items */}
+                  <div className="py-2 px-4 space-y-1">
+                    <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center space-x-3">
+                      <UserOutlined />
+                      <span>Your Profile</span>
+                    </button>
+                    <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center space-x-3">
+                      <SettingOutlined />
+                      <span>Settings & Privacy</span>
+                    </button>
+                    <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center space-x-3">
+                      <QuestionCircleOutlined />
+                      <span>Help & Support</span>
+                    </button>
+                    <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center space-x-3">
+                      <BulbOutlined />
+                      <span>Display & Accessibility</span>
+                    </button>
+                  </div>
+
+                  {/* Logout Button */}
+                  <div className="border-t border-gray-100 mt-2 pt-2 px-4">
+                    <button className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center space-x-3">
+                      <LogoutOutlined />
+                      <span>Log Out</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </header>
