@@ -5,6 +5,7 @@ import {
   HeartOutlined,
   ArrowLeftOutlined,
 } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 const CartPage = () => {
   // Example cart items (mock data)
@@ -52,10 +53,13 @@ const CartPage = () => {
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
-          <button className="flex items-center text-gray-600 hover:text-gray-800 transition-colors">
+          <Link
+            to="/product"
+            className="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
+          >
             <ArrowLeftOutlined className="mr-2" />
             Continue Shopping
-          </button>
+          </Link>
           <h1 className="text-2xl font-bold text-gray-800 flex items-center">
             <ShoppingCartOutlined className="mr-2" />
             Your Shopping Cart
@@ -197,13 +201,15 @@ const CartPage = () => {
                 </div>
               </div>
 
-              <button className="w-full py-3 bg-pink-500 text-white rounded-xl font-medium hover:bg-pink-600 transition-colors mb-4">
-                Proceed to Checkout
-              </button>
-
-              <p className="text-center text-sm text-gray-500">
-                Free shipping on all orders over $50
-              </p>
+              <Link to="/payment">
+                <button
+                  className="w-full py-3 bg-pink-600 text-white rounded-xl font-medium 
+                                  hover:bg-transparent hover:text-black transition-all duration-300 
+                                  hover:shadow-lg transform hover:-translate-y-0.5"
+                >
+                  Proceed to Checkout
+                </button>
+              </Link>
             </div>
           </div>
         </div>
