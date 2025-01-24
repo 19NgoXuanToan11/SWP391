@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   ShoppingCartOutlined,
   DeleteOutlined,
@@ -8,6 +8,9 @@ import {
 import { Link } from "react-router-dom";
 
 const CartPage = () => {
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+
   // Example cart items (mock data)
   const cartItems = [
     {
@@ -47,6 +50,22 @@ const CartPage = () => {
     (total, item) => total + item.price * item.quantity,
     0
   );
+
+  const handleProceedToCheckout = () => {
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentMethodSelection = (method) => {
+    setSelectedPaymentMethod(method);
+    setShowPaymentModal(false);
+    if (method === "Cash on Delivery") {
+      alert("You selected Cash on Delivery. Payment Successful!");
+    } else {
+      alert(`You selected ${method} as your payment method.`);
+    }
+  };
+
+  
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -183,24 +202,11 @@ const CartPage = () => {
                 </div>
               </div>
 
-              {/* Promo Code */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Promo Code
-                </label>
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    placeholder="Enter code"
-                    className="flex-1 px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500"
-                  />
-                  <button className="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors">
-                    Apply
-                  </button>
-                </div>
-              </div>
-
-              <button className="w-full py-3 bg-pink-500 text-white rounded-xl font-medium hover:bg-pink-600 transition-colors mb-4">
+              {/* Proceed to Checkout */}
+              <button
+                onClick={handleProceedToCheckout}
+                className="w-full py-3 bg-pink-500 text-white rounded-xl font-medium hover:bg-pink-600 transition-colors mb-4"
+              >
                 Proceed to Checkout
               </button>
 
@@ -211,6 +217,31 @@ const CartPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full">
+            <h2 className="text-xl font-semibold mb-4">Select Payment Method</h2>
+            <div className="space-y-4">
+              <Link to="/payment">
+                <button
+                  onClick={() => handlePaymentMethodSelection("QR Code")}
+                  className="w-full py-3 bg-blue-500 text-white rounded-xl font-medium hover:bg-blue-600 transition-colors"
+                >
+                  Pay with QR Code
+                </button>
+              </Link>
+              <button
+                onClick={() => handlePaymentMethodSelection("Cash on Delivery")}
+                className="w-full py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors"
+              >
+                Pay with Cash on Delivery
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
