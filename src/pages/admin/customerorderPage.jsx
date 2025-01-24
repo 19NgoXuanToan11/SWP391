@@ -33,7 +33,9 @@ const CustomerOrderPage = () => {
                 </p>
                 <p className="text-sm text-gray-500">{order.orderDate}</p>
               </div>
-              <p className="text-xl font-semibold text-gray-800">{order.total}</p>
+              <p className="text-xl font-semibold text-gray-800">
+                {order.total}
+              </p>
             </li>
           ))}
         </ul>
