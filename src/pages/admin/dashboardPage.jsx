@@ -11,6 +11,44 @@ import {
   ArrowUpOutlined,
   ArrowDownOutlined,
 } from "@ant-design/icons";
+import {
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+
+// Mock data for charts
+const monthlyRevenue = [
+  { name: "Jan", revenue: 65000, orders: 320, profit: 12000 },
+  { name: "Feb", revenue: 59000, orders: 300, profit: 11000 },
+  { name: "Mar", revenue: 80000, orders: 450, profit: 15000 },
+  { name: "Apr", revenue: 81000, orders: 400, profit: 16000 },
+  { name: "May", revenue: 90000, orders: 500, profit: 18000 },
+  { name: "Jun", revenue: 85000, orders: 480, profit: 17000 },
+  { name: "Jul", revenue: 95000, orders: 550, profit: 19000 },
+];
+
+const productCategories = [
+  { name: "Skincare", value: 4000 },
+  { name: "Makeup", value: 3000 },
+  { name: "Haircare", value: 2000 },
+  { name: "Fragrance", value: 1500 },
+  { name: "Tools", value: 1000 },
+];
+
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
 const Dashboard = () => {
   return (
@@ -163,37 +201,160 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Charts Section */}
+        {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Revenue Overview Chart */}
           <div className="bg-white p-6 rounded-2xl shadow-lg">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-gray-800">
-                Sales Overview
+                Revenue Overview
               </h2>
-              <select className="px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
+              <select
+                className="px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 
+                               focus:outline-none focus:ring-2 focus:ring-gray-200"
+              >
                 <option>Last 7 days</option>
                 <option>Last 30 days</option>
                 <option>Last 90 days</option>
               </select>
             </div>
-            <div className="h-80 bg-gray-50 rounded-xl flex items-center justify-center">
-              <span className="text-gray-400">Sales Chart Coming Soon</span>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={monthlyRevenue}>
+                  <defs>
+                    <linearGradient
+                      id="colorRevenue"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Area
+                    type="monotone"
+                    dataKey="revenue"
+                    stroke="#8884d8"
+                    fillOpacity={1}
+                    fill="url(#colorRevenue)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
+          {/* Orders Analytics Chart */}
           <div className="bg-white p-6 rounded-2xl shadow-lg">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-gray-800">
-                Revenue Analytics
+                Orders Analytics
               </h2>
-              <select className="px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500">
-                <option>This Month</option>
-                <option>Last Month</option>
-                <option>Last 3 Months</option>
+              <select
+                className="px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 
+                               focus:outline-none focus:ring-2 focus:ring-gray-200"
+              >
+                <option>Last 7 days</option>
+                <option>Last 30 days</option>
+                <option>Last 90 days</option>
               </select>
             </div>
-            <div className="h-80 bg-gray-50 rounded-xl flex items-center justify-center">
-              <span className="text-gray-400">Revenue Chart Coming Soon</span>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={monthlyRevenue}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="orders"
+                    stroke="#82ca9d"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                    activeDot={{ r: 8 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="profit"
+                    stroke="#ffc658"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                    activeDot={{ r: 8 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Product Categories Chart */}
+          <div className="bg-white p-6 rounded-2xl shadow-lg">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold text-gray-800">
+                Product Categories
+              </h2>
+            </div>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={productCategories}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) =>
+                      `${name} ${(percent * 100).toFixed(0)}%`
+                    }
+                    outerRadius={100}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {productCategories.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Sales by Category Chart */}
+          <div className="bg-white p-6 rounded-2xl shadow-lg">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold text-gray-800">
+                Sales by Category
+              </h2>
+            </div>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={productCategories}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="value" fill="#8884d8">
+                    {productCategories.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>
