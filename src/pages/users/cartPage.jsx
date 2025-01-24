@@ -243,6 +243,33 @@ const CartPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full">
+            <h2 className="text-xl font-semibold mb-4">
+              Select Payment Method
+            </h2>
+            <div className="space-y-4">
+              <Link to="/payment">
+                <button
+                  onClick={() => handlePaymentMethodSelection("QR Code")}
+                  className="w-full py-3 bg-blue-500 text-white rounded-xl font-medium hover:bg-blue-600 transition-colors"
+                >
+                  Pay with QR Code
+                </button>
+              </Link>
+              <button
+                onClick={() => handlePaymentMethodSelection("Cash on Delivery")}
+                className="w-full py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors"
+              >
+                Pay with Cash on Delivery
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
