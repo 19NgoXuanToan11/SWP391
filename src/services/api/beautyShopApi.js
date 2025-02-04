@@ -29,7 +29,11 @@ const beautyShopApi = createApi({
       query: (userData) => ({
         url: endpoints.REGISTER,
         method: "POST",
-        data: userData,
+        data: {
+          email: userData.email,
+          password: userData.password,
+          // API reqres.in chỉ chấp nhận email và password
+        },
       }),
     }),
 

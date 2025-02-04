@@ -1,7 +1,7 @@
 const endpoints = {
   // Auth
   LOGIN: "/login",
-  REGISTER: "/auth/register",
+  REGISTER: "/register",
   LOGOUT: "/auth/logout",
   REFRESH_TOKEN: "/auth/refresh-token",
 
