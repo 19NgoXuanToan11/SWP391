@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaGoogle } from "react-icons/fa";
 import { HiEye, HiEyeOff } from "react-icons/hi";
+import { message } from "antd";
 import background from "../../assets/pictures/background_login.jpg";
+import { useRegisterMutation } from "../../services/api/beautyShopApi";
 
 export function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,44 +20,66 @@ export function RegisterPage() {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  // Sử dụng mutation từ RTK Query
+  const [register, { isLoading, isSuccess, error }] = useRegisterMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      message.success("Đăng ký thành công!");
+      navigate("/login");
+    }
+    if (error) {
+      message.error(
+        error?.data?.message || "Đăng ký thất bại. Vui lòng thử lại!"
+      );
+    }
+  }, [isSuccess, error, navigate]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
   };
 
   const validateForm = () => {
     const errors = {};
     // First Name and Last Name Validation
     if (!formData.firstName) {
-      errors.firstName = "First name is required";
+      errors.firstName = "Vui lòng nhập họ";
     }
     if (!formData.lastName) {
-      errors.lastName = "Last name is required";
+      errors.lastName = "Vui lòng nhập tên";
     }
 
     // Email Validation
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!formData.email) {
-      errors.email = "Email is required";
+      errors.email = "Vui lòng nhập email";
     } else if (!emailPattern.test(formData.email)) {
-      errors.email = "Please enter a valid email address";
+      errors.email = "Email không hợp lệ";
     }
 
     // Password Validation
     if (!formData.password) {
-      errors.password = "Password is required";
+      errors.password = "Vui lòng nhập mật khẩu";
     } else if (formData.password.length < 6) {
-      errors.password = "Password must be at least 6 characters long";
+      errors.password = "Mật khẩu phải có ít nhất 6 ký tự";
     }
 
     // Confirm Password Validation
     if (!formData.confirmPassword) {
-      errors.confirmPassword = "Please confirm your password";
+      errors.confirmPassword = "Vui lòng xác nhận mật khẩu";
     } else if (formData.confirmPassword !== formData.password) {
-      errors.confirmPassword = "Passwords do not match";
+      errors.confirmPassword = "Mật khẩu không khớp";
     }
 
     return errors;
@@ -67,12 +91,42 @@ export function RegisterPage() {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      setLoading(true);
-      // Simulate the registration process
-      setTimeout(() => {
-        setLoading(false);
-        navigate("/login"); // Redirect to login page after successful registration
-      }, 1500);
+      try {
+        // Chỉ gửi email và password theo yêu cầu của API
+        const registerData = {
+          email: formData.email,
+          password: formData.password,
+        };
+
+        const response = await register(registerData).unwrap();
+
+        // Lưu thông tin user vào localStorage nếu cần
+        localStorage.setItem(
+          "userInfo",
+          JSON.stringify({
+            email: formData.email,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+          })
+        );
+
+        // Hiển thị thông báo thành công
+        message.success({
+          content: "Đăng ký thành công! Chuyển hướng đến trang đăng nhập...",
+          duration: 2, // Hiển thị trong 2 giây
+          onClose: () => {
+            // Chuyển hướng sau khi thông báo đóng
+            navigate("/login");
+          },
+        });
+      } catch (err) {
+        // Xử lý lỗi cụ thể từ API
+        if (err?.data?.error) {
+          message.error(err.data.error);
+        } else {
+          message.error("Đăng ký thất bại. Vui lòng thử lại!");
+        }
+      }
     }
   };
 
@@ -112,40 +166,6 @@ export function RegisterPage() {
           <div className="flex-1">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Full Name Fields */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
-                    placeholder="John"
-                  />
-                  {errors.firstName && (
-                    <p className="text-red-500 text-sm">{errors.firstName}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
-                    placeholder="Doe"
-                  />
-                  {errors.lastName && (
-                    <p className="text-red-500 text-sm">{errors.lastName}</p>
-                  )}
-                </div>
-              </div>
 
               {/* Email Field */}
               <div className="space-y-2">
@@ -219,14 +239,15 @@ export function RegisterPage() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full py-2.5 px-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl transition-all transform hover:translate-y-[-1px] hover:shadow-lg hover:from-pink-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500/40 active:scale-[0.99] mt-4"
+                disabled={isLoading}
+                className="w-full py-2.5 px-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl transition-all transform hover:translate-y-[-1px] hover:shadow-lg hover:from-pink-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500/40 active:scale-[0.99] mt-4 disabled:opacity-70"
               >
-                {loading ? (
+                {isLoading ? (
                   <div className="flex items-center justify-center">
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   </div>
                 ) : (
-                  "Create Account"
+                  "Tạo tài khoản"
                 )}
               </button>
             </form>
