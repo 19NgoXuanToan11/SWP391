@@ -22,6 +22,7 @@ import PaymentPage from "../pages/users/paymentPage";
 import OrderhistoryPage from "../pages/users/orderhistoryPage";
 import CustomerOrderPage from "../pages/admin/customerorderPage";
 import ProfilePage from "../pages/users/profilePage";
+import WishlistPage from "../pages/users/wishlistPage";
 
 export const router = createBrowserRouter([
   {
@@ -120,6 +121,11 @@ export const router = createBrowserRouter([
         path: "profile",
         element: <ProfilePage />,
       },
+      {
+        path: "wishlist",
+        element: <WishlistPage />,
+      },
     ],
   },
 ]);
+

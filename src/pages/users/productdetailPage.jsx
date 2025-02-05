@@ -18,6 +18,7 @@ import {
   MinusOutlined,
 } from "@ant-design/icons";
 import { Tabs, Rate, Progress, Avatar, Input } from "antd";
+import { Link } from "react-router-dom";
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
@@ -272,7 +273,7 @@ export default function ProductDetailPage() {
                              rounded-xl font-semibold text-lg hover:bg-pink-700 transition duration-300 shadow-md"
                   >
                     <ShoppingCartOutlined className="text-xl" />
-                    <span>Add to Cart</span>
+                    <Link to="/cart">Add to Cart</Link>
                   </motion.button>
 
                   <p className="text-sm text-gray-500 text-center">
