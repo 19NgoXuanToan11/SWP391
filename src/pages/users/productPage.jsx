@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../../components/sidebar";
+import { Pagination } from "antd";
 
 export function ProductsPage() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 9;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -107,6 +110,19 @@ export function ProductsPage() {
     }).format(price);
   };
 
+  // Tính toán sản phẩm cho trang hiện tại
+  const getCurrentProducts = () => {
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return filteredProducts.slice(startIndex, endIndex);
+  };
+
+  // Xử lý thay đổi trang
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo(0, 0); // Cuộn lên đầu trang khi chuyển trang
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -132,66 +148,80 @@ export function ProductsPage() {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => (
-                  <motion.div
-                    key={product.id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-full"
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    <div className="relative">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-48 object-cover"
-                        onClick={() => handleProductClick(product.id)}
-                      />
-                      {product.discount && (
-                        <span className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-lg">
-                          -{product.discount}%
-                        </span>
-                      )}
-                    </div>
-                    <div className="p-4 flex flex-col flex-grow">
-                      <h2
-                        className="text-lg font-semibold text-gray-800 mb-2 cursor-pointer"
-                        onClick={() => handleProductClick(product.id)}
-                      >
-                        {product.name}
-                      </h2>
-                      <p className="text-sm text-gray-600 mb-2">
-                        {product.description}
-                      </p>
-                      <div className="text-sm text-gray-600 mb-2">
-                        <p>Volume: {product.volume}</p>
-                        <p>Skin Type: {product.skinType}</p>
-                        {product.keyIngredients && (
-                          <p>Key Ingredients: {product.keyIngredients}</p>
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {getCurrentProducts().map((product) => (
+                    <motion.div
+                      key={product.id}
+                      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-full"
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      <div className="relative">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-48 object-cover"
+                          onClick={() => handleProductClick(product.id)}
+                        />
+                        {product.discount && (
+                          <span className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-lg">
+                            -{product.discount}%
+                          </span>
                         )}
                       </div>
-                      <div className="flex-grow"></div>
-                      <div className="mt-4 flex items-center justify-between">
-                        <div className="flex flex-col">
-                          <span className="text-pink-500 font-bold">
-                            {formatPrice(product.price)}
-                          </span>
-                          {product.originalPrice && (
-                            <span className="text-gray-400 line-through text-sm">
-                              {formatPrice(product.originalPrice)}
-                            </span>
+                      <div className="p-4 flex flex-col flex-grow">
+                        <h2
+                          className="text-lg font-semibold text-gray-800 mb-2 cursor-pointer"
+                          onClick={() => handleProductClick(product.id)}
+                        >
+                          {product.name}
+                        </h2>
+                        <p className="text-sm text-gray-600 mb-2">
+                          {product.description}
+                        </p>
+                        <div className="text-sm text-gray-600 mb-2">
+                          <p>Volume: {product.volume}</p>
+                          <p>Skin Type: {product.skinType}</p>
+                          {product.keyIngredients && (
+                            <p>Key Ingredients: {product.keyIngredients}</p>
                           )}
                         </div>
-                        <button
-                          className="bg-pink-500 text-white text-sm font-semibold py-2 px-4 rounded-lg hover:bg-pink-600 transition duration-300 min-w-[100px]"
-                          onClick={() => handleBuyNowClick(product.id)}
-                        >
-                          Buy Now
-                        </button>
+                        <div className="flex-grow"></div>
+                        <div className="mt-4 flex items-center justify-between">
+                          <div className="flex flex-col">
+                            <span className="text-pink-500 font-bold">
+                              {formatPrice(product.price)}
+                            </span>
+                            {product.originalPrice && (
+                              <span className="text-gray-400 line-through text-sm">
+                                {formatPrice(product.originalPrice)}
+                              </span>
+                            )}
+                          </div>
+                          <button
+                            className="bg-pink-500 text-white text-sm font-semibold py-2 px-4 rounded-lg hover:bg-pink-600 transition duration-300 min-w-[100px]"
+                            onClick={() => handleBuyNowClick(product.id)}
+                          >
+                            Buy Now
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                <div className="mt-8 flex justify-center">
+                  <Pagination
+                    current={currentPage}
+                    total={filteredProducts.length}
+                    pageSize={pageSize}
+                    onChange={handlePageChange}
+                    showSizeChanger={false}
+                    className="text-pink-500"
+                  />
+                </div>
+              </>
             )}
           </div>
         </div>
