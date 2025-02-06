@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ant-design/icons": "^4.7.0",
+    "@ant-design/icons": "^5.6.0",
     "@heroicons/react": "^2.0.18",
     "@reduxjs/toolkit": "^2.5.0",
     "antd": "^5.23.2",

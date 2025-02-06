@@ -9,7 +9,7 @@ function App() {
   const { pathname } = useLocation();
 
   // Paths that shouldn't include the header and footer
-  const noHeaderFooterPaths = ["/login", "/register", "/payment", "/dashboard", "/account", "/order", "/category", "/brand", "/voucher", "/setting", "/abouts"];
+  const noHeaderFooterPaths = ["/login", "/register", "/dashboard", "/account", "/order", "/category", "/brand", "/voucher", "/setting", "/abouts"];
 
   const shouldShowHeaderFooter = !noHeaderFooterPaths.includes(pathname);
 

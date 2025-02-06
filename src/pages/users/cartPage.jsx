@@ -1,267 +1,313 @@
 import React, { useState } from "react";
 import {
+  Card,
+  Typography,
+  Button,
+  Space,
+  Row,
+  Col,
+  Image,
+  InputNumber,
+  Divider,
+  Empty,
+  Tag,
+  message,
+  Tooltip,
+} from "antd";
+import {
   ShoppingCartOutlined,
   DeleteOutlined,
   HeartOutlined,
   ArrowLeftOutlined,
+  GiftOutlined,
+  SafetyCertificateOutlined,
+  ShoppingOutlined,
+  CarOutlined,
 } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const CartPage = () => {
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+const { Title, Text, Paragraph } = Typography;
 
-  // Example cart items (mock data)
-  const cartItems = [
+function CartPage() {
+  const navigate = useNavigate();
+  const [cartItems, setCartItems] = useState([
     {
       id: 1,
-      name: "Natural Glow Lipstick",
-      description: "Long-lasting, moisturizing formula",
-      price: 50,
-      quantity: 2,
-      image: "https://via.placeholder.com/100",
-      color: "Rose Pink",
+      name: "Perfect Glow Foundation",
       brand: "Luxe Beauty",
+      price: 890000,
+      originalPrice: 1200000,
+      quantity: 2,
+      image: "https://source.unsplash.com/random/400x400/?foundation",
+      color: "Natural Beige",
+      discount: 25,
+      stock: 10,
     },
     {
       id: 2,
-      name: "Hydrating Face Cream",
-      description: "24-hour moisture protection",
-      price: 30,
-      quantity: 1,
-      image: "https://via.placeholder.com/100",
-      size: "50ml",
+      name: "Hydrating Serum",
       brand: "Pure Skin",
+      price: 750000,
+      originalPrice: 850000,
+      quantity: 1,
+      image: "https://source.unsplash.com/random/400x400/?serum",
+      size: "30ml",
+      discount: 12,
+      stock: 5,
     },
     {
       id: 3,
-      name: "Volume Mascara",
-      description: "Waterproof, lengthening formula",
-      price: 20,
-      quantity: 3,
-      image: "https://via.placeholder.com/100",
-      color: "Black",
-      brand: "Eye Magic",
+      name: "Matte Lipstick Collection",
+      brand: "Color Pop",
+      price: 450000,
+      originalPrice: 500000,
+      quantity: 2,
+      image: "https://source.unsplash.com/random/400x400/?lipstick",
+      color: "Ruby Red",
+      discount: 10,
+      stock: 8,
     },
-  ];
+  ]);
 
-  // Calculate total price
-  const totalPrice = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
-
-  const handleProceedToCheckout = () => {
-    setShowPaymentModal(true);
+  const handleQuantityChange = (id, value) => {
+    setCartItems(
+      cartItems.map((item) =>
+        item.id === id ? { ...item, quantity: value } : item
+      )
+    );
   };
 
-  const handlePaymentMethodSelection = (method) => {
-    setSelectedPaymentMethod(method);
-    setShowPaymentModal(false);
-    if (method === "Cash on Delivery") {
-      alert("You selected Cash on Delivery. Payment Successful!");
-    } else {
-      alert(`You selected ${method} as your payment method.`);
-    }
+  const handleRemoveItem = (id) => {
+    setCartItems(cartItems.filter((item) => item.id !== id));
+    message.success("Item removed from cart");
+  };
+
+  const handleMoveToWishlist = (id) => {
+    message.success("Item added to wishlist");
+  };
+
+  const calculateTotal = () => {
+    return cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(price / 23000); // Converting VND to USD for example
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-b py-12 px-4">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
-          <Link to="/product">
-            <button className="flex items-center text-gray-600 hover:text-gray-800 transition-colors">
-              <ArrowLeftOutlined className="mr-2" />
+          <Link to="/products">
+            <Button
+              type="link"
+              icon={<ArrowLeftOutlined />}
+              className="text-gray-600 hover:text-pink-500 flex items-center"
+            >
               Continue Shopping
-            </button>
+            </Button>
           </Link>
-          <h1 className="text-2xl font-bold text-gray-800 flex items-center">
-            <ShoppingCartOutlined className="mr-2" />
+          <Title level={2} className="!mb-0 flex items-center gap-3">
+            <ShoppingCartOutlined className="text-pink-500" />
             Your Shopping Cart
-            <span className="ml-2 text-sm text-gray-500">
-              ({cartItems.reduce((total, item) => total + item.quantity, 0)}{" "}
-              items)
-            </span>
-          </h1>
+            <Tag color="pink" className="ml-2">
+              {cartItems.length} items
+            </Tag>
+          </Title>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Cart Items */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-              {cartItems.length === 0 ? (
-                <div className="p-8 text-center">
-                  <ShoppingCartOutlined className="text-4xl text-gray-400 mb-4" />
-                  <p className="text-gray-500 mb-4">Your cart is empty</p>
-                  <button className="px-6 py-2 bg-pink-500 text-white rounded-xl hover:bg-pink-600 transition-colors">
-                    Start Shopping
-                  </button>
-                </div>
-              ) : (
-                <ul className="divide-y divide-gray-100">
-                  {cartItems.map((item) => (
-                    <li
-                      key={item.id}
-                      className="p-6 hover:bg-gray-50 transition-colors"
+        {cartItems.length === 0 ? (
+          <Card className="text-center py-12 rounded-3xl shadow-md">
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description={
+                <Space direction="vertical" size="large">
+                  <Text className="text-lg">Your cart is empty</Text>
+                  <Link to="/products">
+                    <Button
+                      type="primary"
+                      size="large"
+                      icon={<ShoppingOutlined />}
+                      className="bg-gradient-to-r from-pink-500 to-purple-500"
                     >
-                      <div className="flex items-center space-x-6">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-24 h-24 object-cover rounded-xl"
-                        />
-                        <div className="flex-1">
-                          <div className="flex justify-between">
-                            <div>
-                              <h3 className="text-lg font-medium text-gray-800">
-                                {item.name}
-                              </h3>
-                              <p className="text-sm text-gray-500">
-                                {item.description}
-                              </p>
-                              <p className="text-sm text-gray-500 mt-1">
-                                Brand: {item.brand}
-                              </p>
-                              {item.color && (
-                                <p className="text-sm text-gray-500">
+                      Explore Products
+                    </Button>
+                  </Link>
+                </Space>
+              }
+            />
+          </Card>
+        ) : (
+          <Row gutter={24}>
+            <Col xs={24} lg={16}>
+              <Card className="rounded-3xl shadow-md mb-6">
+                {cartItems.map((item) => (
+                  <div key={item.id}>
+                    <div className="flex gap-6 py-6">
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        width={140}
+                        height={140}
+                        className="rounded-2xl object-cover"
+                        preview={false}
+                      />
+                      <div className="flex-grow">
+                        <div className="flex justify-between">
+                          <div>
+                            <Title level={4} className="!mb-1">
+                              {item.name}
+                            </Title>
+                            <Text type="secondary" className="text-sm">
+                              Brand: {item.brand}
+                            </Text>
+                            {item.color && (
+                              <div className="mt-1">
+                                <Text type="secondary" className="text-sm">
                                   Color: {item.color}
-                                </p>
-                              )}
-                              {item.size && (
-                                <p className="text-sm text-gray-500">
+                                </Text>
+                              </div>
+                            )}
+                            {item.size && (
+                              <div className="mt-1">
+                                <Text type="secondary" className="text-sm">
                                   Size: {item.size}
-                                </p>
-                              )}
-                            </div>
-                            <div className="text-right">
-                              <p className="text-lg font-semibold text-gray-800">
-                                ${(item.price * item.quantity).toFixed(2)}
-                              </p>
-                              <p className="text-sm text-gray-500">
-                                ${item.price.toFixed(2)} each
-                              </p>
-                            </div>
+                                </Text>
+                              </div>
+                            )}
+                            {item.discount > 0 && (
+                              <Tag color="red" className="mt-2">
+                                {item.discount}% OFF
+                              </Tag>
+                            )}
                           </div>
-                          <div className="flex justify-between items-center mt-4">
-                            <div className="flex items-center space-x-2">
-                              <button className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-colors">
-                                -
-                              </button>
-                              <span className="w-12 text-center">
-                                {item.quantity}
-                              </span>
-                              <button className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-colors">
-                                +
-                              </button>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <button className="p-2 text-gray-400 hover:text-pink-500 transition-colors">
-                                <HeartOutlined />
-                              </button>
-                              <button className="p-2 text-gray-400 hover:text-red-500 transition-colors">
-                                <DeleteOutlined />
-                              </button>
-                            </div>
+                          <div className="text-right">
+                            <Title level={4} className="!mb-1 text-pink-500">
+                              {formatPrice(item.price)}
+                            </Title>
+                            {item.originalPrice > item.price && (
+                              <Text delete type="secondary" className="text-sm">
+                                {formatPrice(item.originalPrice)}
+                              </Text>
+                            )}
                           </div>
                         </div>
+                        <div className="flex justify-between items-end mt-4">
+                          <Space size="large">
+                            <div>
+                              <Text className="text-sm mb-2 block">
+                                Quantity:
+                              </Text>
+                              <InputNumber
+                                min={1}
+                                max={item.stock}
+                                value={item.quantity}
+                                onChange={(value) =>
+                                  handleQuantityChange(item.id, value)
+                                }
+                                className="w-32"
+                              />
+                            </div>
+                            <Text type="secondary" className="text-sm">
+                              {item.stock} items available
+                            </Text>
+                          </Space>
+                          <Space>
+                            <Tooltip title="Add to Wishlist">
+                              <Button
+                                icon={<HeartOutlined />}
+                                onClick={() => handleMoveToWishlist(item.id)}
+                                className="border-pink-200 text-pink-500 hover:text-pink-600 hover:border-pink-300"
+                              />
+                            </Tooltip>
+                            <Tooltip title="Remove Item">
+                              <Button
+                                icon={<DeleteOutlined />}
+                                onClick={() => handleRemoveItem(item.id)}
+                                className="border-gray-200 text-gray-500 hover:text-red-500 hover:border-red-300"
+                              />
+                            </Tooltip>
+                          </Space>
+                        </div>
                       </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
+                    </div>
+                    <Divider className="my-0" />
+                  </div>
+                ))}
+              </Card>
+            </Col>
 
-          {/* Order Summary */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-sm p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-6">
-                Order Summary
-              </h2>
+            <Col xs={24} lg={8}>
+              <div className="sticky top-6">
+                <Card className="rounded-3xl shadow-md mb-6">
+                  <Title level={4} className="flex items-center gap-2 mb-6">
+                    <SafetyCertificateOutlined className="text-green-500" />
+                    Order Summary
+                  </Title>
 
-              <div className="space-y-4 mb-6">
-                <div className="flex justify-between text-gray-600">
-                  <span>Subtotal</span>
-                  <span>${totalPrice.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>Shipping</span>
-                  <span>Free</span>
-                </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>Tax</span>
-                  <span>${(totalPrice * 0.1).toFixed(2)}</span>
-                </div>
-                <div className="h-px bg-gray-100"></div>
-                <div className="flex justify-between text-lg font-semibold text-gray-800">
-                  <span>Total</span>
-                  <span>${(totalPrice * 1.1).toFixed(2)}</span>
-                </div>
-              </div>
-
-              {/* Proceed to Checkout */}
-              <button
-                onClick={handleProceedToCheckout}
-                className="w-full py-3 bg-pink-500 text-white rounded-xl font-medium hover:bg-pink-600 transition-colors mb-4"
-              >
-                Proceed to Checkout
-              </button>
-
-              {/* Payment Modal */}
-              {showPaymentModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                  <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full">
-                    <h2 className="text-xl font-semibold mb-4">
-                      Select Payment Method
-                    </h2>
-                    <div className="space-y-4">
-                      <Link to="/payment">
-                        <button
-                          className="w-full py-3 bg-pink-600 text-white rounded-xl font-medium 
-                                  hover:bg-transparent hover:text-black transition-all duration-300 
-                                  hover:shadow-lg transform hover:-translate-y-0.5"
-                        >
-                          Proceed to Checkout
-                        </button>
-                      </Link>
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <Text>Subtotal</Text>
+                      <Text>{formatPrice(calculateTotal())}</Text>
+                    </div>
+                    <div className="flex justify-between">
+                      <Text>Shipping</Text>
+                      <Text className="text-green-500">Free</Text>
+                    </div>
+                    <Divider className="my-4" />
+                    <div className="flex justify-between">
+                      <Text strong>Total</Text>
+                      <Title level={3} className="!mb-0 text-pink-500">
+                        {formatPrice(calculateTotal())}
+                      </Title>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Payment Modal */}
-      {showPaymentModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full">
-            <h2 className="text-xl font-semibold mb-4">
-              Select Payment Method
-            </h2>
-            <div className="space-y-4">
-              <Link to="/payment">
-                <button
-                  onClick={() => handlePaymentMethodSelection("QR Code")}
-                  className="w-full py-3 bg-blue-500 text-white rounded-xl font-medium hover:bg-blue-600 transition-colors"
-                >
-                  Pay with QR Code
-                </button>
-              </Link>
-              <button
-                onClick={() => handlePaymentMethodSelection("Cash on Delivery")}
-                className="w-full py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors"
-              >
-                Pay with Cash on Delivery
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+                  <Button
+                    type="primary"
+                    size="large"
+                    block
+                    className="mt-6 h-12 text-lg bg-gradient-to-r from-pink-500 to-purple-500 hover:!text-white hover:opacity-90 transition-all duration-300"
+                    onClick={() => navigate("/payment")}
+                    style={{
+                      background: "linear-gradient(to right, #ec4899, #a855f7)",
+                      borderColor: "transparent",
+                    }}
+                  >
+                    Proceed to Checkout
+                  </Button>
+                </Card>
+
+                <Card className="rounded-3xl bg-pink-50 border-pink-100">
+                  <Space direction="vertical" className="w-full">
+                    <Space>
+                      <CarOutlined className="text-pink-500" />
+                      <Text>Free shipping on orders over $20</Text>
+                    </Space>
+                    <Space>
+                      <GiftOutlined className="text-pink-500" />
+                      <Text>Free samples with every order</Text>
+                    </Space>
+                    <Space>
+                      <SafetyCertificateOutlined className="text-pink-500" />
+                      <Text>100% Authentic Products</Text>
+                    </Space>
+                  </Space>
+                </Card>
+              </div>
+            </Col>
+          </Row>
+        )}
+      </div>
     </div>
   );
-};
+}
 
 export default CartPage;

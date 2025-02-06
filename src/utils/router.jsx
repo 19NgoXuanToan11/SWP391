@@ -23,6 +23,7 @@ import OrderhistoryPage from "../pages/users/orderhistoryPage";
 import CustomerOrderPage from "../pages/admin/customerorderPage";
 import ProfilePage from "../pages/users/profilePage";
 import WishlistPage from "../pages/users/wishlistPage";
+import QRPaymentPage from "../pages/users/qrPaymentPage";
 
 export const router = createBrowserRouter([
   {
@@ -76,6 +77,10 @@ export const router = createBrowserRouter([
       {
         path: "payment",
         element: <PaymentPage />,
+      },
+      {
+        path: "qr-payment",
+        element: <QRPaymentPage />,
       },
       {
         path: "history",
