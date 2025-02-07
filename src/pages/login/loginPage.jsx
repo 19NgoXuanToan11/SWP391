@@ -6,6 +6,8 @@ import { HiEye, HiEyeOff } from "react-icons/hi";
 import background from "../../assets/pictures/background_login.jpg";
 import { useLoginMutation } from "../../services/api/beautyShopApi";
 import { toast } from "react-toastify";
+import { auth } from "../../config/firebase";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -67,6 +69,30 @@ export function LoginPage() {
 
   const handleNavigateToRegister = () => {
     navigate("/register");
+  };
+
+  const handleLoginByGoogle = () => {
+    console.log("handleLoginByGoogle");
+
+    const provider = new GoogleAuthProvider();
+
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const token = result.user.accessToken;
+        const user = result.user;
+
+        console.log(user);
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+      });
   };
 
   return (
@@ -226,7 +252,10 @@ export function LoginPage() {
               </div>
 
               <div className="flex justify-center">
-                <button className="py-4 px-20 rounded-xl border border-gray-200 bg-white/50 hover:bg-white hover:shadow-md hover:scale-[1.02] transition-all">
+                <button
+                  onClick={handleLoginByGoogle}
+                  className="py-4 px-20 rounded-xl border border-gray-200 bg-white/50 hover:bg-white hover:shadow-md hover:scale-[1.02] transition-all"
+                >
                   <div className="text-red-500 flex justify-center">
                     <FaGoogle />
                   </div>
