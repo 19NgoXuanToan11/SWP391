@@ -18,16 +18,20 @@ import {
   MailOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text, Paragraph } = Typography;
 
 const ProfilePage = () => {
   const { token } = theme.useToken();
+  const navigate = useNavigate();
 
   const [userInfo] = useState({
     name: "Nguyễn Văn A",
     email: "nguyenvana@example.com",
-    avatar: "https://source.unsplash.com/random/150x150",
+    avatar:
+      localStorage.getItem("userAvatar") ||
+      "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
     role: "Beauty Consultant",
     location: "Hà Nội, Việt Nam",
     bio: "Tôi là chuyên gia tư vấn làm đẹp với hơn 3 năm kinh nghiệm trong ngành mỹ phẩm cao cấp.",
@@ -166,6 +170,7 @@ const ProfilePage = () => {
                   icon={<EditOutlined />}
                   size="large"
                   style={customStyles.editButton}
+                  onClick={() => navigate("/edit-profile")}
                 >
                   Chỉnh sửa hồ sơ
                 </Button>

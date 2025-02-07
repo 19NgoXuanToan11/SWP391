@@ -24,6 +24,7 @@ import CustomerOrderPage from "../pages/admin/customerorderPage";
 import ProfilePage from "../pages/users/profilePage";
 import WishlistPage from "../pages/users/wishlistPage";
 import QRPaymentPage from "../pages/users/qrPaymentPage";
+import EditProfilePage from "../pages/users/editProfilePage";
 
 export const router = createBrowserRouter([
   {
@@ -125,6 +126,10 @@ export const router = createBrowserRouter([
       {
         path: "profile",
         element: <ProfilePage />,
+      },
+      {
+        path: "edit-profile",
+        element: <EditProfilePage />,
       },
       {
         path: "wishlist",
