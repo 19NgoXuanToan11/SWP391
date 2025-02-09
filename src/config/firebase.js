@@ -3,13 +3,13 @@ import { getStorage } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDf8eFL5YQ74T5QEWaG12o6My_H_yg0ReA",
-  authDomain: "skincare-system.firebaseapp.com",
-  projectId: "skincare-system",
-  storageBucket: "skincare-system.firebasestorage.app",
-  messagingSenderId: "623687579165",
-  appId: "1:623687579165:web:5b0e55210c27a90520f8f4",
-  measurementId: "G-4X9DQM260K",
+  apiKey: "AIzaSyAc-g3kLguUfx8X2zOgNHF5onE_QcOoaf0",
+  authDomain: "heso-hrm.firebaseapp.com",
+  projectId: "heso-hrm",
+  storageBucket: "heso-hrm.firebasestorage.app",
+  messagingSenderId: "243212199762",
+  appId: "1:243212199762:web:a5ddddcd9236e525547c8b",
+  measurementId: "G-HGJZP0NJ77",
 };
 
 // Initialize Firebase
