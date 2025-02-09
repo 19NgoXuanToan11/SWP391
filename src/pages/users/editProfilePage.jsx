@@ -69,14 +69,18 @@ export default function EditProfilePage() {
   const handleSave = async () => {
     try {
       if (fileList[0]?.originFileObj) {
+        message.loading({ content: 'Đang tải ảnh lên...', key: 'upload' });
         const url = await uploadFile(fileList[0].originFileObj);
-        localStorage.setItem("userAvatar", url);
-        message.success("Cập nhật ảnh đại diện thành công!");
-        navigate("/profile");
+        localStorage.setItem('userAvatar', url);
+        message.success({ content: 'Cập nhật ảnh đại diện thành công!', key: 'upload' });
+        navigate('/profile');
       }
     } catch (error) {
-      console.error("Upload error:", error);
-      message.error("Có lỗi xảy ra khi upload ảnh!");
+      console.error('Upload error:', error);
+      message.error({ 
+        content: 'Có lỗi xảy ra khi upload ảnh! ' + error.message, 
+        key: 'upload' 
+      });
     }
   };
 
