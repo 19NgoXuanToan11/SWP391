@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { auth } from "../../config/firebase";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
-export function LoginPage() {
+ export function LoginPage() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
