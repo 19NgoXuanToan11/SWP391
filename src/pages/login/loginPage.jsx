@@ -8,8 +8,8 @@ import { useLoginMutation } from "../../services/api/beautyShopApi";
 import { toast } from "react-toastify";
 import { auth } from "../../config/firebase";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { useDispatch } from 'react-redux';
-import { setCredentials } from '../../store/slices/authSlice';
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../../store/slices/authSlice";
 import { message } from "antd";
 
 export function LoginPage() {
@@ -66,19 +66,21 @@ export function LoginPage() {
     try {
       const response = await login({
         email: formData.email,
-        password: formData.password
+        password: formData.password,
       }).unwrap();
 
       const userInfo = {
         email: formData.email,
-        name: formData.email.split('@')[0], // Hoặc thông tin khác từ API
+        name: formData.email.split("@")[0], // Hoặc thông tin khác từ API
         id: Date.now(), // Hoặc ID từ API
       };
 
-      dispatch(setCredentials({
-        user: userInfo,
-        token: response.token
-      }));
+      dispatch(
+        setCredentials({
+          user: userInfo,
+          token: response.token,
+        })
+      );
 
       message.success({
         content: "Đăng nhập thành công!",
@@ -87,9 +89,8 @@ export function LoginPage() {
 
       const from = location.state?.from || "/";
       navigate(from);
-      
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
       message.error({
         content: "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!",
         duration: 2,

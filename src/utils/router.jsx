@@ -25,7 +25,7 @@ import ProfilePage from "../pages/users/profilePage";
 import WishlistPage from "../pages/users/wishlistPage";
 import QRPaymentPage from "../pages/users/qrPaymentPage";
 import EditProfilePage from "../pages/users/editProfilePage";
-import { ProtectedRoute } from '../components/ProtectedRoute';
+import { ProtectedRoute } from "../components/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
@@ -143,4 +143,3 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
-

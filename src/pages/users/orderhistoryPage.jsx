@@ -76,7 +76,9 @@ const OrderHistoryPage = () => {
                       <h3 className="text-lg font-medium text-gray-800">
                         Order ID: {order.orderId}
                       </h3>
-                      <p className="text-sm text-gray-500">Date: {order.date}</p>
+                      <p className="text-sm text-gray-500">
+                        Date: {order.date}
+                      </p>
                     </div>
                     <div className="text-right">
                       <p className="text-lg font-semibold text-gray-800">
