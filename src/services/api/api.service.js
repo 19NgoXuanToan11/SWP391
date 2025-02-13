@@ -24,20 +24,12 @@ export const axiosBaseQuery =
       });
 
       return { data: result.data };
-    } catch (axiosError) {
-      // Xử lý lỗi từ API reqres.in
-      const errorResponse = {
-        status: axiosError.response?.status,
-        data: {
-          error:
-            axiosError.response?.data?.error ||
-            "Đã có lỗi xảy ra. Vui lòng thử lại sau.",
+    } catch (error) {
+      return {
+        error: {
+          status: error.response?.status,
+          data: error.response?.data || { error: "Something went wrong" },
         },
       };
-
-      // Log lỗi để debug
-      console.error("API Error:", errorResponse);
-
-      return { error: errorResponse };
     }
   };

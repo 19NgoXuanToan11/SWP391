@@ -26,11 +26,13 @@ import {
 } from "@ant-design/icons";
 import { QRCode } from "antd";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../../hooks/useAuth';
 
 const { Title, Text, Paragraph } = Typography;
 
 export function PaymentPage() {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedPayment, setSelectedPayment] = useState("qr");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -88,6 +90,10 @@ export function PaymentPage() {
   };
 
   const handlePayNow = () => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: '/qr-payment' } });
+      return;
+    }
     navigate('/qr-payment');
   };
 

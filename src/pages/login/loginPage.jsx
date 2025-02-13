@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaGoogle, FaFacebook, FaGithub } from "react-icons/fa";
 import { HiEye, HiEyeOff } from "react-icons/hi";
@@ -8,9 +8,14 @@ import { useLoginMutation } from "../../services/api/beautyShopApi";
 import { toast } from "react-toastify";
 import { auth } from "../../config/firebase";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../../store/slices/authSlice';
+import { message } from "antd";
 
 export function LoginPage() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -59,11 +64,36 @@ export function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const result = await login(formData).unwrap();
-      toast.success("Login successful!");
-      navigate("/");
+      const response = await login({
+        email: formData.email,
+        password: formData.password
+      }).unwrap();
+
+      const userInfo = {
+        email: formData.email,
+        name: formData.email.split('@')[0], // Hoặc thông tin khác từ API
+        id: Date.now(), // Hoặc ID từ API
+      };
+
+      dispatch(setCredentials({
+        user: userInfo,
+        token: response.token
+      }));
+
+      message.success({
+        content: "Đăng nhập thành công!",
+        duration: 2,
+      });
+
+      const from = location.state?.from || "/";
+      navigate(from);
+      
     } catch (error) {
-      toast.error(error.data?.message || "Login failed");
+      console.error('Login failed:', error);
+      message.error({
+        content: "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!",
+        duration: 2,
+      });
     }
   };
 
