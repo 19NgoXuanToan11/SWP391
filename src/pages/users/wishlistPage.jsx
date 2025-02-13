@@ -36,23 +36,23 @@ const WishlistPage = () => {
 
   const customStyles = {
     pageContainer: {
-      padding: '32px',
+      padding: "32px",
       maxWidth: 1200,
-      margin: '0 auto',
-      backgroundColor: '#fafafa',
-      minHeight: '100vh',
+      margin: "0 auto",
+      backgroundColor: "#fafafa",
+      minHeight: "100vh",
     },
     headerSection: {
       marginBottom: 32,
-      position: 'relative',
-      padding: '24px',
+      position: "relative",
+      padding: "24px",
       background: colors.light,
       borderRadius: 16,
-      boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+      boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
     },
     headerTitle: {
-      display: 'flex',
-      alignItems: 'center',
+      display: "flex",
+      alignItems: "center",
       marginBottom: 8,
       color: colors.dark,
       fontSize: 28,
@@ -63,45 +63,45 @@ const WishlistPage = () => {
       fontSize: 28,
     },
     productCard: {
-      height: '100%',
-      position: 'relative',
-      overflow: 'hidden',
+      height: "100%",
+      position: "relative",
+      overflow: "hidden",
       borderRadius: 16,
-      border: 'none',
-      transition: 'all 0.3s ease',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-      '&:hover': {
-        transform: 'translateY(-4px)',
-        boxShadow: '0 12px 24px rgba(0,0,0,0.1)',
+      border: "none",
+      transition: "all 0.3s ease",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+      "&:hover": {
+        transform: "translateY(-4px)",
+        boxShadow: "0 12px 24px rgba(0,0,0,0.1)",
       },
     },
     imageContainer: {
-      position: 'relative',
-      paddingTop: '100%',
-      overflow: 'hidden',
+      position: "relative",
+      paddingTop: "100%",
+      overflow: "hidden",
     },
     productImage: {
-      position: 'absolute',
+      position: "absolute",
       top: 0,
       left: 0,
-      width: '100%',
-      height: '100%',
-      objectFit: 'cover',
-      transition: 'transform 0.3s ease',
-      '&:hover': {
-        transform: 'scale(1.05)',
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      transition: "transform 0.3s ease",
+      "&:hover": {
+        transform: "scale(1.05)",
       },
     },
     discountTag: {
-      position: 'absolute',
+      position: "absolute",
       top: 12,
       left: 12,
-      padding: '6px 12px',
+      padding: "6px 12px",
       borderRadius: 8,
-      fontSize: '14px',
+      fontSize: "14px",
       fontWeight: 600,
       background: colors.red,
-      border: 'none',
+      border: "none",
     },
     brandText: {
       fontSize: 13,
@@ -112,13 +112,13 @@ const WishlistPage = () => {
     productName: {
       fontSize: 16,
       fontWeight: 600,
-      margin: '8px 0',
+      margin: "8px 0",
       color: colors.dark,
       lineHeight: 1.4,
     },
     priceContainer: {
-      display: 'flex',
-      alignItems: 'center',
+      display: "flex",
+      alignItems: "center",
       gap: 8,
       marginTop: 8,
     },
@@ -131,32 +131,32 @@ const WishlistPage = () => {
       fontSize: 14,
       color: colors.dark,
       opacity: 0.5,
-      textDecoration: 'line-through',
+      textDecoration: "line-through",
     },
     actionButton: {
       borderRadius: 8,
       height: 40,
-      padding: '0 16px',
+      padding: "0 16px",
       fontWeight: 500,
-      transition: 'all 0.3s ease',
+      transition: "all 0.3s ease",
     },
     cartButton: {
       background: colors.primary,
       borderColor: colors.primary,
-      '&:hover': {
+      "&:hover": {
         background: colors.red,
         borderColor: colors.red,
       },
-      '&:disabled': {
-        background: '#f5f5f5',
-        borderColor: '#d9d9d9',
+      "&:disabled": {
+        background: "#f5f5f5",
+        borderColor: "#d9d9d9",
       },
     },
     deleteButton: {
       color: colors.primary,
-      '&:hover': {
+      "&:hover": {
         color: colors.red,
-        background: 'rgba(255,77,109,0.1)',
+        background: "rgba(255,77,109,0.1)",
       },
     },
   };
@@ -241,7 +241,11 @@ const WishlistPage = () => {
                   </div>
                 }
               >
-                <Space direction="vertical" size="small" style={{ width: "100%" }}>
+                <Space
+                  direction="vertical"
+                  size="small"
+                  style={{ width: "100%" }}
+                >
                   <Text style={customStyles.brandText}>{item.brand}</Text>
                   <Text style={customStyles.productName}>{item.name}</Text>
                   <Rate
