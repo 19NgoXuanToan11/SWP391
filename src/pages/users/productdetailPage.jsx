@@ -43,7 +43,7 @@ export default function ProductDetailPage() {
       rating: 5,
       date: "2024-02-15",
       comment:
-        "Amazing product! My skin feels so much better after using it for just a week.",
+        "Sản phẩm tuyệt vời! Da tôi cảm thấy tốt hơn sau khi sử dụng nó chỉ trong vòng một tuần.",
       likes: 24,
       dislikes: 2,
       verified: true,
@@ -245,21 +245,21 @@ export default function ProductDetailPage() {
                   <div className="space-y-4">
                     <div className="flex items-center space-x-3">
                       <SafetyCertificateOutlined className="text-2xl text-green-500" />
-                      <span className="text-gray-600">100% Authentic</span>
+                      <span className="text-gray-600">100% Chính Hãng</span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <SyncOutlined className="text-2xl text-blue-500" />
-                      <span className="text-gray-600">30-Day Returns</span>
+                      <span className="text-gray-600">30 Ngày Trả Hàng</span>
                     </div>
                   </div>
                   <div className="space-y-4">
                     <div className="flex items-center space-x-3">
                       <CarOutlined className="text-2xl text-purple-500" />
-                      <span className="text-gray-600">Free Shipping</span>
+                      <span className="text-gray-600">Miễn phí vận chuyển</span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <ShareAltOutlined className="text-2xl text-pink-500" />
-                      <span className="text-gray-600">Share Product</span>
+                      <span className="text-gray-600">Chia sẻ sản phẩm</span>
                     </div>
                   </div>
                 </div>
@@ -273,11 +273,11 @@ export default function ProductDetailPage() {
                              rounded-xl font-semibold text-lg hover:bg-pink-700 transition duration-300 shadow-md"
                   >
                     <ShoppingCartOutlined className="text-xl" />
-                    <Link to="/cart">Add to Cart</Link>
+                    <Link to="/cart">Thêm Vào Giỏ Hàng</Link>
                   </motion.button>
 
                   <p className="text-sm text-gray-500 text-center">
-                    Free shipping on orders over $50
+                    Miễn phí vận chuyển trên đơn hàng trên $50
                   </p>
                 </div>
               </div>
@@ -287,17 +287,17 @@ export default function ProductDetailPage() {
                 <div className="grid grid-cols-2 gap-8">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                      Product Details
+                      Chi Tiết Sản Phẩm
                     </h3>
                     <div className="space-y-3">
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-500">Volume:</span>
+                        <span className="text-gray-500">Thể Tích:</span>
                         <span className="font-medium text-gray-900">
                           {product?.volume}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-500">Skin Type:</span>
+                        <span className="text-gray-500">Loại Da:</span>
                         <span className="font-medium text-gray-900">
                           {product?.skinType}
                         </span>
@@ -307,7 +307,7 @@ export default function ProductDetailPage() {
 
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                      Key Ingredients
+                      Nguyên Liệu Chính
                     </h3>
                     <p className="text-gray-600 text-sm leading-relaxed">
                       {product?.keyIngredients}
@@ -322,10 +322,10 @@ export default function ProductDetailPage() {
                   onChange={setActiveTab}
                   className="product-tabs"
                 >
-                  <TabPane tab="Description" key="1">
+                  <TabPane tab="Mô Tả" key="1">
                     <div className="prose max-w-none">
                       <h3 className="text-xl font-semibold mb-4">
-                        Product Description
+                        Mô Tả Sản Phẩm
                       </h3>
                       <div className="space-y-4">
                         <p className="text-gray-600">{product?.description}</p>
@@ -333,34 +333,34 @@ export default function ProductDetailPage() {
                         {/* Benefits */}
                         <div className="mt-8">
                           <h4 className="text-lg font-semibold mb-3">
-                            Key Benefits
+                            Lợi Ích Chính
                           </h4>
                           <ul className="list-disc pl-5 space-y-2 text-gray-600">
-                            <li>Deeply hydrates and nourishes skin</li>
-                            <li>Reduces appearance of fine lines</li>
-                            <li>Improves skin texture and tone</li>
-                            <li>Suitable for all skin types</li>
+                            <li>Thấm sâu và cung cấp ẩm cho da</li>
+                            <li>Giảm hiện tượng nhăn mỏng</li>
+                            <li>Cải thiện độ mịn và màu sắc da</li>
+                            <li>Phù hợp với tất cả loại da</li>
                           </ul>
                         </div>
 
                         {/* How to Use */}
                         <div className="mt-8">
                           <h4 className="text-lg font-semibold mb-3">
-                            How to Use
+                            Cách Sử Dụng
                           </h4>
                           <ol className="list-decimal pl-5 space-y-2 text-gray-600">
-                            <li>Cleanse face thoroughly</li>
-                            <li>Apply toner if desired</li>
-                            <li>Apply a small amount to face and neck</li>
-                            <li>Gently massage in circular motions</li>
-                            <li>Use morning and evening for best results</li>
+                            <li>Rửa mặt thật sạch</li>
+                            <li>Áp dụng toner nếu muốn</li>
+                            <li>Áp dụng một lượng nhỏ lên mặt và cổ</li>
+                            <li>Gắn máy nhẹ nhàng theo hướng tròn</li>
+                            <li>Sử dụng sáng và tối cho kết quả tốt nhất</li>
                           </ol>
                         </div>
                       </div>
                     </div>
                   </TabPane>
 
-                  <TabPane tab={`Reviews (${reviews.length})`} key="2">
+                  <TabPane tab={`Đánh Giá (${reviews.length})`} key="2">
                     <div className="space-y-8">
                       {/* Rating Summary */}
                       <div className="flex items-start space-x-8 p-6 bg-gray-50 rounded-xl">
@@ -374,7 +374,7 @@ export default function ProductDetailPage() {
                             className="text-yellow-400"
                           />
                           <div className="text-sm text-gray-500 mt-1">
-                            Based on {reviews.length} reviews
+                            Dựa trên {reviews.length} đánh giá
                           </div>
                         </div>
 
@@ -387,7 +387,7 @@ export default function ProductDetailPage() {
                                 className="flex items-center space-x-4"
                               >
                                 <div className="w-24 text-sm text-gray-600">
-                                  {rating} stars
+                                  {rating} sao
                                 </div>
                                 <Progress
                                   percent={percentage}
@@ -407,12 +407,12 @@ export default function ProductDetailPage() {
                       {/* Write Review */}
                       <div className="border border-gray-200 rounded-xl p-6">
                         <h3 className="text-lg font-semibold mb-4">
-                          Write a Review
+                          Viết Đánh Giá
                         </h3>
                         <div className="space-y-4">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Rating
+                              Đánh Giá
                             </label>
                             <Rate
                               value={rating}
@@ -422,18 +422,18 @@ export default function ProductDetailPage() {
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Your Review
+                              Đánh Giá Của Bạn
                             </label>
                             <TextArea
                               rows={4}
                               value={reviewText}
                               onChange={(e) => setReviewText(e.target.value)}
-                              placeholder="Share your experience with this product..."
+                              placeholder="Chia sẻ kinh nghiệm với sản phẩm này..."
                               className="w-full border-gray-200 rounded-lg"
                             />
                           </div>
                           <button className="bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700 transition-colors">
-                            Submit Review
+                            Gửi Đánh Giá
                           </button>
                         </div>
                       </div>
@@ -455,7 +455,7 @@ export default function ProductDetailPage() {
                                     </h4>
                                     {review.verified && (
                                       <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full">
-                                        Verified Purchase
+                                        Đã Mua
                                       </span>
                                     )}
                                   </div>
@@ -486,7 +486,7 @@ export default function ProductDetailPage() {
                               </button>
                               <button className="flex items-center space-x-2 text-gray-500 hover:text-gray-700">
                                 <MessageOutlined />
-                                <span>Reply</span>
+                                <span>Trả Lời</span>
                               </button>
                             </div>
                           </div>
@@ -495,30 +495,35 @@ export default function ProductDetailPage() {
                     </div>
                   </TabPane>
 
-                  <TabPane tab="Shipping & Returns" key="3">
+                  <TabPane tab="Vận Chuyển & Trả Hàng" key="3">
                     <div className="prose max-w-none">
                       <div className="space-y-6">
                         <div>
                           <h3 className="text-xl font-semibold mb-4">
-                            Shipping Information
+                            Thông Tin Vận Chuyển
                           </h3>
                           <ul className="list-disc pl-5 space-y-2 text-gray-600">
-                            <li>Free standard shipping on orders over $50</li>
-                            <li>Standard shipping (5-7 business days)</li>
-                            <li>Express shipping (2-3 business days)</li>
-                            <li>International shipping available</li>
+                            <li>
+                              Miễn phí vận chuyển tiêu chuẩn trên đơn hàng trên
+                              $50
+                            </li>
+                            <li>Vận chuyển tiêu chuẩn (5-7 ngày làm việc)</li>
+                            <li>Vận chuyển nhanh (2-3 ngày làm việc)</li>
+                            <li>Vận chuyển quốc tế có sẵn</li>
                           </ul>
                         </div>
 
                         <div>
                           <h3 className="text-xl font-semibold mb-4">
-                            Return Policy
+                            Chính Sách Trả Hàng
                           </h3>
                           <ul className="list-disc pl-5 space-y-2 text-gray-600">
-                            <li>30-day return policy</li>
-                            <li>Must be unopened and in original packaging</li>
-                            <li>Free returns on all orders</li>
-                            <li>Contact customer service to initiate return</li>
+                            <li>Chính sách trả hàng 30 ngày</li>
+                            <li>Phải còn nguyên bao bì và đóng gói</li>
+                            <li>Miễn phí trả hàng trên tất cả đơn hàng</li>
+                            <li>
+                              Liên hệ dịch vụ khách hàng để bắt đầu trả hàng
+                            </li>
                           </ul>
                         </div>
                       </div>

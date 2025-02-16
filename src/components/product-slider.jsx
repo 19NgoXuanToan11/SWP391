@@ -8,38 +8,38 @@ import sunscreen from "../assets/pictures/sunscreen_SPF_50.jpg";
 const products = [
   {
     id: 1,
-    name: "Vitamin C Serum",
+    name: "Serum Vitamin C",
     price: "890.000đ",
     image: vitaminC,
-    description: "Skin brightening serum",
+    description: "Serum làm sáng da",
   },
   {
     id: 2,
     name: "Hyaluronic Acid",
     price: "750.000đ",
     image: hyaluronic,
-    description: "Deep moisturizing serum",
+    description: "Serum cấp ẩm sâu",
   },
   {
     id: 3,
-    name: "Retinol Cream",
+    name: "Kem Retinol",
     price: "1.290.000đ",
     image: retinol,
-    description: "Anti-aging cream",
+    description: "Kem chống lão hóa",
   },
   {
     id: 4,
-    name: "Niacinamide Serum",
+    name: "Serum Niacinamide",
     price: "690.000đ",
     image: niacinamide,
-    description: "Serum tightens pores",
+    description: "Serum se khít lỗ chân lông",
   },
   {
     id: 5,
-    name: "Sunscreen SPF 50",
+    name: "Kem Chống Nắng SPF 50",
     price: "540.000đ",
     image: sunscreen,
-    description: "Sunscreen protects the skin",
+    description: "Kem chống nắng bảo vệ da",
   },
 ];
 
@@ -47,13 +47,13 @@ export function ProductSlider() {
   const [position, setPosition] = useState(0);
 
   useEffect(() => {
-    // Log để kiểm tra position
-    console.log("Current position:", position);
+    // Log để kiểm tra vị trí
+    console.log("Vị trí hiện tại:", position);
 
     const interval = setInterval(() => {
       setPosition((prev) => {
         const newPosition = (prev - 1) % (products.length * 320);
-        console.log("New position:", newPosition);
+        console.log("Vị trí mới:", newPosition);
         return newPosition;
       });
     }, 50);
@@ -61,15 +61,15 @@ export function ProductSlider() {
     return () => clearInterval(interval);
   }, []);
 
-  // Log để kiểm tra products
-  console.log("Products:", products);
-  console.log("First product image:", products[0].image);
+  // Log để kiểm tra sản phẩm
+  console.log("Sản phẩm:", products);
+  console.log("Hình ảnh sản phẩm đầu tiên:", products[0].image);
 
   return (
     <section className="py-16 overflow-hidden bg-gradient-to-r from-rose-50 to-pink-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-center mb-12">
-          <span className="font-bold text-pink-500">Best</span> Sellers
+          <span className="font-bold text-pink-500">Sản phẩm</span> Bán Chạy
         </h2>
 
         <div className="relative">
@@ -82,12 +82,12 @@ export function ProductSlider() {
               className="flex transition-transform duration-1000 ease-linear"
               style={{ transform: `translateX(${position}px)` }}
             >
-              {/* Duplicate products array for infinite scroll effect */}
+              {/* Nhân đôi mảng sản phẩm để tạo hiệu ứng cuộn vô hạn */}
               {[...products, ...products, ...products].map((product, index) => {
                 console.log(
-                  "Rendering product:",
+                  "Đang hiển thị sản phẩm:",
                   product.name,
-                  "with image:",
+                  "với hình ảnh:",
                   product.image
                 );
                 return (
@@ -102,7 +102,7 @@ export function ProductSlider() {
                           alt={product.name}
                           className="w-full h-full object-cover"
                           onError={(e) =>
-                            console.error("Image failed to load:", e)
+                            console.error("Hình ảnh không thể tải:", e)
                           }
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

@@ -33,19 +33,19 @@ function CartPage() {
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
-      name: "Perfect Glow Foundation",
+      name: "Kem Nền Hoàn Hảo",
       brand: "Luxe Beauty",
       price: 890000,
       originalPrice: 1200000,
       quantity: 2,
       image: "https://source.unsplash.com/random/400x400/?foundation",
-      color: "Natural Beige",
+      color: "Beige Tự Nhiên",
       discount: 25,
       stock: 10,
     },
     {
       id: 2,
-      name: "Hydrating Serum",
+      name: "Serum Dưỡng Ẩm",
       brand: "Pure Skin",
       price: 750000,
       originalPrice: 850000,
@@ -57,13 +57,13 @@ function CartPage() {
     },
     {
       id: 3,
-      name: "Matte Lipstick Collection",
+      name: "Bộ Son Môi Matte",
       brand: "Color Pop",
       price: 450000,
       originalPrice: 500000,
       quantity: 2,
       image: "https://source.unsplash.com/random/400x400/?lipstick",
-      color: "Ruby Red",
+      color: "Đỏ Ruby",
       discount: 10,
       stock: 8,
     },
@@ -79,11 +79,11 @@ function CartPage() {
 
   const handleRemoveItem = (id) => {
     setCartItems(cartItems.filter((item) => item.id !== id));
-    message.success("Item removed from cart");
+    message.success("Sản phẩm đã được xóa khỏi giỏ hàng");
   };
 
   const handleMoveToWishlist = (id) => {
-    message.success("Item added to wishlist");
+    message.success("Sản phẩm đã được thêm vào danh sách yêu thích");
   };
 
   const calculateTotal = () => {
@@ -94,10 +94,10 @@ function CartPage() {
   };
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("en-VN", {
       style: "currency",
-      currency: "USD",
-    }).format(price / 23000); // Converting VND to USD for example
+      currency: "VND",
+    }).format(price); // Chuyển đổi USD sang VND
   };
 
   return (
@@ -111,14 +111,14 @@ function CartPage() {
               icon={<ArrowLeftOutlined />}
               className="text-gray-600 hover:text-pink-500 flex items-center"
             >
-              Continue Shopping
+              Tiếp Tục Mua Sắm
             </Button>
           </Link>
           <Title level={2} className="!mb-0 flex items-center gap-3">
             <ShoppingCartOutlined className="text-pink-500" />
-            Your Shopping Cart
+            Giỏ Hàng Của Bạn
             <Tag color="pink" className="ml-2">
-              {cartItems.length} items
+              {cartItems.length} sản phẩm
             </Tag>
           </Title>
         </div>
@@ -129,7 +129,7 @@ function CartPage() {
               image={Empty.PRESENTED_IMAGE_SIMPLE}
               description={
                 <Space direction="vertical" size="large">
-                  <Text className="text-lg">Your cart is empty</Text>
+                  <Text className="text-lg">Giỏ hàng của bạn đang trống</Text>
                   <Link to="/products">
                     <Button
                       type="primary"
@@ -137,7 +137,7 @@ function CartPage() {
                       icon={<ShoppingOutlined />}
                       className="bg-gradient-to-r from-pink-500 to-purple-500"
                     >
-                      Explore Products
+                      Khám Phá Sản Phẩm
                     </Button>
                   </Link>
                 </Space>
@@ -166,25 +166,25 @@ function CartPage() {
                               {item.name}
                             </Title>
                             <Text type="secondary" className="text-sm">
-                              Brand: {item.brand}
+                              Thương hiệu: {item.brand}
                             </Text>
                             {item.color && (
                               <div className="mt-1">
                                 <Text type="secondary" className="text-sm">
-                                  Color: {item.color}
+                                  Màu sắc: {item.color}
                                 </Text>
                               </div>
                             )}
                             {item.size && (
                               <div className="mt-1">
                                 <Text type="secondary" className="text-sm">
-                                  Size: {item.size}
+                                  Kích thước: {item.size}
                                 </Text>
                               </div>
                             )}
                             {item.discount > 0 && (
                               <Tag color="red" className="mt-2">
-                                {item.discount}% OFF
+                                Giảm giá {item.discount}%
                               </Tag>
                             )}
                           </div>
@@ -203,7 +203,7 @@ function CartPage() {
                           <Space size="large">
                             <div>
                               <Text className="text-sm mb-2 block">
-                                Quantity:
+                                Số lượng:
                               </Text>
                               <InputNumber
                                 min={1}
@@ -216,18 +216,18 @@ function CartPage() {
                               />
                             </div>
                             <Text type="secondary" className="text-sm">
-                              {item.stock} items available
+                              {item.stock} sản phẩm có sẵn
                             </Text>
                           </Space>
                           <Space>
-                            <Tooltip title="Add to Wishlist">
+                            <Tooltip title="Thêm vào danh sách yêu thích">
                               <Button
                                 icon={<HeartOutlined />}
                                 onClick={() => handleMoveToWishlist(item.id)}
                                 className="border-pink-200 text-pink-500 hover:text-pink-600 hover:border-pink-300"
                               />
                             </Tooltip>
-                            <Tooltip title="Remove Item">
+                            <Tooltip title="Xóa sản phẩm">
                               <Button
                                 icon={<DeleteOutlined />}
                                 onClick={() => handleRemoveItem(item.id)}
@@ -249,21 +249,21 @@ function CartPage() {
                 <Card className="rounded-3xl shadow-md mb-6">
                   <Title level={4} className="flex items-center gap-2 mb-6">
                     <SafetyCertificateOutlined className="text-green-500" />
-                    Order Summary
+                    Tóm Tắt Đơn Hàng
                   </Title>
 
                   <div className="space-y-4">
                     <div className="flex justify-between">
-                      <Text>Subtotal</Text>
+                      <Text>Tổng phụ</Text>
                       <Text>{formatPrice(calculateTotal())}</Text>
                     </div>
                     <div className="flex justify-between">
-                      <Text>Shipping</Text>
-                      <Text className="text-green-500">Free</Text>
+                      <Text>Vận chuyển</Text>
+                      <Text className="text-green-500">Miễn phí</Text>
                     </div>
                     <Divider className="my-4" />
                     <div className="flex justify-between">
-                      <Text strong>Total</Text>
+                      <Text strong>Tổng cộng</Text>
                       <Title level={3} className="!mb-0 text-pink-500">
                         {formatPrice(calculateTotal())}
                       </Title>
@@ -281,7 +281,7 @@ function CartPage() {
                       borderColor: "transparent",
                     }}
                   >
-                    Proceed to Checkout
+                    Tiến Hành Thanh Toán
                   </Button>
                 </Card>
 
@@ -289,15 +289,17 @@ function CartPage() {
                   <Space direction="vertical" className="w-full">
                     <Space>
                       <CarOutlined className="text-pink-500" />
-                      <Text>Free shipping on orders over $20</Text>
+                      <Text>
+                        Miễn phí vận chuyển cho đơn hàng trên 460.000 VND
+                      </Text>
                     </Space>
                     <Space>
                       <GiftOutlined className="text-pink-500" />
-                      <Text>Free samples with every order</Text>
+                      <Text>Miễn phí mẫu cho mỗi đơn hàng</Text>
                     </Space>
                     <Space>
                       <SafetyCertificateOutlined className="text-pink-500" />
-                      <Text>100% Authentic Products</Text>
+                      <Text>Sản phẩm 100% chính hãng</Text>
                     </Space>
                   </Space>
                 </Card>

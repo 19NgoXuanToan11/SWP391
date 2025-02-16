@@ -2,19 +2,19 @@ export function SiteFooter() {
   return (
     <footer className="bg-gradient-to-b from-gray-900 to-black text-gray-300 pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main Footer Content */}
+        {/* Nội dung chính của Footer */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16">
-          {/* Company Info */}
+          {/* Thông tin công ty */}
           <div className="lg:col-span-5">
             <h3 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent mb-6">
               Beauty & Care
             </h3>
             <p className="text-gray-400 mb-8 leading-relaxed max-w-md">
-              Your beauty care expert. With a professional team and premium
-              products, we are committed to providing you with the best beauty
-              experience.
+              Chuyên gia chăm sóc sắc đẹp của bạn. Với đội ngũ chuyên nghiệp và
+              sản phẩm cao cấp, chúng tôi cam kết mang đến cho bạn trải nghiệm
+              làm đẹp tốt nhất.
             </p>
-            {/* Social Links */}
+            {/* Liên kết mạng xã hội */}
             <div className="flex space-x-5">
               <a href="#" className="social-icon-link">
                 <div className="w-10 h-10 bg-gray-800 hover:bg-pink-500/10 rounded-full flex items-center justify-center transition-all duration-300 group">
@@ -59,18 +59,18 @@ export function SiteFooter() {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Liên kết nhanh */}
           <div className="lg:col-span-2">
             <div className="w-full flex flex-col space-y-6">
-              <h4 className="text-lg font-semibold text-white">Services</h4>
+              <h4 className="text-lg font-semibold text-white">Dịch vụ</h4>
               <ul className="space-y-4">
                 {[
-                  "Skincare",
+                  "Chăm sóc da",
                   "Massage",
                   "Spa",
-                  "Makeup",
-                  "Acne Treatment",
-                  "Skin Rejuvenation",
+                  "Trang điểm",
+                  "Điều trị mụn",
+                  "Trẻ hóa da",
                 ].map((item) => (
                   <li key={item}>
                     <a
@@ -87,14 +87,14 @@ export function SiteFooter() {
 
           <div className="lg:col-span-2">
             <div className="w-full flex flex-col space-y-6">
-              <h4 className="text-lg font-semibold text-white">Company</h4>
+              <h4 className="text-lg font-semibold text-white">Công ty</h4>
               <ul className="space-y-4">
                 {[
-                  "About Us",
-                  "Team",
-                  "Contact",
-                  "Careers",
-                  "Partners",
+                  "Về chúng tôi",
+                  "Đội ngũ",
+                  "Liên hệ",
+                  "Cơ hội nghề nghiệp",
+                  "Đối tác",
                   "Blog",
                 ].map((item) => (
                   <li key={item}>
@@ -110,9 +110,9 @@ export function SiteFooter() {
             </div>
           </div>
 
-          {/* Contact */}
+          {/* Liên hệ */}
           <div className="lg:col-span-3">
-            <h4 className="text-lg font-semibold text-white mb-6">Contact</h4>
+            <h4 className="text-lg font-semibold text-white mb-6">Liên hệ</h4>
             <ul className="space-y-4">
               <li className="flex items-center space-x-3 text-gray-400">
                 <svg
@@ -167,55 +167,56 @@ export function SiteFooter() {
                   />
                 </svg>
                 <span>
-                  123 ABC Street,
+                  123 Đường ABC,
                   <br />
-                  XYZ District, HCMC
+                  Quận XYZ, HCMC
                 </span>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Newsletter Section */}
+        {/* Phần đăng ký nhận bản tin */}
         <div className="border-t border-gray-800 pt-8 pb-12">
           <div className="max-w-2xl mx-auto text-center">
             <h5 className="text-xl font-semibold text-white mb-3">
-              Subscribe to Our Newsletter
+              Đăng ký nhận bản tin của chúng tôi
             </h5>
             <p className="text-gray-400 mb-6">
-              Get the latest updates on our offers and services.
+              Nhận thông tin cập nhật mới nhất về các ưu đãi và dịch vụ của
+              chúng tôi.
             </p>
             <form className="flex flex-col sm:flex-row gap-3 justify-center">
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Nhập email của bạn"
                 className="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 flex-grow max-w-md"
               />
               <button className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:opacity-90 transition-opacity duration-300">
-                Subscribe
+                Đăng ký
               </button>
             </form>
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Thanh dưới cùng */}
         <div className="border-t border-gray-800 pt-8 mt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-400 text-sm">
-              © 2024 Beauty & Care. All rights reserved.
+              © 2025 Beauty & Care. Bảo lưu mọi quyền.
             </p>
             <div className="flex space-x-6">
               <a
                 href="#"
                 className="text-gray-400 hover:text-pink-500 text-sm transition-colors duration-300"
               >
-                Terms
+                Điều khoản
               </a>
               <a
                 href="#"
                 className="text-gray-400 hover:text-pink-500 text-sm transition-colors duration-300"
               >
-                Privacy Policy
+                Chính sách bảo mật
               </a>
             </div>
           </div>

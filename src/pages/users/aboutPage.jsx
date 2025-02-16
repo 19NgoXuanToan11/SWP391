@@ -24,7 +24,7 @@ export function AboutPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          About Us
+          Về Chúng Tôi
         </motion.h1>
       </header>
 
@@ -43,9 +43,9 @@ export function AboutPage() {
           />
           <div className="text-right w-1/2 transition-transform transform hover:scale-105 ">
             <h2 className="text-4xl font-semibold mb-4 transition-colors duration-300 hover:text-pink-500">
-              We Always Make{" "}
+              Chúng Tôi Luôn Làm{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-blue-500">
-                The Best
+                Tốt Nhất
               </span>
             </h2>
             <p className="text-lg text-gray-500 mb-6 transition-opacity duration-300 hover:opacity-80">
@@ -56,7 +56,7 @@ export function AboutPage() {
             </p>
             <Link to="/contact">
               <button className="px-6 py-2 bg-pink-600 text-white font-semibold rounded-lg hover:bg-transparent hover:text-black hover:border-2 hover:border-pink-300 transition duration-300">
-                Contact Us
+                Liên Hệ Chúng Tôi
               </button>
             </Link>
           </div>
@@ -73,13 +73,13 @@ export function AboutPage() {
           <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
           <div className="relative z-10 text-white text-center">
-            <h2 className="text-4xl font-bold mb-4">About Us</h2>
+            <h2 className="text-4xl font-bold mb-4">Về Chúng Tôi</h2>
             <p className="mb-6">
-              We are dedicated to providing high-quality skincare products that
-              enhance your natural beauty.
+              Chúng tôi luôn cố gắng cung cấp sản phẩm chăm sóc da chất lượng
+              cao để tăng cường vẻ đẹp tự nhiên của bạn.
             </p>
             <button className="bg-red-300 text-black font-semibold py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 hover:opacity-40">
-              Get Started
+              Bắt Đầu
             </button>
           </div>
         </motion.section>

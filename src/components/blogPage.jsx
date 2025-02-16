@@ -7,23 +7,23 @@ import person3 from "../assets/pictures/person3.jpg";
 export function BlogPage() {
   const testimonials = [
     {
-      name: "Ms. Vân Lava",
-      title: "CMO Sapa Group",
-      message: "Products help increase sales by reaching the right customers.",
+      name: "Cô Vân Lava",
+      title: "Giám đốc Marketing Sapa Group",
+      message: "Sản phẩm giúp tăng doanh số bằng cách tiếp cận đúng khách hàng.",
       image: person1,
     },
     {
-      name: "Mrs. Kim Robi",
-      title: "Model",
+      name: "Bà Kim Robi",
+      title: "Người mẫu",
       message:
-        "BeatyCare brings peace of mind with high-quality products from a reputable source.",
+        "BeatyCare mang lại sự yên tâm với các sản phẩm chất lượng cao từ nguồn gốc uy tín.",
       image: person2,
     },
     {
-      name: "Mr. Hùng Nguyễn",
-      title: "CEO Beauty Care",
+      name: "Ông Hùng Nguyễn",
+      title: "Giám đốc điều hành Beauty Care",
       message:
-        "BeatyCare has increased sales and brand recognition with a professional team.",
+        "BeatyCare đã tăng doanh số và nhận diện thương hiệu với một đội ngũ chuyên nghiệp.",
       image: person3,
     },
   ];

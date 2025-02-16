@@ -41,7 +41,7 @@ export function RegisterPage() {
       ...prev,
       [name]: value,
     }));
-    // Clear error when user types
+    // Xóa lỗi khi người dùng nhập
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -52,7 +52,7 @@ export function RegisterPage() {
 
   const validateForm = () => {
     const errors = {};
-    // First Name and Last Name Validation
+    // Kiểm tra họ và tên
     if (!formData.firstName) {
       errors.firstName = "Vui lòng nhập họ";
     }
@@ -60,7 +60,7 @@ export function RegisterPage() {
       errors.lastName = "Vui lòng nhập tên";
     }
 
-    // Email Validation
+    // Kiểm tra email
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!formData.email) {
       errors.email = "Vui lòng nhập email";
@@ -68,14 +68,14 @@ export function RegisterPage() {
       errors.email = "Email không hợp lệ";
     }
 
-    // Password Validation
+    // Kiểm tra mật khẩu
     if (!formData.password) {
       errors.password = "Vui lòng nhập mật khẩu";
     } else if (formData.password.length < 6) {
       errors.password = "Mật khẩu phải có ít nhất 6 ký tự";
     }
 
-    // Confirm Password Validation
+    // Kiểm tra xác nhận mật khẩu
     if (!formData.confirmPassword) {
       errors.confirmPassword = "Vui lòng xác nhận mật khẩu";
     } else if (formData.confirmPassword !== formData.password) {
@@ -92,7 +92,7 @@ export function RegisterPage() {
 
     if (Object.keys(validationErrors).length === 0) {
       try {
-        // Chỉ gửi email và password theo yêu cầu của API
+        // Chỉ gửi email và mật khẩu theo yêu cầu của API
         const registerData = {
           email: formData.email,
           password: formData.password,
@@ -100,7 +100,7 @@ export function RegisterPage() {
 
         const response = await register(registerData).unwrap();
 
-        // Lưu thông tin user vào localStorage nếu cần
+        // Lưu thông tin người dùng vào localStorage nếu cần
         localStorage.setItem(
           "userInfo",
           JSON.stringify({
@@ -132,42 +132,40 @@ export function RegisterPage() {
 
   return (
     <div className="h-screen flex overflow-hidden">
-      {/* Left section - Background */}
+      {/* Phần bên trái - Hình nền */}
       <div className="hidden lg:block lg:w-1/2 relative">
         <motion.img
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
           transition={{ duration: 1.5 }}
           src={background}
-          alt="Decorative Background"
+          alt="Hình nền trang trí"
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
 
-      {/* Right section - Form */}
+      {/* Phần bên phải - Biểu mẫu */}
       <div className="w-full lg:w-1/2 h-full bg-gradient-to-br from-gray-50 to-white relative overflow-y-auto">
-        {/* Decorative Elements */}
+        {/* Các yếu tố trang trí */}
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-pink-50/50 to-transparent" />
         <div className="absolute bottom-0 right-0 w-full h-32 bg-gradient-to-t from-purple-50/50 to-transparent" />
 
-        {/* Main Content Container */}
+        {/* Container nội dung chính */}
         <div className="h-full flex flex-col px-8 md:px-12 py-8 space-y-8 relative z-10">
-          {/* Top Section */}
+          {/* Phần trên */}
           <div className="text-center lg:text-left space-y-2">
             <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-              Create Account
+              Tạo tài khoản
             </h2>
             <p className="text-gray-600 text-base">
-              Join us and start your journey today
+              Tham gia cùng chúng tôi và bắt đầu hành trình của bạn hôm nay
             </p>
           </div>
 
-          {/* Middle Section - Form */}
+          {/* Phần giữa - Biểu mẫu */}
           <div className="flex-1">
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Full Name Fields */}
-
-              {/* Email Field */}
+              {/* Trường email */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
                   Email
@@ -185,10 +183,10 @@ export function RegisterPage() {
                 )}
               </div>
 
-              {/* Password Field */}
+              {/* Trường mật khẩu */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Password
+                  Mật khẩu
                 </label>
                 <div className="relative">
                   <input
@@ -216,10 +214,10 @@ export function RegisterPage() {
                 )}
               </div>
 
-              {/* Confirm Password Field */}
+              {/* Trường xác nhận mật khẩu */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Confirm Password
+                  Xác nhận mật khẩu
                 </label>
                 <input
                   type={showPassword ? "text" : "password"}
@@ -236,7 +234,7 @@ export function RegisterPage() {
                 )}
               </div>
 
-              {/* Submit Button */}
+              {/* Nút gửi */}
               <button
                 type="submit"
                 disabled={isLoading}
@@ -252,14 +250,14 @@ export function RegisterPage() {
               </button>
             </form>
 
-            {/* Social Login */}
+            {/* Đăng nhập bằng mạng xã hội */}
             <div className="relative mt-8">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200"></div>
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-white text-gray-500">
-                  Or continue with
+                  Hoặc tiếp tục với
                 </span>
               </div>
             </div>
@@ -273,13 +271,13 @@ export function RegisterPage() {
             </div>
           </div>
 
-          {/* Bottom Section */}
+          {/* Phần dưới */}
           <div className="text-center">
             <button
               onClick={() => navigate("/login")}
               className="text-sm text-gray-600 hover:text-pink-500 transition-colors"
             >
-              Already have an account? Sign in
+              Bạn đã có tài khoản? Đăng nhập
             </button>
           </div>
         </div>

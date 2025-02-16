@@ -9,38 +9,38 @@ import blog5 from "../assets/pictures/blog5.jpg";
 export function NewsPage() {
   const articles = [
     {
-      title: "Care for Your Hair",
-      date: "Thursday, 14/07/2022",
+      title: "Chăm Sóc Tóc Của Bạn",
+      date: "Thứ Năm, 14/07/2022",
       description:
-        "Just as skin needs sunscreen before going outside, hair also needs protection to avoid damage.",
+        "Cũng giống như da cần kem chống nắng trước khi ra ngoài, tóc cũng cần được bảo vệ để tránh hư tổn.",
       image: blog1,
     },
     {
-      title: "Supplement with Deep Essence",
-      date: "Thursday, 14/07/2022",
+      title: "Bổ Sung Tinh Chất Sâu",
+      date: "Thứ Năm, 14/07/2022",
       description:
-        "When your hair is completely dry, do not roughly tousle it with your hands (or force) to prevent tangling.",
+        "Khi tóc bạn hoàn toàn khô, đừng vò tóc một cách thô bạo bằng tay (hoặc lực) để tránh rối.",
       image: blog2,
     },
     {
-      title: "Let Your Hair Dry Naturally",
-      date: "Thursday, 14/07/2022",
+      title: "Để Tóc Khô Tự Nhiên",
+      date: "Thứ Năm, 14/07/2022",
       description:
-        "Blow-drying is the number one choice for many women to escape the uncomfortable wetness, but it's not good for your hair.",
+        "Sấy tóc là lựa chọn hàng đầu của nhiều phụ nữ để thoát khỏi sự ẩm ướt khó chịu, nhưng điều đó không tốt cho tóc của bạn.",
       image: blog3,
     },
     {
-      title: "Provide Additional Nutrients for Hair Care",
-      date: "Thursday, 14/07/2022",
+      title: "Cung Cấp Dinh Dưỡng Bổ Sung Cho Tóc",
+      date: "Thứ Năm, 14/07/2022",
       description:
-        "Most people stop at the conditioner step, thinking that this is enough for soft and smooth hair.",
+        "Hầu hết mọi người dừng lại ở bước dùng dầu xả, nghĩ rằng điều này là đủ để có tóc mềm mại và mượt mà.",
       image: blog4,
     },
     {
-      title: "Apply Moisturizing Conditioner to Hair",
-      date: "Thursday, 14/07/2022",
+      title: "Sử Dụng Dầu Xả Dưỡng Ẩm Cho Tóc",
+      date: "Thứ Năm, 14/07/2022",
       description:
-        "After thoroughly washing your hair, it's time to condition. Conditioner provides moisture to keep hair soft and healthy.",
+        "Sau khi gội sạch tóc, đã đến lúc sử dụng dầu xả. Dầu xả cung cấp độ ẩm để giữ cho tóc mềm mại và khỏe mạnh.",
       image: blog5,
     },
   ];
@@ -63,7 +63,7 @@ export function NewsPage() {
     <section className="min-h-[70vh] bg-gradient-to-br from-pink-100 to-red-100 via-white py-10">
       <div className="max-w-7xl mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-10">
-          Beauty Corner - Events
+          Góc Làm Đẹp - Sự Kiện
         </h1>
         <div className="relative flex items-center justify-center">
           <button
@@ -139,7 +139,7 @@ export function NewsPage() {
             href="#"
             className="inline-block bg-pink-600 text-white hover:bg-red-200 transition duration-300 ease-in-out text-sm font-semibold py-2 px-4 rounded-lg shadow-md"
           >
-            View All
+            Xem Tất Cả
           </a>
         </div>
       </div>

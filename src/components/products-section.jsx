@@ -9,15 +9,15 @@ export function ProductsSection() {
 
   return (
     <section className="relative min-h-screen">
-      {/* Background Decoration */}
+      {/* Trang trí nền */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-pink-200/20 rounded-full blur-3xl" />
         <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-purple-200/20 rounded-full blur-3xl" />
       </div>
 
-      {/* Main Content */}
+      {/* Nội dung chính */}
       <div className="relative max-w-7xl mx-auto px-4 py-24">
-        {/* Section Header */}
+        {/* Tiêu đề phần */}
         <div className="text-center mb-20">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -25,9 +25,9 @@ export function ProductsSection() {
             transition={{ duration: 0.6 }}
             className="text-5xl md:text-6xl font-bold mb-6"
           >
-            Discover Your{" "}
+            Khám Phá{" "}
             <span className="bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 bg-clip-text text-transparent">
-              Beauty
+              Vẻ Đẹp
             </span>
           </motion.h1>
           <motion.p
@@ -36,31 +36,11 @@ export function ProductsSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-gray-600 text-lg max-w-2xl mx-auto"
           >
-            Explore our curated collection of premium beauty products designed
-            to enhance your natural radiance
+            Khám phá bộ sưu tập sản phẩm làm đẹp cao cấp được thiết kế để nâng
+            cao vẻ rạng rỡ tự nhiên của bạn
           </motion.p>
         </div>
-
-        {/* Category Tabs */}
-        <div className="flex justify-center mb-16">
-          <div className="inline-flex bg-gradient-to-r from-pink-100/80 to-purple-100/80 backdrop-blur-xl rounded-3xl p-2.5 shadow-lg border border-white/20">
-            {["skincare", "makeup", "body", "hair"].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-10 py-4 rounded-2xl text-sm font-medium transition-all duration-500 ${
-                  activeTab === tab
-                    ? "bg-white text-gray-900 shadow-lg ring-1 ring-pink-200/50"
-                    : "text-gray-600 hover:text-gray-800 hover:bg-white/30"
-                }`}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Featured Collections */}
+        {/* Bộ sưu tập nổi bật */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -71,16 +51,16 @@ export function ProductsSection() {
             <div className="absolute inset-0 bg-gradient-to-r from-pink-500/90 to-purple-500/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <img
               src={ritualCollection}
-              alt="Skincare Ritual"
+              alt="Nghi thức chăm sóc da"
               className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 flex flex-col justify-end p-12">
               <h3 className="text-white text-2xl font-bold mb-2 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-300">
-                Morning Ritual Collection
+                Bộ Sưu Tập Nghi Thức Buổi Sáng
               </h3>
               <p className="text-white/90 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-300 delay-75">
-                Start your day with our carefully curated morning skincare
-                routine
+                Bắt đầu ngày mới với quy trình chăm sóc da buổi sáng được chọn
+                lọc kỹ lưỡng của chúng tôi
               </p>
             </div>
           </motion.div>
@@ -94,12 +74,12 @@ export function ProductsSection() {
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/90 to-indigo-500/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <img
               src={recoveryCollection}
-              alt="Night Routine"
+              alt="Quy trình ban đêm"
               className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 flex flex-col justify-end p-12">
               <h3 className="text-white text-2xl font-bold mb-2 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-300">
-                Night Recovery Collection
+                Bộ Sưu Tập Phục Hồi Ban Đêm
               </h3>
               <p className="text-white/90 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-300 delay-75">
                 Rejuvenate your skin while you sleep with our night care
@@ -115,21 +95,21 @@ export function ProductsSection() {
             {[
               {
                 icon: "✨",
-                title: "Personalized Routine",
+                title: "Lịch Trình Cá Nhân Hóa",
                 description:
-                  "Get a customized skincare routine based on your skin type and concerns",
+                  "Nhận một lịch trình chăm sóc da được tùy chỉnh dựa trên loại da và mối quan tâm của bạn",
               },
               {
                 icon: "🌿",
-                title: "Natural Ingredients",
+                title: "Nguyên Liệu Tự Nhiên",
                 description:
-                  "Clean beauty products made with carefully selected natural ingredients",
+                  "Sản phẩm làm đẹp sạch được làm từ các nguyên liệu tự nhiên được chọn lọc kỹ lưỡng",
               },
               {
                 icon: "🔬",
-                title: "Dermatologist Tested",
+                title: "Được Kiểm Nghiệm Bởi Bác Sĩ Da Liễu",
                 description:
-                  "All products are tested and approved by certified dermatologists",
+                  "Tất cả sản phẩm đều được kiểm tra và phê duyệt bởi các bác sĩ da liễu có chứng nhận",
               },
             ].map((tip, index) => (
               <motion.div
@@ -149,7 +129,7 @@ export function ProductsSection() {
           </div>
         </div>
 
-        {/* CTA Section */}
+        {/* Phần CTA */}
         <Link to="/product">
           <div className="mt-20 text-center">
             <motion.button
@@ -157,7 +137,7 @@ export function ProductsSection() {
               whileTap={{ scale: 0.95 }}
               className="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-medium shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/40 transition-shadow duration-300"
             >
-              Explore All Collections
+              Khám phá tất cả bộ sưu tập
             </motion.button>
           </div>
         </Link>
