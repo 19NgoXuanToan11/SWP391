@@ -3,6 +3,9 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../../components/sidebar";
 import { Pagination } from "antd";
+import { SwapOutlined, CloseOutlined } from "@ant-design/icons";
+import { Button, Drawer, Table } from "antd";
+import { notification } from "antd";
 
 export function ProductsPage() {
   const navigate = useNavigate();
@@ -11,6 +14,8 @@ export function ProductsPage() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
+  const [productsToCompare, setProductsToCompare] = useState([]);
+  const [isCompareDrawerOpen, setIsCompareDrawerOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -129,6 +134,73 @@ export function ProductsPage() {
     window.scrollTo(0, 0); // Cuộn lên đầu trang khi chuyển trang
   };
 
+  const handleCompareToggle = (product) => {
+    if (productsToCompare.find((p) => p.id === product.id)) {
+      setProductsToCompare(
+        productsToCompare.filter((p) => p.id !== product.id)
+      );
+    } else if (productsToCompare.length < 3) {
+      setProductsToCompare([...productsToCompare, product]);
+    } else {
+      notification.warning({
+        message: "Chỉ có thể so sánh tối đa 3 sản phẩm",
+        placement: "top",
+      });
+    }
+  };
+
+  const compareColumns = [
+    {
+      title: "Thông tin",
+      dataIndex: "feature",
+      key: "feature",
+      width: 150,
+      fixed: "left",
+    },
+    ...productsToCompare.map((product) => ({
+      title: (
+        <div className="text-center">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-20 h-20 object-cover mx-auto mb-2"
+          />
+          <div>{product.name}</div>
+          <Button
+            icon={<CloseOutlined />}
+            size="small"
+            onClick={() => handleCompareToggle(product)}
+            className="mt-2"
+          />
+        </div>
+      ),
+      dataIndex: product.id,
+      key: product.id,
+      width: 200,
+    })),
+  ];
+
+  const compareData = [
+    { feature: "Thương hiệu" },
+    { feature: "Giá" },
+    { feature: "Thể tích" },
+    { feature: "Loại da phù hợp" },
+    { feature: "Thành phần chính" },
+  ].map((row) => {
+    const rowData = { ...row };
+    productsToCompare.forEach((product) => {
+      if (row.feature === "Thương hiệu") rowData[product.id] = product.brand;
+      if (row.feature === "Giá")
+        rowData[product.id] = formatPrice(product.price);
+      if (row.feature === "Thể tích") rowData[product.id] = product.volume;
+      if (row.feature === "Loại da phù hợp")
+        rowData[product.id] = product.skinType;
+      if (row.feature === "Thành phần chính")
+        rowData[product.id] = product.keyIngredients;
+    });
+    return rowData;
+  });
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -204,12 +276,26 @@ export function ProductsPage() {
                               </span>
                             )}
                           </div>
-                          <button
-                            className="bg-pink-500 text-white text-sm font-semibold py-2 px-4 rounded-lg hover:bg-pink-600 transition duration-300 min-w-[100px]"
-                            onClick={() => handleBuyNowClick(product.id)}
-                          >
-                            Mua Ngay
-                          </button>
+                          <div className="flex gap-2">
+                            <button
+                              className="bg-pink-500 text-white text-sm font-semibold py-2 px-4 rounded-lg hover:bg-pink-600 transition duration-300"
+                              onClick={() => handleBuyNowClick(product.id)}
+                            >
+                              Mua Ngay
+                            </button>
+                            <button
+                              className={`p-2 rounded-lg border ${
+                                productsToCompare.find(
+                                  (p) => p.id === product.id
+                                )
+                                  ? "bg-purple-500 text-white"
+                                  : "border-purple-500 text-purple-500"
+                              }`}
+                              onClick={() => handleCompareToggle(product)}
+                            >
+                              <SwapOutlined />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </motion.div>
@@ -227,6 +313,43 @@ export function ProductsPage() {
                     className="text-pink-500"
                   />
                 </div>
+
+                <Drawer
+                  title="So sánh sản phẩm"
+                  placement="right"
+                  width={800}
+                  open={isCompareDrawerOpen}
+                  onClose={() => setIsCompareDrawerOpen(false)}
+                >
+                  {productsToCompare.length > 0 ? (
+                    <Table
+                      columns={compareColumns}
+                      dataSource={compareData}
+                      pagination={false}
+                      bordered
+                      scroll={{ x: "max-content" }}
+                    />
+                  ) : (
+                    <div className="text-center py-8">
+                      <p>Chưa có sản phẩm nào được chọn để so sánh</p>
+                    </div>
+                  )}
+                </Drawer>
+
+                {productsToCompare.length > 0 && (
+                  <div className="fixed bottom-8 right-8">
+                    <button
+                      type="primary"
+                      size="large"
+                      icon={<SwapOutlined />}
+                      onClick={() => setIsCompareDrawerOpen(true)}
+                      className="flex items-center gap-2 px-6 py-3 text-white font-medium rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+                    >
+                      <SwapOutlined className="text-xl" />
+                      So sánh {productsToCompare.length} sản phẩm
+                    </button>
+                  </div>
+                )}
               </>
             )}
           </div>
