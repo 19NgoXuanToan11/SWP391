@@ -28,7 +28,6 @@ import EditProfilePage from "../pages/users/editProfilePage";
 import { SkinCareRoutinePage } from "../pages/users/skinCareRoutine";
 import { ProductRecommendationPage } from "../pages/users/productRecommendation";
 import { ProtectedRoute } from "../components/ProtectedRoute";
-import { ProductComparison } from "../pages/users/ProductComparison";
 import OrderHistoryPage from "../pages/users/orderhistoryPage";
 
 export const router = createBrowserRouter([
@@ -155,10 +154,6 @@ export const router = createBrowserRouter([
       {
         path: "/product-recommendations",
         element: <ProductRecommendationPage />,
-      },
-      {
-        path: "/product-comparison",
-        element: <ProductComparison />,
       },
     ],
   },
