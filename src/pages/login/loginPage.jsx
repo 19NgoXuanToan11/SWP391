@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FaGoogle, FaFacebook, FaGithub } from "react-icons/fa";
+import { FaGoogle } from "react-icons/fa";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import background from "../../assets/pictures/background_login.jpg";
 import { useLoginMutation } from "../../services/api/beautyShopApi";
-import { toast } from "react-toastify";
+import { message } from "antd";
 import { auth } from "../../config/firebase";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../store/slices/authSlice";
-import { message } from "antd";
 
 export function LoginPage() {
   const dispatch = useDispatch();
@@ -32,28 +31,28 @@ export function LoginPage() {
     let valid = true;
     let errors = {};
 
-    // Validate Email
+    // Kiểm tra Email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email) {
-      errors.email = "Email is required";
+      errors.email = "Email là bắt buộc";
       valid = false;
     } else if (!emailRegex.test(formData.email)) {
-      errors.email = "Please enter a valid email address";
+      errors.email = "Vui lòng nhập địa chỉ email hợp lệ";
       valid = false;
     }
 
-    // Validate Password
+    // Kiểm tra Mật khẩu
     if (!formData.password) {
-      errors.password = "Password is required";
+      errors.password = "Mật khẩu là bắt buộc";
       valid = false;
     } else if (formData.password.length < 6) {
-      errors.password = "Password must be at least 6 characters";
+      errors.password = "Mật khẩu phải có ít nhất 6 ký tự";
       valid = false;
     }
 
-    // For Registration, validate password confirmation
+    // Đối với Đăng ký, kiểm tra xác nhận mật khẩu
     if (!isLogin && formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = "Passwords do not match";
+      errors.confirmPassword = "Mật khẩu không khớp";
       valid = false;
     }
 
@@ -90,7 +89,7 @@ export function LoginPage() {
       const from = location.state?.from || "/";
       navigate(from);
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Đăng nhập thất bại:", error);
       message.error({
         content: "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!",
         duration: 2,
@@ -98,13 +97,7 @@ export function LoginPage() {
     }
   };
 
-  const handleNavigateToRegister = () => {
-    navigate("/register");
-  };
-
   const handleLoginByGoogle = () => {
-    console.log("handleLoginByGoogle");
-
     const provider = new GoogleAuthProvider();
 
     signInWithPopup(auth, provider)
@@ -115,49 +108,45 @@ export function LoginPage() {
         console.log(user);
       })
       .catch((error) => {
-        // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
-        // The email of the user's account used.
         const email = error.customData.email;
-        // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
       });
   };
 
   return (
     <div className="h-screen flex overflow-hidden">
-      {/* Left section */}
+      {/* Phần bên trái */}
       <div className="hidden lg:block lg:w-1/2 relative">
         <motion.img
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
           transition={{ duration: 1.5 }}
           src={background}
-          alt="Decorative Background"
+          alt="Hình nền trang trí"
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
 
-      {/* Right section */}
+      {/* Phần bên phải */}
       <div className="w-full lg:w-1/2 h-full bg-gradient-to-br from-gray-50 to-white relative">
-        {/* Decorative Elements */}
+        {/* Các yếu tố trang trí */}
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-pink-50/50 to-transparent" />
         <div className="absolute bottom-0 right-0 w-full h-32 bg-gradient-to-t from-purple-50/50 to-transparent" />
 
-        {/* Main Content Container */}
+        {/* Container nội dung chính */}
         <div className="h-full flex flex-col px-8 md:px-12 py-6">
-          {/* Form Section */}
+          {/* Phần Form */}
           <div className="flex-1 flex flex-col justify-center">
             <div className="mb-6">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                {isLogin ? "Welcome Back" : "Create an Account"}
+                {isLogin ? "Chào mừng trở lại" : "Tạo tài khoản"}
               </h2>
               <p className="mt-1 text-gray-600">
                 {isLogin
-                  ? "Sign in to continue your journey"
-                  : "Sign up to start your journey"}
+                  ? "Đăng nhập để tiếp tục hành trình của bạn"
+                  : "Đăng ký để bắt đầu hành trình của bạn"}
               </p>
             </div>
 
@@ -182,7 +171,7 @@ export function LoginPage() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Password
+                  Mật khẩu
                 </label>
                 <div className="relative">
                   <input
@@ -214,7 +203,7 @@ export function LoginPage() {
               {!isLogin && (
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Confirm Password
+                    Xác nhận mật khẩu
                   </label>
                   <input
                     type="password"
@@ -236,23 +225,23 @@ export function LoginPage() {
                 </div>
               )}
 
-              {/* Remember Me & Forgot Password */}
+              {/* Nhớ tôi & Quên mật khẩu */}
               <div className="flex items-center justify-between">
                 <label className="flex items-center space-x-2 text-sm text-gray-600">
                   <input
                     type="checkbox"
                     className="w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-500"
                   />
-                  <span>Remember me</span>
+                  <span>Nhớ tôi</span>
                 </label>
                 <Link to="/reset">
                   <button className="text-sm text-pink-500 hover:text-pink-600">
-                    Forgot password?
+                    Quên mật khẩu?
                   </button>
                 </Link>
               </div>
 
-              {/* Submit Button */}
+              {/* Nút Gửi */}
               <button
                 type="submit"
                 className="w-full py-2.5 px-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl transition-all transform hover:translate-y-[-1px] hover:shadow-lg hover:from-pink-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500/40 active:scale-[0.99]"
@@ -262,14 +251,14 @@ export function LoginPage() {
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   </div>
                 ) : isLogin ? (
-                  "Sign in"
+                  "Đăng nhập"
                 ) : (
-                  "Sign up"
+                  "Đăng ký"
                 )}
               </button>
             </form>
 
-            {/* Social Login */}
+            {/* Đăng nhập bằng mạng xã hội */}
             <div className="mt-6 space-y-4">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
@@ -277,7 +266,7 @@ export function LoginPage() {
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="px-2 bg-white text-gray-500">
-                    Or continue with
+                    Hoặc tiếp tục với
                   </span>
                 </div>
               </div>
@@ -293,14 +282,14 @@ export function LoginPage() {
                 </button>
               </div>
             </div>
-            {/* Sign Up Link */}
+            {/* Liên kết Đăng ký */}
             {isLogin && (
               <div className="text-center mt-4">
                 <Link
                   to="/register"
                   className="text-sm text-gray-600 hover:text-pink-500 transition-colors"
                 >
-                  Don't have an account? Sign up
+                  Bạn chưa có tài khoản? Đăng ký
                 </Link>
               </div>
             )}

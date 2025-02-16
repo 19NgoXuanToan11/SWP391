@@ -6,7 +6,7 @@ import { RegisterPage } from "../pages/login/registerPage";
 import { AboutPage } from "../pages/users/aboutPage";
 import { ContactPage } from "../pages/users/contactPage";
 import { ProductsPage } from "../pages/users/productPage";
-import ProductDetailPage from "../pages/users/productdetailPage";
+import ProductDetailPage from "../pages/users/productDetailPage";
 import { QuizPage } from "../pages/users/quizPage";
 import { QuizLandingPage } from "../pages/users/quizlandingPage";
 import { ForgotPasswordPage } from "../pages/login/resetPage";
@@ -25,7 +25,11 @@ import ProfilePage from "../pages/users/profilePage";
 import WishlistPage from "../pages/users/wishlistPage";
 import QRPaymentPage from "../pages/users/qrPaymentPage";
 import EditProfilePage from "../pages/users/editProfilePage";
+import { SkinCareRoutinePage } from "../pages/users/skinCareRoutine";
+import { ProductRecommendationPage } from "../pages/users/productRecommendation";
 import { ProtectedRoute } from "../components/ProtectedRoute";
+import { ProductComparison } from "../pages/users/ProductComparison";
+import OrderHistoryPage from "../pages/users/orderhistoryPage";
 
 export const router = createBrowserRouter([
   {
@@ -105,6 +109,10 @@ export const router = createBrowserRouter([
         element: <OrdersPage />,
       },
       {
+        path: "orders",
+        element: <OrderHistoryPage />,
+      },
+      {
         path: "category",
         element: <CategoryPage />,
       },
@@ -139,6 +147,18 @@ export const router = createBrowserRouter([
       {
         path: "wishlist",
         element: <WishlistPage />,
+      },
+      {
+        path: "/skin-care-routine",
+        element: <SkinCareRoutinePage />,
+      },
+      {
+        path: "/product-recommendations",
+        element: <ProductRecommendationPage />,
+      },
+      {
+        path: "/product-comparison",
+        element: <ProductComparison />,
       },
     ],
   },

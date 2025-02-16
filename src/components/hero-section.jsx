@@ -21,7 +21,7 @@ export function HeroSection() {
 
   return (
     <section className="relative bg-gradient-to-br from-mint-50 to-pink-50 py-20">
-      {/* Background decoration */}
+      {/* Trang trí nền */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-pink-100 rounded-full opacity-20 blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-mint-100 rounded-full opacity-20 blur-3xl" />
@@ -29,39 +29,40 @@ export function HeroSection() {
 
       <div className="relative container mx-auto px-4 z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Text Content */}
+          {/* Nội dung văn bản */}
           <div className="space-y-10">
             <div className="space-y-6">
               <h1 className="text-4xl md:text-5xl xl:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
-                Discover Your <br />
+                Khám Phá <br />
                 <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
-                  Natural Beauty
+                  Vẻ Đẹp Tự Nhiên
                 </span>
               </h1>
               <p className="text-lg text-gray-600 md:text-xl max-w-2xl leading-relaxed">
-                Embark on a transformative skincare journey tailored just for
-                you. Our expert aestheticians create bespoke beauty rituals that
-                nurture and enhance your skin's natural radiance.
+                Bắt đầu hành trình chăm sóc da biến đổi được thiết kế riêng cho
+                bạn. Các chuyên gia thẩm mỹ của chúng tôi tạo ra những nghi lễ
+                làm đẹp độc đáo giúp nuôi dưỡng và nâng cao vẻ rạng rỡ tự nhiên
+                của làn da bạn.
               </p>
             </div>
 
-            {/* CTA Buttons */}
+            {/* Nút CTA */}
 
             <div className="flex flex-wrap gap-6">
               <Link to="/product">
                 <button className="px-10 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-medium shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/40 transition-all duration-300">
-                  Begin Your Journey
+                  Bắt Đầu Hành Trình Của Bạn
                 </button>
               </Link>
               <Link to="/quiz-landing">
                 <button className="px-10 py-4 bg-white/80 backdrop-blur-sm border border-pink-100 text-gray-900 rounded-full font-medium hover:bg-white hover:border-pink-200 hover:scale-105 hover:shadow-lg transition-all duration-300">
-                  Explore Services
+                  Khám Phá Dịch Vụ
                 </button>
               </Link>
             </div>
           </div>
 
-          {/* Image Grid */}
+          {/* Lưới hình ảnh */}
           <div className="relative">
             <div className="grid grid-cols-2 gap-4">
               {imageCollections.map((collection, index) => (
@@ -71,20 +72,20 @@ export function HeroSection() {
                   onMouseEnter={() => setHoveredImage(index)}
                   onMouseLeave={() => setHoveredImage(null)}
                 >
-                  {/* Default Image */}
+                  {/* Hình ảnh mặc định */}
                   <img
                     src={collection.default}
-                    alt={`Skincare Treatment ${index + 1}`}
+                    alt={`Điều Trị Da ${index + 1}`}
                     className={`h-full w-full object-cover transition-opacity duration-500 ${
                       hoveredImage === index ? "opacity-0" : "opacity-100"
                     }`}
                     style={{ position: "absolute", top: 0, left: 0 }}
                   />
 
-                  {/* Hover Image */}
+                  {/* Hình ảnh khi di chuột */}
                   <img
                     src={collection.hover}
-                    alt={`Skincare Treatment ${index + 1} Hover`}
+                    alt={`Điều Trị Da ${index + 1} Khi Di Chuột`}
                     className={`h-full w-full object-cover transition-opacity duration-500 ${
                       hoveredImage === index ? "opacity-100" : "opacity-0"
                     }`}

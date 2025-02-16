@@ -24,10 +24,17 @@ export function ProductsPage() {
         "https://6793c6495eae7e5c4d8fd8d4.mockapi.io/api/skincare"
       );
       const data = await response.json();
-      setProducts(data);
-      setFilteredProducts(data);
+      const convertedData = data.map((product) => ({
+        ...product,
+        price: product.price * 24500,
+        originalPrice: product.originalPrice
+          ? product.originalPrice * 24500
+          : null,
+      }));
+      setProducts(convertedData);
+      setFilteredProducts(convertedData);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("Lỗi khi tải sản phẩm:", error);
     } finally {
       setLoading(false);
     }
@@ -83,7 +90,6 @@ export function ProductsPage() {
     // Filter by volume
     if (filters.volumes && filters.volumes.length > 0) {
       filtered = filtered.filter((product) => {
-        // Kiểm tra nếu volume của sản phẩm khớp với bất kỳ volume nào được chọn
         return filters.volumes.some(
           (volume) =>
             product.volume &&
@@ -104,9 +110,9 @@ export function ProductsPage() {
   };
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("vi-VN", {
       style: "currency",
-      currency: "USD",
+      currency: "VND",
     }).format(price);
   };
 
@@ -141,10 +147,10 @@ export function ProductsPage() {
             {filteredProducts.length === 0 ? (
               <div className="text-center py-10">
                 <h3 className="text-lg font-medium text-gray-900">
-                  No products found
+                  Không tìm thấy sản phẩm
                 </h3>
                 <p className="mt-2 text-sm text-gray-500">
-                  Please try different filters
+                  Vui lòng thử lại với bộ lọc khác
                 </p>
               </div>
             ) : (
@@ -180,16 +186,16 @@ export function ProductsPage() {
                           {product.description}
                         </p>
                         <div className="text-sm text-gray-600 mb-2">
-                          <p>Volume: {product.volume}</p>
-                          <p>Skin Type: {product.skinType}</p>
+                          <p>Thể Tích: {product.volume}</p>
+                          <p>Loại Da: {product.skinType}</p>
                           {product.keyIngredients && (
-                            <p>Key Ingredients: {product.keyIngredients}</p>
+                            <p>Thành Phần Chính: {product.keyIngredients}</p>
                           )}
                         </div>
                         <div className="flex-grow"></div>
                         <div className="mt-4 flex items-center justify-between">
                           <div className="flex flex-col">
-                            <span className="text-pink-500 font-bold">
+                            <span className="text-pink-500 font-bold text-lg">
                               {formatPrice(product.price)}
                             </span>
                             {product.originalPrice && (
@@ -202,7 +208,7 @@ export function ProductsPage() {
                             className="bg-pink-500 text-white text-sm font-semibold py-2 px-4 rounded-lg hover:bg-pink-600 transition duration-300 min-w-[100px]"
                             onClick={() => handleBuyNowClick(product.id)}
                           >
-                            Buy Now
+                            Mua Ngay
                           </button>
                         </div>
                       </div>

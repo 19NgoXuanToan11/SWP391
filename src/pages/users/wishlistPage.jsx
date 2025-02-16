@@ -12,6 +12,7 @@ import {
   Space,
   Divider,
   theme,
+  notification,
 } from "antd";
 import {
   HeartFilled,
@@ -19,6 +20,8 @@ import {
   DeleteOutlined,
   TagOutlined,
 } from "@ant-design/icons";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
@@ -165,36 +168,39 @@ const WishlistPage = () => {
   const wishlistItems = [
     {
       id: 1,
-      name: "Perfect Glow Foundation",
-      brand: "Beauty Essentials",
+      name: "Kem Dưỡng Ẩm Chuyên Sâu",
+      brand: "La Roche-Posay",
       price: 890000,
       originalPrice: 1200000,
       rating: 4.5,
-      image: "https://source.unsplash.com/random/400x400/?cosmetics",
+      image: "https://source.unsplash.com/random/400x400/?moisturizer",
       discount: 25,
       stock: true,
+      description: "Kem dưỡng ẩm chuyên sâu với công thức đột phá, phù hợp mọi loại da"
     },
     {
       id: 2,
-      name: "Hydrating Serum",
-      brand: "Skin Care Pro",
+      name: "Serum Vitamin C Sáng Da",
+      brand: "The Ordinary",
       price: 750000,
       originalPrice: 850000,
       rating: 5,
       image: "https://source.unsplash.com/random/400x400/?serum",
       discount: 12,
       stock: true,
+      description: "Serum vitamin C giúp làm sáng da, mờ thâm nám hiệu quả"
     },
     {
       id: 3,
-      name: "Matte Lipstick Collection",
-      brand: "Glamour",
+      name: "Son Dưỡng Môi Collagen",
+      brand: "Laneige",
       price: 450000,
       originalPrice: 500000,
       rating: 4,
-      image: "https://source.unsplash.com/random/400x400/?lipstick",
+      image: "https://source.unsplash.com/random/400x400/?lipbalm",
       discount: 10,
       stock: false,
+      description: "Son dưỡng môi chứa collagen, giúp môi căng mọng, hồng hào"
     },
   ];
 
@@ -205,119 +211,148 @@ const WishlistPage = () => {
     }).format(price);
   };
 
+  const handleRemoveFromWishlist = (id) => {
+    notification.success({
+      message: "Đã xóa khỏi danh sách yêu thích",
+      placement: "bottomRight",
+    });
+  };
+
+  const handleAddToCart = (item) => {
+    if (!item.stock) return;
+    notification.success({
+      message: "Đã thêm vào giỏ hàng",
+      description: `${item.name} đã được thêm vào giỏ hàng của bạn.`,
+      placement: "bottomRight",
+    });
+  };
+
   return (
-    <div style={customStyles.pageContainer}>
-      <div style={customStyles.headerSection}>
-        <Title level={2} style={customStyles.headerTitle}>
-          <HeartFilled style={customStyles.heartIcon} />
-          Danh sách yêu thích
-        </Title>
-        <Text type="secondary">
-          {wishlistItems.length} sản phẩm trong danh sách yêu thích của bạn
-        </Text>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-block"
+          >
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4 flex items-center justify-center">
+              <HeartFilled className="text-pink-500 mr-4" />
+              Danh Sách Yêu Thích
+            </h1>
+            <p className="text-gray-600 text-lg">
+              {wishlistItems.length} sản phẩm trong danh sách yêu thích của bạn
+            </p>
+          </motion.div>
+        </div>
 
-      {wishlistItems.length > 0 ? (
-        <Row gutter={[24, 24]}>
-          {wishlistItems.map((item) => (
-            <Col xs={24} sm={12} md={8} key={item.id}>
-              <Card
-                hoverable
-                style={customStyles.productCard}
-                bodyStyle={{ padding: 20 }}
-                cover={
-                  <div style={customStyles.imageContainer}>
-                    <Image
-                      alt={item.name}
-                      src={item.image}
-                      style={customStyles.productImage}
-                      preview={false}
-                    />
-                    {item.discount > 0 && (
-                      <Tag color={colors.red} style={customStyles.discountTag}>
-                        <TagOutlined /> -{item.discount}%
-                      </Tag>
-                    )}
-                  </div>
-                }
+        {wishlistItems.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {wishlistItems.map((item, index) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="group"
               >
-                <Space
-                  direction="vertical"
-                  size="small"
-                  style={{ width: "100%" }}
-                >
-                  <Text style={customStyles.brandText}>{item.brand}</Text>
-                  <Text style={customStyles.productName}>{item.name}</Text>
-                  <Rate
-                    disabled
-                    defaultValue={item.rating}
-                    style={{ fontSize: 12 }}
-                  />
-                  <div style={customStyles.priceContainer}>
-                    <Text style={customStyles.currentPrice}>
-                      {formatPrice(item.price)}
-                    </Text>
-                    {item.originalPrice > item.price && (
-                      <Text style={customStyles.originalPrice}>
-                        {formatPrice(item.originalPrice)}
-                      </Text>
+                <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
+                  {/* Image Section */}
+                  <div className="relative">
+                    <div className="aspect-w-1 aspect-h-1 overflow-hidden">
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        className="object-cover w-full h-full transform group-hover:scale-110 transition-transform duration-500"
+                        preview={false}
+                      />
+                    </div>
+                    {item.discount > 0 && (
+                      <div className="absolute top-4 left-4">
+                        <Tag color="red" className="px-3 py-1 text-sm font-semibold rounded-full">
+                          -{item.discount}% GIẢM
+                        </Tag>
+                      </div>
                     )}
+                    <button
+                      onClick={() => handleRemoveFromWishlist(item.id)}
+                      className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-full 
+                                hover:bg-red-50 transition-colors duration-300"
+                    >
+                      <DeleteOutlined className="text-red-500 text-lg" />
+                    </button>
                   </div>
 
-                  <Divider style={{ margin: "16px 0" }} />
+                  {/* Content Section */}
+                  <div className="p-6">
+                    <div className="mb-4">
+                      <p className="text-gray-500 text-sm mb-2">{item.brand}</p>
+                      <h3 className="text-xl font-bold text-gray-800 mb-2">{item.name}</h3>
+                      <p className="text-gray-600 text-sm line-clamp-2">{item.description}</p>
+                    </div>
 
-                  <Space
-                    style={{ width: "100%", justifyContent: "space-between" }}
-                  >
-                    <Button
-                      type="primary"
-                      icon={<ShoppingCartOutlined />}
+                    <div className="mb-4">
+                      <Rate disabled defaultValue={item.rating} className="text-sm" />
+                    </div>
+
+                    <div className="flex items-center justify-between mb-6">
+                      <div>
+                        <p className="text-2xl font-bold text-pink-600">
+                          {formatPrice(item.price)}
+                        </p>
+                        {item.originalPrice > item.price && (
+                          <p className="text-sm text-gray-400 line-through">
+                            {formatPrice(item.originalPrice)}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => handleAddToCart(item)}
                       disabled={!item.stock}
-                      style={{
-                        ...customStyles.actionButton,
-                        ...customStyles.cartButton,
-                      }}
+                      className={`w-full py-3 px-4 rounded-xl flex items-center justify-center space-x-2 
+                                font-semibold transition-all duration-300
+                                ${
+                                  item.stock
+                                    ? "bg-pink-600 hover:bg-pink-700 text-white"
+                                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                }`}
                     >
-                      {item.stock ? "Thêm vào giỏ" : "Hết hàng"}
-                    </Button>
-                    <Button
-                      type="text"
-                      icon={<DeleteOutlined />}
-                      style={{
-                        ...customStyles.actionButton,
-                        ...customStyles.deleteButton,
-                      }}
-                    />
-                  </Space>
-                </Space>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      ) : (
-        <Card style={{ textAlign: "center", padding: "48px" }}>
-          <Empty
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description={
-              <Space direction="vertical" size="large" align="center">
-                <Text style={{ fontSize: 16, color: colors.dark }}>
-                  Danh sách yêu thích của bạn đang trống
-                </Text>
-                <Button
-                  type="primary"
-                  size="large"
-                  style={{
-                    ...customStyles.actionButton,
-                    ...customStyles.cartButton,
-                  }}
-                >
-                  Khám phá sản phẩm
-                </Button>
-              </Space>
-            }
-          />
-        </Card>
-      )}
+                      <ShoppingCartOutlined className="text-xl" />
+                      <span>{item.stock ? "Thêm vào giỏ hàng" : "Hết hàng"}</span>
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-3xl shadow-lg p-12 text-center"
+          >
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description={
+                <div className="space-y-4">
+                  <p className="text-gray-600 text-lg">
+                    Danh sách yêu thích của bạn đang trống
+                  </p>
+                  <Link to="/product">
+                    <button className="bg-pink-600 text-white px-8 py-3 rounded-xl font-semibold
+                                     hover:bg-pink-700 transition-colors duration-300">
+                      Khám phá sản phẩm
+                    </button>
+                  </Link>
+                </div>
+              }
+            />
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 };

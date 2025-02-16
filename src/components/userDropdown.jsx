@@ -14,7 +14,7 @@ export const UserDropdown = ({ user }) => {
 
   const userMenu = (
     <div className="bg-white rounded-xl shadow-lg py-2 w-52 border border-gray-100">
-      {/* User Info Header */}
+      {/* Thông tin người dùng */}
       <div className="px-4 py-3 border-b border-gray-100 bg-gradient-to-r from-pink-50 to-purple-50">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center">
@@ -24,21 +24,21 @@ export const UserDropdown = ({ user }) => {
           </div>
           <div>
             <h3 className="text-sm font-medium text-gray-800">
-              {user?.name || "User"}
+              {user?.name || "Người dùng"}
             </h3>
             <p className="text-xs text-gray-500">{user?.email}</p>
           </div>
         </div>
       </div>
 
-      {/* Menu Items */}
+      {/* Mục menu */}
       <div className="py-2">
         <Link
           to="/profile"
           className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors"
         >
           <UserOutlined className="mr-3 text-lg" />
-          <span>My Profile</span>
+          <span>Hồ sơ của tôi</span>
         </Link>
 
         <Link
@@ -46,7 +46,7 @@ export const UserDropdown = ({ user }) => {
           className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors"
         >
           <ShoppingOutlined className="mr-3 text-lg" />
-          <span>My Orders</span>
+          <span>Đơn hàng của tôi</span>
         </Link>
 
         <Link
@@ -54,18 +54,8 @@ export const UserDropdown = ({ user }) => {
           className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors"
         >
           <HeartOutlined className="mr-3 text-lg" />
-          <span>Wishlist</span>
+          <span>Danh sách yêu thích</span>
         </Link>
-
-        <Link
-          to="/settings"
-          className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors"
-        >
-          <SettingOutlined className="mr-3 text-lg" />
-          <span>Settings</span>
-        </Link>
-
-        <div className="border-t border-gray-100 my-2"></div>
 
         <button
           onClick={() => {
@@ -75,7 +65,7 @@ export const UserDropdown = ({ user }) => {
           className="w-full flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
         >
           <LogoutOutlined className="mr-3 text-lg" />
-          <span>Logout</span>
+          <span>Đăng xuất</span>
         </button>
       </div>
     </div>

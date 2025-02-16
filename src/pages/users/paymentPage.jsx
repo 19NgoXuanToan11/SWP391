@@ -38,22 +38,22 @@ export function PaymentPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
-  // Mock data
+  // Dữ liệu mẫu
   const orderDetails = {
     orderId: "ORD-2024-001",
-    totalAmount: 52,
+    totalAmount: 1200000, // Changed to VND
     items: [
       {
         id: 1,
-        name: "Perfect Glow Foundation",
-        price: 37,
+        name: "Kem Nền Hoàn Hảo",
+        price: 850000, // Changed to VND
         quantity: 1,
         image: "https://source.unsplash.com/random/100x100/?cosmetics",
       },
       {
         id: 2,
-        name: "Hydrating Serum",
-        price: 15,
+        name: "Serum Dưỡng Ẩm",
+        price: 350000, // Changed to VND
         quantity: 1,
         image: "https://source.unsplash.com/random/100x100/?serum",
       },
@@ -63,9 +63,9 @@ export function PaymentPage() {
   const paymentMethods = [
     {
       value: "qr",
-      label: "QR Code Payment",
+      label: "Thanh Toán Qua Mã QR",
       icon: <QrcodeOutlined />,
-      description: "Quick payment via banking app",
+      description: "Thanh toán nhanh chóng qua ứng dụng ngân hàng",
     },
   ];
 
@@ -74,18 +74,18 @@ export function PaymentPage() {
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setPaymentSuccess(true);
-      message.success("Payment successful!");
+      message.success("Thanh toán thành công!");
     } catch (error) {
-      message.error("An error occurred. Please try again!");
+      message.error("Đã xảy ra lỗi. Vui lòng thử lại!");
     } finally {
       setIsProcessing(false);
     }
   };
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("vi-VN", {
       style: "currency",
-      currency: "USD",
+      currency: "VND",
     }).format(price);
   };
 
@@ -106,11 +106,11 @@ export function PaymentPage() {
               level={2}
               className="mb-2 bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent"
             >
-              Order Payment
+              Thanh Toán Đơn Hàng
             </Title>
             <Space align="center">
               <SafetyOutlined className="text-green-500" />
-              <Text type="secondary">Safe & Secure Payment</Text>
+              <Text type="secondary">Thanh toán an toàn và bảo mật</Text>
             </Space>
           </div>
 
@@ -120,7 +120,7 @@ export function PaymentPage() {
                 title={
                   <Space>
                     <ShoppingOutlined className="text-pink-500" />
-                    <span>Order Details</span>
+                    <span>Chi Tiết Đơn Hàng</span>
                   </Space>
                 }
                 className="mb-6"
@@ -148,7 +148,7 @@ export function PaymentPage() {
                           </Text>
                           <div>
                             <Text type="secondary">
-                              Quantity: {item.quantity}
+                              Số lượng: {item.quantity}
                             </Text>
                           </div>
                         </div>
@@ -163,7 +163,7 @@ export function PaymentPage() {
                 <div className="mt-6 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl">
                   <div className="flex justify-between items-center">
                     <Text strong className="text-lg">
-                      Total Payment
+                      Tổng Thanh Toán
                     </Text>
                     <Title
                       level={3}
@@ -181,7 +181,7 @@ export function PaymentPage() {
                 title={
                   <Space>
                     <CreditCardOutlined className="text-pink-500" />
-                    <span>Payment Method</span>
+                    <span>Phương Thức Thanh Toán</span>
                   </Space>
                 }
                 className="mb-6"
@@ -194,11 +194,11 @@ export function PaymentPage() {
                       <CheckCircleOutlined className="text-4xl text-green-500" />
                     </div>
                     <Title level={4} className="!mb-2">
-                      Payment Successful!
+                      Thanh Toán Thành Công!
                     </Title>
                     <Paragraph type="secondary">
-                      Thank you for your purchase. Your order will be processed
-                      immediately.
+                      Cảm ơn bạn đã mua hàng. Đơn hàng của bạn sẽ được xử lý
+                      ngay lập tức.
                     </Paragraph>
                     <Button
                       type="primary"
@@ -207,7 +207,7 @@ export function PaymentPage() {
                       className="mt-4 bg-gradient-to-r from-pink-500 to-purple-500"
                       onClick={() => (window.location.href = "/orders")}
                     >
-                      View Orders
+                      Xem Đơn Hàng
                     </Button>
                   </div>
                 ) : (
@@ -256,7 +256,7 @@ export function PaymentPage() {
                           borderColor: "transparent",
                         }}
                       >
-                        {isProcessing ? "Processing..." : "Pay Now"}
+                        {isProcessing ? "Đang Xử Lý..." : "Thanh Toán Ngay"}
                       </Button>
 
                       <Button
@@ -264,7 +264,7 @@ export function PaymentPage() {
                         block
                         className="mt-2 text-gray-500 hover:text-pink-500"
                       >
-                        Cancel Payment
+                        Hủy Thanh Toán
                       </Button>
                     </div>
                   </>
@@ -277,13 +277,13 @@ export function PaymentPage() {
               >
                 <Space direction="vertical" className="w-full">
                   <div className="flex justify-between items-center">
-                    <Text>Order ID:</Text>
+                    <Text>Mã Đơn Hàng:</Text>
                     <Tag color="pink">{orderDetails.orderId}</Tag>
                   </div>
                   <div className="flex justify-between items-center">
-                    <Text>Status:</Text>
+                    <Text>Trạng Thái:</Text>
                     <Tag color={paymentSuccess ? "success" : "processing"}>
-                      {paymentSuccess ? "Paid" : "Pending"}
+                      {paymentSuccess ? "Đã Thanh Toán" : "Đang Chờ"}
                     </Tag>
                   </div>
                 </Space>

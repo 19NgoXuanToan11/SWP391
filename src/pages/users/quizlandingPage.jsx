@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 export function QuizLandingPage() {
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-pink-700">
-      {/* Animated Background Pattern */}
+      {/* Mẫu nền hoạt hình */}
       <div
         className="absolute inset-0 opacity-10 animate-slide"
         style={{
@@ -14,31 +14,31 @@ export function QuizLandingPage() {
         }}
       />
 
-      {/* Content */}
+      {/* Nội dung */}
       <div className="relative min-h-screen flex flex-col items-center justify-center px-4 text-center">
-        {/* Decorative Circle */}
+        {/* Hình tròn trang trí */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-pink-500/20 rounded-full blur-3xl" />
 
         <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-white">
-            Facial Check
+            Kiểm Tra Da
           </span>
         </h1>
 
         <p className="max-w-xl text-gray-200 mb-12 text-lg leading-relaxed animate-fade-in-delay">
-          True beauty shines from within, but the right skincare enhances that
-          glow, helping you radiate confidence and embrace your natural
-          brilliance.
+          Vẻ đẹp thực sự tỏa sáng từ bên trong, nhưng sản phẩm chăm sóc da phù
+          hợp sẽ làm nổi bật ánh sáng đó, giúp bạn tỏa ra sự tự tin và ôm trọn
+          vẻ đẹp tự nhiên của mình.
         </p>
 
         <Link to="/quiz">
           <button className="group relative px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(236,72,153,0.5)] active:scale-95">
-            <span className="relative z-10">Start Your Journey</span>
+            <span className="relative z-10">Bắt Đầu Hành Trình Của Bạn</span>
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </button>
         </Link>
 
-        {/* Enhanced Glowing Points */}
+        {/* Các điểm sáng được nâng cao */}
         <div className="absolute inset-0 pointer-events-none">
           {[...Array(12)].map((_, i) => (
             <div

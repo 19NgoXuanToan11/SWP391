@@ -36,22 +36,22 @@ export function SiteHeader() {
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-500 ${
         isScrolled
-          ? "bg-white/70 backdrop-blur-lg border-b border-gray-100/50 shadow-sm h-[100px]"
-          : "bg-white h-[90px]"
+          ? "bg-white/70 backdrop-blur-lg border-b border-gray-100/50 shadow-sm h-[80px]"
+          : "bg-white h-[150px]"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 h-full">
+      <div className="max-w-7xl mx-auto px-8 h-full">
         <div className="flex items-center justify-between h-full">
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center transition-transform duration-300 hover:opacity-80"
+            className="flex-shrink-0 transition-transform duration-300 hover:opacity-80"
           >
             <img
               src={blackWhiteLogo}
               alt="Beauty & Care Logo"
               className={`transition-all duration-300 ${
-                isScrolled ? "h-[120px]" : "h-[120px]"
+                isScrolled ? "h-[150px]" : "h-[150px]"
               }`}
             />
           </Link>
@@ -59,68 +59,67 @@ export function SiteHeader() {
           {/* Navigation */}
           <nav className="flex items-center justify-center flex-1 px-8">
             {/* Primary Navigation */}
-            <div className="hidden lg:flex items-center justify-between space-x-8 w-full max-w-2xl">
+            <div className="hidden lg:flex items-center space-x-12 w-full max-w-4xl justify-center">
               <NavLink
                 to="/"
-                icon={<HomeOutlined className="text-lg" />}
-                text="Home"
+                icon={<HomeOutlined className="text-xl" />}
+                text="Trang chủ"
               />
               <NavLink
                 to="/about"
-                icon={<UserOutlined className="text-lg" />}
-                text="About"
+                icon={<UserOutlined className="text-xl" />}
+                text="Giới thiệu"
               />
               <NavLink
                 to="/product"
-                icon={<ShoppingOutlined className="text-lg" />}
-                text="Products"
+                icon={<ShoppingOutlined className="text-xl" />}
+                text="Sản phẩm"
               />
               <NavLink
                 to="/contact"
-                icon={<ContactsOutlined className="text-lg" />}
-                text="Contact"
+                icon={<ContactsOutlined className="text-xl" />}
+                text="Liên hệ"
               />
               <NavLink
                 to="/quiz-landing"
-                icon={<FileDoneOutlined className="text-lg" />}
-                text="Quiz"
+                icon={<FileDoneOutlined className="text-xl" />}
+                text="Kiểm tra"
               />
             </div>
 
             {/* Secondary Navigation */}
             <div className="flex items-center ml-auto space-x-6">
-              {/* Cart */}
+              {/* Giỏ hàng */}
               <Link
                 to="/cart"
-                className="flex items-center space-x-2 px-4 py-2 text-gray-700 border border-gray-200 
+                className="flex items-center space-x-3 px-4 py-2.5 text-gray-700 border border-gray-200 
                           rounded-lg hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 group"
               >
-                <span className="flex items-center justify-center w-5 h-5">
-                  <ShoppingCartOutlined className="text-lg text-gray-500 group-hover:text-pink-700 transition-colors" />
+                <ShoppingCartOutlined className="text-xl text-gray-500 group-hover:text-pink-700 transition-colors" />
+                <span className="font-medium text-base whitespace-nowrap">
+                  Giỏ hàng
                 </span>
-                <span className="font-medium">Cart</span>
                 <span
-                  className="flex items-center justify-center w-5 h-5 bg-gray-100 text-gray-700 
-                               text-xs font-semibold rounded-full group-hover:bg-gray-200 transition-colors"
+                  className="flex items-center justify-center w-6 h-6 bg-gray-100 text-gray-700 
+                               text-sm font-semibold rounded-full group-hover:bg-gray-200 transition-colors"
                 >
                   3
                 </span>
               </Link>
 
-              {/* Auth Section */}
-              <div className="flex items-center space-x-6">
+              {/* Phần xác thực */}
+              <div className="flex items-center">
                 {isAuthenticated ? (
                   <UserDropdown user={user} />
                 ) : (
-                  <>
-                    <Link
-                      to="/login"
-                      className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors"
-                    >
-                      <UserOutlined className="text-lg" />
-                      <span className="text-sm">Đăng nhập / Đăng ký</span>
-                    </Link>
-                  </>
+                  <Link
+                    to="/login"
+                    className="flex items-center space-x-3 px-4 py-2.5 text-gray-700 hover:text-gray-900 
+                             transition-colors whitespace-nowrap text-base font-medium"
+                  >
+                    <UserOutlined className="text-xl" />
+                    <span>Đăng nhập/Đăng ký</span>
+                  </Link>
                 )}
               </div>
             </div>
@@ -136,20 +135,17 @@ function NavLink({ to, icon, text }) {
   return (
     <Link
       to={to}
-      className="flex items-center text-gray-600 hover:text-gray-900 px-4 py-2 
-                relative group transition-colors duration-300"
+      className="flex flex-col items-center text-gray-600 hover:text-gray-900 px-4 py-2 
+                relative group transition-colors duration-300 text-center whitespace-nowrap"
     >
-      {/* Icon và Text container */}
-      <div className="flex items-center space-x-2">
-        <span className="flex items-center justify-center w-5 h-5">{icon}</span>
-        <span className="font-medium">{text}</span>
-      </div>
-
-      {/* Hover Effect Border */}
+      <span className="flex items-center justify-center w-6 h-6 mb-1.5">
+        {icon}
+      </span>
+      <span className="text-base font-medium">{text}</span>
       <span
         className="absolute bottom-0 left-0 w-full h-0.5 bg-pink-600 
-                     transform scale-x-0 group-hover:scale-x-100 
-                     transition-transform duration-300 origin-left"
+                   transform scale-x-0 group-hover:scale-x-100 
+                   transition-transform duration-300 origin-left"
       ></span>
     </Link>
   );

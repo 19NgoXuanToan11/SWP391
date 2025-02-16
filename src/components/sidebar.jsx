@@ -6,13 +6,31 @@ export function Sidebar({ onFilterChange }) {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSkinTypes, setSelectedSkinTypes] = useState([]);
-  const [selectedCapacities, setSelectedCapacities] = useState([]);
-  const [selectedGenders, setSelectedGenders] = useState([]);
-  const [selectedOrigins, setSelectedOrigins] = useState([]);
   const [selectedVolumes, setSelectedVolumes] = useState([]);
 
-  // Danh sách volume cố định
-  const volumeOptions = ["30mL", "50mL", "60mL", "100mL"];
+  // Danh sách các option cố định
+  const volumeOptions = ["30mL", "50mL", "60mL", "100mL", "200mL"];
+  const brandOptions = [
+    "La Roche-Posay",
+    "L'Oréal",
+    "Innisfree",
+    "Laneige",
+    "The Ordinary",
+    "Cerave",
+  ];
+  const categoryOptions = [
+    "Chăm sóc da",
+    "Sữa rửa mặt",
+    "Kem dưỡng ẩm",
+    "Serum",
+  ];
+  const skinTypeOptions = [
+    "Da thường",
+    "Da dầu",
+    "Da khô",
+    "Da hỗn hợp",
+    "Da nhạy cảm",
+  ];
 
   // Xử lý thay đổi tìm kiếm
   const handleSearchChange = (e) => {
@@ -23,7 +41,6 @@ export function Sidebar({ onFilterChange }) {
 
   // Xử lý thay đổi khoảng giá
   const handlePriceChange = (type, value) => {
-    // Chuyển đổi giá trị sang số
     const numericValue = value === "" ? "" : parseFloat(value);
     const newPriceRange = { ...priceRange, [type]: numericValue };
     setPriceRange(newPriceRange);
@@ -31,55 +48,47 @@ export function Sidebar({ onFilterChange }) {
   };
 
   // Xử lý thay đổi checkbox
-  const handleCheckboxChange = (type, value, setter) => {
+  const handleCheckboxChange = (type, value) => {
     let newSelected;
-    if (type === "volumes") {
-      newSelected = selectedVolumes.includes(value)
-        ? selectedVolumes.filter((item) => item !== value)
-        : [...selectedVolumes, value];
-      setSelectedVolumes(newSelected);
-    } else if (type === "brands") {
-      newSelected = selectedBrands.includes(value)
-        ? selectedBrands.filter((item) => item !== value)
-        : [...selectedBrands, value];
-      setSelectedBrands(newSelected);
-    } else if (type === "categories") {
-      newSelected = selectedCategories.includes(value)
-        ? selectedCategories.filter((item) => item !== value)
-        : [...selectedCategories, value];
-      setSelectedCategories(newSelected);
-    } else if (type === "skinTypes") {
-      newSelected = selectedSkinTypes.includes(value)
-        ? selectedSkinTypes.filter((item) => item !== value)
-        : [...selectedSkinTypes, value];
-      setSelectedSkinTypes(newSelected);
+    switch (type) {
+      case "volumes":
+        newSelected = selectedVolumes.includes(value)
+          ? selectedVolumes.filter((item) => item !== value)
+          : [...selectedVolumes, value];
+        setSelectedVolumes(newSelected);
+        break;
+      case "brands":
+        newSelected = selectedBrands.includes(value)
+          ? selectedBrands.filter((item) => item !== value)
+          : [...selectedBrands, value];
+        setSelectedBrands(newSelected);
+        break;
+      case "categories":
+        newSelected = selectedCategories.includes(value)
+          ? selectedCategories.filter((item) => item !== value)
+          : [...selectedCategories, value];
+        setSelectedCategories(newSelected);
+        break;
+      case "skinTypes":
+        newSelected = selectedSkinTypes.includes(value)
+          ? selectedSkinTypes.filter((item) => item !== value)
+          : [...selectedSkinTypes, value];
+        setSelectedSkinTypes(newSelected);
+        break;
+      default:
+        return;
     }
 
-    applyFilters({
-      [type]: newSelected,
-    });
+    applyFilters({ [type]: newSelected });
   };
 
-  // Xử lý thay đổi checkbox cho volume
-  const handleVolumeChange = (volume) => {
-    const newSelectedVolumes = selectedVolumes.includes(volume)
-      ? selectedVolumes.filter((item) => item !== volume)
-      : [...selectedVolumes, volume];
-
-    setSelectedVolumes(newSelectedVolumes);
-    applyFilters({ volumes: newSelectedVolumes });
-  };
-
-  // Reset tất cả các filter
+  // Đặt lại tất cả các bộ lọc
   const handleResetFilters = () => {
     setSearchTerm("");
     setPriceRange({ min: "", max: "" });
     setSelectedBrands([]);
     setSelectedCategories([]);
     setSelectedSkinTypes([]);
-    setSelectedCapacities([]);
-    setSelectedGenders([]);
-    setSelectedOrigins([]);
     setSelectedVolumes([]);
 
     onFilterChange({
@@ -88,14 +97,11 @@ export function Sidebar({ onFilterChange }) {
       brands: [],
       categories: [],
       skinTypes: [],
-      capacities: [],
-      genders: [],
-      origins: [],
       volumes: [],
     });
   };
 
-  // Áp dụng tất cả các filter
+  // Áp dụng tất cả các bộ lọc
   const applyFilters = (changedFilter) => {
     onFilterChange({
       searchTerm,
@@ -103,9 +109,6 @@ export function Sidebar({ onFilterChange }) {
       brands: selectedBrands,
       categories: selectedCategories,
       skinTypes: selectedSkinTypes,
-      capacities: selectedCapacities,
-      genders: selectedGenders,
-      origins: selectedOrigins,
       volumes: selectedVolumes,
       ...changedFilter,
     });
@@ -113,7 +116,7 @@ export function Sidebar({ onFilterChange }) {
 
   return (
     <div className="w-64 bg-white p-4 rounded-lg shadow-md">
-      {/* Search */}
+      {/* Tìm kiếm */}
       <div className="mb-4">
         <input
           type="text"
@@ -124,100 +127,84 @@ export function Sidebar({ onFilterChange }) {
         />
       </div>
 
-      {/* Reset Filters */}
+      {/* Đặt lại bộ lọc */}
       <button
         onClick={handleResetFilters}
         className="w-full bg-pink-500 text-white py-2 rounded-lg font-semibold hover:bg-pink-600 mb-4"
       >
-        Reset Filters
+        Đặt lại bộ lọc
       </button>
 
-      {/* Price Range */}
+      {/* Khoảng giá */}
       <div className="mb-6">
-        <h3 className="text-lg font-bold mb-2">Price Range (USD)</h3>
+        <h3 className="text-lg font-bold mb-2">Khoảng giá (VND)</h3>
         <div className="flex items-center space-x-2">
           <input
             type="number"
-            placeholder="Min"
+            placeholder="Tối thiểu"
             value={priceRange.min}
             onChange={(e) => handlePriceChange("min", e.target.value)}
             className="w-full px-2 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
             min="0"
-            step="1"
           />
           <span>-</span>
           <input
             type="number"
-            placeholder="Max"
+            placeholder="Tối đa"
             value={priceRange.max}
             onChange={(e) => handlePriceChange("max", e.target.value)}
             className="w-full px-2 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
             min="0"
-            step="1"
           />
         </div>
       </div>
 
-      {/* Brands */}
+      {/* Thương hiệu */}
       <div className="mb-6">
-        <h3 className="text-lg font-bold mb-2">Brands</h3>
+        <h3 className="text-lg font-bold mb-2">Thương hiệu</h3>
         <div className="space-y-2">
-          {["La Roche-Posay", "L'Oréal", "Innisfree", "Laneige"].map(
-            (brand) => (
-              <label key={brand} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={selectedBrands.includes(brand)}
-                  onChange={() =>
-                    handleCheckboxChange("brands", brand, setSelectedBrands)
-                  }
-                  className="text-pink-500 focus:ring-pink-500"
-                />
-                <span>{brand}</span>
-              </label>
-            )
-          )}
+          {brandOptions.map((brand) => (
+            <label key={brand} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={selectedBrands.includes(brand)}
+                onChange={() => handleCheckboxChange("brands", brand)}
+                className="text-pink-500 focus:ring-pink-500"
+              />
+              <span>{brand}</span>
+            </label>
+          ))}
         </div>
       </div>
 
-      {/* Categories */}
+      {/* Danh mục */}
       <div className="mb-6">
-        <h3 className="text-lg font-bold mb-2">Categories</h3>
+        <h3 className="text-lg font-bold mb-2">Danh mục</h3>
         <div className="space-y-2">
-          {["Skincare", "Makeup", "Cleansers", "Moisturizers"].map(
-            (category) => (
-              <label key={category} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={selectedCategories.includes(category)}
-                  onChange={() =>
-                    handleCheckboxChange(
-                      "categories",
-                      category,
-                      setSelectedCategories
-                    )
-                  }
-                  className="text-pink-500 focus:ring-pink-500"
-                />
-                <span>{category}</span>
-              </label>
-            )
-          )}
+          {categoryOptions.map((category) => (
+            <label key={category} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={selectedCategories.includes(category)}
+                onChange={() => handleCheckboxChange("categories", category)}
+                className="text-pink-500 focus:ring-pink-500"
+              />
+              <span>{category}</span>
+            </label>
+          ))}
         </div>
       </div>
 
-      {/* Skin Types */}
+      {/* Loại da */}
       <div className="mb-6">
-        <h3 className="text-lg font-bold mb-2">Skin Types</h3>
+        <h3 className="text-lg font-bold mb-2">Loại da</h3>
         <div className="space-y-2">
-          {["Normal", "Oily", "Dry", "Combination", "Sensitive"].map((type) => (
+          {skinTypeOptions.map((type) => (
             <label key={type} className="flex items-center space-x-2">
               <input
                 type="checkbox"
                 checked={selectedSkinTypes.includes(type)}
-                onChange={() =>
-                  handleCheckboxChange("skinTypes", type, setSelectedSkinTypes)
-                }
+                onChange={() => handleCheckboxChange("skinTypes", type)}
                 className="text-pink-500 focus:ring-pink-500"
               />
               <span>{type}</span>
@@ -226,9 +213,9 @@ export function Sidebar({ onFilterChange }) {
         </div>
       </div>
 
-      {/* Volume Filter Section */}
+      {/* Thể tích */}
       <div className="mb-6">
-        <h3 className="text-lg font-bold mb-2">Volume</h3>
+        <h3 className="text-lg font-bold mb-2">Thể tích</h3>
         <div className="space-y-2">
           {volumeOptions.map((volume) => (
             <label
@@ -238,7 +225,7 @@ export function Sidebar({ onFilterChange }) {
               <input
                 type="checkbox"
                 checked={selectedVolumes.includes(volume)}
-                onChange={() => handleVolumeChange(volume)}
+                onChange={() => handleCheckboxChange("volumes", volume)}
                 className="w-4 h-4 text-pink-500 border-gray-300 rounded focus:ring-pink-500"
               />
               <span className="text-gray-700">{volume}</span>
