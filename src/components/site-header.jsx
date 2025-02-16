@@ -88,7 +88,7 @@ export function SiteHeader() {
             </div>
 
             {/* Secondary Navigation */}
-            <div className="flex items-center ml-auto space-x-6">
+            <div className="flex items-center ml-16 space-x-6">
               {/* Giỏ hàng */}
               <Link
                 to="/cart"
