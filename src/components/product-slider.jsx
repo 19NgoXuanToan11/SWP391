@@ -4,6 +4,7 @@ import hyaluronic from "../assets/pictures/hyaluronic_acid.jpg";
 import retinol from "../assets/pictures/retinol_cream.jpg";
 import niacinamide from "../assets/pictures/niacinamide_serum.jpg";
 import sunscreen from "../assets/pictures/sunscreen_SPF_50.jpg";
+import { Link } from "react-router-dom";
 
 const products = [
   {
@@ -118,9 +119,12 @@ export function ProductSlider() {
                           <span className="text-pink-500 font-bold">
                             {product.price}
                           </span>
-                          <button className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors duration-300">
+                          <Link
+                            to={`/product`}
+                            className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors duration-300"
+                          >
                             Mua ngay
-                          </button>
+                          </Link>
                         </div>
                       </div>
                     </div>
