@@ -6,7 +6,6 @@ import { RegisterPage } from "../pages/login/registerPage";
 import { AboutPage } from "../pages/users/aboutPage";
 import { ContactPage } from "../pages/users/contactPage";
 import { ProductsPage } from "../pages/users/productPage";
-import ProductDetailPage from "../pages/users/productDetailPage";
 import { QuizPage } from "../pages/users/quizPage";
 import { QuizLandingPage } from "../pages/users/quizlandingPage";
 import { ForgotPasswordPage } from "../pages/login/resetPage";
@@ -29,6 +28,7 @@ import { SkinCareRoutinePage } from "../pages/users/skinCareRoutine";
 import { ProductRecommendationPage } from "../pages/users/productRecommendation";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import OrderHistoryPage from "../pages/users/orderhistoryPage";
+import ProductDetailPage from "../pages/users/productDetailPage";
 
 export const router = createBrowserRouter([
   {
