@@ -12,7 +12,7 @@ import {
   MenuUnfoldOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
-  
+
 const SidebarAdmin = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
