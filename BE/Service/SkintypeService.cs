@@ -1,108 +1,40 @@
 using Data.Models;
 using Repo;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
 
 namespace Service
 {
-    public class SkinTypeService : ISkinTypeService
+    public class SkintypeService : ISkintypeService
     {
-        private readonly ISkinTypeRepository _skinTypeRepository;
-        private readonly ILogger<SkinTypeService> _logger;
-        private readonly SkinCareManagementDbContext _context;
+        private readonly ISkintypeRepository _skintypeRepository;
 
-        public SkinTypeService(
-            ISkinTypeRepository skinTypeRepository, 
-            ILogger<SkinTypeService> logger,
-            SkinCareManagementDbContext context)
+        public SkintypeService(ISkintypeRepository skintypeRepository)
         {
-            _skinTypeRepository = skinTypeRepository;
-            _logger = logger;
-            _context = context;
+            _skintypeRepository = skintypeRepository;
         }
 
-        public async Task<bool> ExistsAsync(int id)
+        public async Task<IEnumerable<Skintype>> GetAllSkintypesAsync()
         {
-            try
-            {
-                return await _context.Skintypes.AnyAsync(s => s.SkinTypeId == id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error checking if skin type exists with ID {Id}", id);
-                throw;
-            }
+            return await _skintypeRepository.GetAllAsync();
         }
 
-        public async Task<IEnumerable<Skintype>> GetAllSkinTypesAsync()
+        public async Task<Skintype?> GetSkintypeByIdAsync(int id)
         {
-            try
-            {
-                return await _skinTypeRepository.GetAllAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting all skin types");
-                throw;
-            }
+            return await _skintypeRepository.GetByIdAsync(id);
         }
 
-        public async Task<Skintype?> GetSkinTypeByIdAsync(int id)
+        public async Task AddSkintypeAsync(Skintype skintype)
         {
-            try
-            {
-                return await _skinTypeRepository.GetByIdAsync(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting skin type with ID {Id}", id);
-                throw;
-            }
+            await _skintypeRepository.AddAsync(skintype);
         }
 
-        public async Task AddSkinTypeAsync(Skintype skinType)
+        public async Task UpdateSkintypeAsync(Skintype skintype)
         {
-            try
-            {
-                if (skinType == null)
-                    throw new ArgumentNullException(nameof(skinType));
-
-                await _skinTypeRepository.AddAsync(skinType);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error adding skin type: {SkinTypeName}", skinType?.SkinTypeName);
-                throw;
-            }
+            await _skintypeRepository.UpdateAsync(skintype);
         }
 
-        public async Task UpdateSkinTypeAsync(Skintype skinType)
+        public async Task DeleteSkintypeAsync(int id)
         {
-            try
-            {
-                if (skinType == null)
-                    throw new ArgumentNullException(nameof(skinType));
-
-                await _skinTypeRepository.UpdateAsync(skinType);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating skin type: {SkinTypeId}", skinType?.SkinTypeId);
-                throw;
-            }
-        }
-
-        public async Task DeleteSkinTypeAsync(int id)
-        {
-            try
-            {
-                await _skinTypeRepository.DeleteAsync(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error deleting skin type with ID {Id}", id);
-                throw;
-            }
+            await _skintypeRepository.DeleteAsync(id);
         }
     }
 }

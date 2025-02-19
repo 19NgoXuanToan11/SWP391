@@ -14,8 +14,6 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
-using Google.Apis.Auth;
-using Azure;
 
 
 namespace Service
@@ -98,7 +96,6 @@ namespace Service
             try
             {
                 var user = await _context.Users
-                    .Include(u => u.Role)
                     .FirstOrDefaultAsync(u => u.Username == model.Username);
 
                 if (user == null)
@@ -147,91 +144,34 @@ namespace Service
 
             try
             {
-                Console.WriteLine($"[VerifyEmail] Starting verification with token: {token}");
-
                 var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.VerificationToken == token);
-
-                Console.WriteLine($"[VerifyEmail] User search result: {(user != null ? user.Email : "Not found")}");
-
                 if (user == null)
                 {
-                    // Kiểm tra xem user đã verify trước đó chưa
-                    var verifiedUser = await _context.Users
-                        .FirstOrDefaultAsync(u => u.IsVerification);
-
-                    if (verifiedUser != null)
-                    {
-                        Console.WriteLine($"[VerifyEmail] User already verified: {verifiedUser.Email}");
-                        response.Success = true;
-                        response.Message = "Email đã được xác thực trước đó";
-                        return response;
-                    }
-
-                    Console.WriteLine("[VerifyEmail] No user found with this token");
                     response.Success = false;
                     response.Message = "Token không hợp lệ";
                     return response;
                 }
 
-                // Kiểm tra trạng thái verify
-                if (user.IsVerification)
+                if (DateTime.Parse(user.ExpirationToken!) < DateTime.UtcNow)
                 {
-                    Console.WriteLine($"[VerifyEmail] User already verified: {user.Email}");
-                    response.Success = true;
-                    response.Message = "Email đã được xác thực trước đó";
-                    return response;
-                }
-
-                Console.WriteLine($"[VerifyEmail] Current verification status: {user.IsVerification}");
-                Console.WriteLine($"[VerifyEmail] Token expiration: {user.ExpirationToken}");
-
-                // Kiểm tra token hết hạn
-                if (!string.IsNullOrEmpty(user.ExpirationToken) &&
-                    DateTime.Parse(user.ExpirationToken) < DateTime.UtcNow)
-                {
-                    Console.WriteLine("[VerifyEmail] Token has expired");
                     response.Success = false;
                     response.Message = "Token đã hết hạn";
                     return response;
                 }
 
-                Console.WriteLine("[VerifyEmail] Token is valid, updating user status");
+                user.IsVerification = true;
+                user.VerificationToken = null;
+                user.ExpirationToken = null;
 
-                try
-                {
-                    // Chỉ cập nhật trạng thái IsVerification, giữ nguyên token
-                    user.IsVerification = true;
-                    // Không set null cho VerificationToken và ExpirationToken
-                    // user.VerificationToken = null;
-                    // user.ExpirationToken = null;
+                await _context.SaveChangesAsync();
 
-                    Console.WriteLine("[VerifyEmail] Attempting to save changes to database");
-                    await _context.SaveChangesAsync();
-                    Console.WriteLine("[VerifyEmail] Changes saved successfully");
+                await _emailService.SendWelcomeEmail(user.Email, user.Username);
 
-                    // Gửi email chào mừng
-                    await _emailService.SendWelcomeEmail(user.Email, user.Username);
-                    Console.WriteLine("[VerifyEmail] Welcome email sent");
-
-                    response.Success = true;
-                    response.Message = "Xác thực email thành công";
-                    Console.WriteLine("[VerifyEmail] Verification completed successfully");
-                }
-                catch (Exception saveEx)
-                {
-                    Console.WriteLine($"[VerifyEmail] Error saving changes: {saveEx.Message}");
-                    throw;
-                }
+                response.Message = "Xác thực email thành công";
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[VerifyEmail] Error occurred: {ex.Message}");
-                Console.WriteLine($"[VerifyEmail] Stack trace: {ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"[VerifyEmail] Inner exception: {ex.InnerException.Message}");
-                }
                 response.Success = false;
                 response.Message = ex.InnerException?.Message ?? ex.Message;
             }
@@ -330,12 +270,12 @@ namespace Service
         private string GenerateJwtToken(User user)
         {
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role.RoleName),
-                new Claim(ClaimTypes.Email, user.Email)
-            };
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user.RoleId.ToString()),
+            new Claim(ClaimTypes.Email, user.Email)
+        };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 _configuration.GetSection("AppSettings:Token").Value!));
@@ -354,82 +294,5 @@ namespace Service
 
             return tokenHandler.WriteToken(token);
         }
-
-        public async Task<ServiceResponse<string>> GoogleLogin(string token)
-        {
-            var response = new ServiceResponse<string>();
-
-            try
-            {
-                // Verify Google token
-                var settings = new GoogleJsonWebSignature.ValidationSettings()
-                {
-                    Audience = new List<string> { _configuration["Authentication:Google:ClientId"] }
-                };
-                var payload = await GoogleJsonWebSignature.ValidateAsync(token, settings);
-
-                if (payload == null)
-                {
-                    response.Success = false;
-                    response.Message = "Token Google không hợp lệ";
-                    return response;
-                }
-
-                // Check if user exists
-                var user = await _context.Users
-                    .Include(u => u.Role)  // Include the Role
-                    .FirstOrDefaultAsync(u => u.Email == payload.Email);
-
-                if (user == null)
-                {
-                    // Create new user if doesn't exist
-                    string randomPassword = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
-                    string passwordHash = BCrypt.Net.BCrypt.HashPassword(randomPassword);
-
-                    user = new User
-                    {
-                        Username = payload.Email.Split('@')[0],
-                        Email = payload.Email,
-                        FullName = payload.Name,
-                        Password = randomPassword,
-                        PasswordHash = passwordHash,
-                        RoleId = 2, // User Role
-                        CreatedAt = DateTime.UtcNow,
-                        IsVerification = true
-                    };
-
-                    _context.Users.Add(user);
-                    await _context.SaveChangesAsync();
-
-                    // Reload user to get the Role
-                    user = await _context.Users
-                        .Include(u => u.Role)
-                        .FirstOrDefaultAsync(u => u.Email == payload.Email);
-
-                    // Send welcome email
-                    await _emailService.SendWelcomeEmail(user.Email, user.Username);
-                }
-
-                if (user.IsBanned)
-                {
-                    response.Success = false;
-                    response.Message = "Tài khoản đã bị khóa";
-                    return response;
-                }
-
-                response.Data = GenerateJwtToken(user);
-                response.Message = "Đăng nhập bằng Google thành công";
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = "Lỗi đăng nhập bằng Google: " + (ex.InnerException?.Message ?? ex.Message);
-            }
-
-            return response;
-        }
-
-        // ... rest of the code ...
     }
 }
-

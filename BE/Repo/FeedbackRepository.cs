@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repo
 {
-    public class FeedbackRepository : IFeedbackRepository
+    public class FeedbackRepository
     {
         private readonly SkinCareManagementDbContext _context;
 
@@ -14,18 +14,12 @@ namespace Repo
 
         public async Task<IEnumerable<Feedback>> GetAllAsync()
         {
-            return await _context.Feedbacks
-                .Include(f => f.Product)
-                .Include(f => f.User)
-                .ToListAsync();
+            return await _context.Feedbacks.ToListAsync();
         }
 
         public async Task<Feedback?> GetByIdAsync(int id)
         {
-            return await _context.Feedbacks
-                .Include(f => f.Product)
-                .Include(f => f.User)
-                .FirstOrDefaultAsync(f => f.FeedbackId == id);
+            return await _context.Feedbacks.FindAsync(id);
         }
 
         public async Task AddAsync(Feedback feedback)
