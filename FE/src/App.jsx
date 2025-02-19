@@ -4,7 +4,10 @@ import { SiteFooter } from "./components/site-footer";
 import { Outlet } from "react-router-dom";
 import { ScrollRestoration } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+<<<<<<< Updated upstream
 import { VerifyEmailPage } from "./pages/login/verifyEmailPage";
+=======
+>>>>>>> Stashed changes
 
 function App() {
   const { pathname } = useLocation();
@@ -21,7 +24,10 @@ function App() {
     "/voucher",
     "/setting",
     "/abouts",
+<<<<<<< Updated upstream
     "/verify-email",
+=======
+>>>>>>> Stashed changes
   ];
 
   const shouldShowHeaderFooter = !noHeaderFooterPaths.includes(pathname);

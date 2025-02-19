@@ -22,11 +22,6 @@ namespace Service
             return await _paymentRepository.GetByIdAsync(id);
         }
 
-        public async Task<Payment?> GetPaymentByOrderIdAsync(int orderId)
-        {
-            return await _paymentRepository.GetByOrderIdAsync(orderId);
-        }
-
         public async Task AddPaymentAsync(Payment payment)
         {
             await _paymentRepository.AddAsync(payment);
@@ -41,10 +36,13 @@ namespace Service
         {
             await _paymentRepository.DeleteAsync(id);
         }
+<<<<<<< Updated upstream
 
         public async Task AddPaymentHistoryAsync(PaymentHistory history)
         {
             await _paymentRepository.AddPaymentHistoryAsync(history);
         }
+=======
+>>>>>>> Stashed changes
     }
 }

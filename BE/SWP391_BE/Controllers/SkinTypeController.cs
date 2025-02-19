@@ -3,139 +3,74 @@ using Microsoft.AspNetCore.Mvc;
 using Service;
 using SWP391_BE.DTOs;
 using Data.Models;
-using Microsoft.Extensions.Logging;
 
 namespace SWP391_BE.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class SkinTypeController : ControllerBase
+    public class SkintypeController : ControllerBase
     {
-        private readonly ISkinTypeService _skinTypeService;
+        private readonly ISkintypeService _skintypeService;
         private readonly IMapper _mapper;
-        private readonly ILogger<SkinTypeController> _logger;
 
-        public SkinTypeController(
-            ISkinTypeService skinTypeService,
-            IMapper mapper,
-            ILogger<SkinTypeController> logger)
+        public SkintypeController(ISkintypeService skintypeService, IMapper mapper)
         {
-            _skinTypeService = skinTypeService;
+            _skintypeService = skintypeService;
             _mapper = mapper;
-            _logger = logger;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SkinTypeDTO>>> GetAllSkinTypes()
+        public async Task<ActionResult<IEnumerable<SkintypeDTO>>> GetAllSkintypes()
         {
-            try
-            {
-                var skinTypes = await _skinTypeService.GetAllSkinTypesAsync();
-                if (!skinTypes.Any())
-                {
-                    return NoContent();
-                }
-                return Ok(_mapper.Map<IEnumerable<SkinTypeDTO>>(skinTypes));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving all skin types");
-                return StatusCode(500, "An error occurred while retrieving skin types");
-            }
+            var skintypes = await _skintypeService.GetAllSkintypesAsync();
+            return Ok(_mapper.Map<IEnumerable<SkintypeDTO>>(skintypes));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<SkinTypeDTO>> GetSkinType(int id)
+        public async Task<ActionResult<SkintypeDTO>> GetSkintype(int id)
         {
-            try
+            var skintype = await _skintypeService.GetSkintypeByIdAsync(id);
+            if (skintype == null)
             {
-                var skinType = await _skinTypeService.GetSkinTypeByIdAsync(id);
-                if (skinType == null)
-                {
-                    return NotFound($"Skin type with ID {id} not found");
-                }
-                return Ok(_mapper.Map<SkinTypeDTO>(skinType));
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving skin type {Id}", id);
-                return StatusCode(500, "An error occurred while retrieving the skin type");
-            }
+            return Ok(_mapper.Map<SkintypeDTO>(skintype));
         }
 
         [HttpPost]
-        public async Task<ActionResult<SkinTypeDTO>> CreateSkinType(CreateSkinTypeDTO createSkinTypeDTO)
+        public async Task<ActionResult<SkintypeDTO>> CreateSkintype(CreateSkintypeDTO createSkintypeDTO)
         {
-            try
-            {
-                if (createSkinTypeDTO == null)
-                {
-                    return BadRequest("Skin type data is required");
-                }
-
-                var skinType = _mapper.Map<Skintype>(createSkinTypeDTO);
-                await _skinTypeService.AddSkinTypeAsync(skinType);
-
-                var createdSkinTypeDto = _mapper.Map<SkinTypeDTO>(skinType);
-                return CreatedAtAction(
-                    nameof(GetSkinType),
-                    new { id = skinType.SkinTypeId },
-                    createdSkinTypeDto
-                );
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error creating skin type");
-                return StatusCode(500, "An error occurred while creating the skin type");
-            }
+            var skintype = _mapper.Map<Skintype>(createSkintypeDTO);
+            await _skintypeService.AddSkintypeAsync(skintype);
+            return CreatedAtAction(nameof(GetSkintype), new { id = skintype.SkinTypeId }, 
+                _mapper.Map<SkintypeDTO>(skintype));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSkinType(int id, UpdateSkinTypeDTO updateSkinTypeDTO)
+        public async Task<IActionResult> UpdateSkintype(int id, UpdateSkintypeDTO updateSkintypeDTO)
         {
-            try
+            var existingSkintype = await _skintypeService.GetSkintypeByIdAsync(id);
+            if (existingSkintype == null)
             {
-                if (updateSkinTypeDTO == null)
-                {
-                    return BadRequest("Skin type update data is required");
-                }
-
-                var existingSkinType = await _skinTypeService.GetSkinTypeByIdAsync(id);
-                if (existingSkinType == null)
-                {
-                    return NotFound($"Skin type with ID {id} not found");
-                }
-
-                _mapper.Map(updateSkinTypeDTO, existingSkinType);
-                await _skinTypeService.UpdateSkinTypeAsync(existingSkinType);
-                return NoContent();
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating skin type {Id}", id);
-                return StatusCode(500, "An error occurred while updating the skin type");
-            }
+
+            _mapper.Map(updateSkintypeDTO, existingSkintype);
+            await _skintypeService.UpdateSkintypeAsync(existingSkintype);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSkinType(int id)
+        public async Task<IActionResult> DeleteSkintype(int id)
         {
-            try
+            var skintype = await _skintypeService.GetSkintypeByIdAsync(id);
+            if (skintype == null)
             {
-                var skinType = await _skinTypeService.GetSkinTypeByIdAsync(id);
-                if (skinType == null)
-                {
-                    return NotFound($"Skin type with ID {id} not found");
-                }
+                return NotFound();
+            }
 
-                await _skinTypeService.DeleteSkinTypeAsync(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error deleting skin type {Id}", id);
-                return StatusCode(500, "An error occurred while deleting the skin type");
-            }
+            await _skintypeService.DeleteSkintypeAsync(id);
+            return NoContent();
         }
     }
 } 

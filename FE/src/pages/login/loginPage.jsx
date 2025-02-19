@@ -18,7 +18,7 @@ export function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
     name: "",
     confirmPassword: "",
@@ -31,9 +31,13 @@ export function LoginPage() {
     let valid = true;
     let errors = {};
 
-    // Kiểm tra username
-    if (!formData.username) {
-      errors.username = "Tên đăng nhập là bắt buộc";
+    // Kiểm tra Email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email) {
+      errors.email = "Email là bắt buộc";
+      valid = false;
+    } else if (!emailRegex.test(formData.email)) {
+      errors.email = "Vui lòng nhập địa chỉ email hợp lệ";
       valid = false;
     }
 
@@ -58,6 +62,7 @@ export function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+<<<<<<< Updated upstream
     if (!validateForm()) return;
 
     setLoading(true);
@@ -103,6 +108,40 @@ export function LoginPage() {
       );
     } finally {
       setLoading(false);
+=======
+    try {
+      const response = await login({
+        email: formData.email,
+        password: formData.password,
+      }).unwrap();
+
+      const userInfo = {
+        email: formData.email,
+        name: formData.email.split("@")[0], // Hoặc thông tin khác từ API
+        id: Date.now(), // Hoặc ID từ API
+      };
+
+      dispatch(
+        setCredentials({
+          user: userInfo,
+          token: response.token,
+        })
+      );
+
+      message.success({
+        content: "Đăng nhập thành công!",
+        duration: 2,
+      });
+
+      const from = location.state?.from || "/";
+      navigate(from);
+    } catch (error) {
+      console.error("Đăng nhập thất bại:", error);
+      message.error({
+        content: "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!",
+        duration: 2,
+      });
+>>>>>>> Stashed changes
     }
   };
 
@@ -162,6 +201,7 @@ export function LoginPage() {
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
+<<<<<<< Updated upstream
                   Tên đăng nhập
                 </label>
                 <input
@@ -175,6 +215,21 @@ export function LoginPage() {
                 />
                 {errors.username && (
                   <p className="text-red-500 text-xs">{errors.username}</p>
+=======
+                  Email
+                </label>
+                <input
+                  type="email"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
+                  placeholder="you@example.com"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-xs">{errors.email}</p>
+>>>>>>> Stashed changes
                 )}
               </div>
 

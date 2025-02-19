@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import {
-  CalendarOutlined,
-  ArrowRightOutlined,
-  EyeOutlined,
-} from "@ant-design/icons";
+import { motion } from "framer-motion";
 import blog1 from "../assets/pictures/blog1.jpg";
 import blog2 from "../assets/pictures/blog2.jpg";
 import blog3 from "../assets/pictures/blog3.jpg";
@@ -16,58 +10,42 @@ export function NewsPage() {
   const articles = [
     {
       title: "Chăm Sóc Tóc Của Bạn",
-      date: "14/07/2022",
+      date: "Thứ Năm, 14/07/2022",
       description:
         "Cũng giống như da cần kem chống nắng trước khi ra ngoài, tóc cũng cần được bảo vệ để tránh hư tổn.",
       image: blog1,
-      category: "Chăm sóc tóc",
-      readTime: "5 phút đọc",
-      views: 1234,
     },
     {
       title: "Bổ Sung Tinh Chất Sâu",
-      date: "14/07/2022",
+      date: "Thứ Năm, 14/07/2022",
       description:
         "Khi tóc bạn hoàn toàn khô, đừng vò tóc một cách thô bạo bằng tay (hoặc lực) để tránh rối.",
       image: blog2,
-      category: "Dưỡng da",
-      readTime: "4 phút đọc",
-      views: 2345,
     },
     {
       title: "Để Tóc Khô Tự Nhiên",
-      date: "14/07/2022",
+      date: "Thứ Năm, 14/07/2022",
       description:
         "Sấy tóc là lựa chọn hàng đầu của nhiều phụ nữ để thoát khỏi sự ẩm ướt khó chịu, nhưng điều đó không tốt cho tóc của bạn.",
       image: blog3,
-      category: "Chăm sóc tóc",
-      readTime: "3 phút đọc",
-      views: 3456,
     },
     {
       title: "Cung Cấp Dinh Dưỡng Bổ Sung Cho Tóc",
-      date: "14/07/2022",
+      date: "Thứ Năm, 14/07/2022",
       description:
         "Hầu hết mọi người dừng lại ở bước dùng dầu xả, nghĩ rằng điều này là đủ để có tóc mềm mại và mượt mà.",
       image: blog4,
-      category: "Dinh dưỡng",
-      readTime: "6 phút đọc",
-      views: 4567,
     },
     {
       title: "Sử Dụng Dầu Xả Dưỡng Ẩm Cho Tóc",
-      date: "14/07/2022",
+      date: "Thứ Năm, 14/07/2022",
       description:
         "Sau khi gội sạch tóc, đã đến lúc sử dụng dầu xả. Dầu xả cung cấp độ ẩm để giữ cho tóc mềm mại và khỏe mạnh.",
       image: blog5,
-      category: "Chăm sóc tóc",
-      readTime: "4 phút đọc",
-      views: 5678,
     },
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const navigate = useNavigate();
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 3) % articles.length);
@@ -79,13 +57,10 @@ export function NewsPage() {
     );
   };
 
-  const handleArticleClick = (index) => {
-    navigate(`/news/${index + 1}`);
-  };
-
   const visibleArticles = articles.slice(currentIndex, currentIndex + 3);
 
   return (
+<<<<<<< Updated upstream
     <section className="min-h-screen py-20 bg-gradient-to-br from-pink-50 via-white to-purple-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -104,85 +79,89 @@ export function NewsPage() {
             Khám phá những bí quyết làm đẹp mới nhất
           </p>
         </motion.div>
+=======
+    <section className="min-h-[70vh] bg-gradient-to-br from-pink-100 to-red-100 via-white py-10">
+      <div className="max-w-7xl mx-auto px-4">
+        <h1 className="text-4xl font-bold text-center mb-10">
+          Góc Làm Đẹp - Sự Kiện
+        </h1>
+        <div className="relative flex items-center justify-center">
+          <button
+            onClick={handlePrev}
+            className="absolute left-10 bg-white p-2 rounded-full shadow-lg hover:bg-gray-100 focus:outline-none"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+>>>>>>> Stashed changes
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <AnimatePresence mode="wait">
+          <div className="flex space-x-4">
             {visibleArticles.map((article, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -50 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group cursor-pointer h-full"
-                onClick={() => handleArticleClick(index)}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.5 }}
+                className="bg-white rounded-lg shadow-lg overflow-hidden max-w-sm"
               >
-                <div
-                  className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 
-                  transform hover:-translate-y-2 h-full flex flex-col"
-                >
-                  <div className="relative">
-                    <div className="aspect-w-16 aspect-h-9">
-                      <img
-                        src={article.image}
-                        alt={article.title}
-                        className="w-full h-[240px] object-cover transform group-hover:scale-110 transition-transform duration-500"
-                      />
-                    </div>
-                    <div className="absolute top-4 left-4">
-                      <span className="px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-sm font-medium text-pink-500">
-                        {article.category}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-6 flex flex-col flex-grow">
-                    <div className="flex items-center gap-4 mb-4 text-sm text-gray-500">
-                      <div className="flex items-center gap-1">
-                        <CalendarOutlined />
-                        <span>{article.date}</span>
-                      </div>
-                    </div>
-
-                    <h2
-                      className="text-xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-pink-500 
-                      transition-colors duration-300"
-                    >
-                      {article.title}
-                    </h2>
-
-                    <p className="text-gray-600 mb-6 line-clamp-3 flex-grow">
-                      {article.description}
-                    </p>
-
-                    <div className="flex items-center justify-between mt-auto">
-                      <button className="flex items-center gap-2 text-pink-500 font-medium group-hover:gap-4 transition-all duration-300">
-                        Đọc thêm
-                        <ArrowRightOutlined className="text-sm" />
-                      </button>
-                    </div>
-                  </div>
+                <img
+                  src={article.image}
+                  alt={article.title}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h2 className="text-lg font-semibold mb-1">
+                    {article.title}
+                  </h2>
+                  <p className="text-sm text-gray-500 mb-2">{article.date}</p>
+                  <p className="text-gray-700 text-sm line-clamp-3">
+                    {article.description}
+                  </p>
                 </div>
               </motion.div>
             ))}
-          </AnimatePresence>
-        </div>
+          </div>
 
-        {/* Pagination Dots */}
-        <div className="flex justify-center gap-2 mt-12">
-          {Array.from({ length: Math.ceil(articles.length / 3) }).map(
-            (_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentIndex(idx * 3)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  Math.floor(currentIndex / 3) === idx
-                    ? "w-8 bg-pink-500"
-                    : "bg-pink-200 hover:bg-pink-300"
-                }`}
+          <button
+            onClick={handleNext}
+            className="absolute right-10 bg-white p-2 rounded-full shadow-lg hover:bg-gray-100 focus:outline-none"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
               />
-            )
-          )}
+            </svg>
+          </button>
+        </div>
+        <div className="text-center mt-8">
+          <a
+            href="#"
+            className="inline-block bg-pink-600 text-white hover:bg-red-200 transition duration-300 ease-in-out text-sm font-semibold py-2 px-4 rounded-lg shadow-md"
+          >
+            Xem Tất Cả
+          </a>
         </div>
       </div>
     </section>

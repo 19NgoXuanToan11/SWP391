@@ -9,20 +9,20 @@ import {
   Space,
   message,
   Image,
-  Avatar,
-  Divider,
 } from "antd";
 import {
   UserOutlined,
   MailOutlined,
   EnvironmentOutlined,
   PlusOutlined,
+<<<<<<< Updated upstream
   CameraOutlined,
   SaveOutlined,
   RollbackOutlined,
+=======
+>>>>>>> Stashed changes
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import uploadFile from "../../utils/upload";
 
 const { Title, Text } = Typography;
@@ -44,6 +44,7 @@ export default function EditProfilePage() {
   ]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+<<<<<<< Updated upstream
 
   const colors = {
     primary: "#ff4d6d",
@@ -169,6 +170,8 @@ export default function EditProfilePage() {
       },
     },
   };
+=======
+>>>>>>> Stashed changes
 
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -179,6 +182,7 @@ export default function EditProfilePage() {
     });
 
   const handleSubmit = async (values) => {
+<<<<<<< Updated upstream
     try {
       setLoading(true);
 
@@ -208,6 +212,13 @@ export default function EditProfilePage() {
       message.error("Có lỗi xảy ra khi lưu thông tin!");
     } finally {
       setLoading(false);
+=======
+    console.log(values);
+
+    if (values.avatar) {
+      const url = await uploadFile(values.avatar.file.originFileObj);
+      values.avatar = url;
+>>>>>>> Stashed changes
     }
   };
 
@@ -220,6 +231,7 @@ export default function EditProfilePage() {
   };
 
   const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+<<<<<<< Updated upstream
 
   return (
     <motion.div
@@ -251,11 +263,65 @@ export default function EditProfilePage() {
         >
           <Upload
             listType="picture-circle"
+=======
+
+  const handleSave = async () => {
+    try {
+      if (fileList[0]?.originFileObj) {
+        message.loading({ content: "Đang tải ảnh lên...", key: "upload" });
+        const url = await uploadFile(fileList[0].originFileObj);
+        localStorage.setItem("userAvatar", url);
+        message.success({
+          content: "Cập nhật ảnh đại diện thành công!",
+          key: "upload",
+        });
+        navigate("/profile");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      message.error({
+        content: "Có lỗi xảy ra khi upload ảnh! " + error.message,
+        key: "upload",
+      });
+    }
+  };
+
+  const uploadButton = (
+    <button
+      style={{
+        border: 0,
+        background: "none",
+      }}
+      type="button"
+    >
+      <PlusOutlined />
+      <div
+        style={{
+          marginTop: 8,
+        }}
+      >
+        Upload
+      </div>
+    </button>
+  );
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white p-6">
+      <div className="max-w-2xl mx-auto">
+        <Card className="shadow-xl rounded-2xl">
+          <Title level={2} className="text-center mb-8">
+            Chỉnh sửa hồ sơ
+          </Title>
+
+          <Upload
+            listType="picture-card"
+>>>>>>> Stashed changes
             fileList={fileList}
             onPreview={handlePreview}
             onChange={handleChange}
             maxCount={1}
             beforeUpload={() => false}
+<<<<<<< Updated upstream
             showUploadList={false}
           >
             {fileList.length >= 1 ? (
@@ -322,26 +388,77 @@ export default function EditProfilePage() {
                 prefix={<UserOutlined style={{ color: colors.primary }} />}
                 placeholder="Nhập họ và tên của bạn"
                 style={styles.input}
+=======
+          >
+            {fileList.length >= 1 ? null : uploadButton}
+          </Upload>
+
+          {previewImage && (
+            <Image
+              wrapperStyle={{
+                display: "none",
+              }}
+              preview={{
+                visible: previewOpen,
+                onVisibleChange: (visible) => setPreviewOpen(visible),
+                afterOpenChange: (visible) => !visible && setPreviewImage(""),
+              }}
+              src={previewImage}
+            />
+          )}
+
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSubmit}
+            initialValues={{
+              name: "Nguyễn Văn A",
+              email: "nguyenvana@example.com",
+              location: "Hà Nội, Việt Nam",
+              bio: "Tôi là chuyên gia tư vấn làm đẹp với hơn 3 năm kinh nghiệm trong ngành mỹ phẩm cao cấp.",
+            }}
+          >
+            <Form.Item
+              name="name"
+              label="Họ và tên"
+              rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}
+            >
+              <Input
+                prefix={<UserOutlined className="text-gray-400" />}
+                placeholder="Nhập họ và tên"
+                size="large"
+>>>>>>> Stashed changes
               />
             </Form.Item>
 
             <Form.Item
               name="email"
+<<<<<<< Updated upstream
               label={<Text style={styles.formLabel}>Email</Text>}
+=======
+              label="Email"
+>>>>>>> Stashed changes
               rules={[
                 { required: true, message: "Vui lòng nhập email" },
                 { type: "email", message: "Email không hợp lệ" },
               ]}
             >
               <Input
+<<<<<<< Updated upstream
                 prefix={<MailOutlined style={{ color: colors.primary }} />}
                 placeholder="Nhập địa chỉ email"
                 style={styles.input}
+=======
+                prefix={<MailOutlined className="text-gray-400" />}
+                placeholder="Nhập email"
+                size="large"
+>>>>>>> Stashed changes
               />
             </Form.Item>
 
             <Form.Item
               name="location"
+<<<<<<< Updated upstream
               label={<Text style={styles.formLabel}>Địa chỉ</Text>}
               rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}
             >
@@ -351,11 +468,21 @@ export default function EditProfilePage() {
                 }
                 placeholder="Nhập địa chỉ của bạn"
                 style={styles.input}
+=======
+              label="Địa chỉ"
+              rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}
+            >
+              <Input
+                prefix={<EnvironmentOutlined className="text-gray-400" />}
+                placeholder="Nhập địa chỉ"
+                size="large"
+>>>>>>> Stashed changes
               />
             </Form.Item>
 
             <Form.Item
               name="bio"
+<<<<<<< Updated upstream
               label={<Text style={styles.formLabel}>Giới thiệu</Text>}
               rules={[{ required: true, message: "Vui lòng nhập giới thiệu" }]}
             >
@@ -363,11 +490,20 @@ export default function EditProfilePage() {
                 placeholder="Viết một vài dòng giới thiệu về bản thân"
                 rows={4}
                 style={styles.textarea}
+=======
+              label="Giới thiệu"
+              rules={[{ required: true, message: "Vui lòng nhập giới thiệu" }]}
+            >
+              <TextArea
+                placeholder="Nhập giới thiệu về bản thân"
+                rows={4}
+>>>>>>> Stashed changes
                 showCount
                 maxLength={500}
               />
             </Form.Item>
 
+<<<<<<< Updated upstream
             <div style={styles.buttonGroup}>
               <Button
                 icon={<RollbackOutlined />}
@@ -399,5 +535,22 @@ export default function EditProfilePage() {
         src={previewImage}
       />
     </motion.div>
+=======
+            <Space className="w-full justify-end">
+              <Button onClick={() => navigate("/profile")}>Hủy</Button>
+              <Button
+                type="primary"
+                onClick={handleSave}
+                loading={loading}
+                className="bg-gradient-to-r from-pink-500 to-purple-500"
+              >
+                Lưu thay đổi
+              </Button>
+            </Space>
+          </Form>
+        </Card>
+      </div>
+    </div>
+>>>>>>> Stashed changes
   );
 }

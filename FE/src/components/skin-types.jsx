@@ -2,8 +2,6 @@ import oilySkin from "../assets/pictures/oily_skin.jpg";
 import drySkin from "../assets/pictures/dry_skin.jpg";
 import combinationSkin from "../assets/pictures/combination_skin.jpg";
 import { Link } from "react-router-dom";
-import { ArrowRightOutlined } from "@ant-design/icons";
-import { motion } from "framer-motion";
 
 export function SkinTypes() {
   const skinTypes = [
@@ -160,16 +158,23 @@ export function SkinTypes() {
               </div>
 
               {/* Nút Hành Động */}
+<<<<<<< Updated upstream
               <Link to="/quiz-landing">
                 <button className="w-full py-3 px-4 mt-5 bg-gradient-to-r from-rose-400 to-pink-500 text-white rounded-xl font-medium hover:from-rose-500 hover:to-pink-600 transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2">
                   Tìm Hiểu Thêm
                 </button>
               </Link>
+=======
+              <button className="w-full py-3 px-4 bg-gradient-to-r from-rose-400 to-pink-500 text-white rounded-xl font-medium hover:from-rose-500 hover:to-pink-600 transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2">
+                Tìm Hiểu Thêm
+              </button>
+>>>>>>> Stashed changes
             </div>
           </div>
         ))}
       </div>
 
+<<<<<<< Updated upstream
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -196,8 +201,38 @@ export function SkinTypes() {
               <ArrowRightOutlined className="ml-2 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </div>
+=======
+      {/* Kêu Gọi Hành Động */}
+      <div className="max-w-3xl mx-auto mt-16 text-center">
+        <div className="bg-pink-50 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Chưa chắc chắn về loại da của bạn?
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Hãy làm bài kiểm tra phân tích da toàn diện để nhận được đánh giá
+            chi tiết và những khuyến nghị phù hợp với cá nhân bạn.
+          </p>
+          <Link to="/quiz-landing">
+            <button className="inline-flex items-center px-6 py-3 bg-pink-500 text-white font-medium rounded-xl hover:bg-pink-600 transition-colors duration-200">
+              Làm Bài Kiểm Tra
+              <svg
+                className="w-5 h-5 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          </Link>
+>>>>>>> Stashed changes
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

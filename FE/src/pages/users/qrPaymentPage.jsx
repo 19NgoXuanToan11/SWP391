@@ -1,4 +1,5 @@
 import React from "react";
+<<<<<<< Updated upstream
 import { Card, Image, Typography, Button, Space, Spin } from "antd";
 import {
   ArrowLeftOutlined,
@@ -136,6 +137,26 @@ function QRPaymentPage() {
             </Paragraph>
           </div>
         </motion.div>
+=======
+import { Card, Image } from "antd";
+import qrImage from "../../assets/pictures/qr.png";
+
+function QRPaymentPage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white p-6">
+      <div className="max-w-md mx-auto">
+        <Card className="shadow-lg rounded-2xl">
+          <div className="text-center">
+            <Image
+              src={qrImage}
+              alt="QR Code"
+              width={300}
+              preview={false}
+              className="rounded-lg"
+            />
+          </div>
+        </Card>
+>>>>>>> Stashed changes
       </div>
     </div>
   );

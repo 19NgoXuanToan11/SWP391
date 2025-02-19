@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+<<<<<<< Updated upstream
 using System.ComponentModel.DataAnnotations.Schema;
+=======
+>>>>>>> Stashed changes
 
 namespace Data.Models;
 
-[Table("OrderDetails")]
 public partial class OrderDetail
 {
     public int OrderDetailId { get; set; }

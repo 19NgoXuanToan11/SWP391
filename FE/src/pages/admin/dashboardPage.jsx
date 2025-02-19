@@ -1,5 +1,9 @@
 import React, { useState } from "react";
+<<<<<<< Updated upstream
 import SidebarAdmin from "../../components/SidebarAdmin.jsx";
+=======
+import SidebarAdmin from "../../components/sidebaradmin";
+>>>>>>> Stashed changes
 import {
   UserOutlined,
   ShoppingOutlined,

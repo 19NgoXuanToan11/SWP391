@@ -18,6 +18,7 @@ import VouchersPage from "../pages/admin/vouchersPage";
 import SettingPage from "../pages/admin/settingPage";
 import CartPage from "../pages/users/cartPage";
 import PaymentPage from "../pages/users/paymentPage";
+import OrderhistoryPage from "../pages/users/orderhistoryPage";
 import CustomerOrderPage from "../pages/admin/customerorderPage";
 import ProfilePage from "../pages/users/profilePage";
 import WishlistPage from "../pages/users/wishlistPage";
@@ -26,12 +27,17 @@ import EditProfilePage from "../pages/users/editProfilePage";
 import { SkinCareRoutinePage } from "../pages/users/skinCareRoutine";
 import { ProductRecommendationPage } from "../pages/users/productRecommendation";
 import { ProtectedRoute } from "../components/ProtectedRoute";
+<<<<<<< Updated upstream
 import ProductDetailPage from "../pages/users/productdetailPage";
 import { NewsDetailPage } from "../pages/users/newsDetailPage";
 import { NewsPage } from "../components/newsPage";
 import { VerifyEmailPage } from "../pages/login/verifyEmailPage";
 import OrderSuccessPage from "../pages/users/orderSuccessPage";
 import OrdersHistoryPage from "../pages/users/ordersHistoryPage";
+=======
+import OrderHistoryPage from "../pages/users/orderhistoryPage";
+import ProductDetailPage from "../pages/users/productDetailPage";
+>>>>>>> Stashed changes
 
 export const router = createBrowserRouter([
   {
@@ -95,6 +101,10 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "history",
+        element: <OrderhistoryPage />,
+      },
+      {
         path: "dashboard",
         element: <DashboardPage />,
       },
@@ -108,7 +118,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "orders",
-        element: <OrdersHistoryPage />,
+        element: <OrderHistoryPage />,
       },
       {
         path: "category",
@@ -147,28 +157,16 @@ export const router = createBrowserRouter([
         element: <WishlistPage />,
       },
       {
+<<<<<<< Updated upstream
         path: "skin-care-routine",
+=======
+        path: "/skin-care-routine",
+>>>>>>> Stashed changes
         element: <SkinCareRoutinePage />,
       },
       {
-        path: "product-recommendations",
+        path: "/product-recommendations",
         element: <ProductRecommendationPage />,
-      },
-      {
-        path: "news",
-        element: <NewsPage />,
-      },
-      {
-        path: "news/:id",
-        element: <NewsDetailPage />,
-      },
-      {
-        path: "verify-email",
-        element: <VerifyEmailPage />,
-      },
-      {
-        path: "order-success",
-        element: <OrderSuccessPage />,
       },
     ],
   },

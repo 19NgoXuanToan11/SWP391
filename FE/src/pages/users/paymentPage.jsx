@@ -1,5 +1,8 @@
 import React, { useState } from "react";
+<<<<<<< Updated upstream
 import { useSelector } from "react-redux";
+=======
+>>>>>>> Stashed changes
 import {
   Card,
   Steps,
@@ -24,12 +27,18 @@ import {
   BankOutlined,
   WalletOutlined,
   SafetyOutlined,
+<<<<<<< Updated upstream
   ArrowLeftOutlined,
+=======
+>>>>>>> Stashed changes
 } from "@ant-design/icons";
 import { QRCode } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+<<<<<<< Updated upstream
 import { PaymentSteps } from "../../components/PaymentStep";
+=======
+>>>>>>> Stashed changes
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -39,7 +48,9 @@ export function PaymentPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedPayment, setSelectedPayment] = useState("qr");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
+<<<<<<< Updated upstream
   // Lấy thông tin giỏ hàng từ Redux store
   const cartItems = useSelector((state) => state.cart.items);
   const cartTotal = useSelector((state) => state.cart.total);
@@ -57,6 +68,30 @@ export function PaymentPage() {
     })),
   };
 
+=======
+  // Dữ liệu mẫu
+  const orderDetails = {
+    orderId: "ORD-2024-001",
+    totalAmount: 1200000, // Changed to VND
+    items: [
+      {
+        id: 1,
+        name: "Kem Nền Hoàn Hảo",
+        price: 850000, // Changed to VND
+        quantity: 1,
+        image: "https://source.unsplash.com/random/100x100/?cosmetics",
+      },
+      {
+        id: 2,
+        name: "Serum Dưỡng Ẩm",
+        price: 350000, // Changed to VND
+        quantity: 1,
+        image: "https://source.unsplash.com/random/100x100/?serum",
+      },
+    ],
+  };
+
+>>>>>>> Stashed changes
   const paymentMethods = [
     {
       value: "qr",
@@ -67,6 +102,7 @@ export function PaymentPage() {
   ];
 
   const handlePayment = async () => {
+<<<<<<< Updated upstream
     if (!isAuthenticated) {
       message.warning("Vui lòng đăng nhập để tiếp tục thanh toán");
       navigate("/login", { state: { from: "/payment" } });
@@ -95,6 +131,13 @@ export function PaymentPage() {
 
       // Chuyển hướng đến trang QR thay vì set paymentSuccess
       navigate("/qr-payment");
+=======
+    setIsProcessing(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setPaymentSuccess(true);
+      message.success("Thanh toán thành công!");
+>>>>>>> Stashed changes
     } catch (error) {
       message.error("Đã xảy ra lỗi. Vui lòng thử lại!");
     } finally {
@@ -120,19 +163,6 @@ export function PaymentPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white py-12 px-4">
       <div className="max-w-5xl mx-auto">
-        <PaymentSteps current={1} />
-
-        <button
-          type="button"
-          className="flex items-center gap-2 mb-8 px-4 py-2 rounded-full bg-white hover:bg-pink-50 
-              text-gray-600 hover:text-pink-500 font-medium transition-all duration-300
-              shadow-sm hover:shadow-md transform hover:scale-105 border border-gray-200"
-          onClick={() => navigate("/cart")}
-        >
-          <ArrowLeftOutlined className="text-lg" />
-          <span>Quay lại giỏ hàng</span>
-        </button>
-
         <Card className="shadow-xl rounded-3xl overflow-hidden">
           <div className="text-center mb-8">
             <Title
@@ -221,6 +251,7 @@ export function PaymentPage() {
                 bordered={false}
                 bodyStyle={{ padding: "1.5rem" }}
               >
+<<<<<<< Updated upstream
                 <Radio.Group
                   onChange={(e) => setSelectedPayment(e.target.value)}
                   value={selectedPayment}
@@ -265,6 +296,89 @@ export function PaymentPage() {
                     {isProcessing ? "Đang Xử Lý..." : "Thanh Toán Ngay"}
                   </Button>
                 </div>
+=======
+                {paymentSuccess ? (
+                  <div className="text-center py-8">
+                    <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-green-50 flex items-center justify-center">
+                      <CheckCircleOutlined className="text-4xl text-green-500" />
+                    </div>
+                    <Title level={4} className="!mb-2">
+                      Thanh Toán Thành Công!
+                    </Title>
+                    <Paragraph type="secondary">
+                      Cảm ơn bạn đã mua hàng. Đơn hàng của bạn sẽ được xử lý
+                      ngay lập tức.
+                    </Paragraph>
+                    <Button
+                      type="primary"
+                      icon={<ShoppingOutlined />}
+                      size="large"
+                      className="mt-4 bg-gradient-to-r from-pink-500 to-purple-500"
+                      onClick={() => (window.location.href = "/orders")}
+                    >
+                      Xem Đơn Hàng
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <Radio.Group
+                      onChange={(e) => setSelectedPayment(e.target.value)}
+                      value={selectedPayment}
+                      className="w-full"
+                    >
+                      <Space direction="vertical" className="w-full">
+                        {paymentMethods.map((method) => (
+                          <Radio
+                            key={method.value}
+                            value={method.value}
+                            className="w-full p-4 border rounded-xl hover:border-pink-200 transition-all"
+                          >
+                            <Space>
+                              <div className="w-8 h-8 bg-pink-50 rounded-lg flex items-center justify-center text-pink-500">
+                                {method.icon}
+                              </div>
+                              <div>
+                                <div className="font-medium">
+                                  {method.label}
+                                </div>
+                                <Text type="secondary" className="text-sm">
+                                  {method.description}
+                                </Text>
+                              </div>
+                            </Space>
+                          </Radio>
+                        ))}
+                      </Space>
+                    </Radio.Group>
+
+                    <div className="mt-6">
+                      <Button
+                        type="primary"
+                        size="large"
+                        block
+                        loading={isProcessing}
+                        onClick={handlePayNow}
+                        className="bg-gradient-to-r from-pink-500 to-purple-500 h-12 text-lg"
+                        style={{
+                          background:
+                            "linear-gradient(to right, #ec4899, #a855f7)",
+                          borderColor: "transparent",
+                        }}
+                      >
+                        {isProcessing ? "Đang Xử Lý..." : "Thanh Toán Ngay"}
+                      </Button>
+
+                      <Button
+                        type="link"
+                        block
+                        className="mt-2 text-gray-500 hover:text-pink-500"
+                      >
+                        Hủy Thanh Toán
+                      </Button>
+                    </div>
+                  </>
+                )}
+>>>>>>> Stashed changes
               </Card>
 
               <Card
@@ -278,7 +392,13 @@ export function PaymentPage() {
                   </div>
                   <div className="flex justify-between items-center">
                     <Text>Trạng Thái:</Text>
+<<<<<<< Updated upstream
                     <Tag color="processing">Đang Chờ</Tag>
+=======
+                    <Tag color={paymentSuccess ? "success" : "processing"}>
+                      {paymentSuccess ? "Đã Thanh Toán" : "Đang Chờ"}
+                    </Tag>
+>>>>>>> Stashed changes
                   </div>
                 </Space>
               </Card>

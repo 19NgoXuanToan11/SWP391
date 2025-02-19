@@ -22,18 +22,200 @@ import {
 } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+<<<<<<< Updated upstream
 import { useDispatch, useSelector } from "react-redux";
 import {
   removeFromWishlist,
   selectWishlistItems,
 } from "../../store/slices/wishlistSlice";
+=======
+>>>>>>> Stashed changes
 
 const { Title, Text } = Typography;
 
 const WishlistPage = () => {
   const { token } = theme.useToken();
+<<<<<<< Updated upstream
   const dispatch = useDispatch();
   const wishlistItems = useSelector(selectWishlistItems);
+=======
+
+  const colors = {
+    primary: "#ff4d6d", // Hồng đậm
+    secondary: "#ff8fa3", // Hồng nhạt
+    accent: "#ff9a76", // Da cam
+    dark: "#1a1a1a", // Đen
+    light: "#ffffff", // Trắng
+    red: "#ff0a54", // Đỏ
+  };
+
+  const customStyles = {
+    pageContainer: {
+      padding: "32px",
+      maxWidth: 1200,
+      margin: "0 auto",
+      backgroundColor: "#fafafa",
+      minHeight: "100vh",
+    },
+    headerSection: {
+      marginBottom: 32,
+      position: "relative",
+      padding: "24px",
+      background: colors.light,
+      borderRadius: 16,
+      boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+    },
+    headerTitle: {
+      display: "flex",
+      alignItems: "center",
+      marginBottom: 8,
+      color: colors.dark,
+      fontSize: 28,
+    },
+    heartIcon: {
+      color: colors.primary,
+      marginRight: 12,
+      fontSize: 28,
+    },
+    productCard: {
+      height: "100%",
+      position: "relative",
+      overflow: "hidden",
+      borderRadius: 16,
+      border: "none",
+      transition: "all 0.3s ease",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+      "&:hover": {
+        transform: "translateY(-4px)",
+        boxShadow: "0 12px 24px rgba(0,0,0,0.1)",
+      },
+    },
+    imageContainer: {
+      position: "relative",
+      paddingTop: "100%",
+      overflow: "hidden",
+    },
+    productImage: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      transition: "transform 0.3s ease",
+      "&:hover": {
+        transform: "scale(1.05)",
+      },
+    },
+    discountTag: {
+      position: "absolute",
+      top: 12,
+      left: 12,
+      padding: "6px 12px",
+      borderRadius: 8,
+      fontSize: "14px",
+      fontWeight: 600,
+      background: colors.red,
+      border: "none",
+    },
+    brandText: {
+      fontSize: 13,
+      color: colors.dark,
+      opacity: 0.6,
+      fontWeight: 500,
+    },
+    productName: {
+      fontSize: 16,
+      fontWeight: 600,
+      margin: "8px 0",
+      color: colors.dark,
+      lineHeight: 1.4,
+    },
+    priceContainer: {
+      display: "flex",
+      alignItems: "center",
+      gap: 8,
+      marginTop: 8,
+    },
+    currentPrice: {
+      fontSize: 18,
+      fontWeight: 600,
+      color: colors.primary,
+    },
+    originalPrice: {
+      fontSize: 14,
+      color: colors.dark,
+      opacity: 0.5,
+      textDecoration: "line-through",
+    },
+    actionButton: {
+      borderRadius: 8,
+      height: 40,
+      padding: "0 16px",
+      fontWeight: 500,
+      transition: "all 0.3s ease",
+    },
+    cartButton: {
+      background: colors.primary,
+      borderColor: colors.primary,
+      "&:hover": {
+        background: colors.red,
+        borderColor: colors.red,
+      },
+      "&:disabled": {
+        background: "#f5f5f5",
+        borderColor: "#d9d9d9",
+      },
+    },
+    deleteButton: {
+      color: colors.primary,
+      "&:hover": {
+        color: colors.red,
+        background: "rgba(255,77,109,0.1)",
+      },
+    },
+  };
+
+  // Mock data - thay thế bằng data thật từ API sau
+  const wishlistItems = [
+    {
+      id: 1,
+      name: "Kem Dưỡng Ẩm Chuyên Sâu",
+      brand: "La Roche-Posay",
+      price: 890000,
+      originalPrice: 1200000,
+      rating: 4.5,
+      image: "https://source.unsplash.com/random/400x400/?moisturizer",
+      discount: 25,
+      stock: true,
+      description: "Kem dưỡng ẩm chuyên sâu với công thức đột phá, phù hợp mọi loại da"
+    },
+    {
+      id: 2,
+      name: "Serum Vitamin C Sáng Da",
+      brand: "The Ordinary",
+      price: 750000,
+      originalPrice: 850000,
+      rating: 5,
+      image: "https://source.unsplash.com/random/400x400/?serum",
+      discount: 12,
+      stock: true,
+      description: "Serum vitamin C giúp làm sáng da, mờ thâm nám hiệu quả"
+    },
+    {
+      id: 3,
+      name: "Son Dưỡng Môi Collagen",
+      brand: "Laneige",
+      price: 450000,
+      originalPrice: 500000,
+      rating: 4,
+      image: "https://source.unsplash.com/random/400x400/?lipbalm",
+      discount: 10,
+      stock: false,
+      description: "Son dưỡng môi chứa collagen, giúp môi căng mọng, hồng hào"
+    },
+  ];
+>>>>>>> Stashed changes
 
   const colors = {
     primary: "#ff4d6d", // Hồng đậm
@@ -179,7 +361,10 @@ const WishlistPage = () => {
   };
 
   const handleRemoveFromWishlist = (id) => {
+<<<<<<< Updated upstream
     dispatch(removeFromWishlist(id));
+=======
+>>>>>>> Stashed changes
     notification.success({
       message: "Đã xóa khỏi danh sách yêu thích",
       placement: "bottomRight",
@@ -238,10 +423,14 @@ const WishlistPage = () => {
                     </div>
                     {item.discount > 0 && (
                       <div className="absolute top-4 left-4">
+<<<<<<< Updated upstream
                         <Tag
                           color="red"
                           className="px-3 py-1 text-sm font-semibold rounded-full"
                         >
+=======
+                        <Tag color="red" className="px-3 py-1 text-sm font-semibold rounded-full">
+>>>>>>> Stashed changes
                           -{item.discount}% GIẢM
                         </Tag>
                       </div>
@@ -259,6 +448,7 @@ const WishlistPage = () => {
                   <div className="p-6">
                     <div className="mb-4">
                       <p className="text-gray-500 text-sm mb-2">{item.brand}</p>
+<<<<<<< Updated upstream
                       <h3 className="text-xl font-bold text-gray-800 mb-2">
                         {item.name}
                       </h3>
@@ -273,6 +463,14 @@ const WishlistPage = () => {
                         defaultValue={item.rating}
                         className="text-sm"
                       />
+=======
+                      <h3 className="text-xl font-bold text-gray-800 mb-2">{item.name}</h3>
+                      <p className="text-gray-600 text-sm line-clamp-2">{item.description}</p>
+                    </div>
+
+                    <div className="mb-4">
+                      <Rate disabled defaultValue={item.rating} className="text-sm" />
+>>>>>>> Stashed changes
                     </div>
 
                     <div className="flex items-center justify-between mb-6">
@@ -300,9 +498,13 @@ const WishlistPage = () => {
                                 }`}
                     >
                       <ShoppingCartOutlined className="text-xl" />
+<<<<<<< Updated upstream
                       <span>
                         {item.stock ? "Thêm vào giỏ hàng" : "Hết hàng"}
                       </span>
+=======
+                      <span>{item.stock ? "Thêm vào giỏ hàng" : "Hết hàng"}</span>
+>>>>>>> Stashed changes
                     </button>
                   </div>
                 </div>
@@ -323,10 +525,15 @@ const WishlistPage = () => {
                     Danh sách yêu thích của bạn đang trống
                   </p>
                   <Link to="/product">
+<<<<<<< Updated upstream
                     <button
                       className="bg-pink-600 text-white px-8 py-3 mt-10 rounded-xl font-semibold
                                      hover:bg-pink-700 transition-colors duration-300"
                     >
+=======
+                    <button className="bg-pink-600 text-white px-8 py-3 rounded-xl font-semibold
+                                     hover:bg-pink-700 transition-colors duration-300">
+>>>>>>> Stashed changes
                       Khám phá sản phẩm
                     </button>
                   </Link>

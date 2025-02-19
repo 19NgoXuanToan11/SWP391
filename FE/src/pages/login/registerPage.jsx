@@ -11,12 +11,17 @@ export function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    userName: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
+<<<<<<< Updated upstream
     fullName: "",
     phoneNumber: "",
     address: "",
+=======
+    confirmPassword: "",
+>>>>>>> Stashed changes
   });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
@@ -26,6 +31,7 @@ export function RegisterPage() {
 
   useEffect(() => {
     if (isSuccess) {
+      message.success("Đăng ký thành công!");
       navigate("/login");
     }
     if (error) {
@@ -52,10 +58,19 @@ export function RegisterPage() {
 
   const validateForm = () => {
     const errors = {};
+<<<<<<< Updated upstream
 
     // Kiểm tra username
     if (!formData.username) {
       errors.username = "Vui lòng nhập tên đăng nhập";
+=======
+    // Kiểm tra họ và tên
+    if (!formData.firstName) {
+      errors.firstName = "Vui lòng nhập họ";
+    }
+    if (!formData.lastName) {
+      errors.lastName = "Vui lòng nhập tên";
+>>>>>>> Stashed changes
     }
 
     // Kiểm tra email
@@ -73,6 +88,7 @@ export function RegisterPage() {
       errors.password = "Mật khẩu phải có ít nhất 6 ký tự";
     }
 
+<<<<<<< Updated upstream
     // Kiểm tra fullName
     if (!formData.fullName) {
       errors.fullName = "Vui lòng nhập họ và tên";
@@ -91,6 +107,15 @@ export function RegisterPage() {
       errors.address = "Vui lòng nhập địa chỉ";
     }
 
+=======
+    // Kiểm tra xác nhận mật khẩu
+    if (!formData.confirmPassword) {
+      errors.confirmPassword = "Vui lòng xác nhận mật khẩu";
+    } else if (formData.confirmPassword !== formData.password) {
+      errors.confirmPassword = "Mật khẩu không khớp";
+    }
+
+>>>>>>> Stashed changes
     return errors;
   };
 
@@ -101,34 +126,44 @@ export function RegisterPage() {
 
     if (Object.keys(validationErrors).length === 0) {
       try {
+        // Chỉ gửi email và mật khẩu theo yêu cầu của API
         const registerData = {
+<<<<<<< Updated upstream
           userName: formData.username,
+=======
+>>>>>>> Stashed changes
           email: formData.email,
           password: formData.password,
-          fullName: formData.fullName,
-          phoneNumber: formData.phoneNumber,
-          address: formData.address,
         };
-
-        console.log("Sending register data:", registerData);
 
         const response = await register(registerData).unwrap();
 
-        // Kiểm tra response từ API
-        if (response.success) {
-          message.success({
-            content:
-              "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
-            duration: 5,
-            onClose: () => {
-              navigate("/login");
-            },
-          });
-        } else {
-          throw new Error(response.message || "Đăng ký thất bại");
-        }
+        // Lưu thông tin người dùng vào localStorage nếu cần
+        localStorage.setItem(
+          "userInfo",
+          JSON.stringify({
+            email: formData.email,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+          })
+        );
+
+        // Hiển thị thông báo thành công
+        message.success({
+          content: "Đăng ký thành công! Chuyển hướng đến trang đăng nhập...",
+          duration: 2, // Hiển thị trong 2 giây
+          onClose: () => {
+            // Chuyển hướng sau khi thông báo đóng
+            navigate("/login");
+          },
+        });
       } catch (err) {
-        console.error("Registration error:", err);
+        // Xử lý lỗi cụ thể từ API
+        if (err?.data?.error) {
+          message.error(err.data.error);
+        } else {
+          message.error("Đăng ký thất bại. Vui lòng thử lại!");
+        }
       }
     }
   };
@@ -168,6 +203,7 @@ export function RegisterPage() {
           {/* Phần giữa - Biểu mẫu */}
           <div className="flex-1">
             <form onSubmit={handleSubmit} className="space-y-6">
+<<<<<<< Updated upstream
               {/* Full Name field */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
@@ -257,6 +293,26 @@ export function RegisterPage() {
                 )}
               </div>
 
+=======
+              {/* Trường email */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
+                  placeholder="you@example.com"
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-sm">{errors.email}</p>
+                )}
+              </div>
+
+>>>>>>> Stashed changes
               {/* Trường mật khẩu */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">

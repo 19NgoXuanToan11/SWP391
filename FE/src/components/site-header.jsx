@@ -17,7 +17,10 @@ import { Link } from "react-router-dom";
 import { Dropdown } from "antd";
 import { UserDropdown } from "./userDropdown";
 import { useGetUserProfileQuery } from "../services/api/beautyShopApi";
+<<<<<<< Updated upstream
 import { useSelector } from "react-redux";
+=======
+>>>>>>> Stashed changes
 
 export function SiteHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -25,10 +28,13 @@ export function SiteHeader() {
   const { data: user, isLoading } = useGetUserProfileQuery();
   const isAuthenticated = !!localStorage.getItem("token");
 
+<<<<<<< Updated upstream
   // Lấy số lượng sản phẩm từ Redux store
   const cartQuantity = useSelector((state) => state.cart.quantity);
   const wishlistTotal = useSelector((state) => state.wishlist.total);
 
+=======
+>>>>>>> Stashed changes
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -104,6 +110,7 @@ export function SiteHeader() {
                 <span className="font-medium text-base whitespace-nowrap">
                   Giỏ hàng
                 </span>
+<<<<<<< Updated upstream
                 {cartQuantity > 0 && (
                   <span
                     className="flex items-center justify-center w-6 h-6 bg-pink-100 text-pink-700 
@@ -135,6 +142,20 @@ export function SiteHeader() {
                     </Link>
                     <UserDropdown user={user} />
                   </>
+=======
+                <span
+                  className="flex items-center justify-center w-6 h-6 bg-gray-100 text-gray-700 
+                               text-sm font-semibold rounded-full group-hover:bg-gray-200 transition-colors"
+                >
+                  3
+                </span>
+              </Link>
+
+              {/* Phần xác thực */}
+              <div className="flex items-center">
+                {isAuthenticated ? (
+                  <UserDropdown user={user} />
+>>>>>>> Stashed changes
                 ) : (
                   <Link
                     to="/login"

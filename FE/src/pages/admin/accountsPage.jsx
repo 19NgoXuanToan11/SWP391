@@ -7,7 +7,11 @@ import {
   FilterOutlined,
   MoreOutlined,
 } from "@ant-design/icons";
+<<<<<<< Updated upstream
 import SidebarAdmin from "../../components/SidebarAdmin.jsx";
+=======
+import SidebarAdmin from "../../components/sidebaradmin";
+>>>>>>> Stashed changes
 
 const AccountsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");

@@ -1,20 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
+<<<<<<< Updated upstream
 import authReducer from "./authSlice"; // Import reducer đã tạo
+=======
+>>>>>>> Stashed changes
 
-// Hàm lấy dữ liệu an toàn từ localStorage hoặc sessionStorage
-const getFromStorage = (key) => {
+const loadAuthState = () => {
   try {
-    return localStorage.getItem(key) || sessionStorage.getItem(key) || null;
-  } catch (error) {
-    console.error(`Lỗi khi lấy ${key} từ storage:`, error);
-    return null;
-  }
-};
-
-// Lấy user từ storage
-const getUserFromStorage = () => {
-  try {
+    const token = localStorage.getItem("token");
     const userInfo = localStorage.getItem("userInfo");
+<<<<<<< Updated upstream
     return userInfo ? JSON.parse(userInfo) : null;
   } catch (error) {
     console.error("Error parsing user info:", error);
@@ -37,6 +31,24 @@ const initialState = {
   user: getUserFromStorage(),
   token: getTokenFromStorage(),
 };
+=======
+    if (token && userInfo) {
+      return {
+        user: JSON.parse(userInfo),
+        token: token,
+      };
+    }
+  } catch (err) {
+    console.error("Error loading auth state:", err);
+  }
+  return {
+    user: null,
+    token: null,
+  };
+};
+
+const initialState = loadAuthState();
+>>>>>>> Stashed changes
 
 const authSlice = createSlice({
   name: "auth",
@@ -44,6 +56,7 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (state, action) => {
       const { user, token } = action.payload;
+<<<<<<< Updated upstream
       if (!user || !token) {
         console.error("Invalid credentials data:", action.payload);
         return;
@@ -56,16 +69,29 @@ const authSlice = createSlice({
       } catch (error) {
         console.error("Error saving credentials:", error);
       }
+=======
+      state.user = user;
+      state.token = token;
+      // Lưu vào localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("userInfo", JSON.stringify(user));
+>>>>>>> Stashed changes
     },
     logout: (state) => {
       state.user = null;
       state.token = null;
+<<<<<<< Updated upstream
       try {
         localStorage.removeItem("token");
         localStorage.removeItem("userInfo");
       } catch (error) {
         console.error("Error during logout:", error);
       }
+=======
+      // Xóa khỏi localStorage
+      localStorage.removeItem("token");
+      localStorage.removeItem("userInfo");
+>>>>>>> Stashed changes
     },
   },
 });

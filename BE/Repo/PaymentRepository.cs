@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repo
 {
-    public class PaymentRepository : IPaymentRepository
+    public class PaymentRepository
     {
         private readonly SkinCareManagementDbContext _context;
 
@@ -43,6 +43,7 @@ namespace Repo
                 await _context.SaveChangesAsync();
             }
         }
+<<<<<<< Updated upstream
 
         public async Task<Payment?> GetByOrderIdAsync(int orderId)
         {
@@ -55,5 +56,7 @@ namespace Repo
             await _context.PaymentHistories.AddAsync(history);
             await _context.SaveChangesAsync();
         }
+=======
+>>>>>>> Stashed changes
     }
 }

@@ -8,6 +8,7 @@ namespace SWP391_BE.Mappings
     {
         public OrderDetailMappingProfile()
         {
+<<<<<<< Updated upstream
             CreateMap<OrderDetail, OrderDetailDTO>()
                 .ForMember(dest => dest.OrderDetailId, opt => opt.MapFrom(src => src.OrderDetailId))
                 .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
@@ -22,6 +23,11 @@ namespace SWP391_BE.Mappings
             CreateMap<UpdateOrderDetailDTO, OrderDetail>()
                 .ForMember(dest => dest.Order, opt => opt.Ignore())
                 .ForMember(dest => dest.Product, opt => opt.Ignore());
+=======
+            CreateMap<OrderDetail, OrderDetailDTO>();
+            CreateMap<CreateOrderDetailDTO, OrderDetail>();
+            CreateMap<UpdateOrderDetailDTO, OrderDetail>();
+>>>>>>> Stashed changes
         }
     }
 } 

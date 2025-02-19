@@ -9,7 +9,11 @@ import {
   TagOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
+<<<<<<< Updated upstream
 import SidebarAdmin from "../../components/SidebarAdmin.jsx";
+=======
+import SidebarAdmin from "../../components/sidebaradmin";
+>>>>>>> Stashed changes
 
 const BrandsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");

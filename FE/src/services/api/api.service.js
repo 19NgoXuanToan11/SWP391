@@ -4,7 +4,11 @@ export const axiosBaseQuery =
   () =>
   async ({ url, method, data, params }) => {
     try {
+<<<<<<< Updated upstream
       const baseURL = "https://localhost:7285/api"; // URL API của bạn
+=======
+      const baseURL = "https://reqres.in/api"; // URL API của bạn
+>>>>>>> Stashed changes
       const headers = {
         "Content-Type": "application/json",
       };

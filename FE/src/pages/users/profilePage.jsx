@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Card,
   Row,
@@ -19,12 +19,16 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+<<<<<<< Updated upstream
 import { motion } from "framer-motion";
+=======
+>>>>>>> Stashed changes
 
 const { Title, Text, Paragraph } = Typography;
 
 const ProfilePage = () => {
   const { token } = theme.useToken();
+<<<<<<< Updated upstream
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({
     name: localStorage.getItem("userName") || "Nguyễn Văn A",
@@ -145,13 +149,57 @@ const ProfilePage = () => {
         transform: "translateY(-2px)",
         boxShadow: "0 5px 15px rgba(255,77,109,0.1)",
       },
+=======
+
+  const [userInfo] = useState({
+    name: "Nguyễn Văn A",
+    email: "nguyenvana@example.com",
+    avatar: "https://source.unsplash.com/random/150x150",
+    role: "Beauty Consultant",
+    location: "Hà Nội, Việt Nam",
+    bio: "Tôi là chuyên gia tư vấn làm đẹp với hơn 3 năm kinh nghiệm trong ngành mỹ phẩm cao cấp.",
+    coverPhoto: "https://source.unsplash.com/random/1600x400",
+  });
+
+  const customStyles = {
+    mainCard: {
+      overflow: "hidden",
+      borderRadius: 16,
+      border: "none",
+      background: "#faf9f8",
+    },
+    coverPhoto: {
+      height: 300,
+      backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(250,249,248,0.8) 100%), url(${userInfo.coverPhoto})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    },
+    avatarSection: {
+      marginTop: -85,
+      position: "relative",
+      zIndex: 1,
+    },
+    avatar: {
+      border: "4px solid #fff",
+      boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+      backgroundColor: "#f5f0eb",
+    },
+    roleTag: {
+      color: "#9c8576",
+      backgroundColor: "#f5f0eb",
+      border: "none",
+      padding: "6px 16px",
+      fontSize: "14px",
+      marginBottom: 16,
+>>>>>>> Stashed changes
     },
     editButton: {
-      height: 48,
-      padding: "0 35px",
-      borderRadius: 24,
-      background: colors.gradient,
+      height: 44,
+      padding: "0 24px",
+      borderRadius: 8,
+      backgroundColor: "#9c8576",
       border: "none",
+<<<<<<< Updated upstream
       color: colors.light,
       fontSize: 16,
       fontWeight: 600,
@@ -161,23 +209,39 @@ const ProfilePage = () => {
       "&:hover": {
         transform: "translateY(-3px)",
         boxShadow: "0 12px 25px rgba(255,77,109,0.4)",
+=======
+      boxShadow: "0 4px 12px rgba(156,133,118,0.2)",
+      "&:hover": {
+        backgroundColor: "#86725f !important",
+>>>>>>> Stashed changes
       },
     },
     infoCard: {
-      borderRadius: 25,
+      borderRadius: 16,
       border: "none",
-      backgroundColor: colors.light,
-      boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
-      overflow: "hidden",
+      backgroundColor: "#fff",
+    },
+    bioSection: {
+      padding: 20,
+      background: "#f5f0eb",
+      borderRadius: 12,
+      marginTop: 8,
+    },
+    statCard: {
+      textAlign: "center",
+      borderRadius: 12,
+      backgroundColor: "#fff",
+      border: "none",
       transition: "all 0.3s ease",
       "&:hover": {
-        transform: "translateY(-5px)",
-        boxShadow: "0 15px 35px rgba(0,0,0,0.1)",
+        transform: "translateY(-4px)",
+        boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
       },
     },
     sectionTitle: {
-      fontSize: 22,
+      fontSize: 20,
       fontWeight: 600,
+<<<<<<< Updated upstream
       color: colors.dark,
       position: "relative",
       paddingBottom: 12,
@@ -223,10 +287,14 @@ const ProfilePage = () => {
         background: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23ff4d6d' viewBox='0 0 24 24'%3E%3Cpath d='M6.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35.208-.086.39-.16.539-.222.302-.125.474-.197.474-.197L9.758 4.03c0 0-.218.052-.597.144C8.97 4.222 8.737 4.278 8.472 4.345c-.271.05-.56.187-.882.312C7.272 4.799 6.904 4.895 6.562 5.123c-.344.218-.741.4-1.091.692C5.132 6.116 4.723 6.377 4.421 6.76c-.33.358-.656.734-.909 1.162C3.219 8.33 3.02 8.778 2.81 9.221c-.19.443-.343.896-.468 1.336-.237.882-.343 1.72-.384 2.437-.034.718-.014 1.315.028 1.747.015.204.043.402.063.539.017.109.025.168.025.168l.026-.006C2.535 17.474 4.338 19 6.5 19c2.485 0 4.5-2.015 4.5-4.5S8.985 10 6.5 10zM17.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35.208-.086.39-.16.539-.222.302-.125.474-.197.474-.197L20.758 4.03c0 0-.218.052-.597.144-.191.048-.424.104-.689.171-.271.05-.56.187-.882.312-.317.143-.686.238-1.028.467-.344.218-.741.4-1.091.692-.339.301-.748.562-1.05.944-.33.358-.656.734-.909 1.162C14.219 8.33 14.02 8.778 13.81 9.221c-.19.443-.343.896-.468 1.336-.237.882-.343 1.72-.384 2.437-.034.718-.014 1.315.028 1.747.015.204.043.402.063.539.017.109.025.168.025.168l.026-.006C13.535 17.474 15.338 19 17.5 19c2.485 0 4.5-2.015 4.5-4.5S19.985 10 17.5 10z'/%3E%3C/svg%3E") no-repeat center center`,
         opacity: 0.1,
       },
+=======
+      color: "#4a4a4a",
+>>>>>>> Stashed changes
     },
   };
 
   return (
+<<<<<<< Updated upstream
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -338,11 +406,147 @@ const ProfilePage = () => {
                   </Space>
                 </Card>
               </motion.div>
+=======
+    <div
+      style={{
+        padding: "24px",
+        maxWidth: 1200,
+        margin: "0 auto",
+        backgroundColor: "#faf9f8",
+        minHeight: "100vh",
+      }}
+    >
+      <Card
+        bordered={false}
+        style={customStyles.mainCard}
+        bodyStyle={{ padding: 0 }}
+      >
+        <div style={customStyles.coverPhoto} />
+
+        <div style={{ padding: 32 }}>
+          <Row gutter={[32, 32]}>
+            <Col xs={24} md={8} style={{ textAlign: "center" }}>
+              <div style={customStyles.avatarSection}>
+                <Avatar
+                  src={userInfo.avatar}
+                  size={180}
+                  style={customStyles.avatar}
+                />
+                <Title
+                  level={3}
+                  style={{ marginTop: 24, marginBottom: 12, color: "#4a4a4a" }}
+                >
+                  {userInfo.name}
+                </Title>
+                <Tag style={customStyles.roleTag}>{userInfo.role}</Tag>
+                <div>
+                  <Space align="center">
+                    <EnvironmentOutlined style={{ color: "#9c8576" }} />
+                    <Text style={{ color: "#9c8576" }}>
+                      {userInfo.location}
+                    </Text>
+                  </Space>
+                </div>
+                <Button
+                  type="primary"
+                  icon={<EditOutlined />}
+                  size="large"
+                  style={customStyles.editButton}
+                >
+                  Chỉnh sửa hồ sơ
+                </Button>
+              </div>
+            </Col>
+
+            <Col xs={24} md={16}>
+              <Card style={customStyles.infoCard}>
+                <Title level={4} style={customStyles.sectionTitle}>
+                  Thông tin cá nhân
+                </Title>
+                <Divider style={{ borderColor: "#f0f0f0" }} />
+
+                <Space
+                  direction="vertical"
+                  size="large"
+                  style={{ width: "100%" }}
+                >
+                  <div>
+                    <Text strong style={{ color: "#9c8576" }}>
+                      <Space>
+                        <MailOutlined />
+                        Email
+                      </Space>
+                    </Text>
+                    <Paragraph style={{ marginTop: 8, color: "#666" }}>
+                      {userInfo.email}
+                    </Paragraph>
+                  </div>
+
+                  <div>
+                    <Text strong style={{ color: "#9c8576" }}>
+                      <Space>
+                        <UserOutlined />
+                        Giới thiệu
+                      </Space>
+                    </Text>
+                    <div style={customStyles.bioSection}>
+                      <Paragraph
+                        style={{ color: "#666", margin: 0, lineHeight: 1.8 }}
+                      >
+                        {userInfo.bio}
+                      </Paragraph>
+                    </div>
+                  </div>
+                </Space>
+
+                <div style={{ marginTop: 32 }}>
+                  <Title level={4} style={customStyles.sectionTitle}>
+                    Thống kê
+                  </Title>
+                  <Divider style={{ borderColor: "#f0f0f0" }} />
+                  <Row gutter={[16, 16]}>
+                    <Col xs={8}>
+                      <Card style={customStyles.statCard}>
+                        <Statistic
+                          title={
+                            <span style={{ color: "#9c8576" }}>Khách hàng</span>
+                          }
+                          value={248}
+                          valueStyle={{ color: "#4a4a4a" }}
+                        />
+                      </Card>
+                    </Col>
+                    <Col xs={8}>
+                      <Card style={customStyles.statCard}>
+                        <Statistic
+                          title={
+                            <span style={{ color: "#9c8576" }}>Đánh giá</span>
+                          }
+                          value={1893}
+                          valueStyle={{ color: "#4a4a4a" }}
+                        />
+                      </Card>
+                    </Col>
+                    <Col xs={8}>
+                      <Card style={customStyles.statCard}>
+                        <Statistic
+                          title={
+                            <span style={{ color: "#9c8576" }}>Sản phẩm</span>
+                          }
+                          value={156}
+                          valueStyle={{ color: "#4a4a4a" }}
+                        />
+                      </Card>
+                    </Col>
+                  </Row>
+                </div>
+              </Card>
+>>>>>>> Stashed changes
             </Col>
           </Row>
         </div>
       </Card>
-    </motion.div>
+    </div>
   );
 };
 

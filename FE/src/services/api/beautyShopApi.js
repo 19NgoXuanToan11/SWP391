@@ -1,9 +1,14 @@
+<<<<<<< Updated upstream
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+=======
+import { createApi } from "@reduxjs/toolkit/query/react";
+>>>>>>> Stashed changes
 import { axiosBaseQuery } from "./api.service";
 import endpoints from "../../constants/endpoint";
 
 const beautyShopApi = createApi({
   reducerPath: "beautyShopApi",
+<<<<<<< Updated upstream
   baseQuery: fetchBaseQuery({
     baseUrl: "https://localhost:7285/api",
     prepareHeaders: (headers) => {
@@ -13,6 +18,9 @@ const beautyShopApi = createApi({
     },
     credentials: "include",
   }),
+=======
+  baseQuery: axiosBaseQuery(),
+>>>>>>> Stashed changes
   tagTypes: ["Products", "Categories", "Orders", "User"],
   endpoints: (builder) => ({
     // Auth endpoints
@@ -20,10 +28,7 @@ const beautyShopApi = createApi({
       query: (credentials) => ({
         url: endpoints.LOGIN,
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: credentials,
+        data: credentials,
       }),
       // Xử lý response để lưu token
       onQueryStarted: async (_, { queryFulfilled }) => {
@@ -37,9 +42,10 @@ const beautyShopApi = createApi({
     }),
 
     register: builder.mutation({
-      query: (data) => ({
+      query: (userData) => ({
         url: endpoints.REGISTER,
         method: "POST",
+<<<<<<< Updated upstream
         body: data,
       }),
     }),
@@ -49,6 +55,13 @@ const beautyShopApi = createApi({
         url: endpoints.VERIFY_EMAIL,
         method: "GET",
         params: { token: data },  // Sử dụng 'data' ở đây, vì 'data' sẽ chứa token
+=======
+        data: {
+          email: userData.email,
+          password: userData.password,
+          // API reqres.in chỉ chấp nhận email và password
+        },
+>>>>>>> Stashed changes
       }),
     }),
 
@@ -62,16 +75,12 @@ const beautyShopApi = createApi({
       providesTags: ["Products"],
     }),
 
-    getProductById: builder.query({
-      query: (id) => `/Product/${id}`,
-      transformResponse: (response) => {
-        console.log("API Response:", response);
-        return response;
-      },
-      transformErrorResponse: (error) => {
-        console.error("API Error:", error);
-        return error;
-      },
+    getProductDetail: builder.query({
+      query: (id) => ({
+        url: endpoints.GET_PRODUCT_DETAIL.replace(":id", id),
+        method: "GET",
+      }),
+      providesTags: (result, error, id) => [{ type: "Products", id }],
     }),
 
     createProduct: builder.mutation({
@@ -134,9 +143,8 @@ const beautyShopApi = createApi({
 export const {
   useLoginMutation,
   useRegisterMutation,
-  useVerifyEmailMutation,
   useGetProductsQuery,
-  useGetProductByIdQuery,
+  useGetProductDetailQuery,
   useCreateProductMutation,
   useGetCategoriesQuery,
   useGetOrdersQuery,
