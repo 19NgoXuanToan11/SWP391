@@ -40,6 +40,14 @@ public partial class SkinCareManagementDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<Brand> Brands { get; set; }
+
+    public virtual DbSet<Volume> Volumes { get; set; }
+
+    public virtual DbSet<Category> Categories { get; set; }
+
+    public virtual DbSet<ProductImage> ProductImages { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer(GetConnectionString());
@@ -186,6 +194,15 @@ public partial class SkinCareManagementDbContext : DbContext
             entity.HasOne(d => d.SkinType).WithMany(p => p.Products)
                 .HasForeignKey(d => d.SkinTypeId)
                 .HasConstraintName("FK__Products__SkinTy__30F848ED");
+
+            entity.HasOne(d => d.Brand).WithMany(p => p.Products)
+                .HasForeignKey(d => d.BrandId);
+
+            entity.HasOne(d => d.Volume).WithMany(p => p.Products)
+                .HasForeignKey(d => d.VolumeId);
+
+            entity.HasOne(d => d.Category).WithMany(p => p.Products)
+                .HasForeignKey(d => d.CategoryId);
         });
 
         modelBuilder.Entity<Promotion>(entity =>
@@ -257,6 +274,20 @@ public partial class SkinCareManagementDbContext : DbContext
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Users__RoleID__29572725");
+        });
+
+        modelBuilder.Entity<ProductImage>(entity =>
+        {
+            entity.HasKey(e => e.ImageId).HasName("PK__ProductI__1788CCAC2A045CD7");
+
+            entity.Property(e => e.ImageId).HasColumnName("ImageID");
+            entity.Property(e => e.ProductId).HasColumnName("ProductID");
+            entity.Property(e => e.ImageUrl).HasMaxLength(255);
+
+            entity.HasOne(d => d.Product).WithMany(p => p.Images)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ProductIm__Produ__403A8C7D");
         });
 
         OnModelCreatingPartial(modelBuilder);
