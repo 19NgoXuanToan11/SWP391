@@ -5,6 +5,7 @@ import blog2 from "../assets/pictures/blog2.jpg";
 import blog3 from "../assets/pictures/blog3.jpg";
 import blog4 from "../assets/pictures/blog4.jpg";
 import blog5 from "../assets/pictures/blog5.jpg";
+import { useNavigate } from "react-router-dom";
 
 export function NewsPage() {
   const articles = [
@@ -46,6 +47,7 @@ export function NewsPage() {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 3) % articles.length);
@@ -55,6 +57,10 @@ export function NewsPage() {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? articles.length - 3 : prevIndex - 3
     );
+  };
+
+  const handleArticleClick = (index) => {
+    navigate(`/news/${index + 1}`);
   };
 
   const visibleArticles = articles.slice(currentIndex, currentIndex + 3);
@@ -94,7 +100,8 @@ export function NewsPage() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
                 transition={{ duration: 0.5 }}
-                className="bg-white rounded-lg shadow-lg overflow-hidden max-w-sm"
+                className="bg-white rounded-lg shadow-lg overflow-hidden max-w-sm cursor-pointer"
+                onClick={() => handleArticleClick(index)}
               >
                 <img
                   src={article.image}
