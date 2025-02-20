@@ -14,7 +14,7 @@ namespace Repo
 
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            return await _context.Products
+            return await _context.Product
                 .Include(p => p.Brand)
                 .Include(p => p.Volume)
                 .Include(p => p.SkinType)

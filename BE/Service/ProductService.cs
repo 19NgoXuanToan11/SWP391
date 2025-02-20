@@ -53,28 +53,28 @@ namespace Service
                 product.CreatedAt = DateTime.UtcNow;
                 
                 // Kiểm tra các foreign key có tồn tại
-                var brand = await _context.Brands.FindAsync(product.BrandId);
+                var brand = await _context.Brand.FindAsync(product.BrandId);
                 if (brand == null) 
                 {
                     _logger.LogError($"Brand with ID {product.BrandId} not found");
                     throw new Exception($"Brand với ID {product.BrandId} không tồn tại");
                 }
                 
-                var volume = await _context.Volumes.FindAsync(product.VolumeId);
+                var volume = await _context.Volume.FindAsync(product.VolumeId);
                 if (volume == null)
                 {
                     _logger.LogError($"Volume with ID {product.VolumeId} not found");
                     throw new Exception($"Volume với ID {product.VolumeId} không tồn tại");
                 }
                 
-                var skinType = await _context.Skintypes.FindAsync(product.SkinTypeId);
+                var skinType = await _context.Skintype.FindAsync(product.SkinTypeId);
                 if (skinType == null)
                 {
                     _logger.LogError($"SkinType with ID {product.SkinTypeId} not found");
                     throw new Exception($"SkinType với ID {product.SkinTypeId} không tồn tại");
                 }
                 
-                var category = await _context.Categories.FindAsync(product.CategoryId);
+                var category = await _context.Category.FindAsync(product.CategoryId);
                 if (category == null)
                 {
                     _logger.LogError($"Category with ID {product.CategoryId} not found");

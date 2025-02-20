@@ -20,33 +20,33 @@ public partial class SkinCareManagementDbContext : DbContext
 
     public virtual DbSet<Feedback> Feedbacks { get; set; }
 
-    public virtual DbSet<Order> Orders { get; set; }
+    public virtual DbSet<Order> Order { get; set; }
 
-    public virtual DbSet<OrderDetail> OrderDetails { get; set; }
+    public virtual DbSet<OrderDetail> OrderDetail { get; set; }
 
-    public virtual DbSet<Payment> Payments { get; set; }
+    public virtual DbSet<Payment> Payment { get; set; }
 
-    public virtual DbSet<PaymentHistory> PaymentHistories { get; set; }
+    public virtual DbSet<PaymentHistory> PaymentHistory { get; set; }
 
-    public virtual DbSet<Product> Products { get; set; }
+    public virtual DbSet<Product> Product { get; set; }
 
-    public virtual DbSet<Promotion> Promotions { get; set; }
+    public virtual DbSet<Promotion> Promotion { get; set; }
 
-    public virtual DbSet<Role> Roles { get; set; }
+    public virtual DbSet<Role> Role { get; set; }
 
-    public virtual DbSet<SkinRoutine> SkinRoutines { get; set; }
+    public virtual DbSet<SkinRoutine> SkinRoutine { get; set; }
 
-    public virtual DbSet<Skintype> Skintypes { get; set; }
+    public virtual DbSet<Skintype> Skintype { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<User> User { get; set; }
 
-    public virtual DbSet<Brand> Brands { get; set; }
+    public virtual DbSet<Brand> Brand { get; set; }
 
-    public virtual DbSet<Volume> Volumes { get; set; }
+    public virtual DbSet<Volume> Volume { get; set; }
 
-    public virtual DbSet<Category> Categories { get; set; }
+    public virtual DbSet<Category> Category { get; set; }
 
-    public virtual DbSet<ProductImage> ProductImages { get; set; }
+    public virtual DbSet<ProductImage> ProductImage { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.

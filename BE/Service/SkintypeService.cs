@@ -14,12 +14,12 @@ namespace Service
 
         public async Task<IEnumerable<Skintype>> GetAllSkintypesAsync()
         {
-            return await _context.Skintypes.ToListAsync();
+            return await _context.Skintype.ToListAsync();
         }
 
         public async Task<Skintype?> GetSkintypeByIdAsync(int id)
         {
-            return await _context.Skintypes.FindAsync(id);
+            return await _context.Skintype.FindAsync(id);
         }
 
         public async Task AddSkintypeAsync(Skintype skintype)
@@ -46,7 +46,7 @@ namespace Service
 
         public async Task<bool> ExistsAsync(int id)
         {
-            return await _context.Skintypes.AnyAsync(s => s.SkinTypeId == id);
+            return await _context.Skintype.AnyAsync(s => s.SkinTypeId == id);
         }
     }
 }
