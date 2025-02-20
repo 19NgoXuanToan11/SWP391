@@ -1,5 +1,4 @@
 using Data.Models;
-using Repo;
 using Microsoft.EntityFrameworkCore;
 
 namespace Service
@@ -11,11 +10,6 @@ namespace Service
         public SkinTypeService(SkinCareManagementDbContext context)
         {
             _context = context;
-        }
-
-        public async Task<bool> ExistsAsync(int id)
-        {
-            return await _context.Skintypes.AnyAsync(s => s.SkinTypeId == id);
         }
 
         public async Task<IEnumerable<Skintype>> GetAllSkintypesAsync()
@@ -48,6 +42,11 @@ namespace Service
                 _context.Skintypes.Remove(skintype);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _context.Skintypes.AnyAsync(s => s.SkinTypeId == id);
         }
     }
 }
