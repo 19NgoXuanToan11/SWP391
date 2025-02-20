@@ -8,9 +8,12 @@ namespace Service
     {
         private readonly IProductRepository _productRepository;
         private readonly ILogger<ProductService> _logger;
-        private readonly ApplicationDbContext _context;
+        private readonly SkinCareManagementDbContext _context;
 
-        public ProductService(IProductRepository productRepository, ILogger<ProductService> logger, ApplicationDbContext context)
+        public ProductService(
+            IProductRepository productRepository, 
+            ILogger<ProductService> logger,
+            SkinCareManagementDbContext context)
         {
             _productRepository = productRepository;
             _logger = logger;

@@ -1,40 +1,53 @@
 using Data.Models;
 using Repo;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service
 {
-    public class SkintypeService : ISkintypeService
+    public class SkinTypeService : ISkinTypeService
     {
-        private readonly ISkintypeRepository _skintypeRepository;
+        private readonly SkinCareManagementDbContext _context;
 
-        public SkintypeService(ISkintypeRepository skintypeRepository)
+        public SkinTypeService(SkinCareManagementDbContext context)
         {
-            _skintypeRepository = skintypeRepository;
+            _context = context;
+        }
+
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _context.Skintypes.AnyAsync(s => s.SkinTypeId == id);
         }
 
         public async Task<IEnumerable<Skintype>> GetAllSkintypesAsync()
         {
-            return await _skintypeRepository.GetAllAsync();
+            return await _context.Skintypes.ToListAsync();
         }
 
         public async Task<Skintype?> GetSkintypeByIdAsync(int id)
         {
-            return await _skintypeRepository.GetByIdAsync(id);
+            return await _context.Skintypes.FindAsync(id);
         }
 
         public async Task AddSkintypeAsync(Skintype skintype)
         {
-            await _skintypeRepository.AddAsync(skintype);
+            await _context.Skintypes.AddAsync(skintype);
+            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateSkintypeAsync(Skintype skintype)
         {
-            await _skintypeRepository.UpdateAsync(skintype);
+            _context.Skintypes.Update(skintype);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteSkintypeAsync(int id)
         {
-            await _skintypeRepository.DeleteAsync(id);
+            var skintype = await _context.Skintypes.FindAsync(id);
+            if (skintype != null)
+            {
+                _context.Skintypes.Remove(skintype);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

@@ -85,7 +85,7 @@ namespace Repo
                     foreach (var image in product.Images)
                     {
                         image.ProductId = product.ProductId;
-                        await _context.ProductImages.AddAsync(image);
+                        await _context.Set<ProductImage>().AddAsync(image);
                     }
                     await _context.SaveChangesAsync();
                 }

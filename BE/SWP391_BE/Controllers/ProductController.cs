@@ -4,6 +4,7 @@ using Service;
 using SWP391_BE.DTOs;
 using Data.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace SWP391_BE.Controllers
 {
