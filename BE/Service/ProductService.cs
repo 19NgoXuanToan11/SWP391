@@ -61,22 +61,80 @@ namespace Service
 
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-            return await _productRepository.GetByIdAsync(id);
+            try
+            {
+                return await _context.Products
+                    .Include(p => p.Brand)
+                    .Include(p => p.Volume)
+                    .Include(p => p.SkinType)
+                    .Include(p => p.Category)
+                    .FirstOrDefaultAsync(p => p.ProductId == id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting product by id {Id}", id);
+                throw;
+            }
         }
 
         public async Task<IEnumerable<Product>> GetProductsByBrandAsync(int brandId)
         {
-            return await _productRepository.GetProductsByBrandAsync(brandId);
+            try
+            {
+                return await _context.Products
+                    .Include(p => p.Brand)
+                    .Include(p => p.Volume)
+                    .Include(p => p.SkinType)
+                    .Include(p => p.Category)
+                    .Where(p => p.BrandId == brandId)
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting products by brand {BrandId}: {Message}", brandId, ex.Message);
+                throw;
+            }
         }
 
         public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId)
         {
-            return await _productRepository.GetProductsByCategoryAsync(categoryId);
+            try
+            {
+                return await _context.Products
+                    .Include(p => p.Brand)
+                    .Include(p => p.Volume)
+                    .Include(p => p.SkinType)
+                    .Include(p => p.Category)
+                    .Where(p => p.CategoryId == categoryId)
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting products by category {CategoryId}: {Message}", categoryId, ex.Message);
+                throw;
+            }
         }
 
         public async Task<IEnumerable<Product>> GetProductsBySkinTypeAsync(int skinTypeId)
         {
-            return await _productRepository.GetProductsBySkinTypeAsync(skinTypeId);
+            try
+            {
+                return await _context.Products
+                    .Include(p => p.Brand)
+                    .Include(p => p.Volume)
+                    .Include(p => p.SkinType)
+                    .Include(p => p.Category)
+                    .Where(p => p.SkinTypeId == skinTypeId)
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting products by skin type {SkinTypeId}: {Message}", skinTypeId, ex.Message);
+                throw;
+            }
         }
 
         public async Task<Product> AddProductAsync(Product product)
@@ -138,20 +196,56 @@ namespace Service
 
         public async Task DeleteProductAsync(int id)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                await _productRepository.DeleteAsync(id);
+                // Xóa theo đúng tên bảng và cột
+                var deleteProductImages = "DELETE FROM ProductImages WHERE ProductId = @id";
+                var deleteOrderDetails = "DELETE FROM OrderDetails WHERE ProductID = @id";  // Chú ý chữ ID viết hoa
+                var deleteFeedbacks = "DELETE FROM Feedbacks WHERE ProductID = @id";  // Chú ý tên bảng số nhiều và ID viết hoa
+                var deleteProduct = "DELETE FROM Products WHERE ProductID = @id";  // Chú ý ID viết hoa
+
+                // Thực hiện xóa theo thứ tự từ con đến cha
+                await _context.Database.ExecuteSqlRawAsync(deleteProductImages, new Microsoft.Data.SqlClient.SqlParameter("@id", id));
+                await _context.Database.ExecuteSqlRawAsync(deleteOrderDetails, new Microsoft.Data.SqlClient.SqlParameter("@id", id));
+                await _context.Database.ExecuteSqlRawAsync(deleteFeedbacks, new Microsoft.Data.SqlClient.SqlParameter("@id", id));
+                var result = await _context.Database.ExecuteSqlRawAsync(deleteProduct, new Microsoft.Data.SqlClient.SqlParameter("@id", id));
+
+                if (result == 0)
+                {
+                    throw new Exception($"Product with ID {id} not found");
+                }
+
+                await transaction.CommitAsync();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error deleting product");
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Error deleting product {Id}: {Message}", id, ex.Message);
                 throw;
             }
         }
 
         public async Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm)
         {
-            return await _productRepository.SearchProductsAsync(searchTerm);
+            try
+            {
+                return await _context.Products
+                    .Include(p => p.Brand)
+                    .Include(p => p.Volume)
+                    .Include(p => p.SkinType)
+                    .Include(p => p.Category)
+                    .Where(p => p.ProductName.Contains(searchTerm) 
+                        || p.Description.Contains(searchTerm)
+                        || p.MainIngredients.Contains(searchTerm))
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error searching products with term {SearchTerm}: {Message}", searchTerm, ex.Message);
+                throw;
+            }
         }
     }
 }
