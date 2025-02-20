@@ -54,24 +54,45 @@ namespace Service
                 
                 // Kiểm tra các foreign key có tồn tại
                 var brand = await _context.Brands.FindAsync(product.BrandId);
-                if (brand == null) throw new Exception("Brand không tồn tại");
+                if (brand == null) 
+                {
+                    _logger.LogError($"Brand with ID {product.BrandId} not found");
+                    throw new Exception($"Brand với ID {product.BrandId} không tồn tại");
+                }
                 
                 var volume = await _context.Volumes.FindAsync(product.VolumeId);
-                if (volume == null) throw new Exception("Volume không tồn tại");
+                if (volume == null)
+                {
+                    _logger.LogError($"Volume with ID {product.VolumeId} not found");
+                    throw new Exception($"Volume với ID {product.VolumeId} không tồn tại");
+                }
                 
                 var skinType = await _context.Skintypes.FindAsync(product.SkinTypeId);
-                if (skinType == null) throw new Exception("SkinType không tồn tại");
+                if (skinType == null)
+                {
+                    _logger.LogError($"SkinType with ID {product.SkinTypeId} not found");
+                    throw new Exception($"SkinType với ID {product.SkinTypeId} không tồn tại");
+                }
                 
                 var category = await _context.Categories.FindAsync(product.CategoryId);
-                if (category == null) throw new Exception("Category không tồn tại");
+                if (category == null)
+                {
+                    _logger.LogError($"Category with ID {product.CategoryId} not found");
+                    throw new Exception($"Category với ID {product.CategoryId} không tồn tại");
+                }
 
+                // Thêm sản phẩm
                 await _productRepository.AddAsync(product);
+
+                // Log thành công
+                _logger.LogInformation($"Product {product.ProductName} created successfully");
+                
                 return product;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error adding product");
-                throw;
+                _logger.LogError(ex, "Error while adding product: {Message}", ex.Message);
+                throw new Exception("Có lỗi xảy ra khi tạo sản phẩm", ex);
             }
         }
 

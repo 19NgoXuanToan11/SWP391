@@ -376,7 +376,7 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "createProductDTO",
+        "Name": "createProductDto",
         "Type": "SWP391_BE.DTOs.CreateProductDTO",
         "IsRequired": true
       }
@@ -779,9 +779,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "SWP391_BE.Controllers.SkintypeController",
+    "ContainingType": "SWP391_BE.Controllers.SkinTypeController",
     "Method": "GetAllSkintypes",
-    "RelativePath": "api/Skintype",
+    "RelativePath": "api/SkinType",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -799,9 +799,9 @@
     ]
   },
   {
-    "ContainingType": "SWP391_BE.Controllers.SkintypeController",
+    "ContainingType": "SWP391_BE.Controllers.SkinTypeController",
     "Method": "CreateSkintype",
-    "RelativePath": "api/Skintype",
+    "RelativePath": "api/SkinType",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -825,9 +825,9 @@
     ]
   },
   {
-    "ContainingType": "SWP391_BE.Controllers.SkintypeController",
+    "ContainingType": "SWP391_BE.Controllers.SkinTypeController",
     "Method": "GetSkintype",
-    "RelativePath": "api/Skintype/{id}",
+    "RelativePath": "api/SkinType/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -851,9 +851,9 @@
     ]
   },
   {
-    "ContainingType": "SWP391_BE.Controllers.SkintypeController",
+    "ContainingType": "SWP391_BE.Controllers.SkinTypeController",
     "Method": "UpdateSkintype",
-    "RelativePath": "api/Skintype/{id}",
+    "RelativePath": "api/SkinType/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -872,9 +872,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "SWP391_BE.Controllers.SkintypeController",
+    "ContainingType": "SWP391_BE.Controllers.SkinTypeController",
     "Method": "DeleteSkintype",
-    "RelativePath": "api/Skintype/{id}",
+    "RelativePath": "api/SkinType/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,

@@ -75,27 +75,28 @@ namespace Repo
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
+                // Lưu danh sách ảnh tạm thời
+                var images = product.Images.ToList();
+                product.Images.Clear();
+
                 // Thêm sản phẩm
                 await _context.Products.AddAsync(product);
                 await _context.SaveChangesAsync();
 
                 // Thêm ảnh sản phẩm
-                if (product.Images != null && product.Images.Any())
+                foreach (var image in images)
                 {
-                    foreach (var image in product.Images)
-                    {
-                        image.ProductId = product.ProductId;
-                        await _context.Set<ProductImage>().AddAsync(image);
-                    }
-                    await _context.SaveChangesAsync();
+                    image.ProductId = product.ProductId;
+                    await _context.Set<ProductImage>().AddAsync(image);
                 }
+                await _context.SaveChangesAsync();
 
                 await transaction.CommitAsync();
             }
-            catch
+            catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                throw;
+                throw new Exception("Lỗi khi lưu sản phẩm vào database", ex);
             }
         }
 

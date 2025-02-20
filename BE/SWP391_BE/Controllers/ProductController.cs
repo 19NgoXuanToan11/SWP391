@@ -138,31 +138,57 @@ namespace SWP391_BE.Controllers
             try
             {
                 if (!ModelState.IsValid)
+                {
                     return BadRequest(ModelState);
+                }
 
                 // Validate các foreign key
                 if (!await _brandService.ExistsAsync(createProductDto.BrandId.Value))
-                    return BadRequest("Brand không tồn tại");
+                {
+                    return BadRequest($"Brand với ID {createProductDto.BrandId} không tồn tại");
+                }
                     
                 if (!await _volumeService.ExistsAsync(createProductDto.VolumeId.Value))
-                    return BadRequest("Volume không tồn tại");
+                {
+                    return BadRequest($"Volume với ID {createProductDto.VolumeId} không tồn tại");
+                }
                     
                 if (!await _skinTypeService.ExistsAsync(createProductDto.SkinTypeId.Value))
-                    return BadRequest("SkinType không tồn tại");
+                {
+                    return BadRequest($"SkinType với ID {createProductDto.SkinTypeId} không tồn tại");
+                }
                     
                 if (!await _categoryService.ExistsAsync(createProductDto.CategoryId.Value))
-                    return BadRequest("Category không tồn tại");
+                {
+                    return BadRequest($"Category với ID {createProductDto.CategoryId} không tồn tại");
+                }
+
+                // Validate ImageUrls
+                if (createProductDto.ImageUrls == null || !createProductDto.ImageUrls.Any())
+                {
+                    return BadRequest("Sản phẩm phải có ít nhất 1 hình ảnh");
+                }
 
                 var product = _mapper.Map<Product>(createProductDto);
+                
+                // Tạo danh sách ProductImage từ ImageUrls
+                product.Images = createProductDto.ImageUrls.Select(url => new ProductImage 
+                { 
+                    ImageUrl = url 
+                }).ToList();
+
                 var result = await _productService.AddProductAsync(product);
                 
-                return CreatedAtAction(nameof(GetProduct), new { id = result.ProductId }, 
-                    _mapper.Map<ProductDTO>(result));
+                return CreatedAtAction(
+                    nameof(GetProduct), 
+                    new { id = result.ProductId }, 
+                    _mapper.Map<ProductDTO>(result)
+                );
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating product");
-                return StatusCode(500, "Có lỗi xảy ra khi tạo sản phẩm");
+                _logger.LogError(ex, "Error creating product: {Message}", ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 

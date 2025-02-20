@@ -1354,10 +1354,10 @@
         }
       }
     },
-    "/api/Skintype": {
+    "/api/SkinType": {
       "get": {
         "tags": [
-          "Skintype"
+          "SkinType"
         ],
         "responses": {
           "200": {
@@ -1393,7 +1393,7 @@
       },
       "post": {
         "tags": [
-          "Skintype"
+          "SkinType"
         ],
         "requestBody": {
           "content": {
@@ -1438,10 +1438,10 @@
         }
       }
     },
-    "/api/Skintype/{id}": {
+    "/api/SkinType/{id}": {
       "get": {
         "tags": [
-          "Skintype"
+          "SkinType"
         ],
         "parameters": [
           {
@@ -1479,7 +1479,7 @@
       },
       "put": {
         "tags": [
-          "Skintype"
+          "SkinType"
         ],
         "parameters": [
           {
@@ -1519,7 +1519,7 @@
       },
       "delete": {
         "tags": [
-          "Skintype"
+          "SkinType"
         ],
         "parameters": [
           {
