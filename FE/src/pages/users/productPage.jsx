@@ -51,9 +51,10 @@ export function ProductsPage() {
       const searchLower = filters.searchTerm.toLowerCase();
       filtered = filtered.filter(
         (product) =>
-          product.name.toLowerCase().includes(searchLower) ||
+          product.productName.toLowerCase().includes(searchLower) ||
           product.description.toLowerCase().includes(searchLower) ||
-          product.keyIngredients?.toLowerCase().includes(searchLower)
+          product.mainIngredients?.toLowerCase().includes(searchLower) ||
+          product.brandName?.toLowerCase().includes(searchLower)
       );
     }
 
@@ -72,36 +73,33 @@ export function ProductsPage() {
     // Filter by brands
     if (filters.brands.length > 0) {
       filtered = filtered.filter((product) =>
-        filters.brands.includes(product.brand)
+        filters.brands.includes(product.brandName)
       );
     }
 
     // Filter by categories
     if (filters.categories.length > 0) {
       filtered = filtered.filter((product) =>
-        filters.categories.includes(product.category)
+        filters.categories.includes(product.categoryName)
       );
     }
 
     // Filter by skin types
     if (filters.skinTypes.length > 0) {
       filtered = filtered.filter((product) =>
-        filters.skinTypes.includes(product.skinType)
+        filters.skinTypes.includes(product.skinTypeName)
       );
     }
 
     // Filter by volume
     if (filters.volumes && filters.volumes.length > 0) {
-      filtered = filtered.filter((product) => {
-        return filters.volumes.some(
-          (volume) =>
-            product.volume &&
-            product.volume.toLowerCase() === volume.toLowerCase()
-        );
-      });
+      filtered = filtered.filter((product) =>
+        filters.volumes.includes(product.volumeName)
+      );
     }
 
     setFilteredProducts(filtered);
+    setCurrentPage(1); // Reset về trang 1 khi filter
   };
 
   const handleProductClick = (productId) => {

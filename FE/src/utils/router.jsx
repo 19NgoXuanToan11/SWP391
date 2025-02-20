@@ -29,6 +29,8 @@ import { ProductRecommendationPage } from "../pages/users/productRecommendation"
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import OrderHistoryPage from "../pages/users/orderhistoryPage";
 import ProductDetailPage from "../pages/users/productDetailPage";
+import { NewsDetailPage } from "../pages/users/newsDetailPage";
+import { NewsPage } from "../components/newsPage";
 
 export const router = createBrowserRouter([
   {
@@ -148,12 +150,20 @@ export const router = createBrowserRouter([
         element: <WishlistPage />,
       },
       {
-        path: "/skin-care-routine",
+        path: "skin-care-routine",
         element: <SkinCareRoutinePage />,
       },
       {
-        path: "/product-recommendations",
+        path: "product-recommendations",
         element: <ProductRecommendationPage />,
+      },
+      {
+        path: "news",
+        element: <NewsPage />,
+      },
+      {
+        path: "news/:id",
+        element: <NewsDetailPage />,
       },
     ],
   },

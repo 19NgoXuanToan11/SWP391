@@ -158,9 +158,11 @@ export function SkinTypes() {
               </div>
 
               {/* Nút Hành Động */}
-              <button className="w-full py-3 px-4 bg-gradient-to-r from-rose-400 to-pink-500 text-white rounded-xl font-medium hover:from-rose-500 hover:to-pink-600 transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2">
-                Tìm Hiểu Thêm
-              </button>
+              <Link to="/quiz-landing">
+                <button className="w-full py-3 px-4 mt-5 bg-gradient-to-r from-rose-400 to-pink-500 text-white rounded-xl font-medium hover:from-rose-500 hover:to-pink-600 transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2">
+                  Tìm Hiểu Thêm
+                </button>
+              </Link>
             </div>
           </div>
         ))}

@@ -9,27 +9,28 @@ export function Sidebar({ onFilterChange }) {
   const [selectedVolumes, setSelectedVolumes] = useState([]);
 
   // Danh sách các option cố định
-  const volumeOptions = ["30mL", "50mL", "60mL", "100mL", "200mL"];
+  const volumeOptions = ["30ml", "50ml", "100ml", "150ml", "200ml"];
   const brandOptions = [
+    "Bioderma",
     "La Roche-Posay",
-    "L'Oréal",
-    "Innisfree",
-    "Laneige",
+    "Some By Mi",
     "The Ordinary",
     "Cerave",
+    "Klairs",
   ];
   const categoryOptions = [
-    "Chăm sóc da",
-    "Sữa rửa mặt",
-    "Kem dưỡng ẩm",
+    "Toner",
     "Serum",
+    "Sữa rửa mặt",
+    "Kem chống nắng",
+    "Kem dưỡng",
   ];
   const skinTypeOptions = [
-    "Da thường",
     "Da dầu",
     "Da khô",
     "Da hỗn hợp",
     "Da nhạy cảm",
+    "Mọi loại da",
   ];
 
   // Xử lý thay đổi tìm kiếm
@@ -146,6 +147,7 @@ export function Sidebar({ onFilterChange }) {
             onChange={(e) => handlePriceChange("min", e.target.value)}
             className="w-full px-2 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
             min="0"
+            step="10000"
           />
           <span>-</span>
           <input
@@ -155,6 +157,7 @@ export function Sidebar({ onFilterChange }) {
             onChange={(e) => handlePriceChange("max", e.target.value)}
             className="w-full px-2 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
             min="0"
+            step="10000"
           />
         </div>
       </div>
