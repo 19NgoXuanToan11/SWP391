@@ -105,10 +105,11 @@ export default function ProductDetailPage() {
 
   const formatPrice = (price) => {
     if (typeof price !== "number") return "Price not available";
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("vi-VN", {
       style: "currency",
-      currency: "USD",
-    }).format(price);
+      currency: "VND",
+      maximumFractionDigits: 0,
+    }).format(price * 24000); // Assuming 1 USD = 24,000 VND
   };
 
   if (loading) {

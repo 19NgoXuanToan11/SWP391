@@ -1,5 +1,135 @@
 [
   {
+    "ContainingType": "SWP391_BE.Controllers.AuthController",
+    "Method": "ForgotPassword",
+    "RelativePath": "api/Auth/forgot-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Data.Response.ServiceResponse\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391_BE.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/Auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Data.Response.AuthDTOs.LoginDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Data.Response.ServiceResponse\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391_BE.Controllers.AuthController",
+    "Method": "Register",
+    "RelativePath": "api/Auth/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Data.Response.AuthDTOs.RegisterDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Data.Response.ServiceResponse\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391_BE.Controllers.AuthController",
+    "Method": "ResetPassword",
+    "RelativePath": "api/Auth/reset-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Data.Response.AuthDTOs.ResetPasswordDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Data.Response.ServiceResponse\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391_BE.Controllers.AuthController",
+    "Method": "VerifyEmail",
+    "RelativePath": "api/Auth/verify-email",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "token",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Data.Response.ServiceResponse\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "SWP391_BE.Controllers.OrderController",
     "Method": "GetAllOrders",
     "RelativePath": "api/Order",
@@ -219,7 +349,7 @@
   },
   {
     "ContainingType": "SWP391_BE.Controllers.ProductController",
-    "Method": "GetAllProducts",
+    "Method": "GetProducts",
     "RelativePath": "api/Product",
     "HttpMethod": "GET",
     "IsController": true,
@@ -246,8 +376,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "createProductDTO",
-        "Type": "SWP391_BE.DTOs.CreateProductDTO",
+        "Name": "createProductDto",
+        "Type": "CreateProductDTO",
         "IsRequired": true
       }
     ],
@@ -304,7 +434,7 @@
       },
       {
         "Name": "updateProductDTO",
-        "Type": "SWP391_BE.DTOs.UpdateProductDTO",
+        "Type": "UpdateProductDTO",
         "IsRequired": true
       }
     ],
@@ -325,6 +455,110 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391_BE.Controllers.ProductController",
+    "Method": "GetProductsByBrand",
+    "RelativePath": "api/Product/brand/{brandId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "brandId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SWP391_BE.DTOs.ProductDTO, SWP391_BE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391_BE.Controllers.ProductController",
+    "Method": "GetProductsByCategory",
+    "RelativePath": "api/Product/category/{categoryId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "categoryId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SWP391_BE.DTOs.ProductDTO, SWP391_BE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391_BE.Controllers.ProductController",
+    "Method": "SearchProducts",
+    "RelativePath": "api/Product/search",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "searchTerm",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SWP391_BE.DTOs.ProductDTO, SWP391_BE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SWP391_BE.Controllers.ProductController",
+    "Method": "GetProductsBySkinType",
+    "RelativePath": "api/Product/skintype/{skinTypeId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "skinTypeId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SWP391_BE.DTOs.ProductDTO, SWP391_BE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "SWP391_BE.Controllers.PromotionController",
@@ -545,9 +779,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "SWP391_BE.Controllers.SkintypeController",
+    "ContainingType": "SWP391_BE.Controllers.SkinTypeController",
     "Method": "GetAllSkintypes",
-    "RelativePath": "api/Skintype",
+    "RelativePath": "api/SkinType",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -565,9 +799,9 @@
     ]
   },
   {
-    "ContainingType": "SWP391_BE.Controllers.SkintypeController",
+    "ContainingType": "SWP391_BE.Controllers.SkinTypeController",
     "Method": "CreateSkintype",
-    "RelativePath": "api/Skintype",
+    "RelativePath": "api/SkinType",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -591,9 +825,9 @@
     ]
   },
   {
-    "ContainingType": "SWP391_BE.Controllers.SkintypeController",
+    "ContainingType": "SWP391_BE.Controllers.SkinTypeController",
     "Method": "GetSkintype",
-    "RelativePath": "api/Skintype/{id}",
+    "RelativePath": "api/SkinType/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -617,9 +851,9 @@
     ]
   },
   {
-    "ContainingType": "SWP391_BE.Controllers.SkintypeController",
+    "ContainingType": "SWP391_BE.Controllers.SkinTypeController",
     "Method": "UpdateSkintype",
-    "RelativePath": "api/Skintype/{id}",
+    "RelativePath": "api/SkinType/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -638,9 +872,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "SWP391_BE.Controllers.SkintypeController",
+    "ContainingType": "SWP391_BE.Controllers.SkinTypeController",
     "Method": "DeleteSkintype",
-    "RelativePath": "api/Skintype/{id}",
+    "RelativePath": "api/SkinType/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
