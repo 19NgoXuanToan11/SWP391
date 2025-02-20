@@ -256,7 +256,7 @@ export function NewsDetailPage() {
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <button
-          onClick={() => navigate("/news")}
+          onClick={() => navigate("/")}
           className="flex items-center gap-2 px-4 py-2 mb-8 text-gray-700 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors duration-200 border border-gray-200"
         >
           <ArrowLeftOutlined className="text-gray-500" />

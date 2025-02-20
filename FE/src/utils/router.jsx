@@ -150,11 +150,11 @@ export const router = createBrowserRouter([
         element: <WishlistPage />,
       },
       {
-        path: "/skin-care-routine",
+        path: "skin-care-routine",
         element: <SkinCareRoutinePage />,
       },
       {
-        path: "/product-recommendations",
+        path: "product-recommendations",
         element: <ProductRecommendationPage />,
       },
       {

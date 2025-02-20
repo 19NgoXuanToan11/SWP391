@@ -141,14 +141,6 @@ export function NewsPage() {
             </svg>
           </button>
         </div>
-        <div className="text-center mt-8">
-          <a
-            href="#"
-            className="inline-block bg-pink-600 text-white hover:bg-red-200 transition duration-300 ease-in-out text-sm font-semibold py-2 px-4 rounded-lg shadow-md"
-          >
-            Xem Tất Cả
-          </a>
-        </div>
       </div>
     </section>
   );
