@@ -12,11 +12,11 @@ const endpoints = {
   CHANGE_PASSWORD: "/user/change-password",
 
   // Products
-  GET_PRODUCTS: "/products",
-  GET_PRODUCT_DETAIL: "/products/:id",
-  CREATE_PRODUCT: "/products",
-  UPDATE_PRODUCT: "/products/:id",
-  DELETE_PRODUCT: "/products/:id",
+  GET_PRODUCTS: "/Product",
+  GET_PRODUCT_DETAIL: "/Product/:id",
+  CREATE_PRODUCT: "/Product",
+  UPDATE_PRODUCT: "/Product/:id",
+  DELETE_PRODUCT: "/Product/:id",
 
   // Categories
   GET_CATEGORIES: "/categories",
