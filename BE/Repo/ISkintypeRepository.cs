@@ -2,7 +2,7 @@ using Data.Models;
 
 namespace Repo
 {
-    public interface ISkintypeRepository
+    public interface ISkinTypeRepository
     {
         Task<IEnumerable<Skintype>> GetAllAsync();
         Task<Skintype?> GetByIdAsync(int id);
