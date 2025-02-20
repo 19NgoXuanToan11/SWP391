@@ -12,7 +12,6 @@ namespace Service
         Task<Product> AddProductAsync(Product product);
         Task UpdateProductAsync(Product product);
         Task DeleteProductAsync(int id);
-        Task<bool> UpdateProductImagesAsync(int productId, List<string> imageUrls);
         Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm);
     }
 }

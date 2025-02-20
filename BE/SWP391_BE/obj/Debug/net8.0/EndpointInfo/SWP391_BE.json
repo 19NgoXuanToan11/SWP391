@@ -1623,35 +1623,21 @@
         "additionalProperties": false
       },
       "CreateProductDTO": {
-        "required": [
-          "brandId",
-          "categoryId",
-          "price",
-          "productName",
-          "skinTypeId",
-          "volumeId"
-        ],
         "type": "object",
         "properties": {
           "productName": {
-            "maxLength": 200,
-            "minLength": 0,
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "description": {
-            "maxLength": 2000,
-            "minLength": 0,
             "type": "string",
             "nullable": true
           },
           "price": {
-            "minimum": 0,
             "type": "number",
             "format": "double"
           },
           "stock": {
-            "maximum": 2147483647,
-            "minimum": 0,
             "type": "integer",
             "format": "int32",
             "nullable": true
@@ -1662,26 +1648,26 @@
           },
           "brandId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "volumeId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "skinTypeId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "categoryId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
-          "imageUrls": {
-            "minItems": 1,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
+          "imageUrl": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -1881,11 +1867,8 @@
             "type": "string",
             "nullable": true
           },
-          "imageUrls": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
+          "imageUrl": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -2060,35 +2043,21 @@
         "additionalProperties": false
       },
       "UpdateProductDTO": {
-        "required": [
-          "brandId",
-          "categoryId",
-          "price",
-          "productName",
-          "skinTypeId",
-          "volumeId"
-        ],
         "type": "object",
         "properties": {
           "productName": {
-            "maxLength": 200,
-            "minLength": 0,
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "description": {
-            "maxLength": 2000,
-            "minLength": 0,
             "type": "string",
             "nullable": true
           },
           "price": {
-            "minimum": 0,
             "type": "number",
             "format": "double"
           },
           "stock": {
-            "maximum": 2147483647,
-            "minimum": 0,
             "type": "integer",
             "format": "int32",
             "nullable": true
@@ -2099,26 +2068,26 @@
           },
           "brandId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "volumeId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "skinTypeId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "categoryId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
-          "imageUrls": {
-            "minItems": 1,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
+          "imageUrl": {
+            "type": "string",
             "nullable": true
           }
         },

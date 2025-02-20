@@ -181,12 +181,12 @@ public partial class SkinCareManagementDbContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductId);
-            
+            entity.ToTable("Products");
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
+            entity.Property(e => e.SkinTypeId).HasColumnName("SkinTypeID");
+            entity.Property(e => e.ImageUrl).HasColumnType("nvarchar(max)");
             entity.Property(e => e.BrandId).HasColumnName("BrandID");
             entity.Property(e => e.VolumeId).HasColumnName("VolumeID");
-            entity.Property(e => e.SkinTypeId).HasColumnName("SkinTypeID");
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");

@@ -149,32 +149,6 @@ namespace Service
             }
         }
 
-        public async Task<bool> UpdateProductImagesAsync(int productId, List<string> imageUrls)
-        {
-            try
-            {
-                var product = await GetProductByIdAsync(productId);
-                if (product == null) return false;
-
-                // Clear existing images
-                product.Images.Clear();
-
-                // Add new images
-                foreach (var url in imageUrls)
-                {
-                    product.Images.Add(new ProductImage { ImageUrl = url });
-                }
-
-                await UpdateProductAsync(product);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating product images");
-                return false;
-            }
-        }
-
         public async Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm)
         {
             return await _productRepository.SearchProductsAsync(searchTerm);
