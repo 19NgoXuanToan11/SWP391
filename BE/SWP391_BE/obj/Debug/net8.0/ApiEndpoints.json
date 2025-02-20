@@ -377,7 +377,7 @@
     "Parameters": [
       {
         "Name": "createProductDto",
-        "Type": "SWP391_BE.DTOs.CreateProductDTO",
+        "Type": "CreateProductDTO",
         "IsRequired": true
       }
     ],
@@ -434,7 +434,7 @@
       },
       {
         "Name": "updateProductDTO",
-        "Type": "SWP391_BE.DTOs.UpdateProductDTO",
+        "Type": "UpdateProductDTO",
         "IsRequired": true
       }
     ],

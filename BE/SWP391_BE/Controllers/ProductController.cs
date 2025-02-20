@@ -57,11 +57,11 @@ namespace SWP391_BE.Controllers
                     SkinTypeId = p.SkinTypeId,
                     CategoryId = p.CategoryId,
                     CreatedAt = p.CreatedAt,
+                    ImageUrl = p.ImageUrl,
                     BrandName = p.Brand?.BrandName,
                     VolumeName = p.Volume?.Size,
                     SkinTypeName = p.SkinType?.SkinTypeName,
-                    CategoryName = p.Category?.CategoryName,
-                    ImageUrls = p.Images?.Select(i => i.ImageUrl).ToList() ?? new List<string>()
+                    CategoryName = p.Category?.CategoryName
                 });
 
                 return Ok(productDtos);
@@ -183,20 +183,7 @@ namespace SWP391_BE.Controllers
                     return BadRequest($"Category với ID {createProductDto.CategoryId} không tồn tại");
                 }
 
-                // Validate ImageUrls
-                if (createProductDto.ImageUrls == null || !createProductDto.ImageUrls.Any())
-                {
-                    return BadRequest("Sản phẩm phải có ít nhất 1 hình ảnh");
-                }
-
                 var product = _mapper.Map<Product>(createProductDto);
-                
-                // Tạo danh sách ProductImage từ ImageUrls
-                product.Images = createProductDto.ImageUrls.Select(url => new ProductImage 
-                { 
-                    ImageUrl = url 
-                }).ToList();
-
                 var result = await _productService.AddProductAsync(product);
                 
                 return CreatedAtAction(
@@ -225,11 +212,6 @@ namespace SWP391_BE.Controllers
 
                 _mapper.Map(updateProductDTO, existingProduct);
                 await _productService.UpdateProductAsync(existingProduct);
-
-                if (updateProductDTO.ImageUrls?.Any() == true)
-                {
-                    await _productService.UpdateProductImagesAsync(id, updateProductDTO.ImageUrls);
-                }
 
                 return NoContent();
             }

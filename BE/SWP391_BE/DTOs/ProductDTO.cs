@@ -18,12 +18,12 @@ namespace SWP391_BE.DTOs
 
         public DateTime? CreatedAt { get; set; }
 
-        // Simplified navigation properties
+        // Navigation properties
         public string? BrandName { get; set; }
         public string? VolumeName { get; set; }
         public string? SkinTypeName { get; set; }
         public string? CategoryName { get; set; }
-        public List<string> ImageUrls { get; set; } = new List<string>();
+        public string? ImageUrl { get; set; }
     }
 
     public class CreateProductDTO

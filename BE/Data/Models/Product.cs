@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using static Org.BouncyCastle.Asn1.Cmp.Challenge;
@@ -28,6 +28,8 @@ public partial class Product
     public int? CategoryId { get; set; }
 
     public DateTime? CreatedAt { get; set; }
+
+    public string? ImageUrl { get; set; }
 
     // Navigation properties
     public virtual Brand? Brand { get; set; }
