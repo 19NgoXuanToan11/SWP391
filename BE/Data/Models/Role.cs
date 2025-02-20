@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models;
 
+[Table("Role")]
 public partial class Role
 {
     public int RoleId { get; set; }

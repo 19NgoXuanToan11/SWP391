@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models;
 
+[Table("Payment")]
 public partial class Payment
 {
     public int PaymentId { get; set; }

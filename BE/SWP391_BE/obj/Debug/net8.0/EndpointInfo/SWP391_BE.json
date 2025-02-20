@@ -1354,10 +1354,10 @@
         }
       }
     },
-    "/api/Skintype": {
+    "/api/SkinType": {
       "get": {
         "tags": [
-          "Skintype"
+          "SkinType"
         ],
         "responses": {
           "200": {
@@ -1393,7 +1393,7 @@
       },
       "post": {
         "tags": [
-          "Skintype"
+          "SkinType"
         ],
         "requestBody": {
           "content": {
@@ -1438,10 +1438,10 @@
         }
       }
     },
-    "/api/Skintype/{id}": {
+    "/api/SkinType/{id}": {
       "get": {
         "tags": [
-          "Skintype"
+          "SkinType"
         ],
         "parameters": [
           {
@@ -1479,7 +1479,7 @@
       },
       "put": {
         "tags": [
-          "Skintype"
+          "SkinType"
         ],
         "parameters": [
           {
@@ -1519,7 +1519,7 @@
       },
       "delete": {
         "tags": [
-          "Skintype"
+          "SkinType"
         ],
         "parameters": [
           {
@@ -1845,17 +1845,9 @@
             "format": "int32",
             "nullable": true
           },
-          "brandName": {
-            "type": "string",
-            "nullable": true
-          },
           "volumeId": {
             "type": "integer",
             "format": "int32",
-            "nullable": true
-          },
-          "volumeValue": {
-            "type": "string",
             "nullable": true
           },
           "skinTypeId": {
@@ -1863,22 +1855,30 @@
             "format": "int32",
             "nullable": true
           },
-          "skinTypeName": {
-            "type": "string",
-            "nullable": true
-          },
           "categoryId": {
             "type": "integer",
             "format": "int32",
             "nullable": true
           },
-          "categoryName": {
-            "type": "string",
-            "nullable": true
-          },
           "createdAt": {
             "type": "string",
             "format": "date-time",
+            "nullable": true
+          },
+          "brandName": {
+            "type": "string",
+            "nullable": true
+          },
+          "volumeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "skinTypeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryName": {
+            "type": "string",
             "nullable": true
           },
           "imageUrls": {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models;
 
@@ -36,9 +37,17 @@ public partial class SkinCareManagementDbContext : DbContext
 
     public virtual DbSet<SkinRoutine> SkinRoutines { get; set; }
 
-    public virtual DbSet<Skintype> Skintypes { get; set; }
+    public virtual DbSet<Skintype> SkinTypes { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
+    public virtual DbSet<Brand> Brands { get; set; }
+
+    public virtual DbSet<Volume> Volumes { get; set; }
+
+    public virtual DbSet<Category> Categories { get; set; }
+
+    public virtual DbSet<ProductImage> ProductImages { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -172,20 +181,31 @@ public partial class SkinCareManagementDbContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6EDC1C834BC");
-
+            entity.HasKey(e => e.ProductId);
+            
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.ProductName).HasMaxLength(100);
+            entity.Property(e => e.BrandId).HasColumnName("BrandID");
+            entity.Property(e => e.VolumeId).HasColumnName("VolumeID");
             entity.Property(e => e.SkinTypeId).HasColumnName("SkinTypeID");
-            entity.Property(e => e.Stock).HasDefaultValue(0);
+            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
 
-            entity.HasOne(d => d.SkinType).WithMany(p => p.Products)
-                .HasForeignKey(d => d.SkinTypeId)
-                .HasConstraintName("FK__Products__SkinTy__30F848ED");
+            entity.HasOne(d => d.Brand)
+                .WithMany(p => p.Products)
+                .HasForeignKey(d => d.BrandId);
+
+            entity.HasOne(d => d.Volume)
+                .WithMany(p => p.Products)
+                .HasForeignKey(d => d.VolumeId);
+
+            entity.HasOne(d => d.SkinType)
+                .WithMany(p => p.Products)
+                .HasForeignKey(d => d.SkinTypeId);
+
+            entity.HasOne(d => d.Category)
+                .WithMany(p => p.Products)
+                .HasForeignKey(d => d.CategoryId);
         });
 
         modelBuilder.Entity<Promotion>(entity =>
@@ -257,6 +277,20 @@ public partial class SkinCareManagementDbContext : DbContext
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Users__RoleID__29572725");
+        });
+
+        modelBuilder.Entity<ProductImage>(entity =>
+        {
+            entity.HasKey(e => e.ImageId).HasName("PK__ProductI__1788CCAC2A045CD7");
+
+            entity.Property(e => e.ImageId).HasColumnName("ImageID");
+            entity.Property(e => e.ProductId).HasColumnName("ProductID");
+            entity.Property(e => e.ImageUrl).HasMaxLength(255);
+
+            entity.HasOne(d => d.Product).WithMany(p => p.Images)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ProductIm__Produ__403A8C7D");
         });
 
         OnModelCreatingPartial(modelBuilder);

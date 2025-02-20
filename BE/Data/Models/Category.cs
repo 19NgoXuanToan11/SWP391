@@ -1,5 +1,8 @@
-﻿namespace Data.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Data.Models;
+
+[Table("Category")]
 public partial class Category
 {
     public int CategoryId { get; set; }

@@ -3,24 +3,112 @@
   "WorkspaceRootPath": "D:\\Git\\SWP391\\BE\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\iproductservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\iproductservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\skintypeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\skintypeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\dtos\\productdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\dtos\\productdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\skintyperepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\skintyperepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\models\\skincaremanagementdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\skincaremanagementdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\categoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\categoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\orderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\orderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\volumeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\volumeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\roleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\roleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\brandservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\brandservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\skinroutinerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\skinroutinerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\rolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\rolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\promotionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\promotionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\paymentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\paymentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\orderdetailrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\orderdetailrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\feedbackrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\feedbackrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\dashboardreportrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\dashboardreportrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\orderrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\orderrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\iskinroutinerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\iskinroutinerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\controllers\\skintypecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\controllers\\skintypecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\iskintypeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\iskintypeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\iproductservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\iproductservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\dtos\\productdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\dtos\\productdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\models\\productimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -39,16 +127,8 @@
       "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\brand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\idashboardreportrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\idashboardreportrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\iproductrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -94,10 +174,6 @@
       "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\service.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\service.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
@@ -120,10 +196,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\iemailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\iemailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\models\\skincaremanagementdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\skincaremanagementdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
@@ -425,119 +497,93 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Volume.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\Volume.cs",
-              "RelativeDocumentMoniker": "Data\\Models\\Volume.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\Volume.cs",
-              "RelativeToolTip": "Data\\Models\\Volume.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:12:54.174Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "IProductService.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\IProductService.cs",
-              "RelativeDocumentMoniker": "Service\\IProductService.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\IProductService.cs",
-              "RelativeToolTip": "Service\\IProductService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:00:53.215Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Category.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\Category.cs",
-              "RelativeDocumentMoniker": "Data\\Models\\Category.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\Category.cs",
-              "RelativeToolTip": "Data\\Models\\Category.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:13:05.169Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ProductImage.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\ProductImage.cs",
-              "RelativeDocumentMoniker": "Data\\Models\\ProductImage.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\ProductImage.cs",
-              "RelativeToolTip": "Data\\Models\\ProductImage.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:13:21.497Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Brand.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\Brand.cs",
-              "RelativeDocumentMoniker": "Data\\Models\\Brand.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\Brand.cs",
-              "RelativeToolTip": "Data\\Models\\Brand.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:12:43.938Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ProductDTO.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\DTOs\\ProductDTO.cs",
-              "RelativeDocumentMoniker": "SWP391_BE\\DTOs\\ProductDTO.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\DTOs\\ProductDTO.cs",
-              "RelativeToolTip": "SWP391_BE\\DTOs\\ProductDTO.cs",
-              "ViewState": "AgIAABkAAAAAAAAAAAAAwGAAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:07:49.893Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
               "Title": "ProductService.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\ProductService.cs",
               "RelativeDocumentMoniker": "Service\\ProductService.cs",
               "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\ProductService.cs",
               "RelativeToolTip": "Service\\ProductService.cs",
-              "ViewState": "AgIAAFUAAAAAAAAAAAAmwHIAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAHAAAAAAAAAAAAAUwGUAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-20T07:05:30.588Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ProductController.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\ProductController.cs",
-              "RelativeDocumentMoniker": "SWP391_BE\\Controllers\\ProductController.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\ProductController.cs",
-              "RelativeToolTip": "SWP391_BE\\Controllers\\ProductController.cs",
-              "ViewState": "AgIAAHIAAAAAAAAAAAAIwMYAAAABAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "SkintypeService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\SkintypeService.cs",
+              "RelativeDocumentMoniker": "Service\\SkintypeService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\SkintypeService.cs",
+              "RelativeToolTip": "Service\\SkintypeService.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAAAwDAAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:05:09.654Z",
+              "WhenOpened": "2025-02-20T07:37:24.54Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Program.cs",
-              "RelativeDocumentMoniker": "SWP391_BE\\Program.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Program.cs",
-              "RelativeToolTip": "SWP391_BE\\Program.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA4AAAAWAAAAAAAAAA==",
+              "DocumentIndex": 3,
+              "Title": "SkinCareManagementDbContext.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\SkinCareManagementDbContext.cs",
+              "RelativeDocumentMoniker": "Data\\Models\\SkinCareManagementDbContext.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\SkinCareManagementDbContext.cs",
+              "RelativeToolTip": "Data\\Models\\SkinCareManagementDbContext.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAAACcAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T11:37:48.047Z",
+              "WhenOpened": "2025-02-05T11:37:01.764Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "PaymentRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\PaymentRepository.cs",
+              "RelativeDocumentMoniker": "Repo\\PaymentRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\PaymentRepository.cs",
+              "RelativeToolTip": "Repo\\PaymentRepository.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAxwC8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:51:48.024Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "OrderDetailRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\OrderDetailRepository.cs",
+              "RelativeDocumentMoniker": "Repo\\OrderDetailRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\OrderDetailRepository.cs",
+              "RelativeToolTip": "Repo\\OrderDetailRepository.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAAACkAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:46:03.353Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ProductRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\ProductRepository.cs",
+              "RelativeDocumentMoniker": "Repo\\ProductRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\ProductRepository.cs",
+              "RelativeToolTip": "Repo\\ProductRepository.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAxwA4AAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:01:17.858Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "PromotionRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\PromotionRepository.cs",
+              "RelativeDocumentMoniker": "Repo\\PromotionRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\PromotionRepository.cs",
+              "RelativeToolTip": "Repo\\PromotionRepository.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAAAC8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:51:49.138Z",
               "EditorCaption": ""
             },
             {
@@ -548,14 +594,313 @@
               "RelativeDocumentMoniker": "Data\\Models\\Product.cs",
               "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\Product.cs",
               "RelativeToolTip": "Data\\Models\\Product.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAIA0wCcAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABEAAAAAAAAAAAA9wCgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-20T07:02:50.561Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SkintypeRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\SkintypeRepository.cs",
+              "RelativeDocumentMoniker": "Repo\\SkintypeRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\SkintypeRepository.cs",
+              "RelativeToolTip": "Repo\\SkintypeRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:53:15.106Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "OrderService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\OrderService.cs",
+              "RelativeDocumentMoniker": "Service\\OrderService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\OrderService.cs",
+              "RelativeToolTip": "Service\\OrderService.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAiwC4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:57:41.963Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CategoryService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\CategoryService.cs",
+              "RelativeDocumentMoniker": "Service\\CategoryService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\CategoryService.cs",
+              "RelativeToolTip": "Service\\CategoryService.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAuwBMAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:59:57.014Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "BrandService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\BrandService.cs",
+              "RelativeDocumentMoniker": "Service\\BrandService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\BrandService.cs",
+              "RelativeToolTip": "Service\\BrandService.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAUwBAAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:57:48.589Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "RoleService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\RoleService.cs",
+              "RelativeDocumentMoniker": "Service\\RoleService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\RoleService.cs",
+              "RelativeToolTip": "Service\\RoleService.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAgwC8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:57:52.132Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "VolumeService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\VolumeService.cs",
+              "RelativeDocumentMoniker": "Service\\VolumeService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\VolumeService.cs",
+              "RelativeToolTip": "Service\\VolumeService.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAswBAAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:58:19.528Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "UserService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\UserService.cs",
+              "RelativeDocumentMoniker": "Service\\UserService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\UserService.cs",
+              "RelativeToolTip": "Service\\UserService.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAswBkAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-16T20:53:02.156Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 10,
+              "Title": "ProductController.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\ProductController.cs",
+              "RelativeDocumentMoniker": "SWP391_BE\\Controllers\\ProductController.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\ProductController.cs",
+              "RelativeToolTip": "SWP391_BE\\Controllers\\ProductController.cs",
+              "ViewState": "AgIAAKAAAAAAAAAAAAAUwKoAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:05:09.654Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "FeedbackRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\FeedbackRepository.cs",
+              "RelativeDocumentMoniker": "Repo\\FeedbackRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\FeedbackRepository.cs",
+              "RelativeToolTip": "Repo\\FeedbackRepository.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAqwCkAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:51:21.138Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "DashboardReportRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\DashboardReportRepository.cs",
+              "RelativeDocumentMoniker": "Repo\\DashboardReportRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\DashboardReportRepository.cs",
+              "RelativeToolTip": "Repo\\DashboardReportRepository.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAAAC8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:50:38.29Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "RoleRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\RoleRepository.cs",
+              "RelativeDocumentMoniker": "Repo\\RoleRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\RoleRepository.cs",
+              "RelativeToolTip": "Repo\\RoleRepository.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAAAC4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:44:14.903Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "SkinRoutineRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\SkinRoutineRepository.cs",
+              "RelativeDocumentMoniker": "Repo\\SkinRoutineRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\SkinRoutineRepository.cs",
+              "RelativeToolTip": "Repo\\SkinRoutineRepository.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAADwvy8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:50:36.029Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "OrderRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\OrderRepository.cs",
+              "RelativeDocumentMoniker": "Repo\\OrderRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\OrderRepository.cs",
+              "RelativeToolTip": "Repo\\OrderRepository.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAswBQAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:51:38.209Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "ISkinRoutineRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\ISkinRoutineRepository.cs",
+              "RelativeDocumentMoniker": "Repo\\ISkinRoutineRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\ISkinRoutineRepository.cs",
+              "RelativeToolTip": "Repo\\ISkinRoutineRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:52:07.644Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "SkinTypeController.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\SkinTypeController.cs",
+              "RelativeDocumentMoniker": "SWP391_BE\\Controllers\\SkinTypeController.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\SkinTypeController.cs",
+              "RelativeToolTip": "SWP391_BE\\Controllers\\SkinTypeController.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAIwBIAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:37:54.145Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "Volume.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\Volume.cs",
+              "RelativeDocumentMoniker": "Data\\Models\\Volume.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\Volume.cs",
+              "RelativeToolTip": "Data\\Models\\Volume.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:12:54.174Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "IProductService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\IProductService.cs",
+              "RelativeDocumentMoniker": "Service\\IProductService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\IProductService.cs",
+              "RelativeToolTip": "Service\\IProductService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAABIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:00:53.215Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "Category.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\Category.cs",
+              "RelativeDocumentMoniker": "Data\\Models\\Category.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\Category.cs",
+              "RelativeToolTip": "Data\\Models\\Category.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:13:05.169Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "ProductImage.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\ProductImage.cs",
+              "RelativeDocumentMoniker": "Data\\Models\\ProductImage.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\ProductImage.cs",
+              "RelativeToolTip": "Data\\Models\\ProductImage.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:13:21.497Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "ISkintypeService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\ISkintypeService.cs",
+              "RelativeDocumentMoniker": "Service\\ISkintypeService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\ISkintypeService.cs",
+              "RelativeToolTip": "Service\\ISkintypeService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:32:57.845Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "Brand.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\Brand.cs",
+              "RelativeDocumentMoniker": "Data\\Models\\Brand.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\Brand.cs",
+              "RelativeToolTip": "Data\\Models\\Brand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:12:43.938Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "ProductDTO.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\DTOs\\ProductDTO.cs",
+              "RelativeDocumentMoniker": "SWP391_BE\\DTOs\\ProductDTO.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\DTOs\\ProductDTO.cs",
+              "RelativeToolTip": "SWP391_BE\\DTOs\\ProductDTO.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAwF8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:07:49.893Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Program.cs",
+              "RelativeDocumentMoniker": "SWP391_BE\\Program.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Program.cs",
+              "RelativeToolTip": "SWP391_BE\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADQAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-05T11:37:48.047Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
               "Title": "IDashboardReportRepository.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\IDashboardReportRepository.cs",
               "RelativeDocumentMoniker": "Repo\\IDashboardReportRepository.cs",
@@ -568,20 +913,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "ProductRepository.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\ProductRepository.cs",
-              "RelativeDocumentMoniker": "Repo\\ProductRepository.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\ProductRepository.cs",
-              "RelativeToolTip": "Repo\\ProductRepository.cs",
-              "ViewState": "AgIAAE4AAAAAAAAAAAA1wHEAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:01:17.858Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 32,
               "Title": "IProductRepository.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\IProductRepository.cs",
               "RelativeDocumentMoniker": "Repo\\IProductRepository.cs",
@@ -594,7 +926,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 34,
               "Title": "AuthService.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\AuthService.cs",
               "RelativeDocumentMoniker": "Service\\AuthService.cs",
@@ -606,7 +938,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 33,
               "Title": "AuthController.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "SWP391_BE\\Controllers\\AuthController.cs",
@@ -619,7 +951,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 35,
               "Title": "IAuthService.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\IAuthService.cs",
               "RelativeDocumentMoniker": "Service\\IAuthService.cs",
@@ -631,7 +963,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 36,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\appsettings.json",
               "RelativeDocumentMoniker": "SWP391_BE\\appsettings.json",
@@ -643,7 +975,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 38,
               "Title": "DashboardReportService.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\DashboardReportService.cs",
               "RelativeDocumentMoniker": "Service\\DashboardReportService.cs",
@@ -655,7 +987,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 39,
               "Title": "readme.txt",
               "DocumentMoniker": "C:\\Users\\ACER\\.nuget\\packages\\facebook\\7.0.6\\readme.txt",
               "ToolTip": "C:\\Users\\ACER\\.nuget\\packages\\facebook\\7.0.6\\readme.txt",
@@ -665,7 +997,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 42,
               "Title": "User.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\User.cs",
               "RelativeDocumentMoniker": "Data\\Models\\User.cs",
@@ -677,7 +1009,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 37,
               "Title": "EmailService.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\EmailService.cs",
               "RelativeDocumentMoniker": "Service\\EmailService.cs",
@@ -689,7 +1021,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 40,
               "Title": "appsettings.Development.json",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\appsettings.Development.json",
               "RelativeDocumentMoniker": "SWP391_BE\\appsettings.Development.json",
@@ -701,7 +1033,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 41,
               "Title": "SWP391_BE.csproj",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\SWP391_BE.csproj",
               "RelativeDocumentMoniker": "SWP391_BE\\SWP391_BE.csproj",
@@ -713,7 +1045,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 44,
               "Title": "Repo.csproj",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\Repo.csproj",
               "RelativeDocumentMoniker": "Repo\\Repo.csproj",
@@ -725,19 +1057,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "UserService.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\UserService.cs",
-              "RelativeDocumentMoniker": "Service\\UserService.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\UserService.cs",
-              "RelativeToolTip": "Service\\UserService.cs",
-              "ViewState": "AQIAAAUAAAAAAAAAAAAwwCgAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-16T20:53:02.156Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 43,
               "Title": "Service.csproj",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\Service.csproj",
               "RelativeDocumentMoniker": "Service\\Service.csproj",
@@ -749,7 +1069,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 45,
               "Title": "launchSettings.json",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Properties\\launchSettings.json",
               "RelativeDocumentMoniker": "SWP391_BE\\Properties\\launchSettings.json",
@@ -761,7 +1081,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 46,
               "Title": "ServiceResponse.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Response\\ServiceResponse.cs",
               "RelativeDocumentMoniker": "Data\\Response\\ServiceResponse.cs",
@@ -773,7 +1093,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 47,
               "Title": "Data.csproj",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Data.csproj",
               "RelativeDocumentMoniker": "Data\\Data.csproj",
@@ -785,7 +1105,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 48,
               "Title": "IEmailService.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\IEmailService.cs",
               "RelativeDocumentMoniker": "Service\\IEmailService.cs",
@@ -797,7 +1117,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 49,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\appsettings.json",
               "RelativeDocumentMoniker": "Data\\appsettings.json",
@@ -806,18 +1126,6 @@
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2025-02-05T11:37:13.724Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 30,
-              "Title": "SkinCareManagementDbContext.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\SkinCareManagementDbContext.cs",
-              "RelativeDocumentMoniker": "Data\\Models\\SkinCareManagementDbContext.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\SkinCareManagementDbContext.cs",
-              "RelativeToolTip": "Data\\Models\\SkinCareManagementDbContext.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T11:37:01.764Z"
             }
           ]
         },

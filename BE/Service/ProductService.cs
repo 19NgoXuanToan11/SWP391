@@ -1,6 +1,7 @@
 using Data.Models;
 using Repo;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service
 {
@@ -8,9 +9,12 @@ namespace Service
     {
         private readonly IProductRepository _productRepository;
         private readonly ILogger<ProductService> _logger;
-        private readonly ApplicationDbContext _context;
+        private readonly SkinCareManagementDbContext _context;
 
-        public ProductService(IProductRepository productRepository, ILogger<ProductService> logger, ApplicationDbContext context)
+        public ProductService(
+            IProductRepository productRepository, 
+            ILogger<ProductService> logger,
+            SkinCareManagementDbContext context)
         {
             _productRepository = productRepository;
             _logger = logger;
@@ -19,7 +23,40 @@ namespace Service
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return await _productRepository.GetAllAsync();
+            try
+            {
+                _logger.LogInformation("Starting to retrieve products");
+
+                IQueryable<Product> query = _context.Products;
+                _logger.LogInformation("Got Products DbSet");
+
+                query = query.Include(p => p.SkinType);
+                query = query.Include(p => p.Brand);
+                query = query.Include(p => p.Volume);
+                query = query.Include(p => p.Category);
+                // Tạm thời comment dòng này
+                // query = query.Include(p => p.Images);
+        
+                query = query.AsNoTracking();
+
+                var products = await query.ToListAsync();
+                _logger.LogInformation($"Retrieved {products.Count} products successfully");
+
+                return products;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting all products. Exception details: {Message}, Stack trace: {StackTrace}", 
+                    ex.Message, ex.StackTrace);
+                
+                if (ex.InnerException != null)
+                {
+                    _logger.LogError("Inner exception: {Message}, Stack trace: {StackTrace}", 
+                        ex.InnerException.Message, ex.InnerException.StackTrace);
+                }
+                
+                throw new Exception($"Error retrieving products: {ex.Message}", ex);
+            }
         }
 
         public async Task<Product?> GetProductByIdAsync(int id)
@@ -46,21 +83,35 @@ namespace Service
         {
             try
             {
-                // Thêm thời gian tạo
                 product.CreatedAt = DateTime.UtcNow;
                 
-                // Kiểm tra các foreign key có tồn tại
                 var brand = await _context.Brands.FindAsync(product.BrandId);
-                if (brand == null) throw new Exception("Brand không tồn tại");
+                if (brand == null) 
+                {
+                    _logger.LogError($"Brand with ID {product.BrandId} not found");
+                    throw new Exception($"Brand với ID {product.BrandId} không tồn tại");
+                }
                 
                 var volume = await _context.Volumes.FindAsync(product.VolumeId);
-                if (volume == null) throw new Exception("Volume không tồn tại");
+                if (volume == null)
+                {
+                    _logger.LogError($"Volume with ID {product.VolumeId} not found");
+                    throw new Exception($"Volume với ID {product.VolumeId} không tồn tại");
+                }
                 
-                var skinType = await _context.Skintypes.FindAsync(product.SkinTypeId);
-                if (skinType == null) throw new Exception("SkinType không tồn tại");
+                var skinType = await _context.SkinTypes.FindAsync(product.SkinTypeId);
+                if (skinType == null)
+                {
+                    _logger.LogError($"SkinType with ID {product.SkinTypeId} not found");
+                    throw new Exception($"SkinType với ID {product.SkinTypeId} không tồn tại");
+                }
                 
                 var category = await _context.Categories.FindAsync(product.CategoryId);
-                if (category == null) throw new Exception("Category không tồn tại");
+                if (category == null)
+                {
+                    _logger.LogError($"Category with ID {product.CategoryId} not found");
+                    throw new Exception($"Category với ID {product.CategoryId} không tồn tại");
+                }
 
                 await _productRepository.AddAsync(product);
                 return product;
