@@ -14,15 +14,27 @@ namespace SWP391_BE.Controllers
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductController> _logger;
+        private readonly IBrandService _brandService;
+        private readonly IVolumeService _volumeService;
+        private readonly ISkinTypeService _skinTypeService;
+        private readonly ICategoryService _categoryService;
 
         public ProductController(
             IProductService productService,
             IMapper mapper,
-            ILogger<ProductController> logger)
+            ILogger<ProductController> logger,
+            IBrandService brandService,
+            IVolumeService volumeService,
+            ISkinTypeService skinTypeService,
+            ICategoryService categoryService)
         {
             _productService = productService;
             _mapper = mapper;
             _logger = logger;
+            _brandService = brandService;
+            _volumeService = volumeService;
+            _skinTypeService = skinTypeService;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
@@ -120,30 +132,36 @@ namespace SWP391_BE.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductDTO>> CreateProduct(CreateProductDTO createProductDTO)
+        public async Task<ActionResult<ProductDTO>> CreateProduct([FromBody] CreateProductDTO createProductDto)
         {
             try
             {
-                var product = _mapper.Map<Product>(createProductDTO);
-                product.CreatedAt = DateTime.UtcNow;
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-                var createdProduct = await _productService.AddProductAsync(product);
+                // Validate các foreign key
+                if (!await _brandService.ExistsAsync(createProductDto.BrandId.Value))
+                    return BadRequest("Brand không tồn tại");
+                    
+                if (!await _volumeService.ExistsAsync(createProductDto.VolumeId.Value))
+                    return BadRequest("Volume không tồn tại");
+                    
+                if (!await _skinTypeService.ExistsAsync(createProductDto.SkinTypeId.Value))
+                    return BadRequest("SkinType không tồn tại");
+                    
+                if (!await _categoryService.ExistsAsync(createProductDto.CategoryId.Value))
+                    return BadRequest("Category không tồn tại");
 
-                if (createProductDTO.ImageUrls?.Any() == true)
-                {
-                    await _productService.UpdateProductImagesAsync(createdProduct.ProductId, createProductDTO.ImageUrls);
-                }
-
-                return CreatedAtAction(
-                    nameof(GetProduct),
-                    new { id = createdProduct.ProductId },
-                    _mapper.Map<ProductDTO>(createdProduct)
-                );
+                var product = _mapper.Map<Product>(createProductDto);
+                var result = await _productService.AddProductAsync(product);
+                
+                return CreatedAtAction(nameof(GetProduct), new { id = result.ProductId }, 
+                    _mapper.Map<ProductDTO>(result));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating product");
-                return StatusCode(500, "Internal server error");
+                return StatusCode(500, "Có lỗi xảy ra khi tạo sản phẩm");
             }
         }
 

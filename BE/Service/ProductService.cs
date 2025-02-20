@@ -8,11 +8,13 @@ namespace Service
     {
         private readonly IProductRepository _productRepository;
         private readonly ILogger<ProductService> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public ProductService(IProductRepository productRepository, ILogger<ProductService> logger)
+        public ProductService(IProductRepository productRepository, ILogger<ProductService> logger, ApplicationDbContext context)
         {
             _productRepository = productRepository;
             _logger = logger;
+            _context = context;
         }
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
@@ -44,6 +46,22 @@ namespace Service
         {
             try
             {
+                // Thêm thời gian tạo
+                product.CreatedAt = DateTime.UtcNow;
+                
+                // Kiểm tra các foreign key có tồn tại
+                var brand = await _context.Brands.FindAsync(product.BrandId);
+                if (brand == null) throw new Exception("Brand không tồn tại");
+                
+                var volume = await _context.Volumes.FindAsync(product.VolumeId);
+                if (volume == null) throw new Exception("Volume không tồn tại");
+                
+                var skinType = await _context.Skintypes.FindAsync(product.SkinTypeId);
+                if (skinType == null) throw new Exception("SkinType không tồn tại");
+                
+                var category = await _context.Categories.FindAsync(product.CategoryId);
+                if (category == null) throw new Exception("Category không tồn tại");
+
                 await _productRepository.AddAsync(product);
                 return product;
             }

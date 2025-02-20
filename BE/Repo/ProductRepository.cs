@@ -72,8 +72,31 @@ namespace Repo
 
         public async Task AddAsync(Product product)
         {
-            await _context.Products.AddAsync(product);
-            await _context.SaveChangesAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // Thêm sản phẩm
+                await _context.Products.AddAsync(product);
+                await _context.SaveChangesAsync();
+
+                // Thêm ảnh sản phẩm
+                if (product.Images != null && product.Images.Any())
+                {
+                    foreach (var image in product.Images)
+                    {
+                        image.ProductId = product.ProductId;
+                        await _context.ProductImages.AddAsync(image);
+                    }
+                    await _context.SaveChangesAsync();
+                }
+
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task UpdateAsync(Product product)
