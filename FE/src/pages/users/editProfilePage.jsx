@@ -198,6 +198,9 @@ export default function EditProfilePage() {
       localStorage.setItem("userLocation", values.location);
       localStorage.setItem("userBio", values.bio);
 
+      // Trigger storage event manually để UserDropdown cập nhật
+      window.dispatchEvent(new Event("storage"));
+
       message.success("Cập nhật thông tin thành công!");
       navigate("/profile");
     } catch (error) {
