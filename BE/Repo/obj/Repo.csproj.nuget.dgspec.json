@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\CN5\\SWP391\\SWP_BE\\Repo\\Repo.csproj": {}
+    "D:\\Git\\SWP391\\BE\\Repo\\Repo.csproj": {}
   },
   "projects": {
-    "D:\\CN5\\SWP391\\SWP_BE\\Data\\Data.csproj": {
+    "D:\\Git\\SWP391\\BE\\Data\\Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\CN5\\SWP391\\SWP_BE\\Data\\Data.csproj",
+        "projectUniqueName": "D:\\Git\\SWP391\\BE\\Data\\Data.csproj",
         "projectName": "Data",
-        "projectPath": "D:\\CN5\\SWP391\\SWP_BE\\Data\\Data.csproj",
-        "packagesPath": "C:\\Users\\ACER\\.nuget\\packages\\",
-        "outputPath": "D:\\CN5\\SWP391\\SWP_BE\\Data\\obj\\",
+        "projectPath": "D:\\Git\\SWP391\\BE\\Data\\Data.csproj",
+        "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
+        "outputPath": "D:\\Git\\SWP391\\BE\\Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ACER\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -44,7 +43,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -107,24 +107,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.405/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\CN5\\SWP391\\SWP_BE\\Repo\\Repo.csproj": {
+    "D:\\Git\\SWP391\\BE\\Repo\\Repo.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\CN5\\SWP391\\SWP_BE\\Repo\\Repo.csproj",
+        "projectUniqueName": "D:\\Git\\SWP391\\BE\\Repo\\Repo.csproj",
         "projectName": "Repo",
-        "projectPath": "D:\\CN5\\SWP391\\SWP_BE\\Repo\\Repo.csproj",
-        "packagesPath": "C:\\Users\\ACER\\.nuget\\packages\\",
-        "outputPath": "D:\\CN5\\SWP391\\SWP_BE\\Repo\\obj\\",
+        "projectPath": "D:\\Git\\SWP391\\BE\\Repo\\Repo.csproj",
+        "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
+        "outputPath": "D:\\Git\\SWP391\\BE\\Repo\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ACER\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -133,15 +133,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\CN5\\SWP391\\SWP_BE\\Data\\Data.csproj": {
-                "projectPath": "D:\\CN5\\SWP391\\SWP_BE\\Data\\Data.csproj"
+              "D:\\Git\\SWP391\\BE\\Data\\Data.csproj": {
+                "projectPath": "D:\\Git\\SWP391\\BE\\Data\\Data.csproj"
               }
             }
           }
@@ -155,7 +154,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -190,7 +190,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.405/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
