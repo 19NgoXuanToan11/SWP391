@@ -8,28 +8,28 @@ namespace SWP391_BE.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class SkintypeController : ControllerBase
+    public class SkinTypeController : ControllerBase
     {
-        private readonly ISkintypeService _skintypeService;
+        private readonly ISkinTypeService _skinTypeService;
         private readonly IMapper _mapper;
 
-        public SkintypeController(ISkintypeService skintypeService, IMapper mapper)
+        public SkinTypeController(ISkinTypeService skinTypeService, IMapper mapper)
         {
-            _skintypeService = skintypeService;
+            _skinTypeService = skinTypeService;
             _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SkintypeDTO>>> GetAllSkintypes()
         {
-            var skintypes = await _skintypeService.GetAllSkintypesAsync();
+            var skintypes = await _skinTypeService.GetAllSkintypesAsync();
             return Ok(_mapper.Map<IEnumerable<SkintypeDTO>>(skintypes));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<SkintypeDTO>> GetSkintype(int id)
         {
-            var skintype = await _skintypeService.GetSkintypeByIdAsync(id);
+            var skintype = await _skinTypeService.GetSkintypeByIdAsync(id);
             if (skintype == null)
             {
                 return NotFound();
@@ -41,7 +41,7 @@ namespace SWP391_BE.Controllers
         public async Task<ActionResult<SkintypeDTO>> CreateSkintype(CreateSkintypeDTO createSkintypeDTO)
         {
             var skintype = _mapper.Map<Skintype>(createSkintypeDTO);
-            await _skintypeService.AddSkintypeAsync(skintype);
+            await _skinTypeService.AddSkintypeAsync(skintype);
             return CreatedAtAction(nameof(GetSkintype), new { id = skintype.SkinTypeId }, 
                 _mapper.Map<SkintypeDTO>(skintype));
         }
@@ -49,27 +49,27 @@ namespace SWP391_BE.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSkintype(int id, UpdateSkintypeDTO updateSkintypeDTO)
         {
-            var existingSkintype = await _skintypeService.GetSkintypeByIdAsync(id);
+            var existingSkintype = await _skinTypeService.GetSkintypeByIdAsync(id);
             if (existingSkintype == null)
             {
                 return NotFound();
             }
 
             _mapper.Map(updateSkintypeDTO, existingSkintype);
-            await _skintypeService.UpdateSkintypeAsync(existingSkintype);
+            await _skinTypeService.UpdateSkintypeAsync(existingSkintype);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSkintype(int id)
         {
-            var skintype = await _skintypeService.GetSkintypeByIdAsync(id);
+            var skintype = await _skinTypeService.GetSkintypeByIdAsync(id);
             if (skintype == null)
             {
                 return NotFound();
             }
 
-            await _skintypeService.DeleteSkintypeAsync(id);
+            await _skinTypeService.DeleteSkintypeAsync(id);
             return NoContent();
         }
     }
