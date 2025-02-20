@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Data.Models;
 
-namespace Data.Models
+public partial class Volume
 {
-    class Volume
-    {
-    }
+    public int VolumeId { get; set; }
+    public string Value { get; set; } = null!;  // e.g., "100ml", "200ml"
+    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }
