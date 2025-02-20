@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Dropdown } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import {
   UserOutlined,
-  SettingOutlined,
   LogoutOutlined,
   ShoppingOutlined,
   HeartOutlined,
@@ -11,27 +10,55 @@ import {
 
 export const UserDropdown = ({ user }) => {
   const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState({
+    name: localStorage.getItem("userName") || "User",
+    avatar: localStorage.getItem("userAvatar"),
+  });
+
+  // Lắng nghe sự thay đổi của localStorage
+  useEffect(() => {
+    const updateUserInfo = () => {
+      setUserInfo({
+        name: localStorage.getItem("userName") || "User",
+        avatar: localStorage.getItem("userAvatar"),
+      });
+    };
+
+    window.addEventListener("storage", updateUserInfo);
+    return () => window.removeEventListener("storage", updateUserInfo);
+  }, []);
+
+  // Tách tên thành các phần
+  const nameParts = userInfo.name.split(" ");
+  const firstName = nameParts[0] || "";
+  const middleName = nameParts.length > 2 ? nameParts[1] : "";
+  const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
 
   const userMenu = (
     <div className="bg-white rounded-xl shadow-lg py-2 w-52 border border-gray-100">
-      {/* Thông tin người dùng */}
       <div className="px-4 py-3 border-b border-gray-100 bg-gradient-to-r from-pink-50 to-purple-50">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center">
-            <span className="text-white font-medium">
-              {user?.name?.charAt(0) || "U"}
-            </span>
-          </div>
+          {userInfo.avatar ? (
+            <img
+              src={userInfo.avatar}
+              alt="avatar"
+              className="w-10 h-10 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center">
+              <span className="text-white font-medium">
+                {firstName.charAt(0) || "U"}
+              </span>
+            </div>
+          )}
           <div>
             <h3 className="text-sm font-medium text-gray-800">
-              {user?.name || "Người dùng"}
+              {userInfo.name}
             </h3>
-            <p className="text-xs text-gray-500">{user?.email}</p>
           </div>
         </div>
       </div>
 
-      {/* Mục menu */}
       <div className="py-2">
         <Link
           to="/profile"
@@ -59,7 +86,7 @@ export const UserDropdown = ({ user }) => {
 
         <button
           onClick={() => {
-            localStorage.removeItem("token");
+            localStorage.clear();
             navigate("/");
           }}
           className="w-full flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
@@ -78,17 +105,30 @@ export const UserDropdown = ({ user }) => {
       placement="bottomRight"
       overlayClassName="user-dropdown-menu"
     >
-      <button className="flex items-center space-x-3 hover:bg-gray-100 rounded-xl transition-colors p-2">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center">
-          <span className="text-white font-medium">
-            {user?.name?.charAt(0) || "U"}
-          </span>
-        </div>
+      <button className="flex items-center space-x-2 hover:bg-gray-300 rounded-xl transition-colors p-2 w-40">
+        {userInfo.avatar ? (
+          <img
+            src={userInfo.avatar}
+            alt="avatar"
+            className="w-8 h-8 rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center">
+            <span className="text-white font-medium">
+              {firstName.charAt(0) || "U"}
+            </span>
+          </div>
+        )}
         <div className="hidden md:block text-left">
-          <p className="text-sm font-medium text-gray-700">
-            {user?.name || "User"}
-          </p>
-          <p className="text-xs text-gray-500">{user?.email}</p>
+          <div className="flex items-center space-x-1">
+            <p className="text-sm font-medium text-gray-700">{firstName}</p>
+            {middleName && (
+              <p className="text-sm font-medium text-gray-700">{middleName}</p>
+            )}
+            {lastName && (
+              <p className="text-sm font-medium text-gray-700">{lastName}</p>
+            )}
+          </div>
         </div>
       </button>
     </Dropdown>
