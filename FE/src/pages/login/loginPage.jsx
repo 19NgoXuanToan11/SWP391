@@ -17,6 +17,7 @@ import {
   MailOutlined,
 } from "@ant-design/icons";
 
+//scripts
 export function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -450,7 +451,7 @@ export function LoginPage() {
                   onClick={() => navigate("/forgot-password")}
                   className="text-sm text-pink-600 hover:text-pink-700 font-medium transition-colors"
                 >
-                  Quên mật khẩu?
+                  Mật khẩu đã quên
                 </button>
               </motion.div>
 
