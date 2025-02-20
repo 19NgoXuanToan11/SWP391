@@ -39,6 +39,15 @@ export default function EditProfilePage() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
 
+  const initialUserData = {
+    name: localStorage.getItem("userName") || "Nguyễn Văn A",
+    email: localStorage.getItem("userEmail") || "nguyenvana@example.com",
+    location: localStorage.getItem("userLocation") || "Hà Nội, Việt Nam",
+    bio:
+      localStorage.getItem("userBio") ||
+      "Tôi là chuyên gia tư vấn làm đẹp với hơn 3 năm kinh nghiệm trong ngành mỹ phẩm cao cấp.",
+  };
+
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -68,6 +77,14 @@ export default function EditProfilePage() {
 
   const handleSave = async () => {
     try {
+      setLoading(true);
+      const values = await form.validateFields();
+
+      localStorage.setItem("userName", values.name);
+      localStorage.setItem("userEmail", values.email);
+      localStorage.setItem("userLocation", values.location);
+      localStorage.setItem("userBio", values.bio);
+
       if (fileList[0]?.originFileObj) {
         message.loading({ content: "Đang tải ảnh lên...", key: "upload" });
         const url = await uploadFile(fileList[0].originFileObj);
@@ -76,14 +93,15 @@ export default function EditProfilePage() {
           content: "Cập nhật ảnh đại diện thành công!",
           key: "upload",
         });
-        navigate("/profile");
       }
+
+      message.success("Cập nhật thông tin thành công!");
+      navigate("/profile");
     } catch (error) {
-      console.error("Upload error:", error);
-      message.error({
-        content: "Có lỗi xảy ra khi upload ảnh! " + error.message,
-        key: "upload",
-      });
+      console.error("Save error:", error);
+      message.error("Có lỗi xảy ra khi lưu thông tin! " + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -142,13 +160,8 @@ export default function EditProfilePage() {
           <Form
             form={form}
             layout="vertical"
-            onFinish={handleSubmit}
-            initialValues={{
-              name: "Nguyễn Văn A",
-              email: "nguyenvana@example.com",
-              location: "Hà Nội, Việt Nam",
-              bio: "Tôi là chuyên gia tư vấn làm đẹp với hơn 3 năm kinh nghiệm trong ngành mỹ phẩm cao cấp.",
-            }}
+            initialValues={initialUserData}
+            onFinish={handleSave}
           >
             <Form.Item
               name="name"
