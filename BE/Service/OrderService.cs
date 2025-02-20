@@ -1,4 +1,5 @@
 using Data.Models;
+using Microsoft.EntityFrameworkCore;
 using Repo;
 
 namespace Service
@@ -6,15 +7,20 @@ namespace Service
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly SkinCareManagementDbContext _context;
 
-        public OrderService(IOrderRepository orderRepository)
+        public OrderService(IOrderRepository orderRepository, SkinCareManagementDbContext context)
         {
             _orderRepository = orderRepository;
+            _context = context;
         }
 
         public async Task<IEnumerable<Order>> GetAllOrdersAsync()
         {
-            return await _orderRepository.GetAllAsync();
+            return await _context.Orders
+                .Include(o => o.User)
+                .Include(o => o.OrderDetails)
+                .ToListAsync();
         }
 
         public async Task<Order?> GetOrderByIdAsync(int id)

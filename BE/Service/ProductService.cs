@@ -1,6 +1,7 @@
 using Data.Models;
 using Repo;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service
 {
@@ -22,7 +23,40 @@ namespace Service
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return await _productRepository.GetAllAsync();
+            try
+            {
+                _logger.LogInformation("Starting to retrieve products");
+
+                IQueryable<Product> query = _context.Products;
+                _logger.LogInformation("Got Products DbSet");
+
+                query = query.Include(p => p.SkinType);
+                query = query.Include(p => p.Brand);
+                query = query.Include(p => p.Volume);
+                query = query.Include(p => p.Category);
+                // Tạm thời comment dòng này
+                // query = query.Include(p => p.Images);
+        
+                query = query.AsNoTracking();
+
+                var products = await query.ToListAsync();
+                _logger.LogInformation($"Retrieved {products.Count} products successfully");
+
+                return products;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting all products. Exception details: {Message}, Stack trace: {StackTrace}", 
+                    ex.Message, ex.StackTrace);
+                
+                if (ex.InnerException != null)
+                {
+                    _logger.LogError("Inner exception: {Message}, Stack trace: {StackTrace}", 
+                        ex.InnerException.Message, ex.InnerException.StackTrace);
+                }
+                
+                throw new Exception($"Error retrieving products: {ex.Message}", ex);
+            }
         }
 
         public async Task<Product?> GetProductByIdAsync(int id)
@@ -49,50 +83,43 @@ namespace Service
         {
             try
             {
-                // Thêm thời gian tạo
                 product.CreatedAt = DateTime.UtcNow;
                 
-                // Kiểm tra các foreign key có tồn tại
-                var brand = await _context.Brand.FindAsync(product.BrandId);
+                var brand = await _context.Brands.FindAsync(product.BrandId);
                 if (brand == null) 
                 {
                     _logger.LogError($"Brand with ID {product.BrandId} not found");
                     throw new Exception($"Brand với ID {product.BrandId} không tồn tại");
                 }
                 
-                var volume = await _context.Volume.FindAsync(product.VolumeId);
+                var volume = await _context.Volumes.FindAsync(product.VolumeId);
                 if (volume == null)
                 {
                     _logger.LogError($"Volume with ID {product.VolumeId} not found");
                     throw new Exception($"Volume với ID {product.VolumeId} không tồn tại");
                 }
                 
-                var skinType = await _context.Skintype.FindAsync(product.SkinTypeId);
+                var skinType = await _context.SkinTypes.FindAsync(product.SkinTypeId);
                 if (skinType == null)
                 {
                     _logger.LogError($"SkinType with ID {product.SkinTypeId} not found");
                     throw new Exception($"SkinType với ID {product.SkinTypeId} không tồn tại");
                 }
                 
-                var category = await _context.Category.FindAsync(product.CategoryId);
+                var category = await _context.Categories.FindAsync(product.CategoryId);
                 if (category == null)
                 {
                     _logger.LogError($"Category with ID {product.CategoryId} not found");
                     throw new Exception($"Category với ID {product.CategoryId} không tồn tại");
                 }
 
-                // Thêm sản phẩm
                 await _productRepository.AddAsync(product);
-
-                // Log thành công
-                _logger.LogInformation($"Product {product.ProductName} created successfully");
-                
                 return product;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while adding product: {Message}", ex.Message);
-                throw new Exception("Có lỗi xảy ra khi tạo sản phẩm", ex);
+                _logger.LogError(ex, "Error adding product");
+                throw;
             }
         }
 

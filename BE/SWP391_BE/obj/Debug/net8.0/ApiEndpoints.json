@@ -349,7 +349,7 @@
   },
   {
     "ContainingType": "SWP391_BE.Controllers.ProductController",
-    "Method": "GetAllProducts",
+    "Method": "GetProducts",
     "RelativePath": "api/Product",
     "HttpMethod": "GET",
     "IsController": true,

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models;
 
@@ -20,33 +21,33 @@ public partial class SkinCareManagementDbContext : DbContext
 
     public virtual DbSet<Feedback> Feedbacks { get; set; }
 
-    public virtual DbSet<Order> Order { get; set; }
+    public virtual DbSet<Order> Orders { get; set; }
 
-    public virtual DbSet<OrderDetail> OrderDetail { get; set; }
+    public virtual DbSet<OrderDetail> OrderDetails { get; set; }
 
-    public virtual DbSet<Payment> Payment { get; set; }
+    public virtual DbSet<Payment> Payments { get; set; }
 
-    public virtual DbSet<PaymentHistory> PaymentHistory { get; set; }
+    public virtual DbSet<PaymentHistory> PaymentHistories { get; set; }
 
-    public virtual DbSet<Product> Product { get; set; }
+    public virtual DbSet<Product> Products { get; set; }
 
-    public virtual DbSet<Promotion> Promotion { get; set; }
+    public virtual DbSet<Promotion> Promotions { get; set; }
 
-    public virtual DbSet<Role> Role { get; set; }
+    public virtual DbSet<Role> Roles { get; set; }
 
-    public virtual DbSet<SkinRoutine> SkinRoutine { get; set; }
+    public virtual DbSet<SkinRoutine> SkinRoutines { get; set; }
 
-    public virtual DbSet<Skintype> Skintype { get; set; }
+    public virtual DbSet<Skintype> SkinTypes { get; set; }
 
-    public virtual DbSet<User> User { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
-    public virtual DbSet<Brand> Brand { get; set; }
+    public virtual DbSet<Brand> Brands { get; set; }
 
-    public virtual DbSet<Volume> Volume { get; set; }
+    public virtual DbSet<Volume> Volumes { get; set; }
 
-    public virtual DbSet<Category> Category { get; set; }
+    public virtual DbSet<Category> Categories { get; set; }
 
-    public virtual DbSet<ProductImage> ProductImage { get; set; }
+    public virtual DbSet<ProductImage> ProductImages { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -180,28 +181,30 @@ public partial class SkinCareManagementDbContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6EDC1C834BC");
-
+            entity.HasKey(e => e.ProductId);
+            
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.ProductName).HasMaxLength(100);
+            entity.Property(e => e.BrandId).HasColumnName("BrandID");
+            entity.Property(e => e.VolumeId).HasColumnName("VolumeID");
             entity.Property(e => e.SkinTypeId).HasColumnName("SkinTypeID");
-            entity.Property(e => e.Stock).HasDefaultValue(0);
+            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
 
-            entity.HasOne(d => d.SkinType).WithMany(p => p.Products)
-                .HasForeignKey(d => d.SkinTypeId)
-                .HasConstraintName("FK__Products__SkinTy__30F848ED");
-
-            entity.HasOne(d => d.Brand).WithMany(p => p.Products)
+            entity.HasOne(d => d.Brand)
+                .WithMany(p => p.Products)
                 .HasForeignKey(d => d.BrandId);
 
-            entity.HasOne(d => d.Volume).WithMany(p => p.Products)
+            entity.HasOne(d => d.Volume)
+                .WithMany(p => p.Products)
                 .HasForeignKey(d => d.VolumeId);
 
-            entity.HasOne(d => d.Category).WithMany(p => p.Products)
+            entity.HasOne(d => d.SkinType)
+                .WithMany(p => p.Products)
+                .HasForeignKey(d => d.SkinTypeId);
+
+            entity.HasOne(d => d.Category)
+                .WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId);
         });
 

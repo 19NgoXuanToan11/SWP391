@@ -39,17 +39,37 @@ namespace SWP391_BE.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProducts()
         {
             try
             {
                 var products = await _productService.GetAllProductsAsync();
-                return Ok(_mapper.Map<IEnumerable<ProductDTO>>(products));
+                var productDtos = products.Select(p => new ProductDTO
+                {
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Stock = p.Stock,
+                    MainIngredients = p.MainIngredients,
+                    BrandId = p.BrandId,
+                    VolumeId = p.VolumeId,
+                    SkinTypeId = p.SkinTypeId,
+                    CategoryId = p.CategoryId,
+                    CreatedAt = p.CreatedAt,
+                    BrandName = p.Brand?.BrandName,
+                    VolumeName = p.Volume?.Size,
+                    SkinTypeName = p.SkinType?.SkinTypeName,
+                    CategoryName = p.Category?.CategoryName,
+                    ImageUrls = p.Images?.Select(i => i.ImageUrl).ToList() ?? new List<string>()
+                });
+
+                return Ok(productDtos);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting all products");
-                return StatusCode(500, "Internal server error");
+                _logger.LogError(ex, "Error in GetProducts: {Message}", ex.Message);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 

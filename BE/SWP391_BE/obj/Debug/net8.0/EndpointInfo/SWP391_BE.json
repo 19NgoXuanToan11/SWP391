@@ -1845,17 +1845,9 @@
             "format": "int32",
             "nullable": true
           },
-          "brandName": {
-            "type": "string",
-            "nullable": true
-          },
           "volumeId": {
             "type": "integer",
             "format": "int32",
-            "nullable": true
-          },
-          "volumeValue": {
-            "type": "string",
             "nullable": true
           },
           "skinTypeId": {
@@ -1863,22 +1855,30 @@
             "format": "int32",
             "nullable": true
           },
-          "skinTypeName": {
-            "type": "string",
-            "nullable": true
-          },
           "categoryId": {
             "type": "integer",
             "format": "int32",
             "nullable": true
           },
-          "categoryName": {
-            "type": "string",
-            "nullable": true
-          },
           "createdAt": {
             "type": "string",
             "format": "date-time",
+            "nullable": true
+          },
+          "brandName": {
+            "type": "string",
+            "nullable": true
+          },
+          "volumeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "skinTypeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryName": {
+            "type": "string",
             "nullable": true
           },
           "imageUrls": {

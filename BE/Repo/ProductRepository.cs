@@ -14,7 +14,7 @@ namespace Repo
 
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            return await _context.Product
+            return await _context.Products
                 .Include(p => p.Brand)
                 .Include(p => p.Volume)
                 .Include(p => p.SkinType)
@@ -87,7 +87,7 @@ namespace Repo
                 foreach (var image in images)
                 {
                     image.ProductId = product.ProductId;
-                    await _context.Set<ProductImage>().AddAsync(image);
+                    await _context.ProductImages.AddAsync(image);
                 }
                 await _context.SaveChangesAsync();
 

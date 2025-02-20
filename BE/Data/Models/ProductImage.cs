@@ -1,5 +1,8 @@
-﻿namespace Data.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Data.Models;
+
+[Table("ProductImage")]
 public partial class ProductImage
 {
     public int ImageId { get; set; }

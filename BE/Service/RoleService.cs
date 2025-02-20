@@ -1,40 +1,48 @@
 using Data.Models;
 using Repo;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service
 {
     public class RoleService : IRoleService
     {
-        private readonly IRoleRepository _roleRepository;
+        private readonly SkinCareManagementDbContext _context;
 
-        public RoleService(IRoleRepository roleRepository)
+        public RoleService(SkinCareManagementDbContext context)
         {
-            _roleRepository = roleRepository;
+            _context = context;
         }
 
         public async Task<IEnumerable<Role>> GetAllRolesAsync()
         {
-            return await _roleRepository.GetAllAsync();
+            return await _context.Roles.ToListAsync();
         }
 
         public async Task<Role?> GetRoleByIdAsync(int id)
         {
-            return await _roleRepository.GetByIdAsync(id);
+            return await _context.Roles.FirstOrDefaultAsync(r => r.RoleId == id);
         }
 
         public async Task AddRoleAsync(Role role)
         {
-            await _roleRepository.AddAsync(role);
+            await _context.Roles.AddAsync(role);
+            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateRoleAsync(Role role)
         {
-            await _roleRepository.UpdateAsync(role);
+            _context.Roles.Update(role);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteRoleAsync(int id)
         {
-            await _roleRepository.DeleteAsync(id);
+            var role = await _context.Roles.FindAsync(id);
+            if (role != null)
+            {
+                _context.Roles.Remove(role);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
