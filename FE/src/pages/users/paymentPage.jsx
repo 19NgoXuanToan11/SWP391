@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import {
   Card,
   Steps,
@@ -23,10 +24,12 @@ import {
   BankOutlined,
   WalletOutlined,
   SafetyOutlined,
+  ArrowLeftOutlined,
 } from "@ant-design/icons";
 import { QRCode } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { PaymentSteps } from "../../components/PaymentStep";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -38,26 +41,21 @@ export function PaymentPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
-  // Dữ liệu mẫu
+  // Lấy thông tin giỏ hàng từ Redux store
+  const cartItems = useSelector((state) => state.cart.items);
+  const cartTotal = useSelector((state) => state.cart.total);
+
+  // Thay thế dữ liệu mẫu bằng dữ liệu từ Redux
   const orderDetails = {
-    orderId: "ORD-2024-001",
-    totalAmount: 1200000, // Changed to VND
-    items: [
-      {
-        id: 1,
-        name: "Kem Nền Hoàn Hảo",
-        price: 850000, // Changed to VND
-        quantity: 1,
-        image: "https://source.unsplash.com/random/100x100/?cosmetics",
-      },
-      {
-        id: 2,
-        name: "Serum Dưỡng Ẩm",
-        price: 350000, // Changed to VND
-        quantity: 1,
-        image: "https://source.unsplash.com/random/100x100/?serum",
-      },
-    ],
+    orderId: `ORD-${Date.now()}`,
+    totalAmount: cartTotal,
+    items: cartItems.map((item) => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+      image: item.image,
+    })),
   };
 
   const paymentMethods = [
@@ -70,11 +68,39 @@ export function PaymentPage() {
   ];
 
   const handlePayment = async () => {
+    if (!isAuthenticated) {
+      message.warning("Vui lòng đăng nhập để tiếp tục thanh toán");
+      navigate("/login", { state: { from: "/payment" } });
+      return;
+    }
+
+    if (cartItems.length === 0) {
+      message.warning("Giỏ hàng của bạn đang trống");
+      navigate("/cart");
+      return;
+    }
+
     setIsProcessing(true);
     try {
+      // Giả lập API call tạo đơn hàng
       await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // Tạo object đơn hàng
+      const orderData = {
+        items: cartItems,
+        totalAmount: cartTotal,
+        paymentMethod: selectedPayment,
+        orderDate: new Date().toISOString(),
+        status: "pending",
+      };
+
+      // TODO: Gọi API tạo đơn hàng thực tế ở đây
+
       setPaymentSuccess(true);
-      message.success("Thanh toán thành công!");
+      message.success("Đặt hàng thành công!");
+
+      // Clear giỏ hàng sau khi đặt hàng thành công
+      // dispatch(clearCart());
     } catch (error) {
       message.error("Đã xảy ra lỗi. Vui lòng thử lại!");
     } finally {
@@ -100,6 +126,17 @@ export function PaymentPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white py-12 px-4">
       <div className="max-w-5xl mx-auto">
+        <PaymentSteps current={1} />
+
+        <Button
+          type="link"
+          icon={<ArrowLeftOutlined />}
+          onClick={() => navigate("/cart")}
+          className="mb-4"
+        >
+          Quay lại giỏ hàng
+        </Button>
+
         <Card className="shadow-xl rounded-3xl overflow-hidden">
           <div className="text-center mb-8">
             <Title
@@ -248,7 +285,7 @@ export function PaymentPage() {
                         size="large"
                         block
                         loading={isProcessing}
-                        onClick={handlePayNow}
+                        onClick={handlePayment}
                         className="bg-gradient-to-r from-pink-500 to-purple-500 h-12 text-lg"
                         style={{
                           background:

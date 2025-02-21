@@ -62,38 +62,32 @@ export function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     try {
-      const response = await login({
+      const result = await login({
         email: formData.email,
         password: formData.password,
-      }).unwrap();
+      });
 
-      const userInfo = {
-        email: formData.email,
-        name: formData.email.split("@")[0], // Hoặc thông tin khác từ API
-        id: Date.now(), // Hoặc ID từ API
-      };
+      if (result.error) {
+        throw new Error(result.error.data?.message || "Đăng nhập thất bại");
+      }
+
+      const { token, user } = result.data;
 
       dispatch(
         setCredentials({
-          user: userInfo,
-          token: response.token,
+          user,
+          token,
         })
       );
 
-      message.success({
-        content: "Đăng nhập thành công!",
-        duration: 2,
-      });
-
-      const from = location.state?.from || "/";
-      navigate(from);
-    } catch (error) {
-      console.error("Đăng nhập thất bại:", error);
-      message.error({
-        content: "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!",
-        duration: 2,
-      });
+      message.success("Đăng nhập thành công!");
+      navigate(location.state?.from || "/");
+    } catch (err) {
+      console.error("Login error:", err);
+      message.error(err.message || "Đăng nhập thất bại. Vui lòng thử lại!");
     }
   };
 

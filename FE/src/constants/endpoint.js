@@ -1,10 +1,11 @@
 const endpoints = {
   // Auth
-  LOGIN: "/login",
-  REGISTER: "/register",
-  GET_USER: "/users",
-  LOGOUT: "/auth/logout",
-  REFRESH_TOKEN: "/auth/refresh-token",
+  LOGIN: "/Auth/login",
+  REGISTER: "/Auth/register",
+  GET_USER: "/Auth/users",
+  LOGOUT: "/Auth/logout",
+  REFRESH_TOKEN: "/Auth/refresh-token",
+  VERIFY_EMAIL: "/Auth/verify-email",
 
   // User
   GET_PROFILE: "/user/profile",

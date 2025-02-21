@@ -17,12 +17,17 @@ import { Link } from "react-router-dom";
 import { Dropdown } from "antd";
 import { UserDropdown } from "./userDropdown";
 import { useGetUserProfileQuery } from "../services/api/beautyShopApi";
+import { useSelector } from "react-redux";
 
 export function SiteHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const { data: user, isLoading } = useGetUserProfileQuery();
   const isAuthenticated = !!localStorage.getItem("token");
+
+  // Lấy số lượng sản phẩm từ Redux store
+  const cartQuantity = useSelector((state) => state.cart.quantity);
+  const wishlistTotal = useSelector((state) => state.wishlist.total);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -99,18 +104,37 @@ export function SiteHeader() {
                 <span className="font-medium text-base whitespace-nowrap">
                   Giỏ hàng
                 </span>
-                <span
-                  className="flex items-center justify-center w-6 h-6 bg-gray-100 text-gray-700 
-                               text-sm font-semibold rounded-full group-hover:bg-gray-200 transition-colors"
-                >
-                  3
-                </span>
+                {cartQuantity > 0 && (
+                  <span
+                    className="flex items-center justify-center w-6 h-6 bg-pink-100 text-pink-700 
+                              text-sm font-semibold rounded-full group-hover:bg-pink-200 transition-colors"
+                  >
+                    {cartQuantity}
+                  </span>
+                )}
               </Link>
 
               {/* Phần xác thực */}
-              <div className="flex items-center">
+              <div className="flex items-center space-x-4">
                 {isAuthenticated ? (
-                  <UserDropdown user={user} />
+                  <>
+                    {/* Wishlist Icon với số lượng */}
+                    <Link
+                      to="/wishlist"
+                      className="relative p-2 text-gray-600 hover:text-pink-600 transition-colors"
+                    >
+                      <HeartOutlined className="text-xl" />
+                      {wishlistTotal > 0 && (
+                        <span
+                          className="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 text-white 
+                                       text-xs rounded-full flex items-center justify-center"
+                        >
+                          {wishlistTotal}
+                        </span>
+                      )}
+                    </Link>
+                    <UserDropdown user={user} />
+                  </>
                 ) : (
                   <Link
                     to="/login"

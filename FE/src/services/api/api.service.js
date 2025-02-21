@@ -4,7 +4,7 @@ export const axiosBaseQuery =
   () =>
   async ({ url, method, data, params }) => {
     try {
-      const baseURL = "https://reqres.in/api"; // URL API của bạn
+      const baseURL = "https://localhost:7285/api"; // URL API của bạn
       const headers = {
         "Content-Type": "application/json",
       };

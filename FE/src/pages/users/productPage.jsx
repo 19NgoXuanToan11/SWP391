@@ -328,16 +328,17 @@ export function ProductsPage() {
                                 )}
                               </div>
                               <div className="flex gap-2">
-                                <Button
+                                <button
                                   type="primary"
                                   icon={<ShoppingCartOutlined />}
                                   onClick={() =>
                                     handleBuyNowClick(product.productId)
                                   }
-                                  className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 border-none shadow-md hover:shadow-lg"
+                                  className="flex items-center gap-2 px-2 py-2.5 text-white font-medium rounded-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95"
                                 >
-                                  Mua ngay
-                                </Button>
+                                  <ShoppingCartOutlined className="text-lg" />
+                                  <span>Mua ngay</span>
+                                </button>
                               </div>
                             </div>
                           </div>
