@@ -11,11 +11,12 @@ export function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    userName: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    fullName: "",
+    phoneNumber: "",
+    address: "",
   });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
@@ -25,7 +26,6 @@ export function RegisterPage() {
 
   useEffect(() => {
     if (isSuccess) {
-      message.success("Đăng ký thành công!");
       navigate("/login");
     }
     if (error) {
@@ -52,12 +52,10 @@ export function RegisterPage() {
 
   const validateForm = () => {
     const errors = {};
-    // Kiểm tra họ và tên
-    if (!formData.firstName) {
-      errors.firstName = "Vui lòng nhập họ";
-    }
-    if (!formData.lastName) {
-      errors.lastName = "Vui lòng nhập tên";
+
+    // Kiểm tra username
+    if (!formData.username) {
+      errors.username = "Vui lòng nhập tên đăng nhập";
     }
 
     // Kiểm tra email
@@ -75,11 +73,22 @@ export function RegisterPage() {
       errors.password = "Mật khẩu phải có ít nhất 6 ký tự";
     }
 
-    // Kiểm tra xác nhận mật khẩu
-    if (!formData.confirmPassword) {
-      errors.confirmPassword = "Vui lòng xác nhận mật khẩu";
-    } else if (formData.confirmPassword !== formData.password) {
-      errors.confirmPassword = "Mật khẩu không khớp";
+    // Kiểm tra fullName
+    if (!formData.fullName) {
+      errors.fullName = "Vui lòng nhập họ và tên";
+    }
+
+    // Kiểm tra số điện thoại
+    const phonePattern = /(84|0[3|5|7|8|9])+([0-9]{8})\b/;
+    if (!formData.phoneNumber) {
+      errors.phoneNumber = "Vui lòng nhập số điện thoại";
+    } else if (!phonePattern.test(formData.phoneNumber)) {
+      errors.phoneNumber = "Số điện thoại không hợp lệ";
+    }
+
+    // Kiểm tra địa chỉ
+    if (!formData.address) {
+      errors.address = "Vui lòng nhập địa chỉ";
     }
 
     return errors;
@@ -92,40 +101,32 @@ export function RegisterPage() {
 
     if (Object.keys(validationErrors).length === 0) {
       try {
-        // Chỉ gửi email và mật khẩu theo yêu cầu của API
+        // Format dữ liệu theo đúng yêu cầu của API
         const registerData = {
+          userName: formData.username,
           email: formData.email,
           password: formData.password,
+          fullName: formData.fullName,
+          phoneNumber: formData.phoneNumber,
+          address: formData.address,
         };
 
-        const response = await register(registerData).unwrap();
+        console.log("Sending register data:", registerData);
 
-        // Lưu thông tin người dùng vào localStorage nếu cần
-        localStorage.setItem(
-          "userInfo",
-          JSON.stringify({
-            email: formData.email,
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-          })
-        );
+        const response = await register(registerData);
 
-        // Hiển thị thông báo thành công
+        // Nếu đăng ký thành công
         message.success({
-          content: "Đăng ký thành công! Chuyển hướng đến trang đăng nhập...",
-          duration: 2, // Hiển thị trong 2 giây
+          content:
+            "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
+          duration: 5,
           onClose: () => {
-            // Chuyển hướng sau khi thông báo đóng
             navigate("/login");
           },
         });
       } catch (err) {
-        // Xử lý lỗi cụ thể từ API
-        if (err?.data?.error) {
-          message.error(err.data.error);
-        } else {
-          message.error("Đăng ký thất bại. Vui lòng thử lại!");
-        }
+        console.error("Registration error:", err);
+        message.error(err.message || "Đăng ký thất bại. Vui lòng thử lại!");
       }
     }
   };
@@ -165,6 +166,77 @@ export function RegisterPage() {
           {/* Phần giữa - Biểu mẫu */}
           <div className="flex-1">
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Full Name field */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Họ và tên
+                </label>
+                <input
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
+                  placeholder="Nhập họ và tên"
+                />
+                {errors.fullName && (
+                  <p className="text-red-500 text-sm">{errors.fullName}</p>
+                )}
+              </div>
+
+              {/* Phone Number field */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Số điện thoại
+                </label>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
+                  placeholder="Nhập số điện thoại"
+                />
+                {errors.phoneNumber && (
+                  <p className="text-red-500 text-sm">{errors.phoneNumber}</p>
+                )}
+              </div>
+
+              {/* Address field */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Địa chỉ
+                </label>
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
+                  placeholder="Nhập địa chỉ"
+                />
+                {errors.address && (
+                  <p className="text-red-500 text-sm">{errors.address}</p>
+                )}
+              </div>
+
+              {/* Username field */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Tên đăng nhập
+                </label>
+                <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
+                  placeholder="Nhập tên đăng nhập"
+                />
+                {errors.username && (
+                  <p className="text-red-500 text-sm">{errors.username}</p>
+                )}
+              </div>
               {/* Trường email */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">

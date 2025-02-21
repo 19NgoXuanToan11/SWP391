@@ -16,7 +16,7 @@ import CategoryPage from "../pages/admin/categoryPage";
 import BrandsPage from "../pages/admin/brandsPage";
 import VouchersPage from "../pages/admin/vouchersPage";
 import SettingPage from "../pages/admin/settingPage";
-import CartPage from "../pages/users/cartPage";
+import CartPage  from "../pages/users/cartPage";
 import PaymentPage from "../pages/users/paymentPage";
 import OrderhistoryPage from "../pages/users/orderhistoryPage";
 import CustomerOrderPage from "../pages/admin/customerorderPage";
@@ -28,9 +28,10 @@ import { SkinCareRoutinePage } from "../pages/users/skinCareRoutine";
 import { ProductRecommendationPage } from "../pages/users/productRecommendation";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import OrderHistoryPage from "../pages/users/orderhistoryPage";
-import ProductDetailPage from "../pages/users/productDetailPage";
+import ProductDetailPage from "../pages/users/productdetailPage";
 import { NewsDetailPage } from "../pages/users/newsDetailPage";
 import { NewsPage } from "../components/newsPage";
+import { VerifyEmailPage } from "../pages/login/verifyEmailPage";
 
 export const router = createBrowserRouter([
   {
@@ -164,6 +165,10 @@ export const router = createBrowserRouter([
       {
         path: "news/:id",
         element: <NewsDetailPage />,
+      },
+      {
+        path: "verify-email",
+        element: <VerifyEmailPage />,
       },
     ],
   },
