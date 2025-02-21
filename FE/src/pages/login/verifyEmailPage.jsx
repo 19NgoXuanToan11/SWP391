@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { message } from "antd";
+import { motion } from "framer-motion";
+import { HiOutlineMail, HiOutlineCheck } from "react-icons/hi";
 import { useVerifyEmailMutation } from "../../services/api/beautyShopApi";
 
 export function VerifyEmailPage() {
@@ -8,46 +10,44 @@ export function VerifyEmailPage() {
   const navigate = useNavigate();
   const [verifyEmail] = useVerifyEmailMutation();
   const [countdown, setCountdown] = useState(5);
+  const [verificationStatus, setVerificationStatus] = useState("verifying"); // verifying, success, error
 
   useEffect(() => {
     const token = searchParams.get("token");
     if (!token) {
+      setVerificationStatus("error");
       message.error("Token xác thực không hợp lệ");
-      navigate("/login");
+      setTimeout(() => navigate("/login"), 10000);
       return;
     }
 
     const verifyToken = async () => {
       try {
-        // Gọi API với method GET và token là query parameter
         const response = await verifyEmail(token);
 
         if (response.error) {
           throw new Error(response.error.data?.message || "Xác thực thất bại");
         }
 
-        if (response.data?.success) {
-          message.success(
-            response.data.message || "Xác thực email thành công!"
-          );
+        setVerificationStatus("success");
+        message.success("Xác thực email thành công!");
 
-          // Đếm ngược 5 giây
-          const timer = setInterval(() => {
-            setCountdown((prev) => {
-              if (prev <= 1) {
-                clearInterval(timer);
-                navigate("/login");
-                return 0;
-              }
-              return prev - 1;
-            });
-          }, 1000);
+        const timer = setInterval(() => {
+          setCountdown((prev) => {
+            if (prev <= 1) {
+              clearInterval(timer);
+              navigate("/login");
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
 
-          return () => clearInterval(timer);
-        }
+        return () => clearInterval(timer);
       } catch (err) {
+        setVerificationStatus("error");
         message.error("Xác thực email thất bại");
-        navigate("/login");
+        setTimeout(() => navigate("/login"), 3000);
       }
     };
 
@@ -55,20 +55,62 @@ export function VerifyEmailPage() {
   }, [navigate, searchParams, verifyEmail]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full p-8 bg-white rounded-xl shadow-lg text-center">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">
-          Xác thực Email
-        </h2>
-        <div className="mt-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">
-            {countdown > 0
-              ? `Chuyển hướng đến trang đăng nhập sau ${countdown} giây...`
-              : "Đang chuyển hướng..."}
-          </p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50">
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="max-w-md w-full p-8 bg-white rounded-2xl shadow-xl"
+      >
+        <div className="text-center space-y-4">
+          {verificationStatus === "verifying" && (
+            <>
+              <div className="w-20 h-20 mx-auto bg-pink-100 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 border-4 border-pink-500 border-t-transparent rounded-full animate-spin" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800">
+                Đang xác thực email
+              </h2>
+              <p className="text-gray-600">Vui lòng đợi trong giây lát...</p>
+            </>
+          )}
+
+          {verificationStatus === "success" && (
+            <>
+              <div className="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center">
+                <HiOutlineCheck className="w-10 h-10 text-green-500" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800">
+                Xác thực thành công!
+              </h2>
+              <p className="text-gray-600">
+                Email của bạn đã được xác thực. Chuyển hướng sau {countdown}{" "}
+                giây...
+              </p>
+            </>
+          )}
+
+          {verificationStatus === "error" && (
+            <>
+              <div className="w-20 h-20 mx-auto bg-red-100 rounded-full flex items-center justify-center">
+                <HiOutlineMail className="w-10 h-10 text-red-500" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800">
+                Xác thực thất bại
+              </h2>
+              <p className="text-gray-600">
+                Có lỗi xảy ra trong quá trình xác thực. Vui lòng thử lại.
+              </p>
+              <button
+                onClick={() => navigate("/login")}
+                className="mt-4 px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
+              >
+                Quay lại đăng nhập
+              </button>
+            </>
+          )}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
