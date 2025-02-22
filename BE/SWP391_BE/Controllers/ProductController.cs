@@ -99,7 +99,7 @@ namespace SWP391_BE.Controllers
                     CreatedAt = product.CreatedAt,
                     ImageUrl = product.ImageUrl,
                     BrandName = product.Brand?.BrandName,
-                    VolumeName = product.Volume?.Size,
+                    VolumeName = product.Volume?.VolumeSize,
                     SkinTypeName = product.SkinType?.SkinTypeName,
                     CategoryName = product.Category?.CategoryName
                 };
@@ -134,11 +134,7 @@ namespace SWP391_BE.Controllers
                     CreatedAt = p.CreatedAt,
                     ImageUrl = p.ImageUrl,
                     BrandName = p.Brand?.BrandName,
-<<<<<<< HEAD
                     VolumeName = p.Volume?.VolumeSize,
-=======
-                    VolumeName = p.Volume?.Size,
->>>>>>> af1c48fb3a3ea141eef7ae1e7b25de7ca33333a6
                     SkinTypeName = p.SkinType?.SkinTypeName,
                     CategoryName = p.Category?.CategoryName
                 });
@@ -173,11 +169,7 @@ namespace SWP391_BE.Controllers
                     CreatedAt = p.CreatedAt,
                     ImageUrl = p.ImageUrl,
                     BrandName = p.Brand?.BrandName,
-<<<<<<< HEAD
                     VolumeName = p.Volume?.VolumeSize,
-=======
-                    VolumeName = p.Volume?.Size,
->>>>>>> af1c48fb3a3ea141eef7ae1e7b25de7ca33333a6
                     SkinTypeName = p.SkinType?.SkinTypeName,
                     CategoryName = p.Category?.CategoryName
                 });
@@ -212,11 +204,7 @@ namespace SWP391_BE.Controllers
                     CreatedAt = p.CreatedAt,
                     ImageUrl = p.ImageUrl,
                     BrandName = p.Brand?.BrandName,
-<<<<<<< HEAD
                     VolumeName = p.Volume?.VolumeSize,
-=======
-                    VolumeName = p.Volume?.Size,
->>>>>>> af1c48fb3a3ea141eef7ae1e7b25de7ca33333a6
                     SkinTypeName = p.SkinType?.SkinTypeName,
                     CategoryName = p.Category?.CategoryName
                 });
@@ -251,11 +239,7 @@ namespace SWP391_BE.Controllers
                     CreatedAt = p.CreatedAt,
                     ImageUrl = p.ImageUrl,
                     BrandName = p.Brand?.BrandName,
-<<<<<<< HEAD
                     VolumeName = p.Volume?.VolumeSize,
-=======
-                    VolumeName = p.Volume?.Size,
->>>>>>> af1c48fb3a3ea141eef7ae1e7b25de7ca33333a6
                     SkinTypeName = p.SkinType?.SkinTypeName,
                     CategoryName = p.Category?.CategoryName
                 });
