@@ -59,7 +59,7 @@ namespace SWP391_BE.Controllers
                     CreatedAt = p.CreatedAt,
                     ImageUrl = p.ImageUrl,
                     BrandName = p.Brand?.BrandName,
-                    VolumeName = p.Volume?.Size,
+                    VolumeName = p.Volume?.VolumeSize,
                     SkinTypeName = p.SkinType?.SkinTypeName,
                     CategoryName = p.Category?.CategoryName
                 });

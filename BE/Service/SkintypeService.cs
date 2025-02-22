@@ -12,23 +12,23 @@ namespace Service
             _context = context;
         }
 
-        public async Task<IEnumerable<Skintype>> GetAllSkintypesAsync()
+        public async Task<IEnumerable<SkinType>> GetAllSkintypesAsync()
         {
             return await _context.SkinTypes.ToListAsync();
         }
 
-        public async Task<Skintype?> GetSkintypeByIdAsync(int id)
+        public async Task<SkinType?> GetSkintypeByIdAsync(int id)
         {
             return await _context.SkinTypes.FindAsync(id);
         }
 
-        public async Task AddSkintypeAsync(Skintype skintype)
+        public async Task AddSkintypeAsync(SkinType skintype)
         {
             await _context.SkinTypes.AddAsync(skintype);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateSkintypeAsync(Skintype skintype)
+        public async Task UpdateSkintypeAsync(SkinType skintype)
         {
             _context.SkinTypes.Update(skintype);
             await _context.SaveChangesAsync();

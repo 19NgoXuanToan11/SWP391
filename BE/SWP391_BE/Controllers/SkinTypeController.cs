@@ -40,7 +40,7 @@ namespace SWP391_BE.Controllers
         [HttpPost]
         public async Task<ActionResult<SkintypeDTO>> CreateSkintype(CreateSkintypeDTO createSkintypeDTO)
         {
-            var skintype = _mapper.Map<Skintype>(createSkintypeDTO);
+            var skintype = _mapper.Map<SkinType>(createSkintypeDTO);
             await _skinTypeService.AddSkintypeAsync(skintype);
             return CreatedAtAction(nameof(GetSkintype), new { id = skintype.SkinTypeId }, 
                 _mapper.Map<SkintypeDTO>(skintype));

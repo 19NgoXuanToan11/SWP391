@@ -4,10 +4,10 @@ namespace Service
 {
     public interface ISkinTypeService
     {
-        Task<IEnumerable<Skintype>> GetAllSkintypesAsync();
-        Task<Skintype?> GetSkintypeByIdAsync(int id);
-        Task AddSkintypeAsync(Skintype skintype);
-        Task UpdateSkintypeAsync(Skintype skintype);
+        Task<IEnumerable<SkinType>> GetAllSkintypesAsync();
+        Task<SkinType?> GetSkintypeByIdAsync(int id);
+        Task AddSkintypeAsync(SkinType skintype);
+        Task UpdateSkintypeAsync(SkinType skintype);
         Task DeleteSkintypeAsync(int id);
         Task<bool> ExistsAsync(int id);
     }

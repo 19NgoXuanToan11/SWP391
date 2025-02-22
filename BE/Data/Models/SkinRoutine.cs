@@ -11,5 +11,5 @@ public partial class SkinRoutine
 
     public string RoutineStep { get; set; } = null!;
 
-    public virtual Skintype SkinType { get; set; } = null!;
+    public virtual SkinType SkinType { get; set; } = null!;
 }

@@ -37,7 +37,7 @@ public partial class SkinCareManagementDbContext : DbContext
 
     public virtual DbSet<SkinRoutine> SkinRoutines { get; set; }
 
-    public virtual DbSet<Skintype> SkinTypes { get; set; }
+    public virtual DbSet<SkinType> SkinTypes { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -182,31 +182,73 @@ public partial class SkinCareManagementDbContext : DbContext
         modelBuilder.Entity<Product>(entity =>
         {
             entity.ToTable("Products");
+
+            entity.HasKey(e => e.ProductId);
+
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
-            entity.Property(e => e.SkinTypeId).HasColumnName("SkinTypeID");
-            entity.Property(e => e.ImageUrl).HasColumnType("nvarchar(max)");
+            entity.Property(e => e.ProductName).HasColumnName("ProductName").IsRequired();
+            entity.Property(e => e.Description).HasColumnName("Description").HasColumnType("nvarchar(max)");
+            entity.Property(e => e.Price).HasColumnName("Price").HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.Stock).HasColumnName("Stock");
+            entity.Property(e => e.MainIngredients).HasColumnName("MainIngredients").HasColumnType("nvarchar(max)");
             entity.Property(e => e.BrandId).HasColumnName("BrandID");
             entity.Property(e => e.VolumeId).HasColumnName("VolumeID");
+            entity.Property(e => e.SkinTypeId).HasColumnName("SkinTypeID");
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
-            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            entity.Property(e => e.CreatedAt).HasColumnName("CreatedAt").HasColumnType("datetime");
+            entity.Property(e => e.ImageUrl).HasColumnName("ImageUrl").HasColumnType("nvarchar(max)");
 
+            // Thiết lập quan hệ với Brand
             entity.HasOne(d => d.Brand)
                 .WithMany(p => p.Products)
-                .HasForeignKey(d => d.BrandId);
+                .HasForeignKey(d => d.BrandId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Products_Brand");
 
+            // Thiết lập quan hệ với Volume
             entity.HasOne(d => d.Volume)
                 .WithMany(p => p.Products)
-                .HasForeignKey(d => d.VolumeId);
+                .HasForeignKey(d => d.VolumeId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Products_Volume");
 
+            // Thiết lập quan hệ với SkinType
             entity.HasOne(d => d.SkinType)
                 .WithMany(p => p.Products)
-                .HasForeignKey(d => d.SkinTypeId);
+                .HasForeignKey(d => d.SkinTypeId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Products_SkinType");
 
+            // Thiết lập quan hệ với Category
             entity.HasOne(d => d.Category)
                 .WithMany(p => p.Products)
-                .HasForeignKey(d => d.CategoryId);
+                .HasForeignKey(d => d.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Products_Category");
+
+            // Thiết lập quan hệ với ProductImage (1 Product có nhiều ảnh)
+            entity.HasMany(p => p.Images)
+                .WithOne(i => i.Product)
+                .HasForeignKey(i => i.ProductId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Product_Images");
+
+            // Thiết lập quan hệ với Feedback (1 Product có nhiều Feedback)
+            entity.HasMany(p => p.Feedbacks)
+                .WithOne(f => f.Product)
+                .HasForeignKey(f => f.ProductId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Product_Feedbacks");
+
+            // Thiết lập quan hệ với OrderDetail (1 Product có nhiều OrderDetails)
+            entity.HasMany(p => p.OrderDetails)
+                .WithOne(od => od.Product)
+                .HasForeignKey(od => od.ProductId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Product_OrderDetails");
         });
+
+
 
         modelBuilder.Entity<Promotion>(entity =>
         {
@@ -243,11 +285,11 @@ public partial class SkinCareManagementDbContext : DbContext
                 .HasConstraintName("FK__SkinRouti__SkinT__34C8D9D1");
         });
 
-        modelBuilder.Entity<Skintype>(entity =>
+        modelBuilder.Entity<SkinType>(entity =>
         {
-            entity.HasKey(e => e.SkinTypeId).HasName("PK__Skintype__D5D2962BEEC6528A");
+            entity.HasKey(e => e.SkinTypeId).HasName("PK__SkinType__D5D2962BEEC6528A");
 
-            entity.HasIndex(e => e.SkinTypeName, "UQ__Skintype__3F55C929689F2351").IsUnique();
+            entity.HasIndex(e => e.SkinTypeName, "UQ__SkinType__3F55C929689F2351").IsUnique();
 
             entity.Property(e => e.SkinTypeId).HasColumnName("SkinTypeID");
             entity.Property(e => e.SkinTypeName).HasMaxLength(50);

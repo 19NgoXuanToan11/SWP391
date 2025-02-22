@@ -34,7 +34,7 @@ public partial class Product
     // Navigation properties
     public virtual Brand? Brand { get; set; }
     public virtual Volume? Volume { get; set; }
-    public virtual Skintype? SkinType { get; set; }
+    public virtual SkinType? SkinType { get; set; }
     public virtual Category? Category { get; set; }
     public virtual ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();

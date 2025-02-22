@@ -8,9 +8,9 @@ namespace SWP391_BE.Mappings
     {
         public SkintypeMappingProfile()
         {
-            CreateMap<Skintype, SkintypeDTO>();
-            CreateMap<CreateSkintypeDTO, Skintype>();
-            CreateMap<UpdateSkintypeDTO, Skintype>();
+            CreateMap<SkinType, SkintypeDTO>();
+            CreateMap<CreateSkintypeDTO, SkinType>();
+            CreateMap<UpdateSkintypeDTO, SkinType>();
         }
     }
 } 

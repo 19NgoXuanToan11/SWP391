@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repo
 {
-    public class SkintypeRepository : ISkintypeRepository
+    public class SkintypeRepository : ISkinTypeRepository
+
     {
         private readonly SkinCareManagementDbContext _context;
 
@@ -12,23 +13,23 @@ namespace Repo
             _context = context;
         }
 
-        public async Task<IEnumerable<Skintype>> GetAllAsync()
+        public async Task<IEnumerable<SkinType>> GetAllAsync()
         {
             return await _context.SkinTypes.ToListAsync();
         }
 
-        public async Task<Skintype?> GetByIdAsync(int id)
+        public async Task<SkinType?> GetByIdAsync(int id)
         {
             return await _context.SkinTypes.FindAsync(id);
         }
 
-        public async Task AddAsync(Skintype skintype)
+        public async Task AddAsync(SkinType skintype)
         {   
             await _context.SkinTypes.AddAsync(skintype);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Skintype skintype)
+        public async Task UpdateAsync(SkinType skintype)
         {
             _context.SkinTypes.Update(skintype);
             await _context.SaveChangesAsync();

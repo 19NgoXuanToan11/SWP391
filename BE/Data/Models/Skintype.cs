@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Data.Models;
 
 [Table("SkinTypes")]
-public partial class Skintype
+public partial class SkinType
 {
     public int SkinTypeId { get; set; }
 

@@ -6,9 +6,9 @@ namespace Data.Models;
 public partial class Volume
 {
     public int VolumeId { get; set; }
-    
-    [Column("Size")]
-    public string Size { get; set; } = null!;
-    
+
+    [Column("VolumeSize")] 
+    public string VolumeSize { get; set; } = null!;
+
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }
