@@ -83,12 +83,33 @@ namespace SWP391_BE.Controllers
                 {
                     return NotFound($"Product with ID {id} not found");
                 }
-                return Ok(_mapper.Map<ProductDTO>(product));
+
+                var productDto = new ProductDTO
+                {
+                    ProductId = product.ProductId,
+                    ProductName = product.ProductName,
+                    Description = product.Description,
+                    Price = product.Price,
+                    Stock = product.Stock,
+                    MainIngredients = product.MainIngredients,
+                    BrandId = product.BrandId,
+                    VolumeId = product.VolumeId,
+                    SkinTypeId = product.SkinTypeId,
+                    CategoryId = product.CategoryId,
+                    CreatedAt = product.CreatedAt,
+                    ImageUrl = product.ImageUrl,
+                    BrandName = product.Brand?.BrandName,
+                    VolumeName = product.Volume?.Size,
+                    SkinTypeName = product.SkinType?.SkinTypeName,
+                    CategoryName = product.Category?.CategoryName
+                };
+
+                return Ok(productDto);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting product {Id}", id);
-                return StatusCode(500, "Internal server error");
+                _logger.LogError(ex, "Error getting product {Id}: {Message}", id, ex.Message);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
@@ -113,7 +134,11 @@ namespace SWP391_BE.Controllers
                     CreatedAt = p.CreatedAt,
                     ImageUrl = p.ImageUrl,
                     BrandName = p.Brand?.BrandName,
+<<<<<<< HEAD
                     VolumeName = p.Volume?.VolumeSize,
+=======
+                    VolumeName = p.Volume?.Size,
+>>>>>>> af1c48fb3a3ea141eef7ae1e7b25de7ca33333a6
                     SkinTypeName = p.SkinType?.SkinTypeName,
                     CategoryName = p.Category?.CategoryName
                 });
@@ -148,7 +173,11 @@ namespace SWP391_BE.Controllers
                     CreatedAt = p.CreatedAt,
                     ImageUrl = p.ImageUrl,
                     BrandName = p.Brand?.BrandName,
+<<<<<<< HEAD
                     VolumeName = p.Volume?.VolumeSize,
+=======
+                    VolumeName = p.Volume?.Size,
+>>>>>>> af1c48fb3a3ea141eef7ae1e7b25de7ca33333a6
                     SkinTypeName = p.SkinType?.SkinTypeName,
                     CategoryName = p.Category?.CategoryName
                 });
@@ -183,7 +212,11 @@ namespace SWP391_BE.Controllers
                     CreatedAt = p.CreatedAt,
                     ImageUrl = p.ImageUrl,
                     BrandName = p.Brand?.BrandName,
+<<<<<<< HEAD
                     VolumeName = p.Volume?.VolumeSize,
+=======
+                    VolumeName = p.Volume?.Size,
+>>>>>>> af1c48fb3a3ea141eef7ae1e7b25de7ca33333a6
                     SkinTypeName = p.SkinType?.SkinTypeName,
                     CategoryName = p.Category?.CategoryName
                 });
@@ -218,7 +251,11 @@ namespace SWP391_BE.Controllers
                     CreatedAt = p.CreatedAt,
                     ImageUrl = p.ImageUrl,
                     BrandName = p.Brand?.BrandName,
+<<<<<<< HEAD
                     VolumeName = p.Volume?.VolumeSize,
+=======
+                    VolumeName = p.Volume?.Size,
+>>>>>>> af1c48fb3a3ea141eef7ae1e7b25de7ca33333a6
                     SkinTypeName = p.SkinType?.SkinTypeName,
                     CategoryName = p.Category?.CategoryName
                 });
@@ -307,19 +344,24 @@ namespace SWP391_BE.Controllers
         {
             try
             {
-                var product = await _productService.GetProductByIdAsync(id);
-                if (product == null)
-                {
-                    return NotFound($"Product with ID {id} not found");
-                }
-
                 await _productService.DeleteProductAsync(id);
                 return NoContent();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error deleting product {Id}", id);
-                return StatusCode(500, "Internal server error");
+                _logger.LogError(ex, "Error deleting product {Id}: {Message}", id, ex.Message);
+                
+                if (ex.Message.Contains("not found"))
+                {
+                    return NotFound(ex.Message);
+                }
+                
+                if (ex.Message.Contains("referenced in orders") || ex.Message.Contains("has feedback"))
+                {
+                    return BadRequest(ex.Message);
+                }
+                
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
     }

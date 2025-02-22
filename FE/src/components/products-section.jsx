@@ -82,8 +82,8 @@ export function ProductsSection() {
                 Bộ Sưu Tập Phục Hồi Ban Đêm
               </h3>
               <p className="text-white/90 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-300 delay-75">
-                Rejuvenate your skin while you sleep with our night care
-                essentials
+                Khôi phục làn da của bạn trong khi bạn ngủ với bộ sản phẩm chăm
+                sóc ban đêm của chúng tôi
               </p>
             </div>
           </motion.div>

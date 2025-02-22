@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../../components/sidebar";
 import { Pagination } from "antd";
-import { SwapOutlined, CloseOutlined } from "@ant-design/icons";
+import {
+  SwapOutlined,
+  CloseOutlined,
+  HeartOutlined,
+  HeartFilled,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
 import { Button, Drawer, Table } from "antd";
 import { notification } from "antd";
+import api from "../../config/axios";
+import endpoints from "../../constants/endpoint";
 
 export function ProductsPage() {
   const navigate = useNavigate();
@@ -17,33 +25,23 @@ export function ProductsPage() {
   const [productsToCompare, setProductsToCompare] = useState([]);
   const [isCompareDrawerOpen, setIsCompareDrawerOpen] = useState(false);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    fetchProducts();
-  }, []);
-
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        "https://6793c6495eae7e5c4d8fd8d4.mockapi.io/api/skincare"
-      );
-      const data = await response.json();
-      const convertedData = data.map((product) => ({
-        ...product,
-        price: product.price * 24500,
-        originalPrice: product.originalPrice
-          ? product.originalPrice * 24500
-          : null,
-      }));
-      setProducts(convertedData);
-      setFilteredProducts(convertedData);
+      const response = await api.get(endpoints.GET_PRODUCTS);
+      setProducts(response.data);
+      setFilteredProducts(response.data);
     } catch (error) {
       console.error("Lỗi khi tải sản phẩm:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    fetchProducts();
+  }, []);
 
   const handleFilterChange = (filters) => {
     let filtered = [...products];
@@ -53,9 +51,10 @@ export function ProductsPage() {
       const searchLower = filters.searchTerm.toLowerCase();
       filtered = filtered.filter(
         (product) =>
-          product.name.toLowerCase().includes(searchLower) ||
+          product.productName.toLowerCase().includes(searchLower) ||
           product.description.toLowerCase().includes(searchLower) ||
-          product.keyIngredients?.toLowerCase().includes(searchLower)
+          product.mainIngredients?.toLowerCase().includes(searchLower) ||
+          product.brandName?.toLowerCase().includes(searchLower)
       );
     }
 
@@ -74,36 +73,33 @@ export function ProductsPage() {
     // Filter by brands
     if (filters.brands.length > 0) {
       filtered = filtered.filter((product) =>
-        filters.brands.includes(product.brand)
+        filters.brands.includes(product.brandName)
       );
     }
 
     // Filter by categories
     if (filters.categories.length > 0) {
       filtered = filtered.filter((product) =>
-        filters.categories.includes(product.category)
+        filters.categories.includes(product.categoryName)
       );
     }
 
     // Filter by skin types
     if (filters.skinTypes.length > 0) {
       filtered = filtered.filter((product) =>
-        filters.skinTypes.includes(product.skinType)
+        filters.skinTypes.includes(product.skinTypeName)
       );
     }
 
     // Filter by volume
     if (filters.volumes && filters.volumes.length > 0) {
-      filtered = filtered.filter((product) => {
-        return filters.volumes.some(
-          (volume) =>
-            product.volume &&
-            product.volume.toLowerCase() === volume.toLowerCase()
-        );
-      });
+      filtered = filtered.filter((product) =>
+        filters.volumes.includes(product.volumeName)
+      );
     }
 
     setFilteredProducts(filtered);
+    setCurrentPage(1); // Reset về trang 1 khi filter
   };
 
   const handleProductClick = (productId) => {
@@ -135,15 +131,16 @@ export function ProductsPage() {
   };
 
   const handleCompareToggle = (product) => {
-    if (productsToCompare.find((p) => p.id === product.id)) {
+    if (productsToCompare.find((p) => p.productId === product.productId)) {
       setProductsToCompare(
-        productsToCompare.filter((p) => p.id !== product.id)
+        productsToCompare.filter((p) => p.productId !== product.productId)
       );
-    } else if (productsToCompare.length < 3) {
+    } else if (productsToCompare.length < 4) {
       setProductsToCompare([...productsToCompare, product]);
     } else {
       notification.warning({
-        message: "Chỉ có thể so sánh tối đa 3 sản phẩm",
+        message: "Giới hạn so sánh",
+        description: "Bạn chỉ có thể so sánh tối đa 4 sản phẩm",
         placement: "top",
       });
     }
@@ -156,27 +153,36 @@ export function ProductsPage() {
       key: "feature",
       width: 150,
       fixed: "left",
+      className: "bg-gray-50 font-medium",
     },
     ...productsToCompare.map((product) => ({
       title: (
-        <div className="text-center">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-20 h-20 object-cover mx-auto mb-2"
-          />
-          <div>{product.name}</div>
-          <Button
-            icon={<CloseOutlined />}
-            size="small"
-            onClick={() => handleCompareToggle(product)}
-            className="mt-2"
-          />
+        <div className="text-center p-4">
+          <div className="relative group">
+            <img
+              src={product.imageUrl}
+              alt={product.productName}
+              className="w-32 h-32 object-cover mx-auto rounded-lg shadow-md"
+            />
+            <Button
+              icon={<CloseOutlined />}
+              size="small"
+              onClick={() => handleCompareToggle(product)}
+              className="absolute -top-2 -right-2 rounded-full shadow-md hover:bg-red-500 hover:text-white transition-colors"
+            />
+          </div>
+          <h3 className="mt-4 font-medium text-gray-800">
+            {product.productName}
+          </h3>
+          <p className="text-pink-600 font-bold mt-2">
+            {formatPrice(product.price)}
+          </p>
         </div>
       ),
-      dataIndex: product.id,
-      key: product.id,
-      width: 200,
+      dataIndex: product.productId,
+      key: product.productId,
+      width: 250,
+      align: "center",
     })),
   ];
 
@@ -185,18 +191,29 @@ export function ProductsPage() {
     { feature: "Giá" },
     { feature: "Thể tích" },
     { feature: "Loại da phù hợp" },
+    { feature: "Danh mục" },
     { feature: "Thành phần chính" },
+    { feature: "Mô tả" },
+    { feature: "Còn lại" },
   ].map((row) => {
     const rowData = { ...row };
     productsToCompare.forEach((product) => {
-      if (row.feature === "Thương hiệu") rowData[product.id] = product.brand;
+      if (row.feature === "Thương hiệu")
+        rowData[product.productId] = product.brandName;
       if (row.feature === "Giá")
-        rowData[product.id] = formatPrice(product.price);
-      if (row.feature === "Thể tích") rowData[product.id] = product.volume;
+        rowData[product.productId] = formatPrice(product.price);
+      if (row.feature === "Thể tích")
+        rowData[product.productId] = product.volumeName;
       if (row.feature === "Loại da phù hợp")
-        rowData[product.id] = product.skinType;
+        rowData[product.productId] = product.skinTypeName;
+      if (row.feature === "Danh mục")
+        rowData[product.productId] = product.categoryName;
       if (row.feature === "Thành phần chính")
-        rowData[product.id] = product.keyIngredients;
+        rowData[product.productId] = product.mainIngredients;
+      if (row.feature === "Mô tả")
+        rowData[product.productId] = product.description;
+      if (row.feature === "Còn lại")
+        rowData[product.productId] = `${product.stock} sản phẩm`;
     });
     return rowData;
   });
@@ -217,93 +234,121 @@ export function ProductsPage() {
 
           <div className="col-span-3">
             {filteredProducts.length === 0 ? (
-              <div className="text-center py-10">
-                <h3 className="text-lg font-medium text-gray-900">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center py-10"
+              >
+                <h3 className="text-2xl font-medium text-gray-900">
                   Không tìm thấy sản phẩm
                 </h3>
-                <p className="mt-2 text-sm text-gray-500">
+                <p className="mt-2 text-gray-500">
                   Vui lòng thử lại với bộ lọc khác
                 </p>
-              </div>
+              </motion.div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {getCurrentProducts().map((product) => (
-                    <motion.div
-                      key={product.id}
-                      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-full"
-                      whileHover={{ scale: 1.02 }}
-                    >
-                      <div className="relative">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-full h-48 object-cover"
-                          onClick={() => handleProductClick(product.id)}
-                        />
-                        {product.discount && (
-                          <span className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-lg">
-                            -{product.discount}%
-                          </span>
-                        )}
-                      </div>
-                      <div className="p-4 flex flex-col flex-grow">
-                        <h2
-                          className="text-lg font-semibold text-gray-800 mb-2 cursor-pointer"
-                          onClick={() => handleProductClick(product.id)}
-                        >
-                          {product.name}
-                        </h2>
-                        <p className="text-sm text-gray-600 mb-2">
-                          {product.description}
-                        </p>
-                        <div className="text-sm text-gray-600 mb-2">
-                          <p>Thể Tích: {product.volume}</p>
-                          <p>Loại Da: {product.skinType}</p>
-                          {product.keyIngredients && (
-                            <p>Thành Phần Chính: {product.keyIngredients}</p>
+                <AnimatePresence>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {getCurrentProducts().map((product) => (
+                      <motion.div
+                        key={product.productId}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden group"
+                      >
+                        <div className="relative overflow-hidden">
+                          <img
+                            src={product.imageUrl}
+                            alt={product.productName}
+                            className="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                            onClick={() =>
+                              handleProductClick(product.productId)
+                            }
+                          />
+                          {product.discount > 0 && (
+                            <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                              -{product.discount}%
+                            </div>
                           )}
-                        </div>
-                        <div className="flex-grow"></div>
-                        <div className="mt-4 flex items-center justify-between">
-                          <div className="flex flex-col">
-                            <span className="text-pink-500 font-bold text-lg">
-                              {formatPrice(product.price)}
-                            </span>
-                            {product.originalPrice && (
-                              <span className="text-gray-400 line-through text-sm">
-                                {formatPrice(product.originalPrice)}
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex gap-2">
-                            <button
-                              className="bg-pink-500 text-white text-sm font-semibold py-2 px-4 rounded-lg hover:bg-pink-600 transition duration-300"
-                              onClick={() => handleBuyNowClick(product.id)}
-                            >
-                              Mua Ngay
+                          <div className="absolute top-4 right-4 flex flex-col gap-2">
+                            <button className="p-2 bg-white rounded-full shadow-md hover:bg-pink-50 transition-colors">
+                              <HeartOutlined className="text-pink-500 text-xl" />
                             </button>
                             <button
-                              className={`p-2 rounded-lg border ${
-                                productsToCompare.find(
-                                  (p) => p.id === product.id
-                                )
-                                  ? "bg-purple-500 text-white"
-                                  : "border-purple-500 text-purple-500"
-                              }`}
+                              className="p-2 bg-white rounded-full shadow-md hover:bg-purple-50 transition-colors"
                               onClick={() => handleCompareToggle(product)}
                             >
-                              <SwapOutlined />
+                              <SwapOutlined className="text-purple-500 text-xl" />
                             </button>
                           </div>
                         </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
 
-                {/* Pagination */}
-                <div className="mt-8 flex justify-center">
+                        <div className="p-6 flex flex-col flex-grow">
+                          <div className="mb-4">
+                            <h2
+                              className="text-xl font-semibold text-gray-800 hover:text-pink-500 transition-colors cursor-pointer mb-2"
+                              onClick={() =>
+                                handleProductClick(product.productId)
+                              }
+                            >
+                              {product.productName}
+                            </h2>
+                            <p className="text-gray-600 line-clamp-2">
+                              {product.description}
+                            </p>
+                          </div>
+
+                          {product.mainIngredients && (
+                            <div className="mb-4">
+                              <p className="text-sm text-gray-600">
+                                <span className="font-medium">
+                                  Thành phần chính:{" "}
+                                </span>
+                                {product.mainIngredients}
+                              </p>
+                            </div>
+                          )}
+
+                          <div className="mt-auto">
+                            <div className="flex items-center justify-between">
+                              <div className="flex flex-col">
+                                <span className="text-2xl font-bold text-pink-600">
+                                  {formatPrice(product.price)}
+                                </span>
+                                {product.discount > 0 && (
+                                  <span className="text-sm text-gray-400 line-through">
+                                    {formatPrice(
+                                      product.price *
+                                        (1 + product.discount / 100)
+                                    )}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex gap-2">
+                                <button
+                                  type="primary"
+                                  icon={<ShoppingCartOutlined />}
+                                  onClick={() =>
+                                    handleBuyNowClick(product.productId)
+                                  }
+                                  className="flex items-center gap-2 px-2 py-2.5 text-white font-medium rounded-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95"
+                                >
+                                  <ShoppingCartOutlined className="text-lg" />
+                                  <span>Mua ngay</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </AnimatePresence>
+
+                <div className="mt-12 flex justify-center">
                   <Pagination
                     current={currentPage}
                     total={filteredProducts.length}
@@ -315,33 +360,66 @@ export function ProductsPage() {
                 </div>
 
                 <Drawer
-                  title="So sánh sản phẩm"
+                  title={
+                    <div className="flex items-center justify-between">
+                      <span className="text-xl font-medium">
+                        So sánh sản phẩm
+                      </span>
+                      <span className="text-gray-500 text-sm">
+                        {productsToCompare.length}/4 sản phẩm
+                      </span>
+                    </div>
+                  }
                   placement="right"
-                  width={800}
+                  width={Math.min(1200, window.innerWidth * 0.8)}
                   open={isCompareDrawerOpen}
                   onClose={() => setIsCompareDrawerOpen(false)}
+                  className="compare-drawer"
                 >
                   {productsToCompare.length > 0 ? (
-                    <Table
-                      columns={compareColumns}
-                      dataSource={compareData}
-                      pagination={false}
-                      bordered
-                      scroll={{ x: "max-content" }}
-                    />
+                    <div className="overflow-x-auto">
+                      <Table
+                        columns={compareColumns}
+                        dataSource={compareData}
+                        pagination={false}
+                        bordered
+                        scroll={{ x: "max-content" }}
+                        className="compare-table"
+                        rowClassName={(record, index) =>
+                          index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                        }
+                      />
+                      <div className="mt-6 flex justify-end gap-4">
+                        {productsToCompare.map((product) => (
+                          <Button
+                            key={product.productId}
+                            type="primary"
+                            onClick={() => handleBuyNowClick(product.productId)}
+                            className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+                          >
+                            Mua {product.productName}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
                   ) : (
-                    <div className="text-center py-8">
-                      <p>Chưa có sản phẩm nào được chọn để so sánh</p>
+                    <div className="text-center py-12">
+                      <div className="text-gray-400 text-6xl mb-4">
+                        <SwapOutlined />
+                      </div>
+                      <p className="text-gray-600">
+                        Chưa có sản phẩm nào được chọn để so sánh
+                      </p>
+                      <p className="text-gray-400 text-sm mt-2">
+                        Hãy chọn tối đa 4 sản phẩm để so sánh
+                      </p>
                     </div>
                   )}
                 </Drawer>
 
                 {productsToCompare.length > 0 && (
-                  <div className="fixed bottom-8 right-8">
+                  <div className="fixed bottom-8 right-8 z-50">
                     <button
-                      type="primary"
-                      size="large"
-                      icon={<SwapOutlined />}
                       onClick={() => setIsCompareDrawerOpen(true)}
                       className="flex items-center gap-2 px-6 py-3 text-white font-medium rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
                     >

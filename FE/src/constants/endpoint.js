@@ -1,10 +1,11 @@
 const endpoints = {
   // Auth
-  LOGIN: "/login",
-  REGISTER: "/register",
-  GET_USER: "/users",
-  LOGOUT: "/auth/logout",
-  REFRESH_TOKEN: "/auth/refresh-token",
+  LOGIN: "/Auth/login",
+  REGISTER: "/Auth/register",
+  GET_USER: "/Auth/users",
+  LOGOUT: "/Auth/logout",
+  REFRESH_TOKEN: "/Auth/refresh-token",
+  VERIFY_EMAIL: "/Auth/verify-email",
 
   // User
   GET_PROFILE: "/user/profile",
@@ -12,11 +13,11 @@ const endpoints = {
   CHANGE_PASSWORD: "/user/change-password",
 
   // Products
-  GET_PRODUCTS: "/products",
-  GET_PRODUCT_DETAIL: "/products/:id",
-  CREATE_PRODUCT: "/products",
-  UPDATE_PRODUCT: "/products/:id",
-  DELETE_PRODUCT: "/products/:id",
+  GET_PRODUCTS: "/Product",
+  GET_PRODUCT_DETAIL: "/Product/:id",
+  CREATE_PRODUCT: "/Product",
+  UPDATE_PRODUCT: "/Product/:id",
+  DELETE_PRODUCT: "/Product/:id",
 
   // Categories
   GET_CATEGORIES: "/categories",

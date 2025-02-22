@@ -63,14 +63,19 @@ namespace Service
         {
             try
             {
+<<<<<<< HEAD
                 _logger.LogInformation("Getting product with ID: {Id}", id);
                 
                 var product = await _context.Products
+=======
+                return await _context.Products
+>>>>>>> af1c48fb3a3ea141eef7ae1e7b25de7ca33333a6
                     .Include(p => p.Brand)
                     .Include(p => p.Volume)
                     .Include(p => p.SkinType)
                     .Include(p => p.Category)
                     .FirstOrDefaultAsync(p => p.ProductId == id);
+<<<<<<< HEAD
 
                 if (product == null)
                 {
@@ -84,6 +89,12 @@ namespace Service
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting product by ID {Id}: {Message}", id, ex.Message);
+=======
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting product by id {Id}", id);
+>>>>>>> af1c48fb3a3ea141eef7ae1e7b25de7ca33333a6
                 throw;
             }
         }
@@ -92,9 +103,13 @@ namespace Service
         {
             try
             {
+<<<<<<< HEAD
                 _logger.LogInformation("Getting products for brand ID: {BrandId}", brandId);
                 
                 var products = await _context.Products
+=======
+                return await _context.Products
+>>>>>>> af1c48fb3a3ea141eef7ae1e7b25de7ca33333a6
                     .Include(p => p.Brand)
                     .Include(p => p.Volume)
                     .Include(p => p.SkinType)
@@ -102,9 +117,12 @@ namespace Service
                     .Where(p => p.BrandId == brandId)
                     .AsNoTracking()
                     .ToListAsync();
+<<<<<<< HEAD
 
                 _logger.LogInformation("Found {Count} products for brand ID {BrandId}", products.Count, brandId);
                 return products;
+=======
+>>>>>>> af1c48fb3a3ea141eef7ae1e7b25de7ca33333a6
             }
             catch (Exception ex)
             {
@@ -212,13 +230,32 @@ namespace Service
 
         public async Task DeleteProductAsync(int id)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                await _productRepository.DeleteAsync(id);
+                // Xóa theo đúng tên bảng và cột
+                var deleteProductImages = "DELETE FROM ProductImages WHERE ProductId = @id";
+                var deleteOrderDetails = "DELETE FROM OrderDetails WHERE ProductID = @id";  // Chú ý chữ ID viết hoa
+                var deleteFeedbacks = "DELETE FROM Feedbacks WHERE ProductID = @id";  // Chú ý tên bảng số nhiều và ID viết hoa
+                var deleteProduct = "DELETE FROM Products WHERE ProductID = @id";  // Chú ý ID viết hoa
+
+                // Thực hiện xóa theo thứ tự từ con đến cha
+                await _context.Database.ExecuteSqlRawAsync(deleteProductImages, new Microsoft.Data.SqlClient.SqlParameter("@id", id));
+                await _context.Database.ExecuteSqlRawAsync(deleteOrderDetails, new Microsoft.Data.SqlClient.SqlParameter("@id", id));
+                await _context.Database.ExecuteSqlRawAsync(deleteFeedbacks, new Microsoft.Data.SqlClient.SqlParameter("@id", id));
+                var result = await _context.Database.ExecuteSqlRawAsync(deleteProduct, new Microsoft.Data.SqlClient.SqlParameter("@id", id));
+
+                if (result == 0)
+                {
+                    throw new Exception($"Product with ID {id} not found");
+                }
+
+                await transaction.CommitAsync();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error deleting product");
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Error deleting product {Id}: {Message}", id, ex.Message);
                 throw;
             }
         }

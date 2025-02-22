@@ -1,10 +1,18 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "./api.service";
 import endpoints from "../../constants/endpoint";
 
 const beautyShopApi = createApi({
   reducerPath: "beautyShopApi",
-  baseQuery: axiosBaseQuery(),
+  baseQuery: fetchBaseQuery({
+    baseUrl: "https://localhost:7285/api",
+    prepareHeaders: (headers) => {
+      headers.set("Content-Type", "application/json");
+      headers.set("Access-Control-Allow-Origin", "*");
+      return headers;
+    },
+    credentials: "include",
+  }),
   tagTypes: ["Products", "Categories", "Orders", "User"],
   endpoints: (builder) => ({
     // Auth endpoints
@@ -12,7 +20,10 @@ const beautyShopApi = createApi({
       query: (credentials) => ({
         url: endpoints.LOGIN,
         method: "POST",
-        data: credentials,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: credentials,
       }),
       // Xử lý response để lưu token
       onQueryStarted: async (_, { queryFulfilled }) => {
@@ -26,14 +37,18 @@ const beautyShopApi = createApi({
     }),
 
     register: builder.mutation({
-      query: (userData) => ({
+      query: (data) => ({
         url: endpoints.REGISTER,
         method: "POST",
-        data: {
-          email: userData.email,
-          password: userData.password,
-          // API reqres.in chỉ chấp nhận email và password
-        },
+        body: data,
+      }),
+    }),
+
+    verifyEmail: builder.mutation({
+      query: (data) => ({
+        url: endpoints.VERIFY_EMAIL,
+        method: "GET",
+        body: data,
       }),
     }),
 
@@ -47,12 +62,15 @@ const beautyShopApi = createApi({
       providesTags: ["Products"],
     }),
 
-    getProductDetail: builder.query({
+    getProductById: builder.query({
       query: (id) => ({
-        url: endpoints.GET_PRODUCT_DETAIL.replace(":id", id),
+        url: `/api/Product/${id}`,
         method: "GET",
       }),
       providesTags: (result, error, id) => [{ type: "Products", id }],
+      transformResponse: (response) => {
+        return response;
+      },
     }),
 
     createProduct: builder.mutation({
@@ -115,8 +133,9 @@ const beautyShopApi = createApi({
 export const {
   useLoginMutation,
   useRegisterMutation,
+  useVerifyEmailMutation,
   useGetProductsQuery,
-  useGetProductDetailQuery,
+  useGetProductByIdQuery,
   useCreateProductMutation,
   useGetCategoriesQuery,
   useGetOrdersQuery,
