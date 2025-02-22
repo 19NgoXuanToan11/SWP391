@@ -3461,8 +3461,8 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\wukon\\.nuget\\packages\\": {},
-    "D:\\app\\New folder (2)\\NuGetPackages": {}
+    "C:\\Users\\admin\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
@@ -3470,14 +3470,14 @@
       "projectUniqueName": "D:\\Git\\SWP391\\BE\\Repo\\Repo.csproj",
       "projectName": "Repo",
       "projectPath": "D:\\Git\\SWP391\\BE\\Repo\\Repo.csproj",
-      "packagesPath": "C:\\Users\\wukon\\.nuget\\packages\\",
+      "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
       "outputPath": "D:\\Git\\SWP391\\BE\\Repo\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "D:\\app\\New folder (2)\\NuGetPackages"
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\wukon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

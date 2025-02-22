@@ -61,22 +61,96 @@ namespace Service
 
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-            return await _productRepository.GetByIdAsync(id);
+            try
+            {
+                _logger.LogInformation("Getting product with ID: {Id}", id);
+                
+                var product = await _context.Products
+                    .Include(p => p.Brand)
+                    .Include(p => p.Volume)
+                    .Include(p => p.SkinType)
+                    .Include(p => p.Category)
+                    .FirstOrDefaultAsync(p => p.ProductId == id);
+
+                if (product == null)
+                {
+                    _logger.LogWarning("Product with ID {Id} not found", id);
+                    return null;
+                }
+
+                _logger.LogInformation("Successfully retrieved product with ID: {Id}", id);
+                return product;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting product by ID {Id}: {Message}", id, ex.Message);
+                throw;
+            }
         }
 
         public async Task<IEnumerable<Product>> GetProductsByBrandAsync(int brandId)
         {
-            return await _productRepository.GetProductsByBrandAsync(brandId);
+            try
+            {
+                _logger.LogInformation("Getting products for brand ID: {BrandId}", brandId);
+                
+                var products = await _context.Products
+                    .Include(p => p.Brand)
+                    .Include(p => p.Volume)
+                    .Include(p => p.SkinType)
+                    .Include(p => p.Category)
+                    .Where(p => p.BrandId == brandId)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                _logger.LogInformation("Found {Count} products for brand ID {BrandId}", products.Count, brandId);
+                return products;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting products by brand {BrandId}: {Message}", brandId, ex.Message);
+                throw;
+            }
         }
 
         public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId)
         {
-            return await _productRepository.GetProductsByCategoryAsync(categoryId);
+            try
+            {
+                return await _context.Products
+                    .Include(p => p.Brand)
+                    .Include(p => p.Volume)
+                    .Include(p => p.SkinType)
+                    .Include(p => p.Category)
+                    .Where(p => p.CategoryId == categoryId)
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting products by category {CategoryId}: {Message}", categoryId, ex.Message);
+                throw;
+            }
         }
 
         public async Task<IEnumerable<Product>> GetProductsBySkinTypeAsync(int skinTypeId)
         {
-            return await _productRepository.GetProductsBySkinTypeAsync(skinTypeId);
+            try
+            {
+                return await _context.Products
+                    .Include(p => p.Brand)
+                    .Include(p => p.Volume)
+                    .Include(p => p.SkinType)
+                    .Include(p => p.Category)
+                    .Where(p => p.SkinTypeId == skinTypeId)
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting products by skin type {SkinTypeId}: {Message}", skinTypeId, ex.Message);
+                throw;
+            }
         }
 
         public async Task<Product> AddProductAsync(Product product)
@@ -151,7 +225,24 @@ namespace Service
 
         public async Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm)
         {
-            return await _productRepository.SearchProductsAsync(searchTerm);
+            try
+            {
+                return await _context.Products
+                    .Include(p => p.Brand)
+                    .Include(p => p.Volume)
+                    .Include(p => p.SkinType)
+                    .Include(p => p.Category)
+                    .Where(p => p.ProductName.Contains(searchTerm) 
+                        || p.Description.Contains(searchTerm)
+                        || p.MainIngredients.Contains(searchTerm))
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error searching products with term {SearchTerm}: {Message}", searchTerm, ex.Message);
+                throw;
+            }
         }
     }
 }

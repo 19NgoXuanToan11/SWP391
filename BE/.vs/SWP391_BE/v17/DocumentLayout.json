@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "D:\\Git\\SWP391\\BE\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\models\\volume.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\volume.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -21,10 +29,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\controllers\\skintypecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\controllers\\skintypecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\skintypeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -68,10 +72,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\models\\productimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\productimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -232,7 +232,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 75,
+          "SelectedChildIndex": 71,
           "Children": [
             {
               "$type": "Bookmark",
@@ -448,6 +448,10 @@
             },
             {
               "$type": "Bookmark",
+              "Name": "ST:0:0:{004be353-6879-467c-9d1e-9ac23cdf6d49}"
+            },
+            {
+              "$type": "Bookmark",
               "Name": "ST:2:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
             },
             {
@@ -507,79 +511,22 @@
               "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "SkinCareManagementDbContext.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\SkinCareManagementDbContext.cs",
-              "RelativeDocumentMoniker": "Data\\Models\\SkinCareManagementDbContext.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\SkinCareManagementDbContext.cs",
-              "RelativeToolTip": "Data\\Models\\SkinCareManagementDbContext.cs",
-              "ViewState": "AgIAADIBAAAAAAAAAAAswFYBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T11:37:01.764Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "SkintypeRepository.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\SkintypeRepository.cs",
-              "RelativeDocumentMoniker": "Repo\\SkintypeRepository.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\SkintypeRepository.cs",
-              "RelativeToolTip": "Repo\\SkintypeRepository.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAYwB8AAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:53:15.106Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ISkintypeRepository.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\ISkintypeRepository.cs",
-              "RelativeDocumentMoniker": "Repo\\ISkintypeRepository.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\ISkintypeRepository.cs",
-              "RelativeToolTip": "Repo\\ISkintypeRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwA0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-22T01:26:06.898Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "ISkintypeService.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\ISkintypeService.cs",
-              "RelativeDocumentMoniker": "Service\\ISkintypeService.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\ISkintypeService.cs",
-              "RelativeToolTip": "Service\\ISkintypeService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAkAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:32:57.845Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "SkintypeService.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\SkintypeService.cs",
-              "RelativeDocumentMoniker": "Service\\SkintypeService.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\SkintypeService.cs",
-              "RelativeToolTip": "Service\\SkintypeService.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAYwB4AAAAzAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:37:24.54Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 0,
               "Title": "ProductController.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\ProductController.cs",
               "RelativeDocumentMoniker": "SWP391_BE\\Controllers\\ProductController.cs",
               "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\ProductController.cs",
               "RelativeToolTip": "SWP391_BE\\Controllers\\ProductController.cs",
-              "ViewState": "AgIAADUAAAAAAAAAAAAswD0AAAA1AAAAAAAAAA==",
+              "ViewState": "AgIAANAAAAAAAAAAAAAuwN4AAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-20T07:05:09.654Z",
               "EditorCaption": ""
@@ -587,6 +534,67 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "Volume.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\Volume.cs",
+              "RelativeDocumentMoniker": "Data\\Models\\Volume.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\Volume.cs",
+              "RelativeToolTip": "Data\\Models\\Volume.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:12:54.174Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "SkintypeRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\SkintypeRepository.cs",
+              "RelativeDocumentMoniker": "Repo\\SkintypeRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\SkintypeRepository.cs",
+              "RelativeToolTip": "Repo\\SkintypeRepository.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAYwB8AAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:53:15.106Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ISkintypeRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\ISkintypeRepository.cs",
+              "RelativeDocumentMoniker": "Repo\\ISkintypeRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\ISkintypeRepository.cs",
+              "RelativeToolTip": "Repo\\ISkintypeRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-22T01:26:06.898Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ISkintypeService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\ISkintypeService.cs",
+              "RelativeDocumentMoniker": "Service\\ISkintypeService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\ISkintypeService.cs",
+              "RelativeToolTip": "Service\\ISkintypeService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAkAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:32:57.845Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "SkintypeService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\SkintypeService.cs",
+              "RelativeDocumentMoniker": "Service\\SkintypeService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\SkintypeService.cs",
+              "RelativeToolTip": "Service\\SkintypeService.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAYwB4AAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-20T07:37:24.54Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "Product.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\Product.cs",
               "RelativeDocumentMoniker": "Data\\Models\\Product.cs",
@@ -594,25 +602,36 @@
               "RelativeToolTip": "Data\\Models\\Product.cs",
               "ViewState": "AgIAABEAAAAAAAAAAAA+wCoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:02:50.561Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-20T07:02:50.561Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Volume.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\Volume.cs",
-              "RelativeDocumentMoniker": "Data\\Models\\Volume.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\Volume.cs",
-              "RelativeToolTip": "Data\\Models\\Volume.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAXAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "ProductService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\ProductService.cs",
+              "RelativeDocumentMoniker": "Service\\ProductService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\ProductService.cs",
+              "RelativeToolTip": "Service\\ProductService.cs",
+              "ViewState": "AgIAAOQAAAAAAAAAAAAwwOwAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:12:54.174Z",
+              "WhenOpened": "2025-02-20T07:05:30.588Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "SkinCareManagementDbContext.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\SkinCareManagementDbContext.cs",
+              "RelativeDocumentMoniker": "Data\\Models\\SkinCareManagementDbContext.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\SkinCareManagementDbContext.cs",
+              "RelativeToolTip": "Data\\Models\\SkinCareManagementDbContext.cs",
+              "ViewState": "AgIAADIBAAAAAAAAAAAswFYBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-05T11:37:01.764Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "SkintypeMappingProfile.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Mappings\\SkintypeMappingProfile.cs",
               "RelativeDocumentMoniker": "SWP391_BE\\Mappings\\SkintypeMappingProfile.cs",
@@ -620,12 +639,11 @@
               "RelativeToolTip": "SWP391_BE\\Mappings\\SkintypeMappingProfile.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-22T01:44:25.19Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-22T01:44:25.19Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "SkinRoutine.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\SkinRoutine.cs",
               "RelativeDocumentMoniker": "Data\\Models\\SkinRoutine.cs",
@@ -633,12 +651,11 @@
               "RelativeToolTip": "Data\\Models\\SkinRoutine.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-22T01:42:49.947Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-22T01:42:49.947Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "SkinTypeController.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\SkinTypeController.cs",
               "RelativeDocumentMoniker": "SWP391_BE\\Controllers\\SkinTypeController.cs",
@@ -646,12 +663,11 @@
               "RelativeToolTip": "SWP391_BE\\Controllers\\SkinTypeController.cs",
               "ViewState": "AgIAABgAAAAAAAAAAAAkwCoAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:37:54.145Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-20T07:37:54.145Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "Skintype.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\Skintype.cs",
               "RelativeDocumentMoniker": "Data\\Models\\Skintype.cs",
@@ -659,12 +675,11 @@
               "RelativeToolTip": "Data\\Models\\Skintype.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-22T01:41:45.12Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-22T01:41:45.12Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\appsettings.json",
               "RelativeDocumentMoniker": "SWP391_BE\\appsettings.json",
@@ -672,8 +687,7 @@
               "RelativeToolTip": "SWP391_BE\\appsettings.json",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAAAUAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-02-05T11:37:58.435Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-05T11:37:58.435Z"
             },
             {
               "$type": "Document",
@@ -701,7 +715,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "User.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\User.cs",
               "RelativeDocumentMoniker": "Data\\Models\\User.cs",
@@ -709,8 +723,7 @@
               "RelativeToolTip": "Data\\Models\\User.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAwCgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-15T04:07:07.445Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-15T04:07:07.445Z"
             },
             {
               "$type": "Document",
@@ -726,7 +739,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "MappingProfile.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Mappings\\MappingProfile.cs",
               "RelativeDocumentMoniker": "SWP391_BE\\Mappings\\MappingProfile.cs",
@@ -734,19 +747,17 @@
               "RelativeToolTip": "SWP391_BE\\Mappings\\MappingProfile.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T10:22:19.599Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-20T10:22:19.599Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "Microsoft.PackageDependencyResolution.targets",
               "DocumentMoniker": "C:\\Program Files\\dotnet\\sdk\\9.0.200\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
               "ToolTip": "C:\\Program Files\\dotnet\\sdk\\9.0.200\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
               "ViewState": "AgIAAPUAAAAAAAAAAAAUwAkBAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
-              "WhenOpened": "2025-02-22T01:23:46.427Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-22T01:23:46.427Z"
             },
             {
               "$type": "Document",
@@ -762,7 +773,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "ProductImage.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\ProductImage.cs",
               "RelativeDocumentMoniker": "Data\\Models\\ProductImage.cs",
@@ -771,18 +782,6 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-20T07:13:21.497Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "ProductService.cs",
-              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\ProductService.cs",
-              "RelativeDocumentMoniker": "Service\\ProductService.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\ProductService.cs",
-              "RelativeToolTip": "Service\\ProductService.cs",
-              "ViewState": "AgIAAHAAAAAAAAAAAAAUwGUAAAAzAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:05:30.588Z"
             },
             {
               "$type": "Document",
@@ -1104,8 +1103,7 @@
               "RelativeToolTip": "SWP391_BE\\SWP391_BE.csproj",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAACUAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-02-16T20:06:05.851Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-16T20:06:05.851Z"
             },
             {
               "$type": "Document",
@@ -1117,8 +1115,7 @@
               "RelativeToolTip": "Repo\\Repo.csproj",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-02-16T20:28:20.826Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-16T20:28:20.826Z"
             },
             {
               "$type": "Document",
@@ -1130,8 +1127,7 @@
               "RelativeToolTip": "Service\\Service.csproj",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAA2AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-02-15T03:29:46.785Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-15T03:29:46.785Z"
             },
             {
               "$type": "Document",
@@ -1167,8 +1163,7 @@
               "RelativeToolTip": "Data\\Data.csproj",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-02-15T03:52:07.055Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-15T03:52:07.055Z"
             },
             {
               "$type": "Document",

@@ -29,7 +29,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 // Đăng ký DbContext
 builder.Services.AddDbContext<SkinCareManagementDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SkinCareManagementDB")));
 
 // Đăng ký AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
@@ -48,5 +48,21 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Thêm đoạn này vào Program.cs sau khi build app
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<SkinCareManagementDbContext>();
+        context.Database.CanConnect();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while connecting to the database.");
+    }
+}
 
 app.Run(); 
