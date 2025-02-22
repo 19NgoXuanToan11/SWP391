@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\Service.csproj": {}
+    "D:\\Git\\SWP391\\BE\\Service\\Service.csproj": {}
   },
   "projects": {
-    "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Data.csproj": {
+    "D:\\Git\\SWP391\\BE\\Data\\Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Data.csproj",
+        "projectUniqueName": "D:\\Git\\SWP391\\BE\\Data\\Data.csproj",
         "projectName": "Data",
-        "projectPath": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Data.csproj",
-        "packagesPath": "C:\\Users\\LAPTOP\\.nuget\\packages\\",
-        "outputPath": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\obj\\",
+        "projectPath": "D:\\Git\\SWP391\\BE\\Data\\Data.csproj",
+        "packagesPath": "C:\\Users\\wukon\\.nuget\\packages\\",
+        "outputPath": "D:\\Git\\SWP391\\BE\\Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\app\\New folder (2)\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\LAPTOP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\wukon\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -111,20 +111,20 @@
         }
       }
     },
-    "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\Repo.csproj": {
+    "D:\\Git\\SWP391\\BE\\Repo\\Repo.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\Repo.csproj",
+        "projectUniqueName": "D:\\Git\\SWP391\\BE\\Repo\\Repo.csproj",
         "projectName": "Repo",
-        "projectPath": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\Repo.csproj",
-        "packagesPath": "C:\\Users\\LAPTOP\\.nuget\\packages\\",
-        "outputPath": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\obj\\",
+        "projectPath": "D:\\Git\\SWP391\\BE\\Repo\\Repo.csproj",
+        "packagesPath": "C:\\Users\\wukon\\.nuget\\packages\\",
+        "outputPath": "D:\\Git\\SWP391\\BE\\Repo\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\app\\New folder (2)\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\LAPTOP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\wukon\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -139,8 +139,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Data.csproj": {
-                "projectPath": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Data.csproj"
+              "D:\\Git\\SWP391\\BE\\Data\\Data.csproj": {
+                "projectPath": "D:\\Git\\SWP391\\BE\\Data\\Data.csproj"
               }
             }
           }
@@ -194,20 +194,20 @@
         }
       }
     },
-    "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\Service.csproj": {
+    "D:\\Git\\SWP391\\BE\\Service\\Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\Service.csproj",
+        "projectUniqueName": "D:\\Git\\SWP391\\BE\\Service\\Service.csproj",
         "projectName": "Service",
-        "projectPath": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\Service.csproj",
-        "packagesPath": "C:\\Users\\LAPTOP\\.nuget\\packages\\",
-        "outputPath": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\obj\\",
+        "projectPath": "D:\\Git\\SWP391\\BE\\Service\\Service.csproj",
+        "packagesPath": "C:\\Users\\wukon\\.nuget\\packages\\",
+        "outputPath": "D:\\Git\\SWP391\\BE\\Service\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\app\\New folder (2)\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\LAPTOP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\wukon\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -222,11 +222,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Data.csproj": {
-                "projectPath": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Data.csproj"
+              "D:\\Git\\SWP391\\BE\\Data\\Data.csproj": {
+                "projectPath": "D:\\Git\\SWP391\\BE\\Data\\Data.csproj"
               },
-              "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\Repo.csproj": {
-                "projectPath": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\Repo.csproj"
+              "D:\\Git\\SWP391\\BE\\Repo\\Repo.csproj": {
+                "projectPath": "D:\\Git\\SWP391\\BE\\Repo\\Repo.csproj"
               }
             }
           }

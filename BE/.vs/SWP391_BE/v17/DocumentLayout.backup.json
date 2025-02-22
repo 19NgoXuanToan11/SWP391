@@ -1,200 +1,207 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\",
+  "WorkspaceRootPath": "D:\\Git\\SWP391\\BE\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\swp391_be\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\app\\visual\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\swp391_be\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\repo\\skintyperepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\skintyperepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\skintyperepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\swp391_be\\mappings\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\mappings\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\mappings\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\swp391_be\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\data\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\data\\models\\productimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\models\\productimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\productimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\skintypeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\skintypeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\skintypeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\repo\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\productrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\categoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\categoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\categoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\orderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\orderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\orderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\volumeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\volumeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\volumeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\roleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\roleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\roleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\brandservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\brandservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\brandservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\repo\\skinroutinerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\skinroutinerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\skinroutinerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\repo\\rolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\rolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\rolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\repo\\promotionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\promotionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\promotionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\repo\\paymentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\paymentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\paymentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\repo\\orderdetailrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\orderdetailrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\orderdetailrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\repo\\feedbackrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\feedbackrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\feedbackrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\repo\\dashboardreportrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\dashboardreportrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\dashboardreportrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\repo\\orderrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\orderrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\orderrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\repo\\iskinroutinerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\iskinroutinerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\iskinroutinerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\swp391_be\\controllers\\skintypecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\controllers\\skintypecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\controllers\\skintypecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\iskintypeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\iskintypeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\iskintypeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\iproductservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\iproductservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\iproductservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\swp391_be\\dtos\\productdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\dtos\\productdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\dtos\\productdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\data\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\data\\models\\volume.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\models\\volume.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\volume.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\data\\models\\brand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\models\\brand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\brand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\repo\\idashboardreportrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\idashboardreportrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\idashboardreportrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\repo\\iproductrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\iproductrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\iproductrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\swp391_be\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\dashboardreportservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\dashboardreportservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\dashboardreportservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\ACER\\.nuget\\packages\\facebook\\7.0.6\\readme.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\swp391_be\\swp391_be.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\swp391_be.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\swp391_be.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\data\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\service.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\service.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\service.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\repo\\repo.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "AbsoluteMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|d:\\git\\swp391\\be\\repo\\repo.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{544F29CA-AF3F-448F-96F9-252C1D626301}|Repo\\Repo.csproj|solutionrelative:repo\\repo.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\swp391_be\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\data\\response\\serviceresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\response\\serviceresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\response\\serviceresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\data\\data.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\data.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\data.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\service\\iemailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|d:\\git\\swp391\\be\\service\\iemailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\iemailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|c:\\desktop\\it\\fpt\\5\\swp391\\skincare-system\\be\\data\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\git\\swp391\\be\\data\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
@@ -205,15 +212,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 77,
+          "SelectedChildIndex": 68,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
               "$type": "Bookmark",
@@ -230,10 +233,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:130:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Bookmark",
@@ -429,10 +428,6 @@
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{004be353-6879-467c-9d1e-9ac23cdf6d49}"
-            },
-            {
-              "$type": "Bookmark",
               "Name": "ST:2:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
             },
             {
@@ -493,30 +488,32 @@
             },
             {
               "$type": "Document",
-<<<<<<< HEAD
               "DocumentIndex": 0,
+              "Title": "Microsoft.Common.CurrentVersion.targets",
+              "DocumentMoniker": "D:\\app\\visual\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeDocumentMoniker": "..\\..\\..\\app\\visual\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ToolTip": "D:\\app\\visual\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeToolTip": "..\\..\\..\\app\\visual\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ViewState": "AgIAAAgXAAAAAAAAAAAUwAIXAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
+              "WhenOpened": "2025-02-22T00:16:18.217Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "SkintypeRepository.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\SkintypeRepository.cs",
               "RelativeDocumentMoniker": "Repo\\SkintypeRepository.cs",
               "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\SkintypeRepository.cs",
               "RelativeToolTip": "Repo\\SkintypeRepository.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAowAwAAAAJAAAAAAAAAA==",
-=======
-              "DocumentIndex": 5,
-              "Title": "Product.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Models\\Product.cs",
-              "RelativeDocumentMoniker": "Data\\Models\\Product.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Models\\Product.cs",
-              "RelativeToolTip": "Data\\Models\\Product.cs",
-              "ViewState": "AgIAAB0AAAAAAAAAAAA5wCoAAAAAAAAAAAAAAA==",
->>>>>>> xuantoan
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:02:50.561Z"
+              "WhenOpened": "2025-02-20T07:53:15.106Z"
             },
             {
               "$type": "Document",
-<<<<<<< HEAD
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "MappingProfile.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Mappings\\MappingProfile.cs",
               "RelativeDocumentMoniker": "SWP391_BE\\Mappings\\MappingProfile.cs",
@@ -528,7 +525,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 18,
               "Title": "PaymentRepository.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\PaymentRepository.cs",
               "RelativeDocumentMoniker": "Repo\\PaymentRepository.cs",
@@ -540,14 +537,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
-=======
-              "DocumentIndex": 20,
->>>>>>> xuantoan
+              "DocumentIndex": 19,
               "Title": "OrderDetailRepository.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\OrderDetailRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\OrderDetailRepository.cs",
               "RelativeDocumentMoniker": "Repo\\OrderDetailRepository.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\OrderDetailRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\OrderDetailRepository.cs",
               "RelativeToolTip": "Repo\\OrderDetailRepository.cs",
               "ViewState": "AgIAAB8AAAAAAAAAAAAAACkAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -555,85 +549,23 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "PaymentRepository.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\PaymentRepository.cs",
-              "RelativeDocumentMoniker": "Repo\\PaymentRepository.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\PaymentRepository.cs",
-              "RelativeToolTip": "Repo\\PaymentRepository.cs",
-              "ViewState": "AgIAACQAAAAAAAAAAAAxwC8AAAAAAAAAAAAAAA==",
+              "DocumentIndex": 8,
+              "Title": "ProductRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\ProductRepository.cs",
+              "RelativeDocumentMoniker": "Repo\\ProductRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\ProductRepository.cs",
+              "RelativeToolTip": "Repo\\ProductRepository.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAxwA4AAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:51:48.024Z"
+              "WhenOpened": "2025-02-20T07:01:17.858Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MappingProfile.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\Mappings\\MappingProfile.cs",
-              "RelativeDocumentMoniker": "SWP391_BE\\Mappings\\MappingProfile.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\Mappings\\MappingProfile.cs",
-              "RelativeToolTip": "SWP391_BE\\Mappings\\MappingProfile.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T10:22:19.599Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ProductImage.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Models\\ProductImage.cs",
-              "RelativeDocumentMoniker": "Data\\Models\\ProductImage.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Models\\ProductImage.cs",
-              "RelativeToolTip": "Data\\Models\\ProductImage.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:13:21.497Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ProductController.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\Controllers\\ProductController.cs",
-              "RelativeDocumentMoniker": "SWP391_BE\\Controllers\\ProductController.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\Controllers\\ProductController.cs",
-              "RelativeToolTip": "SWP391_BE\\Controllers\\ProductController.cs",
-              "ViewState": "AgIAADUAAAAAAAAAAAAUwD8AAAA7AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:05:09.654Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\Program.cs",
-              "RelativeDocumentMoniker": "SWP391_BE\\Program.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\Program.cs",
-              "RelativeToolTip": "SWP391_BE\\Program.cs",
-              "ViewState": "AgIAADIAAAAAAAAAAAAwwEQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T11:37:48.047Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "appsettings.Development.json",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\appsettings.Development.json",
-              "RelativeDocumentMoniker": "SWP391_BE\\appsettings.Development.json",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\appsettings.Development.json",
-              "RelativeToolTip": "SWP391_BE\\appsettings.Development.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-02-21T17:37:14.102Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 17,
               "Title": "PromotionRepository.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\PromotionRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\PromotionRepository.cs",
               "RelativeDocumentMoniker": "Repo\\PromotionRepository.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\PromotionRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\PromotionRepository.cs",
               "RelativeToolTip": "Repo\\PromotionRepository.cs",
               "ViewState": "AgIAACIAAAAAAAAAAAAAAC8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -641,8 +573,7 @@
             },
             {
               "$type": "Document",
-<<<<<<< HEAD
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Product.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\Product.cs",
               "RelativeDocumentMoniker": "Data\\Models\\Product.cs",
@@ -654,7 +585,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "ProductImage.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\ProductImage.cs",
               "RelativeDocumentMoniker": "Data\\Models\\ProductImage.cs",
@@ -666,42 +597,23 @@
             },
             {
               "$type": "Document",
-=======
->>>>>>> xuantoan
-              "DocumentIndex": 2,
-              "Title": "SkintypeRepository.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\SkintypeRepository.cs",
-              "RelativeDocumentMoniker": "Repo\\SkintypeRepository.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\SkintypeRepository.cs",
-              "RelativeToolTip": "Repo\\SkintypeRepository.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAAA7wA4AAAA+AAAAAAAAAA==",
+              "DocumentIndex": 3,
+              "Title": "ProductController.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\ProductController.cs",
+              "RelativeDocumentMoniker": "SWP391_BE\\Controllers\\ProductController.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\ProductController.cs",
+              "RelativeToolTip": "SWP391_BE\\Controllers\\ProductController.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAUwD8AAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-<<<<<<< HEAD
               "WhenOpened": "2025-02-20T07:05:09.654Z"
-=======
-              "WhenOpened": "2025-02-20T07:53:15.106Z",
-              "EditorCaption": ""
->>>>>>> xuantoan
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ProductRepository.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\ProductRepository.cs",
-              "RelativeDocumentMoniker": "Repo\\ProductRepository.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\ProductRepository.cs",
-              "RelativeToolTip": "Repo\\ProductRepository.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAxwA4AAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T07:01:17.858Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 6,
               "Title": "SkintypeService.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\SkintypeService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\SkintypeService.cs",
               "RelativeDocumentMoniker": "Service\\SkintypeService.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\SkintypeService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\SkintypeService.cs",
               "RelativeToolTip": "Service\\SkintypeService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -709,11 +621,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 7,
               "Title": "ProductService.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\ProductService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\ProductService.cs",
               "RelativeDocumentMoniker": "Service\\ProductService.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\ProductService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\ProductService.cs",
               "RelativeToolTip": "Service\\ProductService.cs",
               "ViewState": "AgIAAHAAAAAAAAAAAAAUwGUAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -721,11 +633,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 11,
               "Title": "OrderService.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\OrderService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\OrderService.cs",
               "RelativeDocumentMoniker": "Service\\OrderService.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\OrderService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\OrderService.cs",
               "RelativeToolTip": "Service\\OrderService.cs",
               "ViewState": "AgIAAB4AAAAAAAAAAAAiwC4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -733,11 +645,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 9,
               "Title": "CategoryService.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\CategoryService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\CategoryService.cs",
               "RelativeDocumentMoniker": "Service\\CategoryService.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\CategoryService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\CategoryService.cs",
               "RelativeToolTip": "Service\\CategoryService.cs",
               "ViewState": "AgIAAAIAAAAAAAAAAAAuwBMAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -745,11 +657,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 14,
               "Title": "BrandService.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\BrandService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\BrandService.cs",
               "RelativeDocumentMoniker": "Service\\BrandService.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\BrandService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\BrandService.cs",
               "RelativeToolTip": "Service\\BrandService.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAUwBAAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -757,11 +669,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 13,
               "Title": "RoleService.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\RoleService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\RoleService.cs",
               "RelativeDocumentMoniker": "Service\\RoleService.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\RoleService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\RoleService.cs",
               "RelativeToolTip": "Service\\RoleService.cs",
               "ViewState": "AgIAACEAAAAAAAAAAAAgwC8AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -769,11 +681,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 12,
               "Title": "VolumeService.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\VolumeService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\VolumeService.cs",
               "RelativeDocumentMoniker": "Service\\VolumeService.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\VolumeService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\VolumeService.cs",
               "RelativeToolTip": "Service\\VolumeService.cs",
               "ViewState": "AgIAAAcAAAAAAAAAAAAswBAAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -781,11 +693,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 10,
               "Title": "UserService.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\UserService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\UserService.cs",
               "RelativeDocumentMoniker": "Service\\UserService.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\UserService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\UserService.cs",
               "RelativeToolTip": "Service\\UserService.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAAswBkAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -793,11 +705,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 20,
               "Title": "FeedbackRepository.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\FeedbackRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\FeedbackRepository.cs",
               "RelativeDocumentMoniker": "Repo\\FeedbackRepository.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\FeedbackRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\FeedbackRepository.cs",
               "RelativeToolTip": "Repo\\FeedbackRepository.cs",
               "ViewState": "AgIAABwAAAAAAAAAAAAqwCkAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -805,11 +717,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 21,
               "Title": "DashboardReportRepository.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\DashboardReportRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\DashboardReportRepository.cs",
               "RelativeDocumentMoniker": "Repo\\DashboardReportRepository.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\DashboardReportRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\DashboardReportRepository.cs",
               "RelativeToolTip": "Repo\\DashboardReportRepository.cs",
               "ViewState": "AgIAACIAAAAAAAAAAAAAAC8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -817,11 +729,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 16,
               "Title": "RoleRepository.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\RoleRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\RoleRepository.cs",
               "RelativeDocumentMoniker": "Repo\\RoleRepository.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\RoleRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\RoleRepository.cs",
               "RelativeToolTip": "Repo\\RoleRepository.cs",
               "ViewState": "AgIAACIAAAAAAAAAAAAAAC4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -829,11 +741,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 15,
               "Title": "SkinRoutineRepository.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\SkinRoutineRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\SkinRoutineRepository.cs",
               "RelativeDocumentMoniker": "Repo\\SkinRoutineRepository.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\SkinRoutineRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\SkinRoutineRepository.cs",
               "RelativeToolTip": "Repo\\SkinRoutineRepository.cs",
               "ViewState": "AgIAACAAAAAAAAAAAADwvy8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -841,11 +753,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 22,
               "Title": "OrderRepository.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\OrderRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\OrderRepository.cs",
               "RelativeDocumentMoniker": "Repo\\OrderRepository.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\OrderRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\OrderRepository.cs",
               "RelativeToolTip": "Repo\\OrderRepository.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAAAswBQAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -853,11 +765,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 23,
               "Title": "ISkinRoutineRepository.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\ISkinRoutineRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\ISkinRoutineRepository.cs",
               "RelativeDocumentMoniker": "Repo\\ISkinRoutineRepository.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\ISkinRoutineRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\ISkinRoutineRepository.cs",
               "RelativeToolTip": "Repo\\ISkinRoutineRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwAwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -865,11 +777,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 24,
               "Title": "SkinTypeController.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\Controllers\\SkinTypeController.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\SkinTypeController.cs",
               "RelativeDocumentMoniker": "SWP391_BE\\Controllers\\SkinTypeController.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\Controllers\\SkinTypeController.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\SkinTypeController.cs",
               "RelativeToolTip": "SWP391_BE\\Controllers\\SkinTypeController.cs",
               "ViewState": "AgIAAAQAAAAAAAAAAAAIwBIAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -879,9 +791,9 @@
               "$type": "Document",
               "DocumentIndex": 30,
               "Title": "Volume.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Models\\Volume.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\Volume.cs",
               "RelativeDocumentMoniker": "Data\\Models\\Volume.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Models\\Volume.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\Volume.cs",
               "RelativeToolTip": "Data\\Models\\Volume.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -891,9 +803,9 @@
               "$type": "Document",
               "DocumentIndex": 27,
               "Title": "IProductService.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\IProductService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\IProductService.cs",
               "RelativeDocumentMoniker": "Service\\IProductService.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\IProductService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\IProductService.cs",
               "RelativeToolTip": "Service\\IProductService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAABIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -903,9 +815,9 @@
               "$type": "Document",
               "DocumentIndex": 29,
               "Title": "Category.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Models\\Category.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\Category.cs",
               "RelativeDocumentMoniker": "Data\\Models\\Category.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Models\\Category.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\Category.cs",
               "RelativeToolTip": "Data\\Models\\Category.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -915,9 +827,9 @@
               "$type": "Document",
               "DocumentIndex": 26,
               "Title": "ISkintypeService.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\ISkintypeService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\ISkintypeService.cs",
               "RelativeDocumentMoniker": "Service\\ISkintypeService.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\ISkintypeService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\ISkintypeService.cs",
               "RelativeToolTip": "Service\\ISkintypeService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -927,9 +839,9 @@
               "$type": "Document",
               "DocumentIndex": 31,
               "Title": "Brand.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Models\\Brand.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\Brand.cs",
               "RelativeDocumentMoniker": "Data\\Models\\Brand.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Models\\Brand.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\Brand.cs",
               "RelativeToolTip": "Data\\Models\\Brand.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -939,9 +851,9 @@
               "$type": "Document",
               "DocumentIndex": 28,
               "Title": "ProductDTO.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\DTOs\\ProductDTO.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\DTOs\\ProductDTO.cs",
               "RelativeDocumentMoniker": "SWP391_BE\\DTOs\\ProductDTO.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\DTOs\\ProductDTO.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\DTOs\\ProductDTO.cs",
               "RelativeToolTip": "SWP391_BE\\DTOs\\ProductDTO.cs",
               "ViewState": "AgIAABIAAAAAAAAAAAAAwF8AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -949,11 +861,23 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Program.cs",
+              "RelativeDocumentMoniker": "SWP391_BE\\Program.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Program.cs",
+              "RelativeToolTip": "SWP391_BE\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADQAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-05T11:37:48.047Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 32,
               "Title": "IDashboardReportRepository.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\IDashboardReportRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\IDashboardReportRepository.cs",
               "RelativeDocumentMoniker": "Repo\\IDashboardReportRepository.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\IDashboardReportRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\IDashboardReportRepository.cs",
               "RelativeToolTip": "Repo\\IDashboardReportRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -963,9 +887,9 @@
               "$type": "Document",
               "DocumentIndex": 33,
               "Title": "IProductRepository.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\IProductRepository.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\IProductRepository.cs",
               "RelativeDocumentMoniker": "Repo\\IProductRepository.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\IProductRepository.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\IProductRepository.cs",
               "RelativeToolTip": "Repo\\IProductRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -975,9 +899,9 @@
               "$type": "Document",
               "DocumentIndex": 35,
               "Title": "AuthService.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\AuthService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\AuthService.cs",
               "RelativeDocumentMoniker": "Service\\AuthService.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\AuthService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\AuthService.cs",
               "RelativeToolTip": "Service\\AuthService.cs",
               "ViewState": "AQIAAE8BAAAAAAAAAAAgwHMBAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -987,9 +911,9 @@
               "$type": "Document",
               "DocumentIndex": 34,
               "Title": "AuthController.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\Controllers\\AuthController.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "SWP391_BE\\Controllers\\AuthController.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\Controllers\\AuthController.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\AuthController.cs",
               "RelativeToolTip": "SWP391_BE\\Controllers\\AuthController.cs",
               "ViewState": "AgIAABoAAAAAAAAAAAAAAC4AAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -999,9 +923,9 @@
               "$type": "Document",
               "DocumentIndex": 36,
               "Title": "IAuthService.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\IAuthService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\IAuthService.cs",
               "RelativeDocumentMoniker": "Service\\IAuthService.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\IAuthService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\IAuthService.cs",
               "RelativeToolTip": "Service\\IAuthService.cs",
               "ViewState": "AQIAAAYAAAAAAAAAAAAcwBIAAAAqAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -1009,11 +933,23 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 37,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\appsettings.json",
+              "RelativeDocumentMoniker": "SWP391_BE\\appsettings.json",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\appsettings.json",
+              "RelativeToolTip": "SWP391_BE\\appsettings.json",
+              "ViewState": "AQIAAAEAAAAAAAAAAAAcwBQAAAAnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-02-05T11:37:58.435Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
               "Title": "DashboardReportService.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\DashboardReportService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\DashboardReportService.cs",
               "RelativeDocumentMoniker": "Service\\DashboardReportService.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\DashboardReportService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\DashboardReportService.cs",
               "RelativeToolTip": "Service\\DashboardReportService.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAA0AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -1021,23 +957,21 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 40,
               "Title": "readme.txt",
               "DocumentMoniker": "C:\\Users\\ACER\\.nuget\\packages\\facebook\\7.0.6\\readme.txt",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\..\\Users\\ACER\\.nuget\\packages\\facebook\\7.0.6\\readme.txt",
               "ToolTip": "C:\\Users\\ACER\\.nuget\\packages\\facebook\\7.0.6\\readme.txt",
-              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\..\\Users\\ACER\\.nuget\\packages\\facebook\\7.0.6\\readme.txt",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
               "WhenOpened": "2025-02-17T00:31:49.544Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 43,
               "Title": "User.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Models\\User.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Models\\User.cs",
               "RelativeDocumentMoniker": "Data\\Models\\User.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Models\\User.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Models\\User.cs",
               "RelativeToolTip": "Data\\Models\\User.cs",
               "ViewState": "AQIAAAwAAAAAAAAAAAAAwCgAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -1045,11 +979,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 38,
               "Title": "EmailService.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\EmailService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\EmailService.cs",
               "RelativeDocumentMoniker": "Service\\EmailService.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\EmailService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\EmailService.cs",
               "RelativeToolTip": "Service\\EmailService.cs",
               "ViewState": "AQIAAB4AAAAAAAAAAAAcwIoAAAA1AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -1057,47 +991,62 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
-              "Title": "SWP391_BE.csproj",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\SWP391_BE.csproj",
-              "RelativeDocumentMoniker": "SWP391_BE\\SWP391_BE.csproj",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\SWP391_BE.csproj",
-              "RelativeToolTip": "SWP391_BE\\SWP391_BE.csproj",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAACUAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-02-16T20:06:05.851Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 43,
-              "Title": "Repo.csproj",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\Repo.csproj",
-              "RelativeDocumentMoniker": "Repo\\Repo.csproj",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Repo\\Repo.csproj",
-              "RelativeToolTip": "Repo\\Repo.csproj",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-02-16T20:28:20.826Z"
+              "DocumentIndex": 41,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "SWP391_BE\\appsettings.Development.json",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\appsettings.Development.json",
+              "RelativeToolTip": "SWP391_BE\\appsettings.Development.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-02-16T21:26:03.506Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 42,
-              "Title": "Service.csproj",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\Service.csproj",
-              "RelativeDocumentMoniker": "Service\\Service.csproj",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\Service.csproj",
-              "RelativeToolTip": "Service\\Service.csproj",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAA2AAAA",
+              "Title": "SWP391_BE.csproj",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\SWP391_BE.csproj",
+              "RelativeDocumentMoniker": "SWP391_BE\\SWP391_BE.csproj",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\SWP391_BE.csproj",
+              "RelativeToolTip": "SWP391_BE\\SWP391_BE.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACUAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-02-15T03:29:46.785Z"
+              "WhenOpened": "2025-02-16T20:06:05.851Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 45,
+              "Title": "Repo.csproj",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Repo\\Repo.csproj",
+              "RelativeDocumentMoniker": "Repo\\Repo.csproj",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Repo\\Repo.csproj",
+              "RelativeToolTip": "Repo\\Repo.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-02-16T20:28:20.826Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 44,
+              "Title": "Service.csproj",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\Service.csproj",
+              "RelativeDocumentMoniker": "Service\\Service.csproj",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\Service.csproj",
+              "RelativeToolTip": "Service\\Service.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAA2AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-02-15T03:29:46.785Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 46,
               "Title": "launchSettings.json",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\Properties\\launchSettings.json",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Properties\\launchSettings.json",
               "RelativeDocumentMoniker": "SWP391_BE\\Properties\\launchSettings.json",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\SWP391_BE\\Properties\\launchSettings.json",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Properties\\launchSettings.json",
               "RelativeToolTip": "SWP391_BE\\Properties\\launchSettings.json",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
@@ -1105,11 +1054,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 47,
               "Title": "ServiceResponse.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Response\\ServiceResponse.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Response\\ServiceResponse.cs",
               "RelativeDocumentMoniker": "Data\\Response\\ServiceResponse.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Response\\ServiceResponse.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Response\\ServiceResponse.cs",
               "RelativeToolTip": "Data\\Response\\ServiceResponse.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -1117,23 +1066,24 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 48,
               "Title": "Data.csproj",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Data.csproj",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\Data.csproj",
               "RelativeDocumentMoniker": "Data\\Data.csproj",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\Data.csproj",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\Data.csproj",
               "RelativeToolTip": "Data\\Data.csproj",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-02-15T03:52:07.055Z"
+              "WhenOpened": "2025-02-15T03:52:07.055Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 49,
               "Title": "IEmailService.cs",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\IEmailService.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\IEmailService.cs",
               "RelativeDocumentMoniker": "Service\\IEmailService.cs",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Service\\IEmailService.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Service\\IEmailService.cs",
               "RelativeToolTip": "Service\\IEmailService.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -1141,15 +1091,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 50,
               "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\appsettings.json",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Data\\appsettings.json",
               "RelativeDocumentMoniker": "Data\\appsettings.json",
-              "ToolTip": "C:\\Desktop\\IT\\FPT\\5\\SWP391\\skincare-system\\BE\\Data\\appsettings.json",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\Data\\appsettings.json",
               "RelativeToolTip": "Data\\appsettings.json",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2025-02-05T11:37:13.724Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             }
           ]
         },
@@ -1254,6 +1208,10 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
             },
             {
               "$type": "Bookmark",
