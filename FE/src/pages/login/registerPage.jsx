@@ -101,7 +101,6 @@ export function RegisterPage() {
 
     if (Object.keys(validationErrors).length === 0) {
       try {
-        // Format dữ liệu theo đúng yêu cầu của API
         const registerData = {
           userName: formData.username,
           email: formData.email,
@@ -113,20 +112,23 @@ export function RegisterPage() {
 
         console.log("Sending register data:", registerData);
 
-        const response = await register(registerData);
+        const response = await register(registerData).unwrap();
 
-        // Nếu đăng ký thành công
-        message.success({
-          content:
-            "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
-          duration: 5,
-          onClose: () => {
-            navigate("/login");
-          },
-        });
+        // Kiểm tra response từ API
+        if (response.success) {
+          message.success({
+            content:
+              "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
+            duration: 5,
+            onClose: () => {
+              navigate("/login");
+            },
+          });
+        } else {
+          throw new Error(response.message || "Đăng ký thất bại");
+        }
       } catch (err) {
         console.error("Registration error:", err);
-        message.error(err.message || "Đăng ký thất bại. Vui lòng thử lại!");
       }
     }
   };
