@@ -15,3 +15,12 @@ obj/
 *.db
 *.db-shm
 *.db-wal
+
+# Bỏ qua thư mục build
+bin/
+obj/
+
+# Bỏ qua file DLL, PDB, EXE
+*.dll
+*.pdb
+*.exe
