@@ -4,13 +4,13 @@ using SWP391_BE.DTOs;
 
 namespace SWP391_BE.Mappings
 {
-    public class SkintypeMappingProfile : Profile
+    public class SkinTypeMappingProfile : Profile
     {
-        public SkintypeMappingProfile()
+        public SkinTypeMappingProfile()
         {
-            CreateMap<SkinType, SkintypeDTO>();
-            CreateMap<CreateSkintypeDTO, SkinType>();
-            CreateMap<UpdateSkintypeDTO, SkinType>();
+            CreateMap<Skintype, SkinTypeDTO>();
+            CreateMap<CreateSkinTypeDTO, Skintype>();
+            CreateMap<UpdateSkinTypeDTO, Skintype>();
         }
     }
 } 

@@ -6,12 +6,12 @@ namespace Repo
     {
         Task<IEnumerable<Product>> GetAllAsync();
         Task<Product?> GetByIdAsync(int id);
-        Task<IEnumerable<Product>> GetProductsByBrandAsync(int brandId);
-        Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId);
-        Task<IEnumerable<Product>> GetProductsBySkinTypeAsync(int skinTypeId);
         Task AddAsync(Product product);
         Task UpdateAsync(Product product);
         Task DeleteAsync(int id);
+        Task<IEnumerable<Product>> GetProductsByBrandAsync(int brandId);
+        Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId);
+        Task<IEnumerable<Product>> GetProductsBySkinTypeAsync(int skinTypeId);
         Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm);
     }
 }
