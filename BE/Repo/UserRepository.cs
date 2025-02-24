@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repo
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly SkinCareManagementDbContext _context;
 
@@ -14,12 +14,20 @@ namespace Repo
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users
+                .Include(u => u.Role)
+                .Include(u => u.Orders)
+                .Include(u => u.Feedbacks)
+                .ToListAsync();
         }
 
         public async Task<User?> GetByIdAsync(int id)
         {
-            return await _context.Users.FindAsync(id);
+            return await _context.Users
+                .Include(u => u.Role)
+                .Include(u => u.Orders)
+                .Include(u => u.Feedbacks)
+                .FirstOrDefaultAsync(u => u.UserId == id);
         }
 
         public async Task AddAsync(User user)

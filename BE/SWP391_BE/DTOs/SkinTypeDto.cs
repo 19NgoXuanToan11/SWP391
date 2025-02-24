@@ -1,17 +1,17 @@
 namespace SWP391_BE.DTOs
 {
-    public class SkintypeDTO
+    public class SkinTypeDTO
     {
         public int SkinTypeId { get; set; }
         public string SkinTypeName { get; set; } = null!;
     }
 
-    public class CreateSkintypeDTO
+    public class CreateSkinTypeDTO
     {
         public string SkinTypeName { get; set; } = null!;
     }
 
-    public class UpdateSkintypeDTO
+    public class UpdateSkinTypeDTO
     {
         public string SkinTypeName { get; set; } = null!;
     }

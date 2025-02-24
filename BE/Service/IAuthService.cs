@@ -16,6 +16,7 @@ namespace Service
             Task<ServiceResponse<string>> VerifyEmail(string token);
             Task<ServiceResponse<string>> ForgotPassword(string email);
             Task<ServiceResponse<string>> ResetPassword(ResetPasswordDTO model);
-        }
+            Task<ServiceResponse<string>> GoogleLogin(string token);
+    }
     }
 

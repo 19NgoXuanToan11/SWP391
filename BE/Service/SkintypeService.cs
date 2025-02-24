@@ -1,52 +1,89 @@
 using Data.Models;
-using Microsoft.EntityFrameworkCore;
+using Repo;
+using Microsoft.Extensions.Logging;
 
 namespace Service
 {
     public class SkinTypeService : ISkinTypeService
     {
-        private readonly SkinCareManagementDbContext _context;
+        private readonly ISkinTypeRepository _skinTypeRepository;
+        private readonly ILogger<SkinTypeService> _logger;
 
-        public SkinTypeService(SkinCareManagementDbContext context)
+        public SkinTypeService(ISkinTypeRepository skinTypeRepository, ILogger<SkinTypeService> logger)
         {
-            _context = context;
+            _skinTypeRepository = skinTypeRepository;
+            _logger = logger;
         }
 
-        public async Task<IEnumerable<SkinType>> GetAllSkintypesAsync()
+        public async Task<IEnumerable<Skintype>> GetAllSkinTypesAsync()
         {
-            return await _context.SkinTypes.ToListAsync();
-        }
-
-        public async Task<SkinType?> GetSkintypeByIdAsync(int id)
-        {
-            return await _context.SkinTypes.FindAsync(id);
-        }
-
-        public async Task AddSkintypeAsync(SkinType skintype)
-        {
-            await _context.SkinTypes.AddAsync(skintype);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateSkintypeAsync(SkinType skintype)
-        {
-            _context.SkinTypes.Update(skintype);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteSkintypeAsync(int id)
-        {
-            var skintype = await _context.SkinTypes.FindAsync(id);
-            if (skintype != null)
+            try
             {
-                _context.SkinTypes.Remove(skintype);
-                await _context.SaveChangesAsync();
+                return await _skinTypeRepository.GetAllAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting all skin types");
+                throw;
             }
         }
 
-        public async Task<bool> ExistsAsync(int id)
+        public async Task<Skintype?> GetSkinTypeByIdAsync(int id)
         {
-            return await _context.SkinTypes.AnyAsync(s => s.SkinTypeId == id);
-        }   
+            try
+            {
+                return await _skinTypeRepository.GetByIdAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting skin type with ID {Id}", id);
+                throw;
+            }
+        }
+
+        public async Task AddSkinTypeAsync(Skintype skinType)
+        {
+            try
+            {
+                if (skinType == null)
+                    throw new ArgumentNullException(nameof(skinType));
+
+                await _skinTypeRepository.AddAsync(skinType);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding skin type: {SkinTypeName}", skinType?.SkinTypeName);
+                throw;
+            }
+        }
+
+        public async Task UpdateSkinTypeAsync(Skintype skinType)
+        {
+            try
+            {
+                if (skinType == null)
+                    throw new ArgumentNullException(nameof(skinType));
+
+                await _skinTypeRepository.UpdateAsync(skinType);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating skin type: {SkinTypeId}", skinType?.SkinTypeId);
+                throw;
+            }
+        }
+
+        public async Task DeleteSkinTypeAsync(int id)
+        {
+            try
+            {
+                await _skinTypeRepository.DeleteAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting skin type with ID {Id}", id);
+                throw;
+            }
+        }
     }
 }

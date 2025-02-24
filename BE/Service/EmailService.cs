@@ -42,7 +42,9 @@ namespace Service
             var htmlBody = $@"
             <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
                 <h2 style='color: #33++3;'>Xác thực tài khoản</h2>
-                <p>Cảm ơn bạn đã đăng ký tài khoản. Để hoàn tất quá trình đăng ký, vui lòng xác thực email của bạn.</p>
+                
+                <p>Đây là website giúp bạn hiểu rõ và tư vấn để bạn hiểu rõ về da và sức khỏe của mình.</p>
+                <p>Vui lòng xác thực email của bạn bằng cách nhấn vào liên kết </p>
                 <div style='margin: 25px 0;'>
                     <a href='{verificationLink}' 
                        style='background-color: #4CAF50; color: white; padding: 12px 25px; 

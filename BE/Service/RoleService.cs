@@ -1,48 +1,40 @@
 using Data.Models;
 using Repo;
-using Microsoft.EntityFrameworkCore;
 
 namespace Service
 {
     public class RoleService : IRoleService
     {
-        private readonly SkinCareManagementDbContext _context;
+        private readonly IRoleRepository _roleRepository;
 
-        public RoleService(SkinCareManagementDbContext context)
+        public RoleService(IRoleRepository roleRepository)
         {
-            _context = context;
+            _roleRepository = roleRepository;
         }
 
         public async Task<IEnumerable<Role>> GetAllRolesAsync()
         {
-            return await _context.Roles.ToListAsync();
+            return await _roleRepository.GetAllAsync();
         }
 
         public async Task<Role?> GetRoleByIdAsync(int id)
         {
-            return await _context.Roles.FirstOrDefaultAsync(r => r.RoleId == id);
+            return await _roleRepository.GetByIdAsync(id);
         }
 
         public async Task AddRoleAsync(Role role)
         {
-            await _context.Roles.AddAsync(role);
-            await _context.SaveChangesAsync();
+            await _roleRepository.AddAsync(role);
         }
 
         public async Task UpdateRoleAsync(Role role)
         {
-            _context.Roles.Update(role);
-            await _context.SaveChangesAsync();
+            await _roleRepository.UpdateAsync(role);
         }
 
         public async Task DeleteRoleAsync(int id)
         {
-            var role = await _context.Roles.FindAsync(id);
-            if (role != null)
-            {
-                _context.Roles.Remove(role);
-                await _context.SaveChangesAsync();
-            }
+            await _roleRepository.DeleteAsync(id);
         }
     }
 }

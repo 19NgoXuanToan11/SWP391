@@ -1,5 +1,4 @@
 using Data.Models;
-using Microsoft.EntityFrameworkCore;
 using Repo;
 
 namespace Service
@@ -7,26 +6,20 @@ namespace Service
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly SkinCareManagementDbContext _context;
 
-        public UserService(IUserRepository userRepository, SkinCareManagementDbContext context)
+        public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            _context = context;
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            return await _context.Users
-                .Include(u => u.Role)
-                .ToListAsync();
+            return await _userRepository.GetAllAsync();
         }
 
         public async Task<User?> GetUserByIdAsync(int id)
         {
-            return await _context.Users
-                .Include(u => u.Role)
-                .FirstOrDefaultAsync(u => u.UserId == id);
+            return await _userRepository.GetByIdAsync(id);
         }
 
         public async Task AddUserAsync(User user)
