@@ -82,8 +82,7 @@
               "RelativeToolTip": "SWP391_BE\\DTOs\\ProductDTO.cs",
               "ViewState": "AgIAAFMAAAAAAAAAAAAAwBkAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-24T02:14:01.439Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-24T02:14:01.439Z"
             },
             {
               "$type": "Document",
@@ -95,8 +94,7 @@
               "RelativeToolTip": "Service\\AuthService.cs",
               "ViewState": "AgIAACYBAAAAAAAAAAD4vzsBAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-24T01:57:49.754Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-24T01:57:49.754Z"
             },
             {
               "$type": "Document",
@@ -108,8 +106,7 @@
               "RelativeToolTip": "Service\\ISkintypeService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-24T01:48:40.305Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-24T01:48:40.305Z"
             },
             {
               "$type": "Document",
@@ -121,8 +118,7 @@
               "RelativeToolTip": "Service\\ICategoryService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-24T01:48:31.329Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-24T01:48:31.329Z"
             },
             {
               "$type": "Document",
@@ -134,8 +130,7 @@
               "RelativeToolTip": "Service\\IBrandService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-24T01:48:30.395Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-24T01:48:30.395Z"
             },
             {
               "$type": "Document",
@@ -145,7 +140,7 @@
               "RelativeDocumentMoniker": "Service\\VolumeService.cs",
               "ToolTip": "D:\\SWP391\\BE\\Service\\VolumeService.cs",
               "RelativeToolTip": "Service\\VolumeService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAA4AAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-24T01:46:16.162Z",
               "EditorCaption": ""
@@ -160,8 +155,7 @@
               "RelativeToolTip": "Service\\SkintypeService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-24T01:44:04.993Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-24T01:44:04.993Z"
             },
             {
               "$type": "Document",
@@ -173,8 +167,7 @@
               "RelativeToolTip": "SWP391_BE\\Controllers\\ProductController.cs",
               "ViewState": "AgIAACwAAAAAAAAAAAD4vzsAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-24T01:41:22.853Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-24T01:41:22.853Z"
             },
             {
               "$type": "Document",
@@ -186,8 +179,7 @@
               "RelativeToolTip": "Service\\IVolumeService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-24T01:48:48.688Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-24T01:48:48.688Z"
             },
             {
               "$type": "Document",
@@ -199,8 +191,7 @@
               "RelativeToolTip": "Service\\CategoryService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-24T01:44:01.633Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-24T01:44:01.633Z"
             },
             {
               "$type": "Document",
@@ -212,8 +203,7 @@
               "RelativeToolTip": "Service\\BrandService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-24T01:43:53.177Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-24T01:43:53.177Z"
             }
           ]
         }
