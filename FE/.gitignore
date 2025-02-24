@@ -23,3 +23,31 @@ dist-ssr
 *.sln
 *.sw?
 FE/src/pages/users/productdetailPage.jsx
+
+# Visual Studio 2022 cache files
+.vs/
+*.user
+*.suo
+*.cache
+*.csproj.user
+*.db
+*.pidb
+*.log
+
+# NuGet package cache
+packages/
+*.nupkg
+project.assets.json
+packages.lock.json
+
+# Swagger auto-generated files
+swagger/
+swagger.json
+swagger-ui/
+
+# Temporary build files
+bin/
+obj/
+
+Repo.assets.cache
+SWP391_BE.assets.cache

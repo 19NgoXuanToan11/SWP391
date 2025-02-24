@@ -10,7 +10,7 @@ import {
   CheckCircleOutlined,
   ClockCircleOutlined,
 } from "@ant-design/icons";
-import SidebarAdmin from "../../components/sidebaradmin";
+import SidebarAdmin from "../../components/sidebarAdmin";
 
 const VouchersPage = () => {
   const [searchTerm, setSearchTerm] = useState("");

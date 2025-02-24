@@ -63,13 +63,14 @@ const beautyShopApi = createApi({
     }),
 
     getProductById: builder.query({
-      query: (id) => ({
-        url: `/api/Product/${id}`,
-        method: "GET",
-      }),
-      providesTags: (result, error, id) => [{ type: "Products", id }],
+      query: (id) => `/Product/${id}`,
       transformResponse: (response) => {
+        console.log("API Response:", response);
         return response;
+      },
+      transformErrorResponse: (error) => {
+        console.error("API Error:", error);
+        return error;
       },
     }),
 
