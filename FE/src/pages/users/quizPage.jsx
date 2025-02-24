@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "antd";
+import { motion } from "framer-motion";
+import {
+  SkinOutlined,
+  AlertOutlined,
+  CalendarOutlined,
+  ShoppingOutlined,
+  ReloadOutlined,
+} from "@ant-design/icons";
 
 const questions = [
   {
@@ -238,103 +246,203 @@ export function QuizPage() {
   };
 
   const renderResults = () => (
-    <div className="text-center p-8 bg-white rounded-xl shadow-lg">
-      <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-pink-600 text-transparent bg-clip-text">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="text-center p-8 bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl"
+    >
+      <h2 className="text-4xl font-bold mb-8 bg-gradient-to-r from-purple-600 to-pink-600 text-transparent bg-clip-text">
         Kết Quả Phân Tích Da Của Bạn
       </h2>
 
-      <div className="mb-8 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg">
-        <p className="text-xl mb-4">
-          <span className="font-semibold text-purple-700">Loại Da: </span>
-          <span className="text-gray-800">{quizResults.skinType}</span>
-        </p>
-        <p className="text-xl">
-          <span className="font-semibold text-purple-700">Vấn Đề Về Da: </span>
-          <span className="text-gray-800">
-            {quizResults.concerns.join(", ")}
-          </span>
-        </p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.2 }}
+        className="mb-10 p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border border-purple-100"
+      >
+        <div className="space-y-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+              <SkinOutlined className="text-2xl text-white" />
+            </div>
+            <div className="text-left">
+              <p className="text-sm text-purple-600 font-medium">Loại Da</p>
+              <p className="text-xl text-gray-800 font-semibold">
+                {quizResults.skinType}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center">
+              <AlertOutlined className="text-2xl text-white" />
+            </div>
+            <div className="text-left">
+              <p className="text-sm text-purple-600 font-medium">
+                Vấn Đề Về Da
+              </p>
+              <p className="text-xl text-gray-800 font-semibold">
+                {quizResults.concerns.join(", ")}
+              </p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
 
       <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
-        <button
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={handleViewRoutine}
-          className="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 font-medium"
+          className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 
+            text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 
+            transform hover:-translate-y-1 font-medium flex items-center justify-center gap-2"
         >
+          <CalendarOutlined />
           Xem Quy Trình Chăm Sóc Da
-        </button>
-        <button
+        </motion.button>
+
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={handleViewProducts}
-          className="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 font-medium"
+          className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 
+            text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 
+            transform hover:-translate-y-1 font-medium flex items-center justify-center gap-2"
         >
+          <ShoppingOutlined />
           Xem Sản Phẩm Phù Hợp
-        </button>
-        <button
+        </motion.button>
+
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={handleRestartQuiz}
-          className="w-full md:w-auto px-8 py-3 border-2 border-purple-500 text-purple-600 rounded-full hover:bg-purple-50 transition-colors duration-300 font-medium"
+          className="w-full md:w-auto px-8 py-4 border-2 border-purple-500 text-purple-600 
+            rounded-xl hover:bg-purple-50 transition-colors duration-300 font-medium 
+            flex items-center justify-center gap-2"
         >
+          <ReloadOutlined />
           Làm Lại Bài Kiểm Tra
-        </button>
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-pink-700 flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl p-8 w-[80%] max-w-4xl shadow-xl">
-        {showResults ? (
-          renderResults()
-        ) : (
-          <>
-            <div className="mb-8">
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-sm font-medium text-gray-500">
-                  Câu hỏi {currentQuestion + 1} / {questions.length}
-                </span>
+    <div
+      className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-pink-700 
+      flex items-center justify-center px-4 py-10"
+    >
+      <div className="relative w-full max-w-4xl">
+        {/* Decorative Elements */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px]">
+            <div className="absolute inset-0 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute inset-0 bg-gradient-to-l from-pink-500/20 to-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
+          </div>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl relative z-10"
+        >
+          {showResults ? (
+            renderResults()
+          ) : (
+            <>
+              {/* Progress Bar */}
+              <div className="mb-8">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm font-medium text-gray-500">
+                    Câu hỏi {currentQuestion + 1} / {questions.length}
+                  </span>
+                  <span className="text-sm font-medium text-purple-600">
+                    {Math.round((currentQuestion / questions.length) * 100)}%
+                  </span>
+                </div>
+                <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{
+                      width: `${
+                        ((currentQuestion + 1) / questions.length) * 100
+                      }%`,
+                    }}
+                    transition={{ duration: 0.5 }}
+                    className="h-full bg-gradient-to-r from-purple-600 to-pink-600"
+                  />
+                </div>
               </div>
-              <div className="h-2 w-full bg-gray-200 rounded-full">
-                <div
-                  className="h-full bg-gradient-to-r from-purple-600 to-pink-600 rounded-full transition-all duration-300"
-                  style={{
-                    width: `${
-                      ((currentQuestion + 1) / questions.length) * 100
-                    }%`,
-                  }}
-                />
+
+              {/* Question */}
+              <motion.h2
+                key={currentQuestion}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="text-2xl font-bold mb-8 text-gray-800"
+              >
+                {questions[currentQuestion].question}
+              </motion.h2>
+
+              {/* Options */}
+              <div className="space-y-4 mb-8">
+                {questions[currentQuestion].options.map((option, index) => (
+                  <motion.button
+                    key={option}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    onClick={() => handleAnswerSelect(option)}
+                    className={`w-full p-4 text-left rounded-xl transition-all duration-300 
+                      transform hover:-translate-y-1 hover:shadow-lg ${
+                        selectedAnswer === option
+                          ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg"
+                          : "bg-white hover:bg-gray-50 text-gray-800 border border-gray-200"
+                      }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-6 h-6 rounded-full flex items-center justify-center border-2
+                        ${
+                          selectedAnswer === option
+                            ? "border-white"
+                            : "border-gray-300"
+                        }`}
+                      >
+                        {selectedAnswer === option && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="w-3 h-3 bg-white rounded-full"
+                          />
+                        )}
+                      </div>
+                      <span>{option}</span>
+                    </div>
+                  </motion.button>
+                ))}
               </div>
-            </div>
 
-            <h2 className="text-2xl font-bold mb-6">
-              {questions[currentQuestion].question}
-            </h2>
-
-            <div className="space-y-3 mb-8">
-              {questions[currentQuestion].options.map((option) => (
-                <button
-                  key={option}
-                  onClick={() => handleAnswerSelect(option)}
-                  className={`w-full p-4 text-left rounded-xl transition-all duration-200 ${
-                    selectedAnswer === option
-                      ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
-                      : "bg-gray-100 hover:bg-gray-200 text-gray-800"
-                  }`}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-
-            <button
-              onClick={handleNextQuestion}
-              disabled={!selectedAnswer}
-              className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-semibold disabled:opacity-50 enabled:hover:opacity-90 transition-all"
-            >
-              {currentQuestion === questions.length - 1
-                ? "Hoàn Thành"
-                : "Câu Tiếp Theo"}
-            </button>
-          </>
-        )}
+              {/* Next Button */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleNextQuestion}
+                disabled={!selectedAnswer}
+                className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 
+                  text-white rounded-xl font-semibold disabled:opacity-50 
+                  enabled:hover:shadow-lg transition-all duration-300"
+              >
+                {currentQuestion === questions.length - 1
+                  ? "Hoàn Thành"
+                  : "Câu Tiếp Theo"}
+              </motion.button>
+            </>
+          )}
+        </motion.div>
       </div>
     </div>
   );
