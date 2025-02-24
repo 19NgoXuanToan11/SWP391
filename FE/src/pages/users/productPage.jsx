@@ -9,6 +9,8 @@ import {
   HeartOutlined,
   HeartFilled,
   ShoppingCartOutlined,
+  LeftOutlined,
+  RightOutlined,
 } from "@ant-design/icons";
 import { Button, Drawer, Table } from "antd";
 import { notification } from "antd";
@@ -258,6 +260,108 @@ export function ProductsPage() {
     return rowData;
   });
 
+  // Custom Pagination component
+  const CustomPagination = ({ current, total, pageSize, onChange }) => {
+    const totalPages = Math.ceil(total / pageSize);
+
+    const getPageNumbers = () => {
+      let pages = [];
+      if (totalPages <= 5) {
+        // Hiển thị tất cả các trang nếu tổng số trang <= 5
+        for (let i = 1; i <= totalPages; i++) pages.push(i);
+      } else {
+        // Logic cho pagination dài
+        if (current <= 3) {
+          pages = [1, 2, 3, 4, "...", totalPages];
+        } else if (current >= totalPages - 2) {
+          pages = [
+            1,
+            "...",
+            totalPages - 3,
+            totalPages - 2,
+            totalPages - 1,
+            totalPages,
+          ];
+        } else {
+          pages = [
+            1,
+            "...",
+            current - 1,
+            current,
+            current + 1,
+            "...",
+            totalPages,
+          ];
+        }
+      }
+      return pages;
+    };
+
+    return (
+      <div className="flex items-center justify-center gap-2">
+        {/* Previous Button */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => current > 1 && onChange(current - 1)}
+          disabled={current === 1}
+          className={`px-4 py-2 rounded-xl font-medium transition-all duration-200
+            ${
+              current === 1
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-white text-gray-700 hover:bg-pink-50 hover:text-pink-500 shadow-sm hover:shadow-md"
+            }`}
+        >
+          <span className="flex items-center gap-1">
+            <LeftOutlined className="text-xs" />
+            Trước
+          </span>
+        </motion.button>
+
+        {/* Page Numbers */}
+        <div className="flex items-center gap-2">
+          {getPageNumbers().map((page, index) => (
+            <motion.button
+              key={index}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => typeof page === "number" && onChange(page)}
+              className={`min-w-[40px] h-10 flex items-center justify-center rounded-xl font-medium 
+                transition-all duration-200 ${
+                  page === current
+                    ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg shadow-pink-500/25"
+                    : typeof page === "number"
+                    ? "bg-white text-gray-700 hover:bg-pink-50 hover:text-pink-500 shadow-sm hover:shadow-md"
+                    : "bg-transparent text-gray-400"
+                }`}
+            >
+              {page}
+            </motion.button>
+          ))}
+        </div>
+
+        {/* Next Button */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => current < totalPages && onChange(current + 1)}
+          disabled={current === totalPages}
+          className={`px-4 py-2 rounded-xl font-medium transition-all duration-200
+            ${
+              current === totalPages
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-white text-gray-700 hover:bg-pink-50 hover:text-pink-500 shadow-sm hover:shadow-md"
+            }`}
+        >
+          <span className="flex items-center gap-1">
+            Sau
+            <RightOutlined className="text-xs" />
+          </span>
+        </motion.button>
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -267,12 +371,14 @@ export function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Sidebar onFilterChange={handleFilterChange} />
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-[1440px] mx-auto px-6 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+          <div className="md:col-span-1">
+            <Sidebar onFilterChange={handleFilterChange} />
+          </div>
 
-          <div className="col-span-3">
+          <div className="md:col-span-3">
             {filteredProducts.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -288,126 +394,122 @@ export function ProductsPage() {
               </motion.div>
             ) : (
               <>
-                <AnimatePresence>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {getCurrentProducts().map((product) => {
-                      return (
-                        <motion.div
-                          key={product.productId}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -20 }}
-                          transition={{ duration: 0.3 }}
-                          className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden group"
-                        >
-                          <div className="relative overflow-hidden">
-                            <img
-                              src={product.imageUrl}
-                              alt={product.productName}
-                              className="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {getCurrentProducts().map((product) => {
+                    return (
+                      <motion.div
+                        key={product.productId}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden group"
+                      >
+                        <div className="relative overflow-hidden">
+                          <img
+                            src={product.imageUrl}
+                            alt={product.productName}
+                            className="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                            onClick={() =>
+                              handleProductClick(product.productId)
+                            }
+                          />
+                          {product.discount > 0 && (
+                            <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                              -{product.discount}%
+                            </div>
+                          )}
+                          <div className="absolute top-4 right-4 flex flex-col gap-2">
+                            <button
+                              className="p-2 bg-white rounded-full shadow-md hover:bg-pink-50 transition-colors"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleWishlistToggle(product);
+                              }}
+                            >
+                              {isProductInWishlist(product.productId) ? (
+                                <HeartFilled className="text-pink-500 text-xl" />
+                              ) : (
+                                <HeartOutlined className="text-gray-500 hover:text-pink-500 text-xl" />
+                              )}
+                            </button>
+                            <button
+                              className="p-2 bg-white rounded-full shadow-md hover:bg-purple-50 transition-colors"
+                              onClick={() => handleCompareToggle(product)}
+                            >
+                              <SwapOutlined className="text-purple-500 text-xl" />
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="p-6 flex flex-col flex-grow">
+                          <div className="mb-4">
+                            <h2
+                              className="text-xl font-semibold text-gray-800 hover:text-pink-500 transition-colors cursor-pointer mb-2"
                               onClick={() =>
                                 handleProductClick(product.productId)
                               }
-                            />
-                            {product.discount > 0 && (
-                              <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                                -{product.discount}%
-                              </div>
-                            )}
-                            <div className="absolute top-4 right-4 flex flex-col gap-2">
-                              <button
-                                className="p-2 bg-white rounded-full shadow-md hover:bg-pink-50 transition-colors"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleWishlistToggle(product);
-                                }}
-                              >
-                                {isProductInWishlist(product.productId) ? (
-                                  <HeartFilled className="text-pink-500 text-xl" />
-                                ) : (
-                                  <HeartOutlined className="text-gray-500 hover:text-pink-500 text-xl" />
-                                )}
-                              </button>
-                              <button
-                                className="p-2 bg-white rounded-full shadow-md hover:bg-purple-50 transition-colors"
-                                onClick={() => handleCompareToggle(product)}
-                              >
-                                <SwapOutlined className="text-purple-500 text-xl" />
-                              </button>
-                            </div>
+                            >
+                              {product.productName}
+                            </h2>
+                            <p className="text-gray-600 line-clamp-2">
+                              {product.description}
+                            </p>
                           </div>
 
-                          <div className="p-6 flex flex-col flex-grow">
+                          {product.mainIngredients && (
                             <div className="mb-4">
-                              <h2
-                                className="text-xl font-semibold text-gray-800 hover:text-pink-500 transition-colors cursor-pointer mb-2"
-                                onClick={() =>
-                                  handleProductClick(product.productId)
-                                }
-                              >
-                                {product.productName}
-                              </h2>
-                              <p className="text-gray-600 line-clamp-2">
-                                {product.description}
+                              <p className="text-sm text-gray-600">
+                                <span className="font-medium">
+                                  Thành phần chính:{" "}
+                                </span>
+                                {product.mainIngredients}
                               </p>
                             </div>
+                          )}
 
-                            {product.mainIngredients && (
-                              <div className="mb-4">
-                                <p className="text-sm text-gray-600">
-                                  <span className="font-medium">
-                                    Thành phần chính:{" "}
+                          <div className="mt-auto">
+                            <div className="flex items-center justify-between">
+                              <div className="flex flex-col">
+                                <span className="text-2xl font-bold text-pink-600">
+                                  {formatPrice(product.price)}
+                                </span>
+                                {product.discount > 0 && (
+                                  <span className="text-sm text-gray-400 line-through">
+                                    {formatPrice(
+                                      product.price *
+                                        (1 + product.discount / 100)
+                                    )}
                                   </span>
-                                  {product.mainIngredients}
-                                </p>
+                                )}
                               </div>
-                            )}
-
-                            <div className="mt-auto">
-                              <div className="flex items-center justify-between">
-                                <div className="flex flex-col">
-                                  <span className="text-2xl font-bold text-pink-600">
-                                    {formatPrice(product.price)}
-                                  </span>
-                                  {product.discount > 0 && (
-                                    <span className="text-sm text-gray-400 line-through">
-                                      {formatPrice(
-                                        product.price *
-                                          (1 + product.discount / 100)
-                                      )}
-                                    </span>
-                                  )}
-                                </div>
-                                <div className="flex gap-2">
-                                  <button
-                                    type="primary"
-                                    icon={<ShoppingCartOutlined />}
-                                    onClick={() =>
-                                      handleBuyNowClick(product.productId)
-                                    }
-                                    className="flex items-center gap-2 px-2 py-2.5 text-white font-medium rounded-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95"
-                                  >
-                                    <ShoppingCartOutlined className="text-lg" />
-                                    <span>Mua ngay</span>
-                                  </button>
-                                </div>
+                              <div className="flex gap-2">
+                                <button
+                                  type="primary"
+                                  icon={<ShoppingCartOutlined />}
+                                  onClick={() =>
+                                    handleBuyNowClick(product.productId)
+                                  }
+                                  className="flex items-center gap-2 px-2 py-2.5 text-white font-medium rounded-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95"
+                                >
+                                  <ShoppingCartOutlined className="text-lg" />
+                                  <span>Mua ngay</span>
+                                </button>
                               </div>
                             </div>
                           </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </AnimatePresence>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
 
-                <div className="mt-12 flex justify-center">
-                  <Pagination
+                <div className="mt-12">
+                  <CustomPagination
                     current={currentPage}
                     total={filteredProducts.length}
                     pageSize={pageSize}
                     onChange={handlePageChange}
-                    showSizeChanger={false}
-                    className="text-pink-500"
                   />
                 </div>
 
