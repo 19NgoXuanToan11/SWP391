@@ -8,16 +8,10 @@ CopilotIndices/
 bin/
 obj/
 
-# Bỏ qua file không cần thiết
+# Bỏ qua file tạm thời
 *.suo
 *.user
 *.cache
 *.db
 *.db-shm
 *.db-wal
-
-# Bỏ qua toàn bộ file vsidx (chỉ mục Visual Studio)
-*.vsidx
-BE/.vs/SWP391_BE/FileContentIndex/
-
-# Nếu bạn muốn theo dõi `FE/src/pages/users/productdetailPage.jsx`, hãy xóa dòng này.
