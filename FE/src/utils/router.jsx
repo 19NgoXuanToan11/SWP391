@@ -31,6 +31,7 @@ import { NewsDetailPage } from "../pages/users/newsDetailPage";
 import { NewsPage } from "../components/newsPage";
 import { VerifyEmailPage } from "../pages/login/verifyEmailPage";
 import OrderSuccessPage from "../pages/users/orderSuccessPage";
+import OrdersHistoryPage from "../pages/users/ordersHistoryPage";
 
 export const router = createBrowserRouter([
   {
@@ -104,6 +105,10 @@ export const router = createBrowserRouter([
       {
         path: "order",
         element: <OrdersPage />,
+      },
+      {
+        path: "orders",
+        element: <OrdersHistoryPage />,
       },
       {
         path: "category",
