@@ -112,9 +112,9 @@ export function ProductSlider() {
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
                         <Link
                           to={`/product/${product.productId}`}
-                          className="px-6 py-3 bg-pink-600 text-white rounded-full hover:bg-white/10 
-                            hover:backdrop-blur-sm hover:border
-                            transition-all duration-300 transform hover:scale-125 font-medium"
+                          className="px-6 py-3 bg-gradient-to-r from-pink-400 to-purple-500 text-white rounded-full 
+                            hover:from-pink-500 hover:to-purple-600 hover:shadow-lg hover:shadow-purple-200/50
+                            transition-all duration-300 transform hover:scale-110 font-medium"
                         >
                           Mua ngay
                         </Link>
