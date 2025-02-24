@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repo
 {
-
     public class SkinTypeRepository : ISkinTypeRepository
     {
         private readonly SkinCareManagementDbContext _context;
@@ -13,33 +12,34 @@ namespace Repo
             _context = context;
         }
 
-        public async Task<IEnumerable<SkinType>> GetAllAsync()
+        public async Task<IEnumerable<Skintype>> GetAllAsync()
         {
-            return await _context.SkinTypes.ToListAsync();
+            return await _context.Skintypes.ToListAsync();
         }
 
-        public async Task<SkinType?> GetByIdAsync(int id)
+        public async Task<Skintype?> GetByIdAsync(int id)
         {
-            return await _context.SkinTypes.FindAsync(id);
+            return await _context.Skintypes.FindAsync(id);
         }
-        public async Task AddAsync(SkinType skintype)
+
+        public async Task AddAsync(Skintype skinType)
         {
-            await _context.SkinTypes.AddAsync(skintype);
+            await _context.Skintypes.AddAsync(skinType);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(SkinType skintype)
+        public async Task UpdateAsync(Skintype skinType)
         {
-            _context.SkinTypes.Update(skintype);
+            _context.Skintypes.Update(skinType);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            var skintype = await _context.SkinTypes.FindAsync(id);
-            if (skintype != null)
+            var skinType = await _context.Skintypes.FindAsync(id);
+            if (skinType != null)
             {
-                _context.SkinTypes.Remove(skintype);
+                _context.Skintypes.Remove(skinType);
                 await _context.SaveChangesAsync();
             }
         }
