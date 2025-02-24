@@ -1,13 +1,15 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Button, Tag, Avatar } from "antd";
+import { Button, Tag, Avatar, Tooltip } from "antd";
 import {
   ArrowLeftOutlined,
   ClockCircleOutlined,
   UserOutlined,
   ShareAltOutlined,
   HeartOutlined,
+  EyeOutlined,
+  CalendarOutlined,
 } from "@ant-design/icons";
 
 // Data mẫu cho chi tiết bài viết
@@ -231,15 +233,15 @@ export function NewsDetailPage() {
 
   if (!article) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-white to-purple-50">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
             Không tìm thấy bài viết
           </h2>
           <Button
             type="primary"
             onClick={() => navigate("/news")}
-            className="mt-4"
+            className="bg-pink-500 hover:bg-pink-600 border-none"
           >
             Quay lại trang tin tức
           </Button>
@@ -252,82 +254,94 @@ export function NewsDetailPage() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-gray-50 py-12"
+      className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 py-12"
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <button
-          onClick={() => navigate("/")}
-          className="flex items-center gap-2 px-4 py-2 mb-8 text-gray-700 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors duration-200 border border-gray-200"
-        >
-          <ArrowLeftOutlined className="text-gray-500" />
-          <span className="font-medium">Quay lại</span>
-        </button>
+        <div className="flex justify-between items-center mb-8">
+          <button
+            onClick={() => navigate("/news")}
+            className="flex items-center gap-2 px-4 py-2 text-gray-700 bg-white rounded-full shadow-sm 
+              hover:bg-pink-50 transition-colors duration-200 border border-gray-100"
+          >
+            <ArrowLeftOutlined className="text-gray-500" />
+            <span className="font-medium">Quay lại</span>
+          </button>
+        </div>
 
-        <article className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <article className="bg-white rounded-3xl shadow-xl overflow-hidden">
           <div className="relative">
             <img
               src={article.image}
               alt={article.title}
-              className="w-full h-[400px] object-cover"
+              className="w-full h-[500px] object-cover"
             />
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-8">
               <div className="space-x-2 mb-4">
                 {article.categories.map((category) => (
-                  <Tag key={category} color="pink">
+                  <Tag
+                    key={category}
+                    className="bg-white/20 backdrop-blur-sm text-white border-none px-4 py-1"
+                  >
                     {category}
                   </Tag>
                 ))}
               </div>
-              <h1 className="text-4xl font-bold text-white mb-4">
+              <h1 className="text-4xl font-bold text-white mb-4 leading-tight">
                 {article.title}
               </h1>
             </div>
           </div>
 
           <div className="p-8">
-            <div className="flex items-center justify-between mb-8 pb-8 border-b">
+            <div className="flex items-center justify-between mb-8 pb-8 border-b border-gray-100">
               <div className="flex items-center space-x-4">
-                <Avatar icon={<UserOutlined />} />
+                <Avatar
+                  size={48}
+                  icon={<UserOutlined />}
+                  className="bg-pink-100 text-pink-500"
+                />
                 <div>
-                  <p className="font-medium">{article.author}</p>
-                  <div className="flex items-center text-gray-500 text-sm">
-                    <ClockCircleOutlined className="mr-1" />
-                    <span>
-                      {article.date} • {article.readTime}
+                  <p className="font-medium text-gray-800">{article.author}</p>
+                  <div className="flex items-center gap-4 text-sm text-gray-500">
+                    <span className="flex items-center gap-1">
+                      <CalendarOutlined />
+                      {article.date}
                     </span>
                   </div>
                 </div>
               </div>
-              <div className="flex space-x-4">
-                <Button icon={<HeartOutlined />} />
-                <Button icon={<ShareAltOutlined />} />
-              </div>
             </div>
 
             <div
-              className="prose prose-lg max-w-none"
+              className="prose prose-lg max-w-none prose-headings:text-gray-800 prose-p:text-gray-600 
+                prose-a:text-pink-500 prose-a:no-underline hover:prose-a:text-pink-600
+                prose-img:rounded-2xl prose-strong:text-gray-800"
               dangerouslySetInnerHTML={{ __html: article.content }}
             />
 
             {article.relatedArticles && (
-              <div className="mt-12">
-                <h3 className="text-2xl font-bold mb-6">Bài viết liên quan</h3>
+              <div className="mt-12 pt-8 border-t border-gray-100">
+                <h3 className="text-2xl font-bold text-gray-800 mb-6">
+                  Bài viết liên quan
+                </h3>
                 <div className="grid grid-cols-2 gap-6">
                   {article.relatedArticles.map((related) => (
                     <motion.div
                       key={related.id}
                       whileHover={{ scale: 1.02 }}
-                      className="cursor-pointer"
+                      className="cursor-pointer group"
                       onClick={() => navigate(`/news/${related.id}`)}
                     >
-                      <div className="bg-gray-50 rounded-lg overflow-hidden">
-                        <img
-                          src={related.image}
-                          alt={related.title}
-                          className="w-full h-48 object-cover"
-                        />
+                      <div className="bg-gray-50 rounded-2xl overflow-hidden">
+                        <div className="aspect-w-16 aspect-h-9 overflow-hidden">
+                          <img
+                            src={related.image}
+                            alt={related.title}
+                            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                          />
+                        </div>
                         <div className="p-4">
-                          <h4 className="font-medium hover:text-pink-600">
+                          <h4 className="font-medium text-gray-800 group-hover:text-pink-500 transition-colors duration-300">
                             {related.title}
                           </h4>
                         </div>
