@@ -1,19 +1,23 @@
-
-BE/.vs/SWP391_BE/FileContentIndex/6644487c-437f-415b-bdec-94983c1b9abf.vsidx
-*.vsidx
-FE/src/pages/users/productdetailPage.jsx
 # Bỏ qua thư mục Visual Studio
 .vs/
 
 # Bỏ qua file chỉ mục của Copilot
 CopilotIndices/
 
-# Bỏ qua file build
+# Bỏ qua file build của .NET
 bin/
 obj/
+
+# Bỏ qua file không cần thiết
 *.suo
 *.user
 *.cache
 *.db
 *.db-shm
 *.db-wal
+
+# Bỏ qua toàn bộ file vsidx (chỉ mục Visual Studio)
+*.vsidx
+BE/.vs/SWP391_BE/FileContentIndex/
+
+# Nếu bạn muốn theo dõi `FE/src/pages/users/productdetailPage.jsx`, hãy xóa dòng này.
