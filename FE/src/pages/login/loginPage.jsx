@@ -18,7 +18,7 @@ export function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
     name: "",
     confirmPassword: "",
@@ -31,13 +31,9 @@ export function LoginPage() {
     let valid = true;
     let errors = {};
 
-    // Kiểm tra Email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email) {
-      errors.email = "Email là bắt buộc";
-      valid = false;
-    } else if (!emailRegex.test(formData.email)) {
-      errors.email = "Vui lòng nhập địa chỉ email hợp lệ";
+    // Kiểm tra username
+    if (!formData.username) {
+      errors.username = "Tên đăng nhập là bắt buộc";
       valid = false;
     }
 
@@ -64,30 +60,44 @@ export function LoginPage() {
     e.preventDefault();
     if (!validateForm()) return;
 
+    setLoading(true);
     try {
       const result = await login({
-        email: formData.email,
+        username: formData.username,
         password: formData.password,
-      });
+      }).unwrap();
 
-      if (result.error) {
-        throw new Error(result.error.data?.message || "Đăng nhập thất bại");
+      console.log("Login response:", result);
+
+      if (result.statusCode === 200) {
+        dispatch(
+          setCredentials({
+            user: result.data.user,
+            token: result.data.token,
+          })
+        );
+
+        message.success("Đăng nhập thành công!");
+
+        // Kiểm tra nếu có trang redirect từ trước
+        const redirectPath = location.state?.from;
+        if (redirectPath && redirectPath === "/payment") {
+          navigate("/qr-payment", { replace: true });
+        } else {
+          navigate("/", { replace: true });
+        }
+      } else {
+        throw new Error(result.message || "Đăng nhập thất bại");
       }
-
-      const { token, user } = result.data;
-
-      dispatch(
-        setCredentials({
-          user,
-          token,
-        })
-      );
-
-      message.success("Đăng nhập thành công!");
-      navigate(location.state?.from || "/");
     } catch (err) {
       console.error("Login error:", err);
-      message.error(err.message || "Đăng nhập thất bại. Vui lòng thử lại!");
+      if (err.data?.message) {
+        message.error(err.data.message);
+      } else {
+        message.error("Đăng nhập thất bại. Vui lòng thử lại!");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -147,19 +157,19 @@ export function LoginPage() {
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Email
+                  Tên đăng nhập
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
-                  placeholder="you@example.com"
-                  value={formData.email}
+                  placeholder="Nhập tên đăng nhập"
+                  value={formData.username}
                   onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
+                    setFormData({ ...formData, username: e.target.value })
                   }
                 />
-                {errors.email && (
-                  <p className="text-red-500 text-xs">{errors.email}</p>
+                {errors.username && (
+                  <p className="text-red-500 text-xs">{errors.username}</p>
                 )}
               </div>
 
