@@ -2,6 +2,8 @@ import oilySkin from "../assets/pictures/oily_skin.jpg";
 import drySkin from "../assets/pictures/dry_skin.jpg";
 import combinationSkin from "../assets/pictures/combination_skin.jpg";
 import { Link } from "react-router-dom";
+import { ArrowRightOutlined } from "@ant-design/icons";
+import { motion } from "framer-motion";
 
 export function SkinTypes() {
   const skinTypes = [
@@ -168,36 +170,34 @@ export function SkinTypes() {
         ))}
       </div>
 
-      {/* Kêu Gọi Hành Động */}
-      <div className="max-w-3xl mx-auto mt-16 text-center">
-        <div className="bg-pink-50 rounded-2xl p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Chưa chắc chắn về loại da của bạn?
-          </h2>
-          <p className="text-gray-600 mb-6">
-            Hãy làm bài kiểm tra phân tích da toàn diện để nhận được đánh giá
-            chi tiết và những khuyến nghị phù hợp với cá nhân bạn.
-          </p>
-          <Link to="/quiz-landing">
-            <button className="inline-flex items-center px-6 py-3 bg-pink-500 text-white font-medium rounded-xl hover:bg-pink-600 transition-colors duration-200">
-              Làm Bài Kiểm Tra
-              <svg
-                className="w-5 h-5 ml-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </button>
-          </Link>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+        className="max-w-3xl mx-auto mt-16"
+      >
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-pink-500/5 to-purple-500/5" />
+          <div className="relative">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Chưa chắc chắn về loại da của bạn?
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Hãy làm bài kiểm tra phân tích da toàn diện để nhận được đánh giá
+              chi tiết và những khuyến nghị phù hợp với cá nhân bạn.
+            </p>
+            <Link
+              to="/quiz-landing"
+              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 
+                  text-white font-medium rounded-xl hover:shadow-lg hover:shadow-pink-500/30 
+                  transition-all duration-300 transform hover:scale-105"
+            >
+              Làm Bài Kiểm Tra Ngay
+              <ArrowRightOutlined className="ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
