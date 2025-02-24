@@ -1,10 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Rate, Tabs, Tag, Input, Button, Tooltip, Badge } from "antd";
+import {
+  Rate,
+  Tabs,
+  Tag,
+  Input,
+  Button,
+  Tooltip,
+  Badge,
+  Card,
+  Image,
+  Typography,
+  notification,
+  Spin,
+} from "antd";
 import {
   ShoppingCartOutlined,
   HeartOutlined,
+  HeartFilled,
   SafetyCertificateOutlined,
   SyncOutlined,
   CarOutlined,
@@ -17,11 +31,17 @@ import {
   InfoCircleOutlined,
 } from "@ant-design/icons";
 import { useGetProductByIdQuery } from "../../services/api/beautyShopApi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../store/slices/cartSlice";
 import { message } from "antd";
+import {
+  toggleWishlist,
+  selectWishlistItems,
+} from "../../store/slices/wishlistSlice";
+import api from "../../config/axios";
 
 const { TabPane } = Tabs;
+const { Title, Text } = Typography;
 
 export default function ProductDetailPage() {
   const { productId } = useParams();
@@ -30,8 +50,13 @@ export default function ProductDetailPage() {
 
   const { data: product, isLoading, error } = useGetProductByIdQuery(productId);
 
-  console.log("Product ID:", productId);
-  console.log("Product Data:", product); // Bây giờ sẽ có data
+  // Lấy danh sách wishlist từ Redux store
+  const wishlistItems = useSelector(selectWishlistItems);
+
+  // Kiểm tra sản phẩm có trong wishlist không
+  const isInWishlist = wishlistItems.some(
+    (item) => item.id === parseInt(productId)
+  );
 
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("1");
@@ -41,7 +66,7 @@ export default function ProductDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-pink-500"></div>
+        <Spin size="large" />
       </div>
     );
   }
@@ -116,6 +141,33 @@ export default function ProductDetailPage() {
     dispatch(addToCart(cartItem));
     message.success("Đã thêm sản phẩm vào giỏ hàng");
     navigate("/cart");
+  };
+
+  const handleWishlistToggle = () => {
+    if (!product) return;
+
+    dispatch(
+      toggleWishlist({
+        id: product.productId,
+        name: product.productName,
+        price: product.price,
+        image: product.imageUrl,
+        brand: product.brandName,
+        description: product.description,
+        stock: product.stock > 0,
+        discount: product.discount,
+        originalPrice: product.originalPrice,
+        rating: product.rating,
+      })
+    );
+
+    notification.success({
+      message: "Danh sách yêu thích",
+      description: `${product.productName} đã được ${
+        isInWishlist ? "xóa khỏi" : "thêm vào"
+      } danh sách yêu thích`,
+      placement: "bottomRight",
+    });
   };
 
   return (
@@ -275,9 +327,14 @@ export default function ProductDetailPage() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  onClick={handleWishlistToggle}
                   className="col-span-1 flex items-center justify-center p-4 rounded-xl border-2 border-pink-200 hover:border-pink-500 hover:bg-pink-50 transition-all"
                 >
-                  <HeartOutlined className="text-2xl text-pink-500" />
+                  {isInWishlist ? (
+                    <HeartFilled className="text-2xl text-pink-500" />
+                  ) : (
+                    <HeartOutlined className="text-2xl text-gray-500 hover:text-pink-500" />
+                  )}
                 </motion.button>
               </div>
             </div>

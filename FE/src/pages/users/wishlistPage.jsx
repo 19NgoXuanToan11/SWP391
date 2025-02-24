@@ -324,7 +324,7 @@ const WishlistPage = () => {
                   </p>
                   <Link to="/product">
                     <button
-                      className="bg-pink-600 text-white px-8 py-3 rounded-xl font-semibold
+                      className="bg-pink-600 text-white px-8 py-3 mt-10 rounded-xl font-semibold
                                      hover:bg-pink-700 transition-colors duration-300"
                     >
                       Khám phá sản phẩm
