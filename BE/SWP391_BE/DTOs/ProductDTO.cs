@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SWP391_BE.DTOs
 {
@@ -10,21 +10,20 @@ namespace SWP391_BE.DTOs
         public decimal Price { get; set; }
         public int? Stock { get; set; }
         public string? MainIngredients { get; set; }
-        
+
         public int? BrandId { get; set; }
-        public string? BrandName { get; set; }
-        
         public int? VolumeId { get; set; }
-        public string? VolumeValue { get; set; }
-        
         public int? SkinTypeId { get; set; }
-        public string? SkinTypeName { get; set; }
-        
         public int? CategoryId { get; set; }
-        public string? CategoryName { get; set; }
-        
+
         public DateTime? CreatedAt { get; set; }
-        public List<string> ImageUrls { get; set; } = new List<string>();
+
+        // Navigation properties
+        public string? BrandName { get; set; }
+        public string? VolumeName { get; set; }
+        public string? SkinTypeName { get; set; }
+        public string? CategoryName { get; set; }
+        public string? ImageUrl { get; set; }
     }
 
     public class CreateProductDTO
@@ -94,4 +93,4 @@ namespace SWP391_BE.DTOs
         [MinLength(1)]
         public List<string> ImageUrls { get; set; } = new List<string>();
     }
-} 
+}

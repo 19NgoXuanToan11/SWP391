@@ -4,10 +4,10 @@ namespace Repo
 {
     public interface ISkinTypeRepository
     {
-        Task<IEnumerable<Skintype>> GetAllAsync();
-        Task<Skintype?> GetByIdAsync(int id);
-        Task AddAsync(Skintype skinType);
-        Task UpdateAsync(Skintype skinType);
+        Task<IEnumerable<SkinType>> GetAllAsync();
+        Task<SkinType?> GetByIdAsync(int id);
+        Task AddAsync(SkinType skintype);
+        Task UpdateAsync(SkinType skintype);
         Task DeleteAsync(int id);
     }
 }

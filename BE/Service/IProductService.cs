@@ -1,17 +1,17 @@
 using Data.Models;
 
-namespace Repo
+namespace Service
 {
-    public interface IProductRepository
+    public interface IProductService
     {
-        Task<IEnumerable<Product>> GetAllAsync();
-        Task<Product?> GetByIdAsync(int id);
+        Task<IEnumerable<Product>> GetAllProductsAsync();
+        Task<Product?> GetProductByIdAsync(int id);
         Task<IEnumerable<Product>> GetProductsByBrandAsync(int brandId);
         Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId);
         Task<IEnumerable<Product>> GetProductsBySkinTypeAsync(int skinTypeId);
-        Task AddAsync(Product product);
-        Task UpdateAsync(Product product);
-        Task DeleteAsync(int id);
+        Task<Product> AddProductAsync(Product product);
+        Task UpdateProductAsync(Product product);
+        Task DeleteProductAsync(int id);
         Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm);
     }
 }

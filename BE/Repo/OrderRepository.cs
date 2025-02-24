@@ -14,12 +14,20 @@ namespace Repo
 
         public async Task<IEnumerable<Order>> GetAllAsync()
         {
-            return await _context.Orders.ToListAsync();
+            return await _context.Orders
+                .Include(o => o.User)
+                .Include(o => o.OrderDetails)
+                .Include(o => o.Payments)
+                .ToListAsync();
         }
 
         public async Task<Order?> GetByIdAsync(int id)
         {
-            return await _context.Orders.FindAsync(id);
+            return await _context.Orders
+                .Include(o => o.User)
+                .Include(o => o.OrderDetails)
+                .Include(o => o.Payments)
+                .FirstOrDefaultAsync(o => o.OrderId == id);
         }
 
         public async Task AddAsync(Order order)

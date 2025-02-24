@@ -4,6 +4,7 @@ using Service;
 using SWP391_BE.DTOs;
 using Data.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace SWP391_BE.Controllers
 {
@@ -14,29 +15,61 @@ namespace SWP391_BE.Controllers
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductController> _logger;
+        private readonly IBrandService _brandService;
+        private readonly IVolumeService _volumeService;
+        private readonly ISkinTypeService _skinTypeService;
+        private readonly ICategoryService _categoryService;
 
         public ProductController(
             IProductService productService,
             IMapper mapper,
-            ILogger<ProductController> logger)
+            ILogger<ProductController> logger,
+            IBrandService brandService,
+            IVolumeService volumeService,
+            ISkinTypeService skinTypeService,
+            ICategoryService categoryService)
         {
             _productService = productService;
             _mapper = mapper;
             _logger = logger;
+            _brandService = brandService;
+            _volumeService = volumeService;
+            _skinTypeService = skinTypeService;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProducts()
         {
             try
             {
                 var products = await _productService.GetAllProductsAsync();
-                return Ok(_mapper.Map<IEnumerable<ProductDTO>>(products));
+                var productDtos = products.Select(p => new ProductDTO
+                {
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Stock = p.Stock,
+                    MainIngredients = p.MainIngredients,
+                    BrandId = p.BrandId,
+                    VolumeId = p.VolumeId,
+                    SkinTypeId = p.SkinTypeId,
+                    CategoryId = p.CategoryId,
+                    CreatedAt = p.CreatedAt,
+                    ImageUrl = p.ImageUrl,
+                    BrandName = p.Brand?.BrandName,
+                    VolumeName = p.Volume?.VolumeSize,
+                    SkinTypeName = p.SkinType?.SkinTypeName,
+                    CategoryName = p.Category?.CategoryName
+                });
+
+                return Ok(productDtos);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting all products");
-                return StatusCode(500, "Internal server error");
+                _logger.LogError(ex, "Error in GetProducts: {Message}", ex.Message);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
@@ -50,12 +83,33 @@ namespace SWP391_BE.Controllers
                 {
                     return NotFound($"Product with ID {id} not found");
                 }
-                return Ok(_mapper.Map<ProductDTO>(product));
+
+                var productDto = new ProductDTO
+                {
+                    ProductId = product.ProductId,
+                    ProductName = product.ProductName,
+                    Description = product.Description,
+                    Price = product.Price,
+                    Stock = product.Stock,
+                    MainIngredients = product.MainIngredients,
+                    BrandId = product.BrandId,
+                    VolumeId = product.VolumeId,
+                    SkinTypeId = product.SkinTypeId,
+                    CategoryId = product.CategoryId,
+                    CreatedAt = product.CreatedAt,
+                    ImageUrl = product.ImageUrl,
+                    BrandName = product.Brand?.BrandName,
+                    VolumeName = product.Volume?.VolumeSize,
+                    SkinTypeName = product.SkinType?.SkinTypeName,
+                    CategoryName = product.Category?.CategoryName
+                };
+
+                return Ok(productDto);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting product {Id}", id);
-                return StatusCode(500, "Internal server error");
+                _logger.LogError(ex, "Error getting product {Id}: {Message}", id, ex.Message);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
@@ -65,12 +119,32 @@ namespace SWP391_BE.Controllers
             try
             {
                 var products = await _productService.GetProductsByBrandAsync(brandId);
-                return Ok(_mapper.Map<IEnumerable<ProductDTO>>(products));
+                var productDtos = products.Select(p => new ProductDTO
+                {
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Stock = p.Stock,
+                    MainIngredients = p.MainIngredients,
+                    BrandId = p.BrandId,
+                    VolumeId = p.VolumeId,
+                    SkinTypeId = p.SkinTypeId,
+                    CategoryId = p.CategoryId,
+                    CreatedAt = p.CreatedAt,
+                    ImageUrl = p.ImageUrl,
+                    BrandName = p.Brand?.BrandName,
+                    VolumeName = p.Volume?.VolumeSize,
+                    SkinTypeName = p.SkinType?.SkinTypeName,
+                    CategoryName = p.Category?.CategoryName
+                });
+
+                return Ok(productDtos);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting products by brand {BrandId}", brandId);
-                return StatusCode(500, "Internal server error");
+                _logger.LogError(ex, "Error getting products by brand {BrandId}: {Message}", brandId, ex.Message);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
@@ -80,12 +154,32 @@ namespace SWP391_BE.Controllers
             try
             {
                 var products = await _productService.GetProductsByCategoryAsync(categoryId);
-                return Ok(_mapper.Map<IEnumerable<ProductDTO>>(products));
+                var productDtos = products.Select(p => new ProductDTO
+                {
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Stock = p.Stock,
+                    MainIngredients = p.MainIngredients,
+                    BrandId = p.BrandId,
+                    VolumeId = p.VolumeId,
+                    SkinTypeId = p.SkinTypeId,
+                    CategoryId = p.CategoryId,
+                    CreatedAt = p.CreatedAt,
+                    ImageUrl = p.ImageUrl,
+                    BrandName = p.Brand?.BrandName,
+                    VolumeName = p.Volume?.VolumeSize,
+                    SkinTypeName = p.SkinType?.SkinTypeName,
+                    CategoryName = p.Category?.CategoryName
+                });
+
+                return Ok(productDtos);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting products by category {CategoryId}", categoryId);
-                return StatusCode(500, "Internal server error");
+                _logger.LogError(ex, "Error getting products by category {CategoryId}: {Message}", categoryId, ex.Message);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
@@ -95,12 +189,32 @@ namespace SWP391_BE.Controllers
             try
             {
                 var products = await _productService.GetProductsBySkinTypeAsync(skinTypeId);
-                return Ok(_mapper.Map<IEnumerable<ProductDTO>>(products));
+                var productDtos = products.Select(p => new ProductDTO
+                {
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Stock = p.Stock,
+                    MainIngredients = p.MainIngredients,
+                    BrandId = p.BrandId,
+                    VolumeId = p.VolumeId,
+                    SkinTypeId = p.SkinTypeId,
+                    CategoryId = p.CategoryId,
+                    CreatedAt = p.CreatedAt,
+                    ImageUrl = p.ImageUrl,
+                    BrandName = p.Brand?.BrandName,
+                    VolumeName = p.Volume?.VolumeSize,
+                    SkinTypeName = p.SkinType?.SkinTypeName,
+                    CategoryName = p.Category?.CategoryName
+                });
+
+                return Ok(productDtos);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting products by skin type {SkinTypeId}", skinTypeId);
-                return StatusCode(500, "Internal server error");
+                _logger.LogError(ex, "Error getting products by skin type {SkinTypeId}: {Message}", skinTypeId, ex.Message);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
@@ -110,47 +224,79 @@ namespace SWP391_BE.Controllers
             try
             {
                 var products = await _productService.SearchProductsAsync(searchTerm);
-                return Ok(_mapper.Map<IEnumerable<ProductDTO>>(products));
+                var productDtos = products.Select(p => new ProductDTO
+                {
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Stock = p.Stock,
+                    MainIngredients = p.MainIngredients,
+                    BrandId = p.BrandId,
+                    VolumeId = p.VolumeId,
+                    SkinTypeId = p.SkinTypeId,
+                    CategoryId = p.CategoryId,
+                    CreatedAt = p.CreatedAt,
+                    ImageUrl = p.ImageUrl,
+                    BrandName = p.Brand?.BrandName,
+                    VolumeName = p.Volume?.VolumeSize,
+                    SkinTypeName = p.SkinType?.SkinTypeName,
+                    CategoryName = p.Category?.CategoryName
+                });
+
+                return Ok(productDtos);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error searching products with term {SearchTerm}", searchTerm);
-                return StatusCode(500, "Internal server error");
+                _logger.LogError(ex, "Error searching products with term {SearchTerm}: {Message}", searchTerm, ex.Message);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductDTO>> CreateProduct(CreateProductDTO createProductDTO)
+        public async Task<ActionResult<ProductDTO>> CreateProduct([FromBody] CreateProductDTO createProductDto)
         {
             try
             {
-                var product = _mapper.Map<Product>(createProductDTO);
-                product.CreatedAt = DateTime.UtcNow;
-
-                // Add images
-                if (createProductDTO.ImageUrls?.Any() == true)
+                if (!ModelState.IsValid)
                 {
-                    product.Images = createProductDTO.ImageUrls.Select(url => new ProductImage
-                    {
-                        ImageUrl = url,
-                        IsMainImage = product.Images.Count == 0 // First image is main image
-                    }).ToList();
+                    return BadRequest(ModelState);
                 }
 
-                var createdProduct = await _productService.AddProductAsync(product);
+                // Validate các foreign key
+                if (!await _brandService.ExistsAsync(createProductDto.BrandId.Value))
+                {
+                    return BadRequest($"Brand với ID {createProductDto.BrandId} không tồn tại");
+                }
+                    
+                if (!await _volumeService.ExistsAsync(createProductDto.VolumeId.Value))
+                {
+                    return BadRequest($"Volume với ID {createProductDto.VolumeId} không tồn tại");
+                }
+                    
+                if (!await _skinTypeService.ExistsAsync(createProductDto.SkinTypeId.Value))
+                {
+                    return BadRequest($"SkinType với ID {createProductDto.SkinTypeId} không tồn tại");
+                }
+                    
+                if (!await _categoryService.ExistsAsync(createProductDto.CategoryId.Value))
+                {
+                    return BadRequest($"Category với ID {createProductDto.CategoryId} không tồn tại");
+                }
+
+                var product = _mapper.Map<Product>(createProductDto);
+                var result = await _productService.AddProductAsync(product);
                 
-                // Fetch the complete product with all navigation properties
-                var completeProduct = await _productService.GetProductByIdAsync(createdProduct.ProductId);
                 return CreatedAtAction(
-                    nameof(GetProduct),
-                    new { id = createdProduct.ProductId },
-                    _mapper.Map<ProductDTO>(completeProduct)
+                    nameof(GetProduct), 
+                    new { id = result.ProductId }, 
+                    _mapper.Map<ProductDTO>(result)
                 );
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating product");
-                return StatusCode(500, "Internal server error");
+                _logger.LogError(ex, "Error creating product: {Message}", ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -166,20 +312,8 @@ namespace SWP391_BE.Controllers
                 }
 
                 _mapper.Map(updateProductDTO, existingProduct);
-
-                // Update images
-                if (updateProductDTO.ImageUrls?.Any() == true)
-                {
-                    existingProduct.Images.Clear();
-                    existingProduct.Images = updateProductDTO.ImageUrls.Select(url => new ProductImage
-                    {
-                        ImageUrl = url,
-                        ProductId = id,
-                        IsMainImage = existingProduct.Images.Count == 0 // First image is main image
-                    }).ToList();
-                }
-
                 await _productService.UpdateProductAsync(existingProduct);
+
                 return NoContent();
             }
             catch (Exception ex)
@@ -194,20 +328,25 @@ namespace SWP391_BE.Controllers
         {
             try
             {
-                var product = await _productService.GetProductByIdAsync(id);
-                if (product == null)
-                {
-                    return NotFound($"Product with ID {id} not found");
-                }
-
                 await _productService.DeleteProductAsync(id);
                 return NoContent();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error deleting product {Id}", id);
-                return StatusCode(500, "Internal server error");
+                _logger.LogError(ex, "Error deleting product {Id}: {Message}", id, ex.Message);
+                
+                if (ex.Message.Contains("not found"))
+                {
+                    return NotFound(ex.Message);
+                }
+                
+                if (ex.Message.Contains("referenced in orders") || ex.Message.Contains("has feedback"))
+                {
+                    return BadRequest(ex.Message);
+                }
+                
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
     }
-} 
+}
