@@ -8,7 +8,10 @@ namespace SWP391_BE.Mappings
     {
         public ProductMappingProfile()
         {
-            CreateMap<Product, ProductDTO>();
+            CreateMap<Product, ProductDTO>()
+                .ForMember(dest => dest.ImageUrls, opt => opt.MapFrom(src => 
+                    src.Images.Select(i => i.ImageUrl)));
+            
             CreateMap<CreateProductDTO, Product>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
             CreateMap<UpdateProductDTO, Product>();

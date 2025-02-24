@@ -23,7 +23,7 @@ namespace SWP391_BE.DTOs
         public string? VolumeName { get; set; }
         public string? SkinTypeName { get; set; }
         public string? CategoryName { get; set; }
-        public string? ImageUrl { get; set; }
+        public ICollection<string> ImageUrls { get; set; } = new List<string>();
     }
 
     public class CreateProductDTO

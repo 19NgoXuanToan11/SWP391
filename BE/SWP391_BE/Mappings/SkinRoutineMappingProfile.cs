@@ -8,7 +8,8 @@ namespace SWP391_BE.Mappings
     {
         public SkinRoutineMappingProfile()
         {
-            CreateMap<SkinRoutine, SkinRoutineDTO>();
+            CreateMap<SkinRoutine, SkinRoutineDTO>()
+                .ForMember(dest => dest.SkinTypeName, opt => opt.MapFrom(src => src.SkinType.SkinTypeName));
             CreateMap<CreateSkinRoutineDTO, SkinRoutine>();
             CreateMap<UpdateSkinRoutineDTO, SkinRoutine>();
         }

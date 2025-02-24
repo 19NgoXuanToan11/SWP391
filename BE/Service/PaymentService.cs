@@ -22,6 +22,11 @@ namespace Service
             return await _paymentRepository.GetByIdAsync(id);
         }
 
+        public async Task<Payment?> GetPaymentByOrderIdAsync(int orderId)
+        {
+            return await _paymentRepository.GetByOrderIdAsync(orderId);
+        }
+
         public async Task AddPaymentAsync(Payment payment)
         {
             await _paymentRepository.AddAsync(payment);
@@ -35,6 +40,11 @@ namespace Service
         public async Task DeletePaymentAsync(int id)
         {
             await _paymentRepository.DeleteAsync(id);
+        }
+
+        public async Task AddPaymentHistoryAsync(PaymentHistory history)
+        {
+            await _paymentRepository.AddPaymentHistoryAsync(history);
         }
     }
 }

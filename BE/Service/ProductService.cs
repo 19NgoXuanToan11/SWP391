@@ -173,7 +173,7 @@ namespace Service
                     throw new Exception($"Volume với ID {product.VolumeId} không tồn tại");
                 }
                 
-                var skinType = await _context.SkinTypes.FindAsync(product.SkinTypeId);
+                var skinType = await _context.Skintypes.FindAsync(product.SkinTypeId);
                 if (skinType == null)
                 {
                     _logger.LogError($"SkinType with ID {product.SkinTypeId} not found");

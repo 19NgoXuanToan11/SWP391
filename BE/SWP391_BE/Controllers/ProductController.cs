@@ -57,7 +57,7 @@ namespace SWP391_BE.Controllers
                     SkinTypeId = p.SkinTypeId,
                     CategoryId = p.CategoryId,
                     CreatedAt = p.CreatedAt,
-                    ImageUrl = p.ImageUrl,
+                    ImageUrls = p.Images.Select(i => i.ImageUrl).ToList(),
                     BrandName = p.Brand?.BrandName,
                     VolumeName = p.Volume?.VolumeSize,
                     SkinTypeName = p.SkinType?.SkinTypeName,
@@ -97,7 +97,7 @@ namespace SWP391_BE.Controllers
                     SkinTypeId = product.SkinTypeId,
                     CategoryId = product.CategoryId,
                     CreatedAt = product.CreatedAt,
-                    ImageUrl = product.ImageUrl,
+                    ImageUrls = product.Images.Select(i => i.ImageUrl).ToList(),
                     BrandName = product.Brand?.BrandName,
                     VolumeName = product.Volume?.VolumeSize,
                     SkinTypeName = product.SkinType?.SkinTypeName,
@@ -132,7 +132,7 @@ namespace SWP391_BE.Controllers
                     SkinTypeId = p.SkinTypeId,
                     CategoryId = p.CategoryId,
                     CreatedAt = p.CreatedAt,
-                    ImageUrl = p.ImageUrl,
+                    ImageUrls = p.Images.Select(i => i.ImageUrl).ToList(),
                     BrandName = p.Brand?.BrandName,
                     VolumeName = p.Volume?.VolumeSize,
                     SkinTypeName = p.SkinType?.SkinTypeName,
@@ -167,7 +167,7 @@ namespace SWP391_BE.Controllers
                     SkinTypeId = p.SkinTypeId,
                     CategoryId = p.CategoryId,
                     CreatedAt = p.CreatedAt,
-                    ImageUrl = p.ImageUrl,
+                    ImageUrls = p.Images.Select(i => i.ImageUrl).ToList(),
                     BrandName = p.Brand?.BrandName,
                     VolumeName = p.Volume?.VolumeSize,
                     SkinTypeName = p.SkinType?.SkinTypeName,
@@ -202,7 +202,7 @@ namespace SWP391_BE.Controllers
                     SkinTypeId = p.SkinTypeId,
                     CategoryId = p.CategoryId,
                     CreatedAt = p.CreatedAt,
-                    ImageUrl = p.ImageUrl,
+                    ImageUrls = p.Images.Select(i => i.ImageUrl).ToList(),
                     BrandName = p.Brand?.BrandName,
                     VolumeName = p.Volume?.VolumeSize,
                     SkinTypeName = p.SkinType?.SkinTypeName,
@@ -237,7 +237,7 @@ namespace SWP391_BE.Controllers
                     SkinTypeId = p.SkinTypeId,
                     CategoryId = p.CategoryId,
                     CreatedAt = p.CreatedAt,
-                    ImageUrl = p.ImageUrl,
+                    ImageUrls = p.Images.Select(i => i.ImageUrl).ToList(),
                     BrandName = p.Brand?.BrandName,
                     VolumeName = p.Volume?.VolumeSize,
                     SkinTypeName = p.SkinType?.SkinTypeName,
@@ -268,17 +268,17 @@ namespace SWP391_BE.Controllers
                 {
                     return BadRequest($"Brand với ID {createProductDto.BrandId} không tồn tại");
                 }
-                    
+
                 if (!await _volumeService.ExistsAsync(createProductDto.VolumeId.Value))
                 {
                     return BadRequest($"Volume với ID {createProductDto.VolumeId} không tồn tại");
                 }
-                    
+
                 if (!await _skinTypeService.ExistsAsync(createProductDto.SkinTypeId.Value))
                 {
                     return BadRequest($"SkinType với ID {createProductDto.SkinTypeId} không tồn tại");
                 }
-                    
+
                 if (!await _categoryService.ExistsAsync(createProductDto.CategoryId.Value))
                 {
                     return BadRequest($"Category với ID {createProductDto.CategoryId} không tồn tại");
@@ -286,10 +286,10 @@ namespace SWP391_BE.Controllers
 
                 var product = _mapper.Map<Product>(createProductDto);
                 var result = await _productService.AddProductAsync(product);
-                
+
                 return CreatedAtAction(
-                    nameof(GetProduct), 
-                    new { id = result.ProductId }, 
+                    nameof(GetProduct),
+                    new { id = result.ProductId },
                     _mapper.Map<ProductDTO>(result)
                 );
             }
@@ -334,17 +334,17 @@ namespace SWP391_BE.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error deleting product {Id}: {Message}", id, ex.Message);
-                
+
                 if (ex.Message.Contains("not found"))
                 {
                     return NotFound(ex.Message);
                 }
-                
+
                 if (ex.Message.Contains("referenced in orders") || ex.Message.Contains("has feedback"))
                 {
                     return BadRequest(ex.Message);
                 }
-                
+
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }

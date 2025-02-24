@@ -2,7 +2,7 @@
 
 namespace Data.Models;
 
-[Table("Volume")]
+[Table("Volumes")]
 public partial class Volume
 {
     public int VolumeId { get; set; }

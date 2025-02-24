@@ -22,6 +22,7 @@ builder.Services.AddLogging(logging =>
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IBrandService, BrandService>();
+builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<IVolumeService, VolumeService>();
 builder.Services.AddScoped<ISkinTypeRepository, SkinTypeRepository>();
 builder.Services.AddScoped<ISkinTypeService, SkinTypeService>();
@@ -29,7 +30,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 // Đăng ký DbContext
 builder.Services.AddDbContext<SkinCareManagementDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SkinCareManagementDB")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Đăng ký AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);

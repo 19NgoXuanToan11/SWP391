@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repo
 {
-
     public class SkinTypeRepository : ISkinTypeRepository
     {
         private readonly SkinCareManagementDbContext _context;
@@ -13,34 +12,77 @@ namespace Repo
             _context = context;
         }
 
-        public async Task<IEnumerable<SkinType>> GetAllAsync()
+        public async Task<IEnumerable<Skintype>> GetAllAsync()
         {
-            return await _context.SkinTypes.ToListAsync();
+            try
+            {
+                return await _context.Skintypes
+                    // Only include related entities if needed
+                    // .Include(s => s.Products)
+                    // .Include(s => s.SkinRoutines)
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to retrieve skin types from database: {ex.Message}", ex);
+            }
         }
 
-        public async Task<SkinType?> GetByIdAsync(int id)
+        public async Task<Skintype?> GetByIdAsync(int id)
         {
-            return await _context.SkinTypes.FindAsync(id);
-        }
-        public async Task AddAsync(SkinType skintype)
-        {
-            await _context.SkinTypes.AddAsync(skintype);
-            await _context.SaveChangesAsync();
+            try
+            {
+                return await _context.Skintypes
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(s => s.SkinTypeId == id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to retrieve skin type with ID {id}: {ex.Message}", ex);
+            }
         }
 
-        public async Task UpdateAsync(SkinType skintype)
+        public async Task AddAsync(Skintype skinType)
         {
-            _context.SkinTypes.Update(skintype);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.Skintypes.AddAsync(skinType);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to add skin type: {ex.Message}", ex);
+            }
+        }
+
+        public async Task UpdateAsync(Skintype skinType)
+        {
+            try
+            {
+                _context.Skintypes.Update(skinType);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to update skin type: {ex.Message}", ex);
+            }
         }
 
         public async Task DeleteAsync(int id)
         {
-            var skintype = await _context.SkinTypes.FindAsync(id);
-            if (skintype != null)
+            try
             {
-                _context.SkinTypes.Remove(skintype);
-                await _context.SaveChangesAsync();
+                var skinType = await _context.Skintypes.FindAsync(id);
+                if (skinType != null)
+                {
+                    _context.Skintypes.Remove(skinType);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to delete skin type: {ex.Message}", ex);
             }
         }
     }

@@ -2,7 +2,7 @@
 
 namespace Data.Models;
 
-[Table("Category")]
+[Table("Categories")]
 public partial class Category
 {
     public int CategoryId { get; set; }

@@ -14,6 +14,7 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
+using Google.Apis.Auth;
 
 
 namespace Service
@@ -96,6 +97,7 @@ namespace Service
             try
             {
                 var user = await _context.Users
+                    .Include(u => u.Role)
                     .FirstOrDefaultAsync(u => u.Username == model.Username);
 
                 if (user == null)
@@ -270,12 +272,12 @@ namespace Service
         private string GenerateJwtToken(User user)
         {
             var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, user.RoleId.ToString()),
-            new Claim(ClaimTypes.Email, user.Email)
-        };
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role.RoleName),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 _configuration.GetSection("AppSettings:Token").Value!));
@@ -294,5 +296,82 @@ namespace Service
 
             return tokenHandler.WriteToken(token);
         }
+
+        public async Task<ServiceResponse<string>> GoogleLogin(string token)
+        {
+            var response = new ServiceResponse<string>();
+
+            try
+            {
+                // Verify Google token
+                var settings = new GoogleJsonWebSignature.ValidationSettings()
+                {
+                    Audience = new List<string> { _configuration["Authentication:Google:ClientId"] }
+                };
+                var payload = await GoogleJsonWebSignature.ValidateAsync(token, settings);
+
+                if (payload == null)
+                {
+                    response.Success = false;
+                    response.Message = "Token Google không hợp lệ";
+                    return response;
+                }
+
+                // Check if user exists
+                var user = await _context.Users
+                    .Include(u => u.Role)  // Include the Role
+                    .FirstOrDefaultAsync(u => u.Email == payload.Email);
+
+                if (user == null)
+                {
+                    // Create new user if doesn't exist
+                    string randomPassword = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
+                    string passwordHash = BCrypt.Net.BCrypt.HashPassword(randomPassword);
+
+                    user = new User
+                    {
+                        Username = payload.Email.Split('@')[0],
+                        Email = payload.Email,
+                        FullName = payload.Name,
+                        Password = randomPassword,
+                        PasswordHash = passwordHash,
+                        RoleId = 2, // User Role
+                        CreatedAt = DateTime.UtcNow,
+                        IsVerification = true
+                    };
+
+                    _context.Users.Add(user);
+                    await _context.SaveChangesAsync();
+
+                    // Reload user to get the Role
+                    user = await _context.Users
+                        .Include(u => u.Role)
+                        .FirstOrDefaultAsync(u => u.Email == payload.Email);
+
+                    // Send welcome email
+                    await _emailService.SendWelcomeEmail(user.Email, user.Username);
+                }
+
+                if (user.IsBanned)
+                {
+                    response.Success = false;
+                    response.Message = "Tài khoản đã bị khóa";
+                    return response;
+                }
+
+                response.Data = GenerateJwtToken(user);
+                response.Message = "Đăng nhập bằng Google thành công";
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = "Lỗi đăng nhập bằng Google: " + (ex.InnerException?.Message ?? ex.Message);
+            }
+
+            return response;
+        }
+
+        // ... rest of the code ...
     }
 }
+

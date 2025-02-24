@@ -2,7 +2,7 @@
 
 namespace Data.Models;
 
-[Table("Brand")]
+[Table("Brands")]
 public partial class Brand
 {
     public int BrandId { get; set; }
