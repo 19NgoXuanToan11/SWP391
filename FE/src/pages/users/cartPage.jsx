@@ -35,6 +35,8 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { removeFromCart, updateQuantity } from "../../store/slices/cartSlice";
+import { PaymentSteps } from "../../components/PaymentStep";
+import { selectAuth } from "../../store/slices/authSlice";
 
 const { Title, Text, Paragraph } = Typography;
 const { Step } = Steps;
@@ -43,6 +45,7 @@ function CartPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
+  const { isAuthenticated } = useSelector(selectAuth);
   const [loading, setLoading] = React.useState(false);
 
   const handleQuantityChange = (id, value) => {
@@ -86,8 +89,14 @@ function CartPage() {
       message.warning("Giỏ hàng của bạn đang trống");
       return;
     }
+
+    if (!isAuthenticated) {
+      message.warning("Vui lòng đăng nhập để tiếp tục thanh toán");
+      navigate("/login", { state: { from: "/payment" } });
+      return;
+    }
+
     setLoading(true);
-    // Giả lập API call
     setTimeout(() => {
       setLoading(false);
       navigate("/payment");
@@ -97,25 +106,9 @@ function CartPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-violet-50 via-indigo-50 to-white py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Progress Steps */}
+        {/* Progress Steps - Cập nhật current={0} vì đang ở bước giỏ hàng */}
         <div className="mb-8">
-          <Steps
-            current={0}
-            items={[
-              {
-                title: "Giỏ Hàng",
-                icon: <ShoppingCartOutlined />,
-              },
-              {
-                title: "Thanh Toán",
-                icon: <SafetyCertificateOutlined />,
-              },
-              {
-                title: "Hoàn Tất",
-                icon: <CheckCircleOutlined />,
-              },
-            ]}
-          />
+          <PaymentSteps current={0} />
         </div>
 
         {/* Header */}

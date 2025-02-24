@@ -7,7 +7,7 @@ import {
   PictureOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
-import SidebarAdmin from "../../components/sidebaradmin";
+import SidebarAdmin from "../../components/sidebarAdmin";
 
 const SettingPage = () => {
   const [activeTab, setActiveTab] = useState("profile");

@@ -39,7 +39,6 @@ export function PaymentPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedPayment, setSelectedPayment] = useState("qr");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   // Lấy thông tin giỏ hàng từ Redux store
   const cartItems = useSelector((state) => state.cart.items);
@@ -82,9 +81,6 @@ export function PaymentPage() {
 
     setIsProcessing(true);
     try {
-      // Giả lập API call tạo đơn hàng
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
       // Tạo object đơn hàng
       const orderData = {
         items: cartItems,
@@ -95,12 +91,10 @@ export function PaymentPage() {
       };
 
       // TODO: Gọi API tạo đơn hàng thực tế ở đây
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      setPaymentSuccess(true);
-      message.success("Đặt hàng thành công!");
-
-      // Clear giỏ hàng sau khi đặt hàng thành công
-      // dispatch(clearCart());
+      // Chuyển hướng đến trang QR thay vì set paymentSuccess
+      navigate("/qr-payment");
     } catch (error) {
       message.error("Đã xảy ra lỗi. Vui lòng thử lại!");
     } finally {
@@ -128,14 +122,16 @@ export function PaymentPage() {
       <div className="max-w-5xl mx-auto">
         <PaymentSteps current={1} />
 
-        <Button
-          type="link"
-          icon={<ArrowLeftOutlined />}
+        <button
+          type="button"
+          className="flex items-center gap-2 mb-8 px-4 py-2 rounded-full bg-white hover:bg-pink-50 
+              text-gray-600 hover:text-pink-500 font-medium transition-all duration-300
+              shadow-sm hover:shadow-md transform hover:scale-105 border border-gray-200"
           onClick={() => navigate("/cart")}
-          className="mb-4"
         >
-          Quay lại giỏ hàng
-        </Button>
+          <ArrowLeftOutlined className="text-lg" />
+          <span>Quay lại giỏ hàng</span>
+        </button>
 
         <Card className="shadow-xl rounded-3xl overflow-hidden">
           <div className="text-center mb-8">
@@ -225,87 +221,50 @@ export function PaymentPage() {
                 bordered={false}
                 bodyStyle={{ padding: "1.5rem" }}
               >
-                {paymentSuccess ? (
-                  <div className="text-center py-8">
-                    <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-green-50 flex items-center justify-center">
-                      <CheckCircleOutlined className="text-4xl text-green-500" />
-                    </div>
-                    <Title level={4} className="!mb-2">
-                      Thanh Toán Thành Công!
-                    </Title>
-                    <Paragraph type="secondary">
-                      Cảm ơn bạn đã mua hàng. Đơn hàng của bạn sẽ được xử lý
-                      ngay lập tức.
-                    </Paragraph>
-                    <Button
-                      type="primary"
-                      icon={<ShoppingOutlined />}
-                      size="large"
-                      className="mt-4 bg-gradient-to-r from-pink-500 to-purple-500"
-                      onClick={() => (window.location.href = "/orders")}
-                    >
-                      Xem Đơn Hàng
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                    <Radio.Group
-                      onChange={(e) => setSelectedPayment(e.target.value)}
-                      value={selectedPayment}
-                      className="w-full"
-                    >
-                      <Space direction="vertical" className="w-full">
-                        {paymentMethods.map((method) => (
-                          <Radio
-                            key={method.value}
-                            value={method.value}
-                            className="w-full p-4 border rounded-xl hover:border-pink-200 transition-all"
-                          >
-                            <Space>
-                              <div className="w-8 h-8 bg-pink-50 rounded-lg flex items-center justify-center text-pink-500">
-                                {method.icon}
-                              </div>
-                              <div>
-                                <div className="font-medium">
-                                  {method.label}
-                                </div>
-                                <Text type="secondary" className="text-sm">
-                                  {method.description}
-                                </Text>
-                              </div>
-                            </Space>
-                          </Radio>
-                        ))}
-                      </Space>
-                    </Radio.Group>
-
-                    <div className="mt-6">
-                      <Button
-                        type="primary"
-                        size="large"
-                        block
-                        loading={isProcessing}
-                        onClick={handlePayment}
-                        className="bg-gradient-to-r from-pink-500 to-purple-500 h-12 text-lg"
-                        style={{
-                          background:
-                            "linear-gradient(to right, #ec4899, #a855f7)",
-                          borderColor: "transparent",
-                        }}
+                <Radio.Group
+                  onChange={(e) => setSelectedPayment(e.target.value)}
+                  value={selectedPayment}
+                  className="w-full"
+                >
+                  <Space direction="vertical" className="w-full">
+                    {paymentMethods.map((method) => (
+                      <Radio
+                        key={method.value}
+                        value={method.value}
+                        className="w-full p-4 border rounded-xl hover:border-pink-200 transition-all"
                       >
-                        {isProcessing ? "Đang Xử Lý..." : "Thanh Toán Ngay"}
-                      </Button>
+                        <Space>
+                          <div className="w-8 h-8 bg-pink-50 rounded-lg flex items-center justify-center text-pink-500">
+                            {method.icon}
+                          </div>
+                          <div>
+                            <div className="font-medium">{method.label}</div>
+                            <Text type="secondary" className="text-sm">
+                              {method.description}
+                            </Text>
+                          </div>
+                        </Space>
+                      </Radio>
+                    ))}
+                  </Space>
+                </Radio.Group>
 
-                      <Button
-                        type="link"
-                        block
-                        className="mt-2 text-gray-500 hover:text-pink-500"
-                      >
-                        Hủy Thanh Toán
-                      </Button>
-                    </div>
-                  </>
-                )}
+                <div className="mt-6">
+                  <Button
+                    type="primary"
+                    size="large"
+                    block
+                    loading={isProcessing}
+                    onClick={handlePayment}
+                    className="bg-gradient-to-r from-pink-500 to-purple-500 h-12 text-lg"
+                    style={{
+                      background: "linear-gradient(to right, #ec4899, #a855f7)",
+                      borderColor: "transparent",
+                    }}
+                  >
+                    {isProcessing ? "Đang Xử Lý..." : "Thanh Toán Ngay"}
+                  </Button>
+                </div>
               </Card>
 
               <Card
@@ -319,9 +278,7 @@ export function PaymentPage() {
                   </div>
                   <div className="flex justify-between items-center">
                     <Text>Trạng Thái:</Text>
-                    <Tag color={paymentSuccess ? "success" : "processing"}>
-                      {paymentSuccess ? "Đã Thanh Toán" : "Đang Chờ"}
-                    </Tag>
+                    <Tag color="processing">Đang Chờ</Tag>
                   </div>
                 </Space>
               </Card>

@@ -69,17 +69,24 @@ export function LoginPage() {
 
       console.log("Login response:", result);
 
-      if (result.statusCode === 200) {
+      if (result.success) {
+        // Tạo user object từ response
+        const userData = {
+          username: formData.username,
+          // Thêm các thông tin khác nếu cần
+        };
+
+        // Dispatch với token từ response và user data
         dispatch(
           setCredentials({
-            user: result.data.user,
-            token: result.data.token,
+            user: userData,
+            token: result.data, // API trả về token trực tiếp
           })
         );
 
         message.success("Đăng nhập thành công!");
 
-        // Kiểm tra nếu có trang redirect từ trước
+        // Kiểm tra redirect
         const redirectPath = location.state?.from;
         if (redirectPath && redirectPath === "/payment") {
           navigate("/qr-payment", { replace: true });
@@ -87,15 +94,13 @@ export function LoginPage() {
           navigate("/", { replace: true });
         }
       } else {
-        throw new Error(result.message || "Đăng nhập thất bại");
+        message.error(result.message || "Đăng nhập thất bại");
       }
     } catch (err) {
       console.error("Login error:", err);
-      if (err.data?.message) {
-        message.error(err.data.message);
-      } else {
-        message.error("Đăng nhập thất bại. Vui lòng thử lại!");
-      }
+      message.error(
+        err.data?.message || "Đăng nhập thất bại. Vui lòng thử lại!"
+      );
     } finally {
       setLoading(false);
     }

@@ -14,6 +14,12 @@ import { Button, Drawer, Table } from "antd";
 import { notification } from "antd";
 import api from "../../config/axios";
 import endpoints from "../../constants/endpoint";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  toggleWishlist,
+  selectIsInWishlist,
+  selectWishlistItems,
+} from "../../store/slices/wishlistSlice";
 
 export function ProductsPage() {
   const navigate = useNavigate();
@@ -24,6 +30,15 @@ export function ProductsPage() {
   const pageSize = 9;
   const [productsToCompare, setProductsToCompare] = useState([]);
   const [isCompareDrawerOpen, setIsCompareDrawerOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  // Thêm selector để lấy toàn bộ trạng thái wishlist
+  const wishlistItems = useSelector(selectWishlistItems);
+
+  // Function kiểm tra sản phẩm có trong wishlist
+  const isProductInWishlist = (productId) => {
+    return wishlistItems.some((item) => item.id === productId);
+  };
 
   const fetchProducts = async () => {
     try {
@@ -146,6 +161,31 @@ export function ProductsPage() {
     }
   };
 
+  const handleWishlistToggle = (product) => {
+    dispatch(
+      toggleWishlist({
+        id: product.productId,
+        name: product.productName,
+        price: product.price,
+        image: product.imageUrl,
+        brand: product.brandName,
+        description: product.description,
+        stock: product.stock > 0,
+        discount: product.discount,
+        originalPrice: product.originalPrice,
+        rating: product.rating,
+      })
+    );
+
+    notification.success({
+      message: "Danh sách yêu thích",
+      description: `${product.productName} đã được ${
+        isProductInWishlist(product.productId) ? "xóa khỏi" : "thêm vào"
+      } danh sách yêu thích`,
+      placement: "bottomRight",
+    });
+  };
+
   const compareColumns = [
     {
       title: "Thông tin",
@@ -250,101 +290,113 @@ export function ProductsPage() {
               <>
                 <AnimatePresence>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {getCurrentProducts().map((product) => (
-                      <motion.div
-                        key={product.productId}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.3 }}
-                        className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden group"
-                      >
-                        <div className="relative overflow-hidden">
-                          <img
-                            src={product.imageUrl}
-                            alt={product.productName}
-                            className="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-500"
-                            onClick={() =>
-                              handleProductClick(product.productId)
-                            }
-                          />
-                          {product.discount > 0 && (
-                            <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                              -{product.discount}%
-                            </div>
-                          )}
-                          <div className="absolute top-4 right-4 flex flex-col gap-2">
-                            <button className="p-2 bg-white rounded-full shadow-md hover:bg-pink-50 transition-colors">
-                              <HeartOutlined className="text-pink-500 text-xl" />
-                            </button>
-                            <button
-                              className="p-2 bg-white rounded-full shadow-md hover:bg-purple-50 transition-colors"
-                              onClick={() => handleCompareToggle(product)}
-                            >
-                              <SwapOutlined className="text-purple-500 text-xl" />
-                            </button>
-                          </div>
-                        </div>
-
-                        <div className="p-6 flex flex-col flex-grow">
-                          <div className="mb-4">
-                            <h2
-                              className="text-xl font-semibold text-gray-800 hover:text-pink-500 transition-colors cursor-pointer mb-2"
+                    {getCurrentProducts().map((product) => {
+                      return (
+                        <motion.div
+                          key={product.productId}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          transition={{ duration: 0.3 }}
+                          className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden group"
+                        >
+                          <div className="relative overflow-hidden">
+                            <img
+                              src={product.imageUrl}
+                              alt={product.productName}
+                              className="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-500"
                               onClick={() =>
                                 handleProductClick(product.productId)
                               }
-                            >
-                              {product.productName}
-                            </h2>
-                            <p className="text-gray-600 line-clamp-2">
-                              {product.description}
-                            </p>
+                            />
+                            {product.discount > 0 && (
+                              <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                                -{product.discount}%
+                              </div>
+                            )}
+                            <div className="absolute top-4 right-4 flex flex-col gap-2">
+                              <button
+                                className="p-2 bg-white rounded-full shadow-md hover:bg-pink-50 transition-colors"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleWishlistToggle(product);
+                                }}
+                              >
+                                {isProductInWishlist(product.productId) ? (
+                                  <HeartFilled className="text-pink-500 text-xl" />
+                                ) : (
+                                  <HeartOutlined className="text-gray-500 hover:text-pink-500 text-xl" />
+                                )}
+                              </button>
+                              <button
+                                className="p-2 bg-white rounded-full shadow-md hover:bg-purple-50 transition-colors"
+                                onClick={() => handleCompareToggle(product)}
+                              >
+                                <SwapOutlined className="text-purple-500 text-xl" />
+                              </button>
+                            </div>
                           </div>
 
-                          {product.mainIngredients && (
+                          <div className="p-6 flex flex-col flex-grow">
                             <div className="mb-4">
-                              <p className="text-sm text-gray-600">
-                                <span className="font-medium">
-                                  Thành phần chính:{" "}
-                                </span>
-                                {product.mainIngredients}
+                              <h2
+                                className="text-xl font-semibold text-gray-800 hover:text-pink-500 transition-colors cursor-pointer mb-2"
+                                onClick={() =>
+                                  handleProductClick(product.productId)
+                                }
+                              >
+                                {product.productName}
+                              </h2>
+                              <p className="text-gray-600 line-clamp-2">
+                                {product.description}
                               </p>
                             </div>
-                          )}
 
-                          <div className="mt-auto">
-                            <div className="flex items-center justify-between">
-                              <div className="flex flex-col">
-                                <span className="text-2xl font-bold text-pink-600">
-                                  {formatPrice(product.price)}
-                                </span>
-                                {product.discount > 0 && (
-                                  <span className="text-sm text-gray-400 line-through">
-                                    {formatPrice(
-                                      product.price *
-                                        (1 + product.discount / 100)
-                                    )}
+                            {product.mainIngredients && (
+                              <div className="mb-4">
+                                <p className="text-sm text-gray-600">
+                                  <span className="font-medium">
+                                    Thành phần chính:{" "}
                                   </span>
-                                )}
+                                  {product.mainIngredients}
+                                </p>
                               </div>
-                              <div className="flex gap-2">
-                                <button
-                                  type="primary"
-                                  icon={<ShoppingCartOutlined />}
-                                  onClick={() =>
-                                    handleBuyNowClick(product.productId)
-                                  }
-                                  className="flex items-center gap-2 px-2 py-2.5 text-white font-medium rounded-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95"
-                                >
-                                  <ShoppingCartOutlined className="text-lg" />
-                                  <span>Mua ngay</span>
-                                </button>
+                            )}
+
+                            <div className="mt-auto">
+                              <div className="flex items-center justify-between">
+                                <div className="flex flex-col">
+                                  <span className="text-2xl font-bold text-pink-600">
+                                    {formatPrice(product.price)}
+                                  </span>
+                                  {product.discount > 0 && (
+                                    <span className="text-sm text-gray-400 line-through">
+                                      {formatPrice(
+                                        product.price *
+                                          (1 + product.discount / 100)
+                                      )}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex gap-2">
+                                  <button
+                                    type="primary"
+                                    icon={<ShoppingCartOutlined />}
+                                    onClick={() =>
+                                      handleBuyNowClick(product.productId)
+                                    }
+                                    className="flex items-center gap-2 px-2 py-2.5 text-white font-medium rounded-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95"
+                                  >
+                                    <ShoppingCartOutlined className="text-lg" />
+                                    <span>Mua ngay</span>
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </motion.div>
-                    ))}
+                        </motion.div>
+                      );
+                    })}
                   </div>
                 </AnimatePresence>
 

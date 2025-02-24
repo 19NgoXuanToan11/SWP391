@@ -9,7 +9,7 @@ import {
   TagOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
-import SidebarAdmin from "../../components/sidebaradmin";
+import SidebarAdmin from "../../components/sidebarAdmin.jsx";
 
 const BrandsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
