@@ -49,3 +49,5 @@ swagger-ui/
 bin/
 obj/
 
+Repo.assets.cache
+SWP391_BE.assets.cache
