@@ -17,11 +17,14 @@ import {
   Tooltip,
   Steps,
   Skeleton,
+  notification,
+  Spin,
 } from "antd";
 import {
   ShoppingCartOutlined,
   DeleteOutlined,
   HeartOutlined,
+  HeartFilled,
   ArrowLeftOutlined,
   GiftOutlined,
   SafetyCertificateOutlined,
@@ -37,6 +40,10 @@ import {
 import { removeFromCart, updateQuantity } from "../../store/slices/cartSlice";
 import { PaymentSteps } from "../../components/PaymentStep";
 import { selectAuth } from "../../store/slices/authSlice";
+import {
+  toggleWishlist,
+  selectWishlistItems,
+} from "../../store/slices/wishlistSlice";
 
 const { Title, Text, Paragraph } = Typography;
 const { Step } = Steps;
@@ -48,6 +55,14 @@ function CartPage() {
   const { isAuthenticated } = useSelector(selectAuth);
   const [loading, setLoading] = React.useState(false);
 
+  // Lấy danh sách wishlist từ Redux store
+  const wishlistItems = useSelector(selectWishlistItems);
+
+  // Kiểm tra sản phẩm có trong wishlist không
+  const isInWishlist = (productId) => {
+    return wishlistItems.some((item) => item.id === productId);
+  };
+
   const handleQuantityChange = (id, value) => {
     dispatch(updateQuantity({ id, quantity: value }));
     message.success("Số lượng đã được cập nhật");
@@ -58,8 +73,29 @@ function CartPage() {
     message.success("Sản phẩm đã được xóa khỏi giỏ hàng");
   };
 
-  const handleMoveToWishlist = (id) => {
-    message.success("Sản phẩm đã được thêm vào danh sách yêu thích");
+  const handleWishlistToggle = (item) => {
+    const productData = {
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      brand: item.brand,
+      description: item.description,
+      stock: item.stock,
+      discount: item.discount,
+      originalPrice: item.originalPrice,
+      rating: item.rating,
+    };
+
+    dispatch(toggleWishlist(productData));
+
+    notification.success({
+      message: "Danh sách yêu thích",
+      description: `${item.name} đã được ${
+        isInWishlist(item.id) ? "xóa khỏi" : "thêm vào"
+      } danh sách yêu thích`,
+      placement: "bottomRight",
+    });
   };
 
   const calculateTotal = () => {
@@ -102,6 +138,14 @@ function CartPage() {
       navigate("/payment");
     }, 1000);
   };
+
+  if (!cartItems) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-violet-50 via-indigo-50 to-white py-12 px-4">
@@ -272,7 +316,7 @@ function CartPage() {
                             <Tooltip title="Thêm vào danh sách yêu thích">
                               <Button
                                 icon={<HeartOutlined />}
-                                onClick={() => handleMoveToWishlist(item.id)}
+                                onClick={() => handleWishlistToggle(item)}
                                 className="border-pink-200 text-pink-500 hover:text-pink-600 hover:border-pink-300"
                               />
                             </Tooltip>
