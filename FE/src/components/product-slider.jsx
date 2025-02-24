@@ -69,14 +69,6 @@ export function ProductSlider() {
         originalPrice: product.originalPrice,
       })
     );
-
-    notification.success({
-      message: "Danh sách yêu thích",
-      description: `${product.productName} đã được ${
-        isInWishlist(product.productId) ? "xóa khỏi" : "thêm vào"
-      } danh sách yêu thích`,
-      placement: "bottomRight",
-    });
   };
 
   if (loading) {
@@ -130,22 +122,6 @@ export function ProductSlider() {
 
                       {/* Dark Overlay on Hover */}
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                        {product.productName}
-                      </h3>
-                      <p className="text-gray-600 mb-4 line-clamp-2">
-                        {product.description}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-pink-500 font-bold">
-                          {new Intl.NumberFormat("vi-VN", {
-                            style: "currency",
-                            currency: "VND",
-                          }).format(product.price)}
-                        </span>
-                      </div>
                     </div>
                   </div>
                 </div>
