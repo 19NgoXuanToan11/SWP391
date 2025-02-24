@@ -2,3 +2,18 @@
 BE/.vs/SWP391_BE/FileContentIndex/6644487c-437f-415b-bdec-94983c1b9abf.vsidx
 *.vsidx
 FE/src/pages/users/productdetailPage.jsx
+# Bỏ qua thư mục Visual Studio
+.vs/
+
+# Bỏ qua file chỉ mục của Copilot
+CopilotIndices/
+
+# Bỏ qua file build
+bin/
+obj/
+*.suo
+*.user
+*.cache
+*.db
+*.db-shm
+*.db-wal
