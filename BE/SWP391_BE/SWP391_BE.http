@@ -1,6 +1,0 @@
-@SWP391_BE_HostAddress = http://localhost:5150
-
-GET {{SWP391_BE_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
