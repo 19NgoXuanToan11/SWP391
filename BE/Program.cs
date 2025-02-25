@@ -27,6 +27,10 @@ builder.Services.AddScoped<IVolumeService, VolumeService>();
 builder.Services.AddScoped<ISkinTypeRepository, SkinTypeRepository>();
 builder.Services.AddScoped<ISkinTypeService, SkinTypeService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 // Đăng ký DbContext
 builder.Services.AddDbContext<SkinCareManagementDbContext>(options =>
@@ -57,12 +61,26 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<SkinCareManagementDbContext>();
-        context.Database.CanConnect();
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        
+        // Test database connection
+        if (await context.Database.CanConnectAsync())
+        {
+            logger.LogInformation("Successfully connected to database");
+            
+            // Test User table access
+            var userCount = await context.User.CountAsync();
+            logger.LogInformation("Found {Count} users in database", userCount);
+        }
+        else
+        {
+            logger.LogError("Cannot connect to database");
+        }
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while connecting to the database.");
+        logger.LogError(ex, "An error occurred while connecting to the database or accessing the User table");
     }
 }
 

@@ -40,13 +40,13 @@ public partial class SkinCareManagementDbContext : DbContext
 
     public virtual DbSet<Promotion> Promotions { get; set; }
 
-    public virtual DbSet<Role> Role { get; set; }
+    public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<SkinRoutine> SkinRoutines { get; set; }
 
     public virtual DbSet<Skintype> Skintypes { get; set; }
 
-    public virtual DbSet<User> User { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<Volume> Volume { get; set; }
 
@@ -298,6 +298,8 @@ public partial class SkinCareManagementDbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
+            entity.ToTable("Roles");
+            
             entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE1A7F60ED59");
             entity.Property(e => e.RoleId).HasColumnName("RoleID");
             entity.Property(e => e.RoleName).HasMaxLength(50).IsRequired();
@@ -346,6 +348,8 @@ public partial class SkinCareManagementDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
+            entity.ToTable("Users");
+            
             entity.HasKey(e => e.UserId).HasName("PK__Users__1788CC4C7F60ED59");
             entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.RoleId).HasColumnName("RoleID");

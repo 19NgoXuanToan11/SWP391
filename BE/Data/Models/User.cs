@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models;
 
-[Table("User")]
+[Table("Users")]
 public partial class User
 {
     public int UserId { get; set; }

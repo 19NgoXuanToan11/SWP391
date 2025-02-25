@@ -75,7 +75,7 @@ namespace Service
                     ExpirationToken = DateTime.UtcNow.AddHours(24).ToString()
                 };
 
-                _context.User.Add(user);
+                _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
                 await _emailService.SendVerificationEmail(user.Email, verificationToken);
@@ -97,7 +97,7 @@ namespace Service
 
             try
             {
-                var user = await _context.User
+                var user = await _context.Users
                     .Include(u => u.Role)
                     .FirstOrDefaultAsync(u => u.Username == model.Username);
 
@@ -149,7 +149,7 @@ namespace Service
             {
                 Console.WriteLine($"[VerifyEmail] Starting verification with token: {token}");
 
-                var user = await _context.User
+                var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.VerificationToken == token);
 
                 Console.WriteLine($"[VerifyEmail] User search result: {(user != null ? user.Email : "Not found")}");
@@ -157,7 +157,7 @@ namespace Service
                 if (user == null)
                 {
                     // Kiểm tra xem user đã verify trước đó chưa
-                    var verifiedUser = await _context.User
+                    var verifiedUser = await _context.Users
                         .FirstOrDefaultAsync(u => u.IsVerification);
 
                     if (verifiedUser != null)
@@ -245,7 +245,7 @@ namespace Service
 
             try
             {
-                var user = await _context.User
+                var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.Email == email);
 
                 if (user == null)
@@ -280,7 +280,7 @@ namespace Service
 
             try
             {
-                var user = await _context.User
+                var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.VerificationToken == model.Token);
 
                 if (user == null)
@@ -319,12 +319,12 @@ namespace Service
 
         private async Task<bool> UserExists(string username)
         {
-            return await _context.User.AnyAsync(u => u.Username == username);
+            return await _context.Users.AnyAsync(u => u.Username == username);
         }
 
         private async Task<bool> EmailExists(string email)
         {
-            return await _context.User.AnyAsync(u => u.Email == email);
+            return await _context.Users.AnyAsync(u => u.Email == email);
         }
 
         private string GenerateJwtToken(User user)
@@ -376,7 +376,7 @@ namespace Service
                 }
 
                 // Check if user exists
-                var user = await _context.User
+                var user = await _context.Users
                     .Include(u => u.Role)  // Include the Role
                     .FirstOrDefaultAsync(u => u.Email == payload.Email);
 
@@ -398,11 +398,11 @@ namespace Service
                         IsVerification = true
                     };
 
-                    _context.User.Add(user);
+                    _context.Users.Add(user);
                     await _context.SaveChangesAsync();
 
                     // Reload user to get the Role
-                    user = await _context.User
+                    user = await _context.Users
                         .Include(u => u.Role)
                         .FirstOrDefaultAsync(u => u.Email == payload.Email);
 
