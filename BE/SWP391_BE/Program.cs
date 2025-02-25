@@ -1,4 +1,4 @@
-﻿using Data.Models;
+using Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -72,10 +72,6 @@ builder.Services.AddAutoMapper(typeof(SkinTypeMappingProfile));
 builder.Services.AddScoped<ISkinRoutineRepository, SkinRoutineRepository>();
 builder.Services.AddScoped<ISkinRoutineService, SkinRoutineService>();
 builder.Services.AddAutoMapper(typeof(SkinRoutineMappingProfile));
-
-builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();  // ✅ Đăng ký Repository
-builder.Services.AddScoped<IProductImageService, ProductImageService>();  // ✅ Đăng ký Service
-
 
 // Add Payment related services
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();

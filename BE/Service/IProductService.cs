@@ -9,7 +9,7 @@ namespace Service
         Task<IEnumerable<Product>> GetProductsByBrandAsync(int brandId);
         Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId);
         Task<IEnumerable<Product>> GetProductsBySkinTypeAsync(int skinTypeId);
-        Task<Product> AddProductAsync(Product product, List<string> imageUrls);
+        Task<Product> AddProductAsync(Product product);
         Task UpdateProductAsync(Product product);
         Task DeleteProductAsync(int id);
         Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm);
