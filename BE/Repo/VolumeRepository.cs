@@ -16,7 +16,7 @@ namespace Repo
         {
             try
             {
-                return await _context.Volumes
+                return await _context.Volume
                     .AsNoTracking()
                     .ToListAsync();
             }
@@ -28,36 +28,36 @@ namespace Repo
 
         public async Task<Volume?> GetByIdAsync(int id)
         {
-            return await _context.Volumes.FindAsync(id);
+            return await _context.Volume.FindAsync(id);
         }
 
         public async Task AddAsync(Volume volume)
         {
-            await _context.Volumes.AddAsync(volume);
+            await _context.Volume.AddAsync(volume);
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Volume volume)
         {
-            _context.Volumes.Update(volume);
+            _context.Volume.Update(volume);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            var volume = await _context.Volumes.FindAsync(id);
+            var volume = await _context.Volume.FindAsync(id);
             if (volume != null)
             {
-                _context.Volumes.Remove(volume);
+                _context.Volume.Remove(volume);
                 await _context.SaveChangesAsync();
             }
         }
 
         public async Task<IEnumerable<Volume>> SearchByValueAsync(string value)
         {
-            return await _context.Volumes
+            return await _context.Volume
                 .Where(v => v.VolumeSize.Contains(value))
                 .ToListAsync();
         }
     }
-} 
+}

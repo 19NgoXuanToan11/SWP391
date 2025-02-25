@@ -12,7 +12,7 @@ namespace Service
         private readonly SkinCareManagementDbContext _context;
 
         public BrandService(
-            IBrandRepository brandRepository, 
+            IBrandRepository brandRepository,
             ILogger<BrandService> logger,
             SkinCareManagementDbContext context)
         {
@@ -25,7 +25,7 @@ namespace Service
         {
             try
             {
-                return await _context.Brands.AnyAsync(b => b.BrandId == id);
+                return await _context.Brand.AnyAsync(b => b.BrandId == id);
             }
             catch (Exception ex)
             {
@@ -129,4 +129,4 @@ namespace Service
             }
         }
     }
-} 
+}

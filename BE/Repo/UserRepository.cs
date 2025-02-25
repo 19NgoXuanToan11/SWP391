@@ -14,7 +14,7 @@ namespace Repo
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await _context.Users
+            return await _context.User
                 .Include(u => u.Role)
                 .Include(u => u.Orders)
                 .Include(u => u.Feedbacks)
@@ -23,7 +23,7 @@ namespace Repo
 
         public async Task<User?> GetByIdAsync(int id)
         {
-            return await _context.Users
+            return await _context.User
                 .Include(u => u.Role)
                 .Include(u => u.Orders)
                 .Include(u => u.Feedbacks)
@@ -32,22 +32,22 @@ namespace Repo
 
         public async Task AddAsync(User user)
         {
-            await _context.Users.AddAsync(user);
+            await _context.User.AddAsync(user);
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(User user)
         {
-            _context.Users.Update(user);
+            _context.User.Update(user);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.User.FindAsync(id);
             if (user != null)
             {
-                _context.Users.Remove(user);
+                _context.User.Remove(user);
                 await _context.SaveChangesAsync();
             }
         }

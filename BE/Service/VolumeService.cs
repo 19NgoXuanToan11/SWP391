@@ -12,7 +12,7 @@ namespace Service
         private readonly SkinCareManagementDbContext _context;
 
         public VolumeService(
-            IVolumeRepository volumeRepository, 
+            IVolumeRepository volumeRepository,
             ILogger<VolumeService> logger,
             SkinCareManagementDbContext context)
         {
@@ -25,7 +25,7 @@ namespace Service
         {
             try
             {
-                return await _context.Volumes.AnyAsync(v => v.VolumeId == id);
+                return await _context.Volume.AnyAsync(v => v.VolumeId == id);
             }
             catch (Exception ex)
             {
@@ -121,4 +121,4 @@ namespace Service
             }
         }
     }
-} 
+}
