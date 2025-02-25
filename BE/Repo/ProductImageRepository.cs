@@ -17,21 +17,21 @@ namespace Repo
 
         public async Task<IEnumerable<ProductImage>> GetAllProductImagesAsync()
         {
-            return await _context.ProductImages
+            return await _context.ProductImage
                 .Include(pi => pi.Product)
                 .ToListAsync();
         }
 
         public async Task<ProductImage?> GetProductImageByIdAsync(int id)
         {
-            return await _context.ProductImages
+            return await _context.ProductImage
                 .Include(pi => pi.Product)
                 .FirstOrDefaultAsync(pi => pi.ImageId == id);
         }
 
         public async Task<IEnumerable<ProductImage>> GetImagesByProductIdAsync(int productId)
         {
-            return await _context.ProductImages
+            return await _context.ProductImage
                 .Where(pi => pi.ProductId == productId)
                 .Include(pi => pi.Product)
                 .ToListAsync();
@@ -39,7 +39,7 @@ namespace Repo
 
         public async Task AddProductImageAsync(ProductImage productImage)
         {
-            await _context.ProductImages.AddAsync(productImage);
+            await _context.ProductImage.AddAsync(productImage);
             await _context.SaveChangesAsync();
         }
 
@@ -51,10 +51,10 @@ namespace Repo
 
         public async Task DeleteProductImageAsync(int id)
         {
-            var productImage = await _context.ProductImages.FindAsync(id);
+            var productImage = await _context.ProductImage.FindAsync(id);
             if (productImage != null)
             {
-                _context.ProductImages.Remove(productImage);
+                _context.ProductImage.Remove(productImage);
                 await _context.SaveChangesAsync();
             }
         }

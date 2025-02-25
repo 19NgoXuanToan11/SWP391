@@ -9,5 +9,5 @@ public class CreateProductDTO
     public int? VolumeId { get; set; }
     public int? SkinTypeId { get; set; }
     public int? CategoryId { get; set; }
-    public string? ImageUrl { get; set; }
-} 
+    public List<string> ImageUrls { get; set; } = new List<string>();
+}
