@@ -10,6 +10,8 @@ import {
   TagsOutlined,
   SkinOutlined,
   ExperimentOutlined,
+  UpOutlined,
+  DownOutlined,
 } from "@ant-design/icons";
 
 export function Sidebar({ onFilterChange }) {
@@ -20,6 +22,7 @@ export function Sidebar({ onFilterChange }) {
   const [selectedSkinTypes, setSelectedSkinTypes] = useState([]);
   const [selectedVolumes, setSelectedVolumes] = useState([]);
   const [activeSection, setActiveSection] = useState(null);
+  const [sortOrder, setSortOrder] = useState("asc");
 
   // Danh sách các option cố định
   const volumeOptions = ["30ml", "50ml", "100ml", "150ml", "200ml"];
@@ -105,6 +108,7 @@ export function Sidebar({ onFilterChange }) {
     setSelectedSkinTypes([]);
     setSelectedVolumes([]);
     setActiveSection(null);
+    setSortOrder("asc");
 
     onFilterChange({
       searchTerm: "",
@@ -113,6 +117,7 @@ export function Sidebar({ onFilterChange }) {
       categories: [],
       skinTypes: [],
       volumes: [],
+      sortOrder: "asc",
     });
   };
 
@@ -125,8 +130,15 @@ export function Sidebar({ onFilterChange }) {
       categories: selectedCategories,
       skinTypes: selectedSkinTypes,
       volumes: selectedVolumes,
+      sortOrder,
       ...changedFilter,
     });
+  };
+
+  const handleSortChange = (order) => {
+    console.log("Sort order changed to:", order);
+    setSortOrder(order);
+    applyFilters({ sortOrder: order });
   };
 
   const handleOptionClick = (type, option) => {
@@ -234,6 +246,49 @@ export function Sidebar({ onFilterChange }) {
             <CloseOutlined />
           </motion.button>
         )}
+      </div>
+
+      {/* Sort Order */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+          <DollarOutlined className="text-pink-500" />
+          <span>Sắp xếp theo giá</span>
+        </h3>
+        <div className="grid grid-cols-2 gap-2">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => handleSortChange("asc")}
+            className={`px-4 py-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 
+              ${
+                sortOrder === "asc"
+                  ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg shadow-pink-500/20"
+                  : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+              }`}
+          >
+            <UpOutlined
+              className={sortOrder === "asc" ? "text-white" : "text-gray-400"}
+            />
+            <span>Thấp đến cao</span>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => handleSortChange("desc")}
+            className={`px-4 py-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 
+              ${
+                sortOrder === "desc"
+                  ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg shadow-pink-500/20"
+                  : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+              }`}
+          >
+            <DownOutlined
+              className={sortOrder === "desc" ? "text-white" : "text-gray-400"}
+            />
+            <span>Cao đến thấp</span>
+          </motion.button>
+        </div>
       </div>
 
       {/* Reset Filters Button */}

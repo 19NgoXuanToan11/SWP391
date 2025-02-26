@@ -88,21 +88,21 @@ export function ProductsPage() {
     }
 
     // Filter by brands
-    if (filters.brands.length > 0) {
+    if (filters.brands && filters.brands.length > 0) {
       filtered = filtered.filter((product) =>
         filters.brands.includes(product.brandName)
       );
     }
 
     // Filter by categories
-    if (filters.categories.length > 0) {
+    if (filters.categories && filters.categories.length > 0) {
       filtered = filtered.filter((product) =>
         filters.categories.includes(product.categoryName)
       );
     }
 
     // Filter by skin types
-    if (filters.skinTypes.length > 0) {
+    if (filters.skinTypes && filters.skinTypes.length > 0) {
       filtered = filtered.filter((product) =>
         filters.skinTypes.includes(product.skinTypeName)
       );
@@ -115,8 +115,19 @@ export function ProductsPage() {
       );
     }
 
+    // Sort by price
+    if (filters.sortOrder) {
+      console.log("Sorting products by price:", filters.sortOrder);
+      filtered.sort((a, b) => {
+        const priceA = parseFloat(a.price) || 0;
+        const priceB = parseFloat(b.price) || 0;
+        return filters.sortOrder === "asc" ? priceA - priceB : priceB - priceA;
+      });
+    }
+
+    console.log("Filtered and sorted products:", filtered);
     setFilteredProducts(filtered);
-    setCurrentPage(1); // Reset về trang 1 khi filter
+    setCurrentPage(1);
   };
 
   const handleProductClick = (productId) => {
@@ -407,7 +418,7 @@ export function ProductsPage() {
                       >
                         <div className="relative overflow-hidden">
                           <img
-                            src={product.imageUrl}
+                            src={product.imageUrls}
                             alt={product.productName}
                             className="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-500"
                             onClick={() =>
