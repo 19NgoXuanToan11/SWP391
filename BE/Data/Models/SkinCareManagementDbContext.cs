@@ -36,7 +36,7 @@ public partial class SkinCareManagementDbContext : DbContext
 
     public virtual DbSet<Product> Products { get; set; }
 
-    public virtual DbSet<ProductImage> ProductImages { get; set; }
+    public virtual DbSet<ProductImage> ProductImage { get; set; }
 
     public virtual DbSet<Promotion> Promotions { get; set; }
 
@@ -66,6 +66,8 @@ public partial class SkinCareManagementDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<ProductImage>().ToTable("ProductImage"); // Đảm bảo EF không đổi thành 'ProductImages'
+
         modelBuilder.Entity<Brand>(entity =>
         {
             entity.ToTable("Brand");
@@ -299,7 +301,7 @@ public partial class SkinCareManagementDbContext : DbContext
         modelBuilder.Entity<Role>(entity =>
         {
             entity.ToTable("Roles");
-            
+
             entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE1A7F60ED59");
             entity.Property(e => e.RoleId).HasColumnName("RoleID");
             entity.Property(e => e.RoleName).HasMaxLength(50).IsRequired();
@@ -349,7 +351,7 @@ public partial class SkinCareManagementDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.ToTable("Users");
-            
+
             entity.HasKey(e => e.UserId).HasName("PK__Users__1788CC4C7F60ED59");
             entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.RoleId).HasColumnName("RoleID");

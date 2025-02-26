@@ -285,7 +285,9 @@ namespace SWP391_BE.Controllers
                 }
 
                 var product = _mapper.Map<Product>(createProductDto);
-                var result = await _productService.AddProductAsync(product);
+                var imageUrls = createProductDto.ImageUrls ?? new List<string>(); // Đảm bảo không null
+                var result = await _productService.AddProductAsync(product, imageUrls);
+
 
                 return CreatedAtAction(
                     nameof(GetProduct),

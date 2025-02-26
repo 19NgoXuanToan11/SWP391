@@ -34,8 +34,7 @@ namespace Service
                 query = query.Include(p => p.Brand);
                 query = query.Include(p => p.Volume);
                 query = query.Include(p => p.Category);
-                // Tạm thời comment dòng này
-                // query = query.Include(p => p.Images);
+                query = query.Include(p => p.Images);
 
                 query = query.AsNoTracking();
 
@@ -70,6 +69,7 @@ namespace Service
                     .Include(p => p.Volume)
                     .Include(p => p.SkinType)
                     .Include(p => p.Category)
+                    .Include(p => p.Images)
                     .FirstOrDefaultAsync(p => p.ProductId == id);
 
                 if (product == null)
@@ -100,6 +100,8 @@ namespace Service
                     .Include(p => p.SkinType)
                     .Include(p => p.Category)
                     .Where(p => p.BrandId == brandId)
+                    .Include(p => p.Images)
+
                     .AsNoTracking()
                     .ToListAsync();
 
@@ -123,6 +125,8 @@ namespace Service
                     .Include(p => p.SkinType)
                     .Include(p => p.Category)
                     .Where(p => p.CategoryId == categoryId)
+                    .Include(p => p.Images)
+
                     .AsNoTracking()
                     .ToListAsync();
             }
@@ -143,6 +147,8 @@ namespace Service
                     .Include(p => p.SkinType)
                     .Include(p => p.Category)
                     .Where(p => p.SkinTypeId == skinTypeId)
+                    .Include(p => p.Images)
+
                     .AsNoTracking()
                     .ToListAsync();
             }
@@ -153,7 +159,7 @@ namespace Service
             }
         }
 
-        public async Task<Product> AddProductAsync(Product product)
+        public async Task<Product> AddProductAsync(Product product, List<string> imageUrls)
         {
             try
             {
@@ -162,32 +168,51 @@ namespace Service
                 var brand = await _context.Brand.FindAsync(product.BrandId);
                 if (brand == null)
                 {
-                    _logger.LogError($"Brand with ID {product.BrandId} not found");
                     throw new Exception($"Brand với ID {product.BrandId} không tồn tại");
                 }
 
                 var volume = await _context.Volume.FindAsync(product.VolumeId);
                 if (volume == null)
                 {
-                    _logger.LogError($"Volume with ID {product.VolumeId} not found");
                     throw new Exception($"Volume với ID {product.VolumeId} không tồn tại");
                 }
 
                 var skinType = await _context.Skintypes.FindAsync(product.SkinTypeId);
                 if (skinType == null)
                 {
-                    _logger.LogError($"SkinType with ID {product.SkinTypeId} not found");
                     throw new Exception($"SkinType với ID {product.SkinTypeId} không tồn tại");
                 }
 
                 var category = await _context.Categories.FindAsync(product.CategoryId);
                 if (category == null)
                 {
-                    _logger.LogError($"Category with ID {product.CategoryId} not found");
                     throw new Exception($"Category với ID {product.CategoryId} không tồn tại");
                 }
 
+                // **Thêm sản phẩm vào database**
                 await _productRepository.AddAsync(product);
+                await _context.SaveChangesAsync(); // Lưu lại để có ProductId
+
+                // **Thêm danh sách hình ảnh vào ProductImages**
+                if (imageUrls != null && imageUrls.Any())
+                {
+                    var productImages = imageUrls.Select(url => new ProductImage
+                    {
+                        ProductId = product.ProductId, // Lấy ID của sản phẩm vừa tạo
+                        ImageUrl = url,
+                        IsMainImage = false
+                    }).ToList();
+
+                    // Đặt ảnh đầu tiên làm ảnh chính (nếu có ảnh)
+                    if (productImages.Count() > 0)
+                    {
+                        productImages[0].IsMainImage = true;
+                    }
+
+                    await _context.ProductImage.AddRangeAsync(productImages);
+                    await _context.SaveChangesAsync();
+                }
+
                 return product;
             }
             catch (Exception ex)
@@ -196,6 +221,7 @@ namespace Service
                 throw;
             }
         }
+
 
         public async Task UpdateProductAsync(Product product)
         {
