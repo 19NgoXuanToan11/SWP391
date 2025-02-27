@@ -134,7 +134,7 @@ export default function ProductDetailPage() {
       name: product.productName, // Đổi từ name sang productName
       price: product.price,
       quantity: quantity,
-      image: product.imageUrl,
+      image: product.imageUrls,
       stock: product.stock,
     };
 
@@ -151,7 +151,7 @@ export default function ProductDetailPage() {
         id: product.productId,
         name: product.productName,
         price: product.price,
-        image: product.imageUrl,
+        image: product.imageUrls,
         brand: product.brandName,
         description: product.description,
         stock: product.stock > 0,
