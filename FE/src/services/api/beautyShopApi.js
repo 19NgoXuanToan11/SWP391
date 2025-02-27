@@ -48,7 +48,7 @@ const beautyShopApi = createApi({
       query: (data) => ({
         url: endpoints.VERIFY_EMAIL,
         method: "GET",
-        body: data,
+        params: { token: data },  // Sử dụng 'data' ở đây, vì 'data' sẽ chứa token
       }),
     }),
 
