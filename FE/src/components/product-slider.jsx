@@ -104,7 +104,7 @@ export function ProductSlider() {
                   <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
                     <div className="relative h-64 overflow-hidden">
                       <img
-                        src={product.imageUrl}
+                        src={product.imageUrls}
                         alt={product.productName}
                         className="w-full h-full object-cover transition-all duration-300 group-hover:opacity-50 group-hover:scale-110"
                       />
