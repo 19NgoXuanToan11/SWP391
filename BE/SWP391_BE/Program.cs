@@ -68,14 +68,9 @@ builder.Services.AddAutoMapper(typeof(VolumeMappingProfile));
 builder.Services.AddScoped<ISkinTypeRepository, SkinTypeRepository>();
 builder.Services.AddScoped<ISkinTypeService, SkinTypeService>();
 builder.Services.AddAutoMapper(typeof(SkinTypeMappingProfile));
-
 builder.Services.AddScoped<ISkinRoutineRepository, SkinRoutineRepository>();
 builder.Services.AddScoped<ISkinRoutineService, SkinRoutineService>();
 builder.Services.AddAutoMapper(typeof(SkinRoutineMappingProfile));
-
-builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();  // ✅ Đăng ký Repository
-builder.Services.AddScoped<IProductImageService, ProductImageService>();  // ✅ Đăng ký Service
-
 
 // Add Payment related services
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
@@ -93,13 +88,12 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 // CORS configuration
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
-    {
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader()
-               .SetIsOriginAllowed((host) => true);
-    });
+    options.AddPolicy("AllowFrontend",
+        builder => builder
+            .WithOrigins("http://localhost:5173") // Chỉ định frontend được phép
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()); // Quan trọng: Cho phép credentials
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -138,6 +132,7 @@ if (app.Environment.IsDevelopment())
 // Remove UseHttpsRedirection if testing with HTTP
 // app.UseHttpsRedirection();
 
+app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -157,4 +152,4 @@ app.Use(async (context, next) =>
     }
 });
 
-app.Run(); 
+app.Run();
