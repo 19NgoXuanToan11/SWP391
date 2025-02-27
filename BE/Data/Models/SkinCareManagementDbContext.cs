@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Data.Models; 
+
 
 namespace Data.Models;
 
@@ -36,7 +38,7 @@ public partial class SkinCareManagementDbContext : DbContext
 
     public virtual DbSet<Product> Products { get; set; }
 
-    public virtual DbSet<ProductImage> ProductImages { get; set; }
+    public virtual DbSet<ProductImage> ProductImage { get; set; }
 
     public virtual DbSet<Promotion> Promotions { get; set; }
 
@@ -60,7 +62,7 @@ public partial class SkinCareManagementDbContext : DbContext
                 .Build();
 
             var connectionString = config.GetConnectionString("SkinCareManagementDB");
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly("SWP391_BE")); // Make sure this points to the correct assembly
         }
     }
 
@@ -157,13 +159,13 @@ public partial class SkinCareManagementDbContext : DbContext
             entity.Property(e => e.ImageUrl).IsRequired();
             entity.Property(e => e.IsMainImage).HasDefaultValue(false);
 
-            // Configure relationship with Product
             entity.HasOne(d => d.Product)
                 .WithMany(p => p.Images)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__ProductImages__ProductID__456789");
+                .HasConstraintName("FK__ProductImage__ProductID__456789");
         });
+
 
         modelBuilder.Entity<DashboardReport>(entity =>
         {
