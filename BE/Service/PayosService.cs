@@ -10,6 +10,9 @@ namespace Service
     public interface IPayosService
     {
         Task<PaymentResponse> CreatePaymentRequest(int orderId, decimal amount, string description);
+        Task<PaymentResponse> GetPaymentRequestInfo(string paymentLinkId);
+        Task<PaymentResponse> CancelPaymentRequest(string paymentLinkId);
+        Task<bool> ConfirmWebhook();
         Task HandleWebhook(PayosWebhookPayload payload, string signature);
     }
 
@@ -196,9 +199,120 @@ namespace Service
             }
         }
 
-        private bool VerifyWebhookSignature(PayosWebhookPayload payload, string signature)
+        private bool VerifyWebhookSignature(PayosWebhookPayload payload, string receivedSignature)
         {
-            return payload.Signature == signature;
+            try
+            {
+                var checksumKey = _configuration["Payos:ChecksumKey"] 
+                    ?? throw new InvalidOperationException("Payos:ChecksumKey is not configured");
+
+                if (payload.Data == null)
+                {
+                    _logger.LogError("Webhook payload data is null");
+                    return false;
+                }
+
+                var dataStr = $"amount={payload.Data.Amount}" +
+                             $"&description={payload.Data.Description ?? ""}" +
+                             $"&orderCode={payload.Data.OrderCode ?? ""}" +
+                             $"&paymentLinkId={payload.Data.PaymentLinkId ?? ""}" +
+                             $"&status={payload.Data.Code ?? ""}" +
+                             $"&transactionDateTime={payload.Data.TransactionDateTime ?? ""}";
+
+                var calculatedSignature = CreateHmacSignature(dataStr, checksumKey);
+                return calculatedSignature == receivedSignature;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Signature verification failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<PaymentResponse> GetPaymentRequestInfo(string paymentLinkId)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"{_configuration["Payos:ApiUrl"]}/{paymentLinkId}");
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError($"Failed to get payment info: {responseContent}");
+                    throw new Exception($"Failed to get payment info: {responseContent}");
+                }
+
+                var paymentResponse = JsonSerializer.Deserialize<PaymentResponse>(responseContent);
+                return paymentResponse ?? throw new Exception("Failed to deserialize payment response");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Get payment info failed: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<PaymentResponse> CancelPaymentRequest(string paymentLinkId)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsync(
+                    $"{_configuration["Payos:ApiUrl"]}/{paymentLinkId}/cancel",
+                    new StringContent("", Encoding.UTF8, "application/json")
+                );
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError($"Failed to cancel payment: {responseContent}");
+                    throw new Exception($"Failed to cancel payment: {responseContent}");
+                }
+
+                var paymentResponse = JsonSerializer.Deserialize<PaymentResponse>(responseContent);
+                return paymentResponse ?? throw new Exception("Failed to deserialize payment response");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Cancel payment failed: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<bool> ConfirmWebhook()
+        {
+            try
+            {
+                var webhookUrl = _configuration["Payos:WebhookUrl"] 
+                    ?? throw new InvalidOperationException("Payos:WebhookUrl is not configured");
+
+                var request = new
+                {
+                    webhookUrl = webhookUrl
+                };
+
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync(
+                    "https://api-merchant.payos.vn/confirm-webhook",
+                    content
+                );
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError($"Failed to confirm webhook: {responseContent}");
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Confirm webhook failed: {ex.Message}");
+                return false;
+            }
         }
     }
 

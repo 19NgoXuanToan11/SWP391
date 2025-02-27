@@ -48,28 +48,108 @@ public class PaymentController : ControllerBase
     }
 
     [HttpPost("webhook")]
-    public IActionResult HandleWebhook()
+    public async Task<IActionResult> HandleWebhook()
     {
         try
         {
             _logger.LogInformation("Webhook received at: {time}", DateTime.Now);
 
             // Log headers
-            foreach (var header in Request.Headers)
-            {
-                _logger.LogInformation($"Header: {header.Key} = {header.Value}");
-            }
+            string signature = Request.Headers["X-Payos-Signature"].ToString();
+            _logger.LogInformation($"Signature: {signature}");
 
-            // Read and log body
+            // Read body
             using var reader = new StreamReader(Request.Body);
-            var body = reader.ReadToEndAsync().Result;
+            var body = await reader.ReadToEndAsync();
             _logger.LogInformation($"Webhook body: {body}");
 
-            return Ok(new { message = "Webhook received" });
+            // Deserialize payload
+            var payload = JsonSerializer.Deserialize<PayosWebhookPayload>(body);
+            if (payload == null)
+            {
+                throw new Exception("Invalid webhook payload");
+            }
+
+            // Process webhook
+            await _payosService.HandleWebhook(payload, signature);
+
+            return Ok(new { message = "Webhook processed successfully" });
         }
         catch (Exception ex)
         {
             _logger.LogError($"Webhook error: {ex}");
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("payment/return")]
+    public IActionResult PaymentReturn([FromQuery] string orderCode, [FromQuery] string status)
+    {
+        _logger.LogInformation($"Payment return for order {orderCode} with status {status}");
+        // Redirect to frontend with status
+        return Redirect($"your-frontend-url/payment-result?orderCode={orderCode}&status={status}");
+    }
+
+    [HttpGet("payment/cancel")]
+    public IActionResult PaymentCancel()
+    {
+        _logger.LogInformation("Payment cancelled");
+        // Redirect to frontend cancel page
+        return Redirect("your-frontend-url/payment-cancelled");
+    }
+
+    [HttpGet("payment/{paymentLinkId}")]
+    public async Task<IActionResult> GetPaymentInfo(string paymentLinkId)
+    {
+        try
+        {
+            _logger.LogInformation($"Getting payment info for {paymentLinkId}");
+            var response = await _payosService.GetPaymentRequestInfo(paymentLinkId);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Get payment info error: {ex}");
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
+
+    [HttpPost("payment/{paymentLinkId}/cancel")]
+    public async Task<IActionResult> CancelPayment(string paymentLinkId)
+    {
+        try
+        {
+            _logger.LogInformation($"Cancelling payment {paymentLinkId}");
+            var response = await _payosService.CancelPaymentRequest(paymentLinkId);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Cancel payment error: {ex}");
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
+
+    [HttpPost("confirm-webhook")]
+    public async Task<IActionResult> ConfirmWebhook()
+    {
+        try
+        {
+            _logger.LogInformation("Confirming webhook URL");
+            var success = await _payosService.ConfirmWebhook();
+            
+            if (success)
+            {
+                return Ok(new { message = "Webhook confirmed successfully" });
+            }
+            else
+            {
+                return BadRequest(new { error = "Failed to confirm webhook" });
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Confirm webhook error: {ex}");
             return StatusCode(500, new { error = ex.Message });
         }
     }
