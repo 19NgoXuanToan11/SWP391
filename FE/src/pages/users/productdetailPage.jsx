@@ -227,7 +227,7 @@ export default function ProductDetailPage() {
               className="aspect-w-1 aspect-h-1 rounded-2xl overflow-hidden bg-gray-100"
             >
               <img
-                src={product?.imageUrl}
+                src={product?.imageUrls}
                 alt={product?.productName}
                 className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
               />
