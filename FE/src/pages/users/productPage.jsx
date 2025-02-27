@@ -169,7 +169,7 @@ export function ProductsPage() {
         id: product.productId,
         name: product.productName,
         price: product.price,
-        image: product.imageUrl,
+        image: product.imageUrls,
         brand: product.brandName,
         description: product.description,
         stock: product.stock > 0,
@@ -202,7 +202,7 @@ export function ProductsPage() {
         <div className="text-center p-4">
           <div className="relative group">
             <img
-              src={product.imageUrl}
+              src={product.imageUrls}
               alt={product.productName}
               className="w-32 h-32 object-cover mx-auto rounded-lg shadow-md"
             />
@@ -407,7 +407,7 @@ export function ProductsPage() {
                       >
                         <div className="relative overflow-hidden">
                           <img
-                            src={product.imageUrl}
+                            src={product.imageUrls}
                             alt={product.productName}
                             className="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-500"
                             onClick={() =>
