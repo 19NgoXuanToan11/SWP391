@@ -7,7 +7,7 @@ import {
   FilterOutlined,
   MoreOutlined,
 } from "@ant-design/icons";
-import SidebarAdmin from "../../components/sidebarAdmin.jsx";
+import SidebarAdmin from "../../components/SidebarAdmin.jsx";
 
 const AccountsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");

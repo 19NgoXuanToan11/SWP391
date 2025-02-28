@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import SidebarAdmin from "../../components/sidebarAdmin.jsx";
+import SidebarAdmin from "../../components/SidebarAdmin.jsx";
 import {
   UserOutlined,
   ShoppingOutlined,
