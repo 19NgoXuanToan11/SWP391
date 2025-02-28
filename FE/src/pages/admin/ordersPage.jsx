@@ -9,7 +9,7 @@ import {
   ClockCircleOutlined,
   CheckSquareOutlined,
 } from "@ant-design/icons";
-import SidebarAdmin from "../../components/sidebarAdmin.jsx";
+import SidebarAdmin from "../../components/SidebarAdmin.jsx";
 
 const OrdersPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
