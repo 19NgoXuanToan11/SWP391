@@ -145,20 +145,15 @@ namespace Service
         {
             try
             {
-                if (payload.Data == null)
+                _logger.LogInformation("Starting webhook processing");
+                
+                if (payload?.Data == null)
                 {
+                    _logger.LogError("Webhook payload data is null");
                     throw new ArgumentException("Webhook payload data is null");
                 }
 
-                if (string.IsNullOrEmpty(payload.Data.OrderCode))
-                {
-                    throw new ArgumentException("Order code is missing in webhook data");
-                }
-
-                if (string.IsNullOrEmpty(payload.Data.TransactionDateTime))
-                {
-                    throw new ArgumentException("Transaction date time is missing in webhook data");
-                }
+                _logger.LogInformation($"Processing webhook for order: {payload.Data.OrderCode}");
 
                 if (!VerifyWebhookSignature(payload, signature))
                 {
@@ -166,10 +161,20 @@ namespace Service
                     throw new Exception("Invalid webhook signature");
                 }
 
-                var orderCode = int.Parse(payload.Data.OrderCode);
+                if (!int.TryParse(payload.Data.OrderCode, out int orderCode))
+                {
+                    _logger.LogError($"Invalid order code format: {payload.Data.OrderCode}");
+                    throw new ArgumentException($"Invalid order code format: {payload.Data.OrderCode}");
+                }
+
                 var amount = payload.Data.Amount;
                 var status = payload.Code == "00" ? "PAID" : "FAILED";
-                var transactionDateTime = DateTime.Parse(payload.Data.TransactionDateTime);
+
+                if (!DateTime.TryParse(payload.Data.TransactionDateTime, out DateTime transactionDateTime))
+                {
+                    _logger.LogError($"Invalid transaction datetime format: {payload.Data.TransactionDateTime}");
+                    transactionDateTime = DateTime.Now;
+                }
 
                 var payment = await _paymentService.GetPaymentByOrderIdAsync(orderCode);
                 if (payment == null)
@@ -194,7 +199,7 @@ namespace Service
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Failed to process webhook: {ex.Message}");
+                _logger.LogError($"Webhook processing failed: {ex.Message}");
                 throw;
             }
         }
@@ -206,7 +211,7 @@ namespace Service
                 var checksumKey = _configuration["Payos:ChecksumKey"] 
                     ?? throw new InvalidOperationException("Payos:ChecksumKey is not configured");
 
-                if (payload.Data == null)
+                if (payload?.Data == null)
                 {
                     _logger.LogError("Webhook payload data is null");
                     return false;
@@ -220,7 +225,14 @@ namespace Service
                              $"&transactionDateTime={payload.Data.TransactionDateTime ?? ""}";
 
                 var calculatedSignature = CreateHmacSignature(dataStr, checksumKey);
-                return calculatedSignature == receivedSignature;
+                
+                if (string.IsNullOrEmpty(calculatedSignature) || string.IsNullOrEmpty(receivedSignature))
+                {
+                    _logger.LogError("Calculated signature or received signature is null/empty");
+                    return false;
+                }
+
+                return calculatedSignature.Equals(receivedSignature, StringComparison.OrdinalIgnoreCase);
             }
             catch (Exception ex)
             {
@@ -233,7 +245,7 @@ namespace Service
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{_configuration["Payos:ApiUrl"]}/{paymentLinkId}");
+                var response = await _httpClient.GetAsync($"https://api-merchant.payos.vn/v2/payment-requests/{paymentLinkId}");
                 var responseContent = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
@@ -257,7 +269,7 @@ namespace Service
             try
             {
                 var response = await _httpClient.PostAsync(
-                    $"{_configuration["Payos:ApiUrl"]}/{paymentLinkId}/cancel",
+                    $"https://api-merchant.payos.vn/v2/payment-requests/{paymentLinkId}/cancel",
                     new StringContent("", Encoding.UTF8, "application/json")
                 );
                 var responseContent = await response.Content.ReadAsStringAsync();
@@ -346,7 +358,6 @@ namespace Service
         public string? Code { get; set; }
         public string? Desc { get; set; }
         public PayosWebhookData? Data { get; set; }
-        public string? Signature { get; set; }
     }
 
     public class PayosWebhookData
@@ -354,18 +365,10 @@ namespace Service
         public string? OrderCode { get; set; }
         public decimal Amount { get; set; }
         public string? Description { get; set; }
-        public string? AccountNumber { get; set; }
-        public string? Reference { get; set; }
-        public string? TransactionDateTime { get; set; }
         public string? PaymentLinkId { get; set; }
         public string? Code { get; set; }
-        public string? Desc { get; set; }
-        public string? CounterAccountBankId { get; set; }
-        public string? CounterAccountBankName { get; set; }
-        public string? CounterAccountName { get; set; }
-        public string? CounterAccountNumber { get; set; }
-        public string? VirtualAccountName { get; set; }
-        public string? VirtualAccountNumber { get; set; }
-        public string? Currency { get; set; }
+        public string? TransactionDateTime { get; set; }
+        public string? PaymentStatus { get; set; }
+        // Thêm các trường khác nếu cần
     }
 } 
