@@ -8,6 +8,7 @@ import {
   CalendarOutlined,
   ShoppingOutlined,
   ReloadOutlined,
+  ArrowLeftOutlined,
 } from "@ant-design/icons";
 
 const questions = [
@@ -245,6 +246,29 @@ export function QuizPage() {
     navigate("/product-recommendations", { state: { quizResults } });
   };
 
+  const handlePreviousQuestion = () => {
+    if (currentQuestion > 0) {
+      const currentSelectedIndex = questions[currentQuestion].options.indexOf(
+        selectedAnswers[currentQuestion]
+      );
+      const currentSelectedSkinType =
+        questions[currentQuestion].skinType[currentSelectedIndex];
+
+      if (currentSelectedSkinType) {
+        setSkinTypeCount((prev) => ({
+          ...prev,
+          [currentSelectedSkinType]: Math.max(
+            0,
+            (prev[currentSelectedSkinType] || 0) - 1
+          ),
+        }));
+      }
+
+      setCurrentQuestion(currentQuestion - 1);
+      setSelectedAnswer(selectedAnswers[currentQuestion - 1]);
+    }
+  };
+
   const renderResults = () => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -426,20 +450,37 @@ export function QuizPage() {
                 ))}
               </div>
 
-              {/* Next Button */}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleNextQuestion}
-                disabled={!selectedAnswer}
-                className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 
-                  text-white rounded-xl font-semibold disabled:opacity-50 
-                  enabled:hover:shadow-lg transition-all duration-300"
-              >
-                {currentQuestion === questions.length - 1
-                  ? "Hoàn Thành"
-                  : "Câu Tiếp Theo"}
-              </motion.button>
+              {/* Navigation Buttons */}
+              <div className="flex gap-4">
+                {currentQuestion > 0 && (
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handlePreviousQuestion}
+                    className="w-1/2 py-4 border-2 border-purple-600 text-purple-600 
+                      rounded-xl font-semibold hover:bg-purple-50 
+                      transition-all duration-300 flex items-center justify-center gap-2"
+                  >
+                    <ArrowLeftOutlined />
+                    Quay Lại
+                  </motion.button>
+                )}
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleNextQuestion}
+                  disabled={!selectedAnswer}
+                  className={`py-4 bg-gradient-to-r from-purple-600 to-pink-600 
+                    text-white rounded-xl font-semibold disabled:opacity-50 
+                    enabled:hover:shadow-lg transition-all duration-300
+                    ${currentQuestion > 0 ? "w-1/2" : "w-full"}`}
+                >
+                  {currentQuestion === questions.length - 1
+                    ? "Hoàn Thành"
+                    : "Câu Tiếp Theo"}
+                </motion.button>
+              </div>
             </>
           )}
         </motion.div>
