@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import authReducer from "./authSlice"; // Import reducer đã tạo
 
 // Hàm lấy dữ liệu an toàn từ localStorage hoặc sessionStorage
 const getFromStorage = (key) => {
@@ -34,8 +33,9 @@ const getTokenFromStorage = () => {
 };
 
 const initialState = {
-  user: getUserFromStorage(),
-  token: getTokenFromStorage(),
+  user: null,
+  isAuthenticated: false,
+  token: null,
 };
 
 const authSlice = createSlice({
@@ -43,38 +43,21 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action) => {
-      const { user, token } = action.payload;
-      if (!user || !token) {
-        console.error("Invalid credentials data:", action.payload);
-        return;
-      }
-      state.user = user;
-      state.token = token;
-      try {
-        localStorage.setItem("token", token);
-        localStorage.setItem("userInfo", JSON.stringify(user));
-      } catch (error) {
-        console.error("Error saving credentials:", error);
-      }
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      state.isAuthenticated = true;
     },
     logout: (state) => {
       state.user = null;
       state.token = null;
-      try {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userInfo");
-      } catch (error) {
-        console.error("Error during logout:", error);
-      }
+      state.isAuthenticated = false;
     },
   },
 });
 
 export const { setCredentials, logout } = authSlice.actions;
-export default authSlice.reducer;
 
-export const selectAuth = (state) => ({
-  isAuthenticated: !!state.auth.token,
-  user: state.auth.user,
-  token: state.auth.token,
-});
+export const selectAuth = (state) => state.auth;
+export const selectCurrentUser = (state) => state.auth.user;
+
+export default authSlice.reducer;
