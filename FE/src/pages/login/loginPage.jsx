@@ -70,17 +70,22 @@ export function LoginPage() {
       console.log("Login response:", result);
 
       if (result.success) {
-        // Tạo user object từ response
+        // Lấy thông tin người dùng từ response
         const userData = {
           username: formData.username,
+          name: result.data.name || formData.username, // Sử dụng tên từ API hoặc username nếu không có
           // Thêm các thông tin khác nếu cần
         };
 
-        // Dispatch với token từ response và user data
+        // Lưu thông tin vào localStorage
+        localStorage.setItem("userName", userData.name);
+        localStorage.setItem("token", result.data.token || result.data);
+
+        // Dispatch với token và user data
         dispatch(
           setCredentials({
             user: userData,
-            token: result.data, // API trả về token trực tiếp
+            token: result.data.token || result.data,
           })
         );
 
