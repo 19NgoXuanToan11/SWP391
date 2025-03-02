@@ -1,47 +1,38 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Net.payOS.Types;
+using Service;
 
-[ApiController]
-[Route("api/payment")]
-public class PaymentController : ControllerBase
+namespace SWP391_BE.Controllers
 {
-    private readonly IPayosService _payosService;
-
-    public PaymentController(IPayosService payosService)
+    [Route("[controller]")]
+    [ApiController]
+    public class PaymentController : ControllerBase
     {
-        _payosService = payosService;
-    }
+        private readonly IPayosService _payosService;
 
-    [HttpPost("create-payment")]
-    public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentRequest request)
-    {
-        try
+        public PaymentController(IPayosService payosService)
         {
-            var response = await _payosService.CreatePaymentRequest(
-                request.OrderId,
-                request.Amount,
-                request.Description,
-                request.BuyerName,
-                request.BuyerEmail,
-                request.BuyerPhone,
-                request.BuyerAddress
-            );
-
-            return Ok(response);
+            _payosService = payosService;
         }
-        catch (Exception ex)
+
+        [HttpPost("payos_transfer_handler")]
+        public async Task<IActionResult> PayosTransferHandler([FromBody] WebhookType body)
         {
-            return StatusCode(500, new { error = ex.Message });
+            try
+            {
+                await _payosService.HandleWebhook(body);
+
+                if (body.webhookDataType.description == "Ma giao dich thu nghiem" || body.webhookDataType.description == "VQRIO123")
+                {
+                    return Ok(new Response(0, "Ok", null));
+                }
+                return Ok(new Response(0, "Ok", null));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return Ok(new Response(-1, "fail", null));
+            }
         }
     }
-}
-
-public class CreatePaymentRequest
-{
-    public int OrderId { get; set; }
-    public decimal Amount { get; set; }
-    public string Description { get; set; }
-    public string BuyerName { get; set; }
-    public string BuyerEmail { get; set; }
-    public string BuyerPhone { get; set; }
-    public string BuyerAddress { get; set; }
 }
