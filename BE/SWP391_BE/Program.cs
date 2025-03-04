@@ -74,13 +74,13 @@ builder.Services.AddAutoMapper(typeof(SkinRoutineMappingProfile));
 // Register Payment related services
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
-builder.Services.AddHttpClient<IPayosService, PayosService>(client =>
+/*builder.Services.AddHttpClient<IPayosService, PayosService>(client =>
 {
     client.BaseAddress = new Uri("https://api-merchant.payos.vn/");
     client.DefaultRequestHeaders.Add("x-client-id", builder.Configuration["Payos:ClientId"] ?? throw new ArgumentNullException("Payos:ClientId"));
     client.DefaultRequestHeaders.Add("x-api-key", builder.Configuration["Payos:ApiKey"] ?? throw new ArgumentNullException("Payos:ApiKey"));
     client.Timeout = TimeSpan.FromSeconds(30);
-});
+});*/
 
 // Register additional services
 builder.Services.AddScoped<IDashboardReportRepository, DashboardReportRepository>();
