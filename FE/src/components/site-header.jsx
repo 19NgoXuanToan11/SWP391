@@ -4,8 +4,11 @@ import {
   UserOutlined,
   ShoppingOutlined,
   ContactsOutlined,
+  LoginOutlined,
   FileDoneOutlined,
   ShoppingCartOutlined,
+  SearchOutlined,
+  BellOutlined,
   HeartOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
@@ -13,17 +16,14 @@ import blackWhiteLogo from "../assets/pictures/black_white_on_trans.png";
 import { Link } from "react-router-dom";
 import { Dropdown } from "antd";
 import { UserDropdown } from "./userDropdown";
-import { useSelector, useDispatch } from "react-redux";
-import { setCredentials } from "../store/slices/authSlice";
+import { useGetUserProfileQuery } from "../services/api/beautyShopApi";
+import { useSelector } from "react-redux";
 
 export function SiteHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const { data: user, isLoading } = useGetUserProfileQuery();
   const isAuthenticated = !!localStorage.getItem("token");
-
-  const dispatch = useDispatch();
-  const auth = useSelector((state) => state.auth);
-  const user = auth?.user;
 
   // Lấy số lượng sản phẩm từ Redux store
   const cartQuantity = useSelector((state) => state.cart.quantity);
@@ -36,26 +36,6 @@ export function SiteHeader() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Kiểm tra xem có thông tin người dùng trong Redux không
-  useEffect(() => {
-    // Nếu đã đăng nhập nhưng không có thông tin user trong Redux
-    if (isAuthenticated && !user) {
-      // Lấy thông tin từ localStorage
-      const userName = localStorage.getItem("userName");
-      const token = localStorage.getItem("token");
-
-      if (userName && token) {
-        // Khôi phục thông tin vào Redux
-        dispatch(
-          setCredentials({
-            user: { name: userName, username: userName },
-            token: token,
-          })
-        );
-      }
-    }
-  }, [isAuthenticated, user, dispatch]);
 
   return (
     <header

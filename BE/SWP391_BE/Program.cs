@@ -11,9 +11,8 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Register SkinCareManagementDbContext
 builder.Services.AddDbContext<SkinCareManagementDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SkinCareManagementDB")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SkinCareManagementDB") ?? throw new InvalidOperationException("Connection string is not configured.")));
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -24,7 +23,7 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add existing service registrations
+// Register existing services
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddAutoMapper(typeof(OrderMappingProfile));
@@ -72,11 +71,18 @@ builder.Services.AddScoped<ISkinRoutineRepository, SkinRoutineRepository>();
 builder.Services.AddScoped<ISkinRoutineService, SkinRoutineService>();
 builder.Services.AddAutoMapper(typeof(SkinRoutineMappingProfile));
 
-// Add Payment related services
+// Register Payment related services
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
-builder.Services.AddScoped<PayosService>();
-// Add these lines along with the other service registrations
+builder.Services.AddHttpClient<IPayosService, PayosService>(client =>
+{
+    client.BaseAddress = new Uri("https://api-merchant.payos.vn/");
+    client.DefaultRequestHeaders.Add("x-client-id", builder.Configuration["Payos:ClientId"] ?? throw new ArgumentNullException("Payos:ClientId"));
+    client.DefaultRequestHeaders.Add("x-api-key", builder.Configuration["Payos:ApiKey"] ?? throw new ArgumentNullException("Payos:ApiKey"));
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+// Register additional services
 builder.Services.AddScoped<IDashboardReportRepository, DashboardReportRepository>();
 builder.Services.AddScoped<IDashboardReportService, DashboardReportService>();
 builder.Services.AddAutoMapper(typeof(DashboardMappingProfile));
@@ -88,17 +94,20 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<IProductImageService, ProductImageService>();
 builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();
 
-
-
 // CORS configuration
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
         builder => builder
-            .WithOrigins("http://localhost:5173") // Chỉ định frontend được phép
+            .WithOrigins(
+                "http://localhost:5173", // FE local
+                "https://swp-391-pink.vercel.app", // FE deployed
+                "https://api-sandbox.payos.vn",
+                "https://0604-27-78-79-30.ngrok-free.app" // Thêm ngrok URL mới vào đây mỗi lần restart
+            )
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowCredentials()); // Quan trọng: Cho phép credentials
+            .AllowCredentials());
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -108,16 +117,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value!)),
+                .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value ?? throw new InvalidOperationException("Token is not configured."))),
             ValidateIssuer = false,
             ValidateAudience = false,
             RoleClaimType = "role"
         };
     });
+
 builder.Services.AddAuthentication().AddGoogle(googleOptions =>
 {
-    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"] ?? throw new InvalidOperationException("Google ClientId is not configured.");
+    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"] ?? throw new InvalidOperationException("Google ClientSecret is not configured.");
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -126,7 +136,6 @@ var app = builder.Build();
 
 // Middleware order is important!
 app.UseRouting();
-app.UseCors("AllowAll");  // Must be after UseRouting
 
 if (app.Environment.IsDevelopment())
 {
