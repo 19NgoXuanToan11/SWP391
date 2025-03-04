@@ -9,7 +9,8 @@ import { message } from "antd";
 import { auth } from "../../config/firebase";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useDispatch } from "react-redux";
-import { setCredentials } from "../../store/slices/authSlice";
+import { setCredentials, logout } from "../../store/slices/authSlice";
+import { LockOutlined } from "@ant-design/icons";
 
 export function LoginPage() {
   const dispatch = useDispatch();
@@ -62,36 +63,47 @@ export function LoginPage() {
 
     setLoading(true);
     try {
+      // Kiểm tra xem có đang đăng nhập admin không
+      const isAdminLoggedIn = localStorage.getItem("auth_isAdmin") === "true";
+
+      // Nếu đang đăng nhập admin, đăng xuất trước
+      if (isAdminLoggedIn) {
+        dispatch(logout());
+      }
+
       const result = await login({
         username: formData.username,
         password: formData.password,
       }).unwrap();
 
-      console.log("Login response:", result);
-
       if (result.success) {
-        // Lấy thông tin người dùng từ response
+        const token = result.data;
+        const tokenPayload = JSON.parse(atob(token.split(".")[1]));
+
+        // Kiểm tra xem có phải admin không
+        if (tokenPayload.role === "Admin") {
+          message.error("Vui lòng sử dụng trang đăng nhập Admin!");
+          setLoading(false);
+          return;
+        }
+
         const userData = {
-          username: formData.username,
-          name: result.data.name || formData.username, // Sử dụng tên từ API hoặc username nếu không có
-          // Thêm các thông tin khác nếu cần
+          username: tokenPayload.unique_name,
+          name: tokenPayload.unique_name,
+          role: tokenPayload.role,
+          email: tokenPayload.email,
+          isAdmin: false,
         };
 
-        // Lưu thông tin vào localStorage
-        localStorage.setItem("userName", userData.name);
-        localStorage.setItem("token", result.data.token || result.data);
-
-        // Dispatch với token và user data
         dispatch(
           setCredentials({
             user: userData,
-            token: result.data.token || result.data,
+            token: token,
           })
         );
 
         message.success("Đăng nhập thành công!");
 
-        // Kiểm tra redirect
         const redirectPath = location.state?.from;
         if (redirectPath && redirectPath === "/payment") {
           navigate("/qr-payment", { replace: true });
@@ -127,6 +139,10 @@ export function LoginPage() {
         const email = error.customData.email;
         const credential = GoogleAuthProvider.credentialFromError(error);
       });
+  };
+
+  const handleAdminLogin = () => {
+    navigate("/admin/login");
   };
 
   return (
@@ -272,30 +288,6 @@ export function LoginPage() {
               </button>
             </form>
 
-            {/* Đăng nhập bằng mạng xã hội */}
-            <div className="mt-6 space-y-4">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-200"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">
-                    Hoặc tiếp tục với
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex justify-center">
-                <button
-                  onClick={handleLoginByGoogle}
-                  className="py-4 px-20 rounded-xl border border-gray-200 bg-white/50 hover:bg-white hover:shadow-md hover:scale-[1.02] transition-all"
-                >
-                  <div className="text-red-500 flex justify-center">
-                    <FaGoogle />
-                  </div>
-                </button>
-              </div>
-            </div>
             {/* Liên kết Đăng ký */}
             {isLogin && (
               <div className="text-center mt-4">
@@ -307,6 +299,45 @@ export function LoginPage() {
                 </Link>
               </div>
             )}
+
+            <div className="mt-6 space-y-4">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-pink-100"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-white text-pink-400 font-medium">
+                    Bạn là quản trị viên?
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={handleAdminLogin}
+                  className="group relative py-3 px-6 rounded-xl overflow-hidden bg-gradient-to-r from-pink-400 to-pink-600 hover:from-pink-500 hover:to-pink-700 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg hover:shadow-pink-400/30"
+                >
+                  {/* Hiệu ứng lóe sáng */}
+                  <div className="absolute inset-0 w-[200%] translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none"></div>
+
+                  {/* Border gradient */}
+                  <div className="absolute inset-0 rounded-xl p-[1px] bg-gradient-to-r from-pink-200 to-pink-400 opacity-50"></div>
+
+                  {/* Nội dung nút */}
+                  <div className="relative flex items-center justify-center gap-3 text-white">
+                    <div className="w-8 h-8 rounded-full bg-pink-500/30 flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
+                      <LockOutlined className="text-white text-lg group-hover:rotate-12 transition-transform" />
+                    </div>
+                    <span className="text-sm font-medium tracking-wide">
+                      Đăng nhập Quản trị viên
+                    </span>
+                  </div>
+
+                  {/* Hiệu ứng hover glow */}
+                  <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-pink-400/20 to-pink-600/20 blur-xl"></div>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
