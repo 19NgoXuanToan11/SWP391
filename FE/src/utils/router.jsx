@@ -25,13 +25,15 @@ import QRPaymentPage from "../pages/users/qrPaymentPage";
 import EditProfilePage from "../pages/users/editProfilePage";
 import { SkinCareRoutinePage } from "../pages/users/skinCareRoutine";
 import { ProductRecommendationPage } from "../pages/users/productRecommendation";
-import { ProtectedRoute } from "../components/ProtectedRoute";
+import { ProtectedRoute } from "../components/auth/ProtectedRoute";
 import ProductDetailPage from "../pages/users/productdetailPage";
 import { NewsDetailPage } from "../pages/users/newsDetailPage";
 import { NewsPage } from "../components/newsPage";
 import { VerifyEmailPage } from "../pages/login/verifyEmailPage";
 import OrderSuccessPage from "../pages/users/orderSuccessPage";
 import OrdersHistoryPage from "../pages/users/ordersHistoryPage";
+import { AdminProtectedRoute } from "../components/auth/AdminProtectedRoute";
+import { AdminLoginPage } from "../pages/admin/adminLoginPage";
 
 export const router = createBrowserRouter([
   {
@@ -96,7 +98,15 @@ export const router = createBrowserRouter([
       },
       {
         path: "dashboard",
-        element: <DashboardPage />,
+        element: (
+          <AdminProtectedRoute>
+            <DashboardPage />
+          </AdminProtectedRoute>
+        ),
+      },
+      {
+        path: "admin/login",
+        element: <AdminLoginPage />,
       },
       {
         path: "account",

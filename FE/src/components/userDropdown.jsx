@@ -14,9 +14,19 @@ import {
 export const UserDropdown = ({ user }) => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({
-    name: localStorage.getItem("userName") || "User",
+    name: user?.name || localStorage.getItem("userName") || "User",
     avatar: localStorage.getItem("userAvatar"),
   });
+
+  // Cập nhật userInfo khi prop user thay đổi
+  useEffect(() => {
+    if (user?.name) {
+      setUserInfo((prevState) => ({
+        ...prevState,
+        name: user.name,
+      }));
+    }
+  }, [user]);
 
   // Lắng nghe sự thay đổi của localStorage
   useEffect(() => {

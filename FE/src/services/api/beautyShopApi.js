@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { axiosBaseQuery } from "./api.service";
 import endpoints from "../../constants/endpoint";
 
 const beautyShopApi = createApi({
@@ -48,7 +47,7 @@ const beautyShopApi = createApi({
       query: (data) => ({
         url: endpoints.VERIFY_EMAIL,
         method: "GET",
-        params: { token: data },  // Sử dụng 'data' ở đây, vì 'data' sẽ chứa token
+        params: { token: data }, // Sử dụng 'data' ở đây, vì 'data' sẽ chứa token
       }),
     }),
 
@@ -111,15 +110,6 @@ const beautyShopApi = createApi({
       invalidatesTags: ["Orders"],
     }),
 
-    // User profile
-    getUserProfile: builder.query({
-      query: () => ({
-        url: endpoints.GET_PROFILE,
-        method: "GET",
-      }),
-      providesTags: ["User"],
-    }),
-
     updateUserProfile: builder.mutation({
       query: (userData) => ({
         url: endpoints.UPDATE_PROFILE,
@@ -141,7 +131,6 @@ export const {
   useGetCategoriesQuery,
   useGetOrdersQuery,
   useCreateOrderMutation,
-  useGetUserProfileQuery,
   useUpdateUserProfileMutation,
 } = beautyShopApi;
 
