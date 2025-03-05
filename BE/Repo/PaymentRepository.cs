@@ -47,7 +47,7 @@ namespace Repo
         public async Task<Payment?> GetByOrderIdAsync(int orderId)
         {
             return await _context.Payments
-                .FirstOrDefaultAsync(p => p.OrderId == orderId);
+                .FirstOrDefaultAsync(p => p.OrderId == orderId && p.Status == "PENDING");
         }
 
         public async Task AddPaymentHistoryAsync(PaymentHistory history)

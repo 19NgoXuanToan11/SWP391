@@ -260,7 +260,7 @@ public partial class SkinCareManagementDbContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
-                .HasDefaultValue("Pending");
+                .HasDefaultValue("PENDING");
 
             entity.HasOne(d => d.Order).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.OrderId)
