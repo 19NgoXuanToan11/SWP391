@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Net.payOS;
 using Net.payOS.Types;
 using Service;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SWP391_BE.Controllers
 {
@@ -12,39 +13,34 @@ namespace SWP391_BE.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly PayOS _payOS;
-        public PaymentController(PayOS payOS)
+        private readonly IOrderService _orderService;
+        private readonly IPaymentService _paymentService;
+        public PaymentController(PayOS payOS, IOrderService orderService, IPaymentService paymentService)
         {
             _payOS = payOS;
+            _orderService = orderService;
+            _paymentService = paymentService;
         }
         public record ConfirmWebhook(
             string webhook_url
         );
 
-        public class CartItem
-        {
-            public string ProductId { get; set; }
-            public string ProductName { get; set; }
-            public int Quantity { get; set; }
-            public int Price { get; set; }
-        }
+   
 
 
         public class CreatePaymentLinkRequest
         {
-            public List<CartItem> CartItems { get; set; } = new List<CartItem>();
+            public int OrderId { get; set; }
+            public string BuyerName { get; set; }
+            public string BuyerEmail { get; set; }
+            public string BuyerPhone { get; set; }
+            public string BuyerAddress { get; set; }
 
         }
-        /*public record CreatePaymentLinkRequest(
-            Cart cart,
-            string productName,
-            string description,
-            int price,
-            string returnUrl,
-            string cancelUrl
-        );*/
+      
         public record Response(
             int error,
-            String message,
+            string message,
             object? data
         );
 
@@ -53,35 +49,53 @@ namespace SWP391_BE.Controllers
         {
             try
             {
-                var order = new Order
+                var order = await _orderService.GetOrderByIdAsync( body.OrderId );
+                if ( order == null )
                 {
+                    return Ok(new Response(-1, "Order not found", null));
+                }
 
-                };
-                var paymen = new Payment
+                var odlPayment = await _paymentService.GetPaymentByOrderIdAsync(order.OrderId);
+                if (odlPayment != null)
                 {
+                    return Ok(new Response(0, "success", odlPayment));
+                }
 
-                };
-
-
-                var cancelUrl = "cancel-url";
-                var returnUrl = "return-url";
+                var cancelUrl = "http://localhost:5173/order-cancel";
+                var returnUrl = "http://localhost:5173/order-success";
                 int orderCode = int.Parse(DateTimeOffset.Now.ToString("ffffff"));
 
                 int total = 0;
                 List<ItemData> items = new List<ItemData>();
-                body.CartItems.ForEach(cartItem =>
+                order.OrderDetails.ToList().ForEach(cartItem =>
                 {
-                    total += (cartItem.Quantity * cartItem.Price);
-                    ItemData item = new ItemData(cartItem.ProductName, cartItem.Quantity, cartItem.Price);
+                    total += (cartItem.Quantity * (int)Math.Ceiling(cartItem.Price));
+                    ItemData item = new ItemData(cartItem.Product.ProductName, cartItem.Quantity, (int)Math.Ceiling(cartItem.Price));
                     items.Add(item);
                 });
 
+                
 
-                PaymentData paymentData = new PaymentData(orderCode, total, "Description", items, cancelUrl, returnUrl);
+                PaymentData paymentData = new PaymentData(orderCode, total, $"Mã đơn hàng:{order.OrderId}", items, cancelUrl, returnUrl);
 
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
 
-                return Ok(new Response(0, "success", createPayment));
+                var paymen = new Payment
+                {
+                    OrderId = order.OrderId,
+                    CreatedDate = DateTime.Now,
+                    Amount = total,
+                    Status = "PENDING",
+                    BuyerName = body.BuyerName,
+                    BuyerAddress = body.BuyerAddress,
+                    BuyerEmail = body.BuyerEmail,
+                    BuyerPhone = body.BuyerPhone,
+                    PaymentUrl = createPayment.checkoutUrl
+                };
+
+                await _paymentService.AddPaymentAsync(paymen);
+
+                return Ok(new Response(0, "success", paymen));
             }
             catch (System.Exception exception)
             {
@@ -92,25 +106,76 @@ namespace SWP391_BE.Controllers
 
 
         [HttpPost("ipn")]
-        public IActionResult payOSTransferHandler(WebhookType body)
+        public async Task<IActionResult> payOSTransferHandler([FromBody] WebhookType body)
         {
             try
             {
                 WebhookData data = _payOS.verifyPaymentWebhookData(body);
 
+            
+                // Kiểm tra mô tả giao dịch
                 if (data.description == "Ma giao dich thu nghiem" || data.description == "VQRIO123")
                 {
                     return Ok(new Response(0, "Ok", null));
                 }
+
+                if (data.code == "00")
+                {
+                    int? orderId = ExtractOrderIdFromDescription(data.description);
+                    if (!orderId.HasValue)
+                    {
+                        return Ok(new Response(-1, "fail", null));
+                    }
+
+                    // Lấy thông tin thanh toán từ DB
+                    var payment = await _paymentService.GetPaymentByOrderIdAsync(orderId.Value);
+                    if (payment == null)
+                    {
+                        return Ok(new Response(-1, "fail", null));
+                    }
+
+                    // Cập nhật trạng thái thanh toán
+                    payment.Status = "PAID";
+                    payment.PaymentDate = DateTime.Now;
+
+                    await _paymentService.UpdatePaymentAsync(payment);
+
+                    return Ok(new Response(0, "Ok", null));
+                }
                 return Ok(new Response(0, "Ok", null));
+
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine($"Webhook Error: {e.Message}");
                 return Ok(new Response(-1, "fail", null));
             }
-
         }
+        private int? ExtractOrderIdFromDescription(string description)
+        {
+            try
+            {
+                // Tách chuỗi theo dấu ":" => ["Mã đơn hàng", "12345"]
+                var parts = description.Split(':');
+                if (parts.Length < 2)
+                {
+                    return null;
+                }
+
+                // Lấy phần số, loại bỏ khoảng trắng thừa
+                if (int.TryParse(parts[1].Trim(), out int orderId))
+                {
+                    return orderId;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ExtractOrderIdFromDescription Error: {ex.Message}");
+            }
+
+            return null;
+        }
+
 
     }
 }

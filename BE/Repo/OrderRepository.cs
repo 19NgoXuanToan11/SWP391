@@ -16,10 +16,12 @@ namespace Repo
         {
             return await _context.Orders.ToListAsync();
         }
-
         public async Task<Order?> GetByIdAsync(int id)
         {
-            return await _context.Orders.FindAsync(id);
+            return await _context.Orders
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Product)
+                .FirstOrDefaultAsync(o => o.OrderId == id);
         }
 
         public async Task AddAsync(Order order)
