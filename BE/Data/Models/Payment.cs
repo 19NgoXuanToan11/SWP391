@@ -1,4 +1,6 @@
-﻿namespace Data.Models
+﻿using System.Text.Json.Serialization;
+
+namespace Data.Models
 {
     public class Payment
     {
@@ -15,9 +17,11 @@
         public DateTime CreatedDate { get; set; }
 
         // Mối quan hệ với Order
+        [JsonIgnore]
         public virtual Order Order { get; set; }
 
         // Mối quan hệ với PaymentHistory
+          [JsonIgnore] 
         public virtual ICollection<PaymentHistory> PaymentHistories { get; set; }
     }
 }
