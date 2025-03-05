@@ -3,12 +3,23 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Net.payOS;
 using Repo;
 using Service;
 using SWP391_BE.Mappings;
 using System.Text;
 
+IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
+PayOS payOS = new PayOS(configuration["Environment:PAYOS_CLIENT_ID"] ?? throw new Exception("Cannot find environment"),
+                    configuration["Environment:PAYOS_API_KEY"] ?? throw new Exception("Cannot find environment"),
+                    configuration["Environment:PAYOS_CHECKSUM_KEY"] ?? throw new Exception("Cannot find environment"));
+
+
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton(payOS);
 
 // Add services to the container.
 builder.Services.AddDbContext<SkinCareManagementDbContext>(options =>
