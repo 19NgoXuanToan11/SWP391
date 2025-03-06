@@ -100,53 +100,65 @@ const Dashboard = () => {
               </button>
 
               {isProfileOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg py-2 border border-gray-100 z-50">
-                  {/* Profile Header */}
-                  <div className="px-4 py-3 border-b border-gray-100">
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl py-2 border border-gray-100 z-50 transform transition-all duration-300 ease-in-out">
+                  {/* Profile Header - Modernized */}
+                  <div className="px-4 py-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
                     <div className="flex items-center space-x-3">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-xl font-medium">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-xl font-medium shadow-md">
                         A
                       </div>
                       <div>
-                        <h3 className="font-medium text-gray-800">
+                        <h3 className="font-semibold text-gray-800 text-lg">
                           Admin User
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-600 flex items-center">
+                          <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                           admin@example.com
                         </p>
-                        <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full mt-1 inline-block">
+                        <span className="text-xs bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full mt-1 inline-block font-medium shadow-sm">
                           Super Admin
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Menu Items */}
-                  <div className="py-2 px-4 space-y-1">
-                    <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center space-x-3">
-                      <UserOutlined />
-                      <span>Your Profile</span>
+                  {/* Menu Items - Modernized */}
+                  <div className="py-3 px-4 space-y-2">
+                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all duration-200 flex items-center space-x-3 group">
+                      <span className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-all duration-200">
+                        <UserOutlined />
+                      </span>
+                      <span className="font-medium">Your Profile</span>
                     </button>
-                    <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center space-x-3">
-                      <SettingOutlined />
-                      <span>Settings & Privacy</span>
+                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 rounded-lg transition-all duration-200 flex items-center space-x-3 group">
+                      <span className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-all duration-200">
+                        <SettingOutlined />
+                      </span>
+                      <span className="font-medium">Settings & Privacy</span>
                     </button>
-                    <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center space-x-3">
-                      <QuestionCircleOutlined />
-                      <span>Help & Support</span>
+                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-600 rounded-lg transition-all duration-200 flex items-center space-x-3 group">
+                      <span className="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center text-teal-500 group-hover:bg-teal-500 group-hover:text-white transition-all duration-200">
+                        <QuestionCircleOutlined />
+                      </span>
+                      <span className="font-medium">Help & Support</span>
                     </button>
-                    <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center space-x-3">
-                      <BulbOutlined />
-                      <span>Display & Accessibility</span>
+                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 rounded-lg transition-all duration-200 flex items-center space-x-3 group">
+                      <span className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-all duration-200">
+                        <BulbOutlined />
+                      </span>
+                      <span className="font-medium">
+                        Display & Accessibility
+                      </span>
                     </button>
-                  </div>
 
-                  {/* Logout Button */}
-                  <div className="border-t border-gray-100 mt-2 pt-2 px-4">
-                    <button className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center space-x-3">
-                      <LogoutOutlined />
-                      <span>Log Out</span>
-                    </button>
+                    <div className="pt-2 mt-2 border-t border-gray-100">
+                      <button className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 flex items-center space-x-3 group">
+                        <span className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center text-red-500 group-hover:bg-red-500 group-hover:text-white transition-all duration-200">
+                          <LogoutOutlined />
+                        </span>
+                        <span className="font-medium">Sign Out</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -415,41 +427,6 @@ const Dashboard = () => {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-          </div>
-        </div>
-
-        {/* Recent Sales Table */}
-        <div className="bg-white rounded-2xl shadow-lg">
-          <div className="p-6 border-b border-gray-100">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-800">Recent Sales</h2>
-              <button className="px-4 py-2 bg-pink-500 text-white rounded-xl hover:bg-pink-600 transition-colors">
-                View All
-              </button>
-            </div>
-          </div>
-          <div className="overflow-x-auto p-6">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-gray-50 rounded-xl">
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider rounded-l-xl">
-                    Product
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Price
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Sales
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider rounded-r-xl">
-                    Status
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {/* Add your table rows here */}
-              </tbody>
-            </table>
           </div>
         </div>
       </main>
