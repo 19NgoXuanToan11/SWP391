@@ -12,7 +12,7 @@ const beautyShopApi = createApi({
     },
     credentials: "include",
   }),
-  tagTypes: ["Products", "Categories", "Orders", "User"],
+  tagTypes: ["Products", "Categories", "Orders", "User", "Brands"],
   endpoints: (builder) => ({
     // Auth endpoints
     login: builder.mutation({
@@ -89,6 +89,40 @@ const beautyShopApi = createApi({
         method: "GET",
       }),
       providesTags: ["Categories"],
+      transformResponse: (response) => {
+        console.log("Categories API Response:", response);
+        return response;
+      },
+      transformErrorResponse: (error) => {
+        console.error("Categories API Error:", error);
+        return error;
+      },
+    }),
+
+    createCategory: builder.mutation({
+      query: (categoryData) => ({
+        url: endpoints.CREATE_CATEGORY,
+        method: "POST",
+        body: categoryData,
+      }),
+      invalidatesTags: ["Categories"],
+    }),
+
+    updateCategory: builder.mutation({
+      query: ({ id, ...categoryData }) => ({
+        url: endpoints.UPDATE_CATEGORY.replace(":id", id),
+        method: "PUT",
+        body: categoryData,
+      }),
+      invalidatesTags: ["Categories"],
+    }),
+
+    deleteCategory: builder.mutation({
+      query: (id) => ({
+        url: endpoints.DELETE_CATEGORY.replace(":id", id),
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Categories"],
     }),
 
     // Order endpoints
@@ -118,6 +152,49 @@ const beautyShopApi = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+
+    // Brand endpoints
+    getBrands: builder.query({
+      query: () => ({
+        url: endpoints.GET_BRANDS,
+        method: "GET",
+      }),
+      providesTags: ["Brands"],
+      transformResponse: (response) => {
+        console.log("Brands API Response:", response);
+        return response;
+      },
+      transformErrorResponse: (error) => {
+        console.error("Brands API Error:", error);
+        return error;
+      },
+    }),
+
+    createBrand: builder.mutation({
+      query: (brandData) => ({
+        url: endpoints.CREATE_BRAND,
+        method: "POST",
+        body: brandData,
+      }),
+      invalidatesTags: ["Brands"],
+    }),
+
+    updateBrand: builder.mutation({
+      query: ({ id, ...brandData }) => ({
+        url: endpoints.UPDATE_BRAND.replace(":id", id),
+        method: "PUT",
+        body: brandData,
+      }),
+      invalidatesTags: ["Brands"],
+    }),
+
+    deleteBrand: builder.mutation({
+      query: (id) => ({
+        url: endpoints.DELETE_BRAND.replace(":id", id),
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Brands"],
+    }),
   }),
 });
 
@@ -129,9 +206,16 @@ export const {
   useGetProductByIdQuery,
   useCreateProductMutation,
   useGetCategoriesQuery,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
   useGetOrdersQuery,
   useCreateOrderMutation,
   useUpdateUserProfileMutation,
+  useGetBrandsQuery,
+  useCreateBrandMutation,
+  useUpdateBrandMutation,
+  useDeleteBrandMutation,
 } = beautyShopApi;
 
 export default beautyShopApi;

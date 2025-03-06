@@ -23,9 +23,6 @@ const SidebarAdmin = () => {
     { path: "/order", icon: <ShoppingCartOutlined />, label: "Orders" },
     { path: "/category", icon: <AppstoreOutlined />, label: "Categories" },
     { path: "/brand", icon: <TagOutlined />, label: "Brands" },
-    { path: "/voucher", icon: <GiftOutlined />, label: "Voucher" },
-    { path: "/setting", icon: <SettingOutlined />, label: "Settings" },
-    { path: "/abouts", icon: <InfoCircleOutlined />, label: "About" },
   ];
 
   return (

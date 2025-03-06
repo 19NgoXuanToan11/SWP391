@@ -20,10 +20,10 @@ const endpoints = {
   DELETE_PRODUCT: "/Product/:id",
 
   // Categories
-  GET_CATEGORIES: "/categories",
-  CREATE_CATEGORY: "/categories",
-  UPDATE_CATEGORY: "/categories/:id",
-  DELETE_CATEGORY: "/categories/:id",
+  GET_CATEGORIES: "/Category",
+  CREATE_CATEGORY: "/Category",
+  UPDATE_CATEGORY: "/Category/:id",
+  DELETE_CATEGORY: "/Category/:id",
 
   // Orders
   GET_ORDERS: "/orders",
@@ -36,6 +36,12 @@ const endpoints = {
 
   // Dashboard
   GET_DASHBOARD_STATS: "/dashboard/stats",
+
+  // Brands
+  GET_BRANDS: "/Brand",
+  CREATE_BRAND: "/Brand",
+  UPDATE_BRAND: "/Brand/:id",
+  DELETE_BRAND: "/Brand/:id",
 };
 
 export default endpoints;

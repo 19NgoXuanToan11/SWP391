@@ -15,7 +15,6 @@ import OrdersPage from "../pages/admin/ordersPage";
 import CategoryPage from "../pages/admin/categoryPage";
 import BrandsPage from "../pages/admin/brandsPage";
 import VouchersPage from "../pages/admin/vouchersPage";
-import SettingPage from "../pages/admin/settingPage";
 import CartPage from "../pages/users/cartPage";
 import PaymentPage from "../pages/users/paymentPage";
 import CustomerOrderPage from "../pages/admin/customerorderPage";
@@ -131,10 +130,6 @@ export const router = createBrowserRouter([
       {
         path: "voucher",
         element: <VouchersPage />,
-      },
-      {
-        path: "setting",
-        element: <SettingPage />,
       },
       {
         path: "abouts",
