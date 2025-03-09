@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   Card,
@@ -27,7 +27,7 @@ import {
   ArrowLeftOutlined,
 } from "@ant-design/icons";
 import { QRCode } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { PaymentSteps } from "../../components/PaymentStep";
 import axios from "axios";
@@ -35,29 +35,54 @@ import axios from "axios";
 const { Title, Text, Paragraph } = Typography;
 
 export function PaymentPage() {
+  const { orderId } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedPayment, setSelectedPayment] = useState("qr");
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Lấy thông tin giỏ hàng từ Redux store
-  const cartItems = useSelector((state) => state.cart.items);
-  const cartTotal = useSelector((state) => state.cart.total);
+  const [order, setOrder] = useState(null);
 
-  // Thay thế dữ liệu mẫu bằng dữ liệu từ Redux
-  const orderDetails = {
-    orderId: `ORD-${Date.now()}`,
-    totalAmount: cartTotal,
-    items: cartItems.map((item) => ({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      quantity: item.quantity,
-      image: item.image,
-    })),
-  };
+  useEffect(() => {
+    // Nếu không có orderId, điều hướng về trang cart
+    if (!orderId) {
+      navigate("/cart");
+      return;
+    }
 
+    const fetchOrder = async () => {
+      try {
+        const res = await axios.get(`https://localhost:7285/api/order/${orderId}`);
+        console.log(res.data)
+        setOrder(res.data);
+      } catch (err) {
+        setError(err.response ? err.response.data : "Error fetching order");
+        navigate("/cart"); // Nếu lỗi (không tìm thấy đơn hàng), chuyển về cart
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrder();
+  }, [orderId, navigate]);
+
+  // const payOSConfig = {
+  //   RETURN_URL: "", // required
+  //   ELEMENT_ID: "", // required
+  //   CHECKOUT_URL: "", // required
+  //   embedded: true, // Nếu dùng giao diện nhúng
+  //   onSuccess: (event) => {
+  //     //TODO: Hành động sau khi người dùng thanh toán đơn hàng thành công
+  //   },
+  //   onCancel: (event) => {
+  //     //TODO: Hành động sau khi người dùng Hủy đơn hàng
+  //   },
+  //   onExit: (event) => {
+  //     //TODO: Hành động sau khi người dùng tắt Pop up
+  //   },
+  // };
   const paymentMethods = [
     {
       value: "qr",
@@ -74,28 +99,17 @@ export function PaymentPage() {
       return;
     }
 
-    if (cartItems.length === 0) {
-      message.warning("Giỏ hàng của bạn đang trống");
-      navigate("/cart");
-      return;
-    }
 
     setIsProcessing(true);
     try {
       const orderData = {
-        BuyerName: "Tên Khách Hàng",
-        BuyerEmail: "email@example.com",
-        BuyerPhone: "0987654321",
-        BuyerAddress: "Địa chỉ khách hàng",
-        Cart: {
-          items: cartItems.map((item) => ({
-            ProductId: item.id,
-            Quantity: item.quantity,
-            Price: item.price,
-          })),
-        },
-        UserId: user?.id || null, // Lấy ID người dùng từ thông tin đăng nhập
-        PaymentMethod: selectedPayment,
+        buyerName: "Tên Khách Hàng",
+        buyerEmail: "email@example.com",
+        buyerPhone: "0987654321",
+        buyerAddress: "Địa chỉ khách hàng",
+        orderId : orderId,
+        UserId: Number(user.id),
+        paymentMethod: selectedPayment,
       };
 
       const response = await axios.post(
@@ -103,8 +117,9 @@ export function PaymentPage() {
         orderData
       );
 
+      console.log(response.data)
       if (response.data && response.data.data) {
-        window.location.href = response.data.data.PaymentUrl; // Chuyển hướng đến trang thanh toán
+        window.location.href = response.data.data.paymentUrl;
       } else {
         message.error("Không thể tạo liên kết thanh toán. Vui lòng thử lại!");
       }
@@ -129,6 +144,8 @@ export function PaymentPage() {
     }
     navigate("/qr-payment");
   };
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white py-12 px-4">
@@ -174,7 +191,7 @@ export function PaymentPage() {
                 bodyStyle={{ padding: "1.5rem" }}
               >
                 <div className="space-y-4">
-                  {orderDetails.items.map((item) => (
+                  {order?.orderDetails.map((item) => (
                     <div
                       key={item.id}
                       className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl"
@@ -215,7 +232,7 @@ export function PaymentPage() {
                       level={3}
                       className="!mb-0 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500"
                     >
-                      {formatPrice(orderDetails.totalAmount)}
+                      {formatPrice(order?.totalAmount)}
                     </Title>
                   </div>
                 </div>
@@ -287,11 +304,11 @@ export function PaymentPage() {
                 <Space direction="vertical" className="w-full">
                   <div className="flex justify-between items-center">
                     <Text>Mã Đơn Hàng:</Text>
-                    <Tag color="pink">{orderDetails.orderId}</Tag>
+                    <Tag color="pink">{order?.orderId}</Tag>
                   </div>
                   <div className="flex justify-between items-center">
                     <Text>Trạng Thái:</Text>
-                    <Tag color="processing">Đang Chờ</Tag>
+                    <Tag color="processing">{order?.status}</Tag>
                   </div>
                 </Space>
               </Card>

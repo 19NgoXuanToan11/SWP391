@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Net.payOS;
 using Net.payOS.Types;
 using Service;
+using SWP391_BE.DTOs;
+using System.Collections;
+using System.Net.NetworkInformation;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SWP391_BE.Controllers
@@ -25,19 +28,21 @@ namespace SWP391_BE.Controllers
             string webhook_url
         );
 
-   
 
 
         public class CreatePaymentLinkRequest
         {
-            public int OrderId { get; set; }
             public string BuyerName { get; set; }
             public string BuyerEmail { get; set; }
             public string BuyerPhone { get; set; }
             public string BuyerAddress { get; set; }
 
+            public int OrderId { get; set; }
+            public int UserId { get; set; }
+            public string PaymentMethod { get; set; }
+
         }
-      
+
         public record Response(
             int error,
             string message,
@@ -49,8 +54,10 @@ namespace SWP391_BE.Controllers
         {
             try
             {
-                var order = await _orderService.GetOrderByIdAsync( body.OrderId );
-                if ( order == null )
+
+
+                var order = await _orderService.GetOrderByIdAsync(body.OrderId);
+                if (order == null)
                 {
                     return Ok(new Response(-1, "Order not found", null));
                 }
@@ -74,7 +81,7 @@ namespace SWP391_BE.Controllers
                     items.Add(item);
                 });
 
-                
+
 
                 PaymentData paymentData = new PaymentData(orderCode, total, $"Mã đơn hàng:{order.OrderId}", items, cancelUrl, returnUrl);
 
@@ -112,7 +119,7 @@ namespace SWP391_BE.Controllers
             {
                 WebhookData data = _payOS.verifyPaymentWebhookData(body);
 
-            
+
                 // Kiểm tra mô tả giao dịch
                 if (data.description == "Ma giao dich thu nghiem" || data.description == "VQRIO123")
                 {

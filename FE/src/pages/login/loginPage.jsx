@@ -80,6 +80,7 @@ export function LoginPage() {
         const token = result.data;
         const tokenPayload = JSON.parse(atob(token.split(".")[1]));
 
+
         // Kiểm tra xem có phải admin không
         if (tokenPayload.role === "Admin") {
           message.error("Vui lòng sử dụng trang đăng nhập Admin!");
@@ -92,6 +93,7 @@ export function LoginPage() {
           name: tokenPayload.unique_name,
           role: tokenPayload.role,
           email: tokenPayload.email,
+          id: tokenPayload.nameid,
           isAdmin: false,
         };
 
