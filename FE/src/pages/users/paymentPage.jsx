@@ -83,13 +83,20 @@ export function PaymentPage() {
     setIsProcessing(true);
     try {
       const orderData = {
-        items: cartItems,
-        totalAmount: cartTotal,
-        paymentMethod: selectedPayment,
-        orderDate: new Date().toISOString(),
-        status: "pending",
+        BuyerName: "Tên Khách Hàng",
+        BuyerEmail: "email@example.com",
+        BuyerPhone: "0987654321",
+        BuyerAddress: "Địa chỉ khách hàng",
+        Cart: {
+          items: cartItems.map((item) => ({
+            ProductId: item.id,
+            Quantity: item.quantity,
+            Price: item.price,
+          })),
+        },
+        UserId: user?.id || null, // Lấy ID người dùng từ thông tin đăng nhập
+        PaymentMethod: selectedPayment,
       };
-
       // TODO: Gọi API tạo đơn hàng thực tế ở đây
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
