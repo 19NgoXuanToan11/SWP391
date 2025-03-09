@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   Card,
@@ -14,6 +14,7 @@ import {
   Radio,
   Tooltip,
   Spin,
+  Divider,
 } from "antd";
 import {
   QrcodeOutlined,
@@ -27,7 +28,7 @@ import {
   ArrowLeftOutlined,
 } from "@ant-design/icons";
 import { QRCode } from "antd";
-import { useNavigate,useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { PaymentSteps } from "../../components/PaymentStep";
 import axios from "axios";
@@ -54,12 +55,61 @@ export function PaymentPage() {
 
     const fetchOrder = async () => {
       try {
-        const res = await axios.get(`https://localhost:7285/api/order/${orderId}`);
-        console.log(res.data)
-        setOrder(res.data);
+        const res = await axios.get(
+          `https://localhost:7285/api/order/${orderId}`
+        );
+        console.log("Order data:", res.data);
+
+        // If order details don't have images, you might need to fetch them separately
+        const orderData = res.data;
+
+        // Check if we need to fetch product images separately
+        if (
+          orderData.orderDetails &&
+          orderData.orderDetails.length > 0 &&
+          !orderData.orderDetails[0].image
+        ) {
+          console.log("Fetching product images for order details");
+
+          // Fetch product details for each item in the order to get images
+          const updatedOrderDetails = await Promise.all(
+            orderData.orderDetails.map(async (item) => {
+              try {
+                // Fetch product details to get the image
+                const productRes = await axios.get(
+                  `https://localhost:7285/api/product/${item.productId}`
+                );
+
+                // Add image URL and product name to the order detail item
+                return {
+                  ...item,
+                  productName:
+                    productRes.data.productName || "Sản phẩm không xác định",
+                  image:
+                    productRes.data.image ||
+                    productRes.data.imageUrls ||
+                    `https://localhost:7285/api/product/image/${item.productId}`,
+                };
+              } catch (error) {
+                console.error(
+                  `Error fetching product ${item.productId}:`,
+                  error
+                );
+                // Return the original item if fetch fails
+                return item;
+              }
+            })
+          );
+
+          // Update the order data with the product images
+          orderData.orderDetails = updatedOrderDetails;
+        }
+
+        setOrder(orderData);
       } catch (err) {
-        setError(err.response ? err.response.data : "Error fetching order");
-        navigate("/cart"); // Nếu lỗi (không tìm thấy đơn hàng), chuyển về cart
+        console.error("Error fetching order:", err);
+        message.error("Không thể tải thông tin đơn hàng");
+        navigate("/cart");
       } finally {
         setLoading(false);
       }
@@ -89,6 +139,26 @@ export function PaymentPage() {
       label: "Thanh Toán Qua Mã QR",
       icon: <QrcodeOutlined />,
       description: "Thanh toán nhanh chóng qua ứng dụng ngân hàng",
+      image: "https://cdn-icons-png.flaticon.com/512/6963/6963703.png",
+    },
+  ];
+
+  const paymentPartners = [
+    {
+      name: "VNPay",
+      logo: "https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR.png",
+    },
+    {
+      name: "MoMo",
+      logo: "https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png",
+    },
+    {
+      name: "ZaloPay",
+      logo: "https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay.png",
+    },
+    {
+      name: "Banking",
+      logo: "https://cdn-icons-png.flaticon.com/512/2168/2168742.png",
     },
   ];
 
@@ -99,7 +169,6 @@ export function PaymentPage() {
       return;
     }
 
-
     setIsProcessing(true);
     try {
       const orderData = {
@@ -107,7 +176,7 @@ export function PaymentPage() {
         buyerEmail: "email@example.com",
         buyerPhone: "0987654321",
         buyerAddress: "Địa chỉ khách hàng",
-        orderId : orderId,
+        orderId: orderId,
         UserId: Number(user.id),
         paymentMethod: selectedPayment,
       };
@@ -117,7 +186,7 @@ export function PaymentPage() {
         orderData
       );
 
-      console.log(response.data)
+      console.log(response.data);
       if (response.data && response.data.data) {
         window.location.href = response.data.data.paymentUrl;
       } else {
@@ -144,8 +213,6 @@ export function PaymentPage() {
     }
     navigate("/qr-payment");
   };
-
-
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white py-12 px-4">
@@ -193,21 +260,22 @@ export function PaymentPage() {
                 <div className="space-y-4">
                   {order?.orderDetails.map((item) => (
                     <div
-                      key={item.id}
+                      key={item.orderDetailId || item.id}
                       className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl"
                     >
                       <div className="flex items-center gap-4">
                         <Image
                           src={item.image}
-                          alt={item.name}
+                          alt={item.productName || "Sản phẩm"}
                           width={80}
                           height={80}
                           className="rounded-xl object-cover"
                           preview={false}
+                          fallback="https://placehold.co/80x80/pink/white?text=BeautyCare"
                         />
                         <div>
                           <Text strong className="text-lg">
-                            {item.name}
+                            {item.productName || "Sản phẩm"}
                           </Text>
                           <div>
                             <Text type="secondary">
@@ -273,11 +341,30 @@ export function PaymentPage() {
                               {method.description}
                             </Text>
                           </div>
+                          <Image
+                            src={method.image}
+                            alt={method.label}
+                            width={40}
+                            preview={false}
+                            className="ml-auto"
+                          />
                         </Space>
                       </Radio>
                     ))}
                   </Space>
                 </Radio.Group>
+
+                <div className="mt-4 mb-4 p-3 bg-gray-50 rounded-xl flex items-center">
+                  <Image
+                    src="https://cdn-icons-png.flaticon.com/512/2913/2913133.png"
+                    alt="Secure Payment"
+                    width={30}
+                    preview={false}
+                  />
+                  <Text className="ml-2 text-sm text-gray-600">
+                    Thanh toán an toàn với mã hóa SSL 256-bit
+                  </Text>
+                </div>
 
                 <div className="mt-6">
                   <Button
@@ -314,6 +401,27 @@ export function PaymentPage() {
               </Card>
             </Col>
           </Row>
+
+          <Divider>
+            <Text type="secondary">Đối tác thanh toán</Text>
+          </Divider>
+
+          <div className="flex justify-center items-center flex-wrap gap-6 mt-4 mb-2">
+            {paymentPartners.map((partner) => (
+              <div key={partner.name} className="text-center">
+                <Image
+                  src={partner.logo}
+                  alt={partner.name}
+                  width={60}
+                  preview={false}
+                  className="grayscale hover:grayscale-0 transition-all duration-300"
+                />
+                <Text className="block text-xs text-gray-500 mt-1">
+                  {partner.name}
+                </Text>
+              </div>
+            ))}
+          </div>
         </Card>
       </div>
     </div>

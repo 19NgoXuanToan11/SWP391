@@ -52,9 +52,9 @@ const { Step } = Steps;
 function CartPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
   const cartItems = useSelector((state) => state.cart.items);
-  const { isAuthenticated,user } = useSelector(selectAuth);
+  const { isAuthenticated, user } = useSelector(selectAuth);
   const [loading, setLoading] = React.useState(false);
 
   // Lấy danh sách wishlist từ Redux store
@@ -134,16 +134,15 @@ function CartPage() {
       return;
     }
 
- 
     const order = {
       userId: Number(user.id),
       items: cartItems.map((item) => ({
         productId: item.id,
         quantity: item.quantity,
-        price: item.price
+        price: item.price,
       })),
-    }
-  
+    };
+
     // console.log(order);
     // return
     // TODO: CREATE ORDER
@@ -152,18 +151,16 @@ function CartPage() {
 
       const res = await axios.post("https://localhost:7285/api/Order", order, {
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
-      
+
       navigate(`/payment/${res.data.orderId}`);
-    }catch(e) {
-      console.log(e)
-    }finally {
+    } catch (e) {
+      console.log(e);
+    } finally {
       setLoading(false);
     }
- 
-
   };
 
   if (!cartItems) {
