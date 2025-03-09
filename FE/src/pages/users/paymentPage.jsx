@@ -83,31 +83,18 @@ export function PaymentPage() {
     setIsProcessing(true);
     try {
       const orderData = {
-        BuyerName: "Tên Khách Hàng",
-        BuyerEmail: "email@example.com",
-        BuyerPhone: "0987654321",
-        BuyerAddress: "Địa chỉ khách hàng",
-        Cart: {
-          items: cartItems.map((item) => ({
-            ProductId: item.id,
-            Quantity: item.quantity,
-            Price: item.price,
-          })),
-        },
-        UserId: 123, // Thay bằng ID người dùng thực tế
-        PaymentMethod: selectedPayment,
+        items: cartItems,
+        totalAmount: cartTotal,
+        paymentMethod: selectedPayment,
+        orderDate: new Date().toISOString(),
+        status: "pending",
       };
 
-      const response = await axios.post(
-        "https://localhost:7285/Payment/create",
-        orderData
-      );
+      // TODO: Gọi API tạo đơn hàng thực tế ở đây
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      if (response.data && response.data.data) {
-        window.location.href = response.data.data.PaymentUrl; // Chuyển hướng đến trang thanh toán
-      } else {
-        message.error("Không thể tạo liên kết thanh toán. Vui lòng thử lại!");
-      }
+      // Chuyển hướng đến trang QR thay vì set paymentSuccess
+      navigate("/qr-payment");
     } catch (error) {
       message.error("Đã xảy ra lỗi. Vui lòng thử lại!");
     } finally {
