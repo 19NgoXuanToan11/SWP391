@@ -68,7 +68,7 @@ namespace SWP391_BE.Controllers
                     return Ok(new Response(0, "success", odlPayment));
                 }
 
-                var cancelUrl = "http://localhost:5173/order-cancel";
+                var cancelUrl = "http://localhost:5173/cart";
                 var returnUrl = "http://localhost:5173/order-success";
                 int orderCode = int.Parse(DateTimeOffset.Now.ToString("ffffff"));
 
