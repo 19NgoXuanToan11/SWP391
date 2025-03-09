@@ -16,6 +16,8 @@ namespace Data.Models
         public string PaymentUrl { get; set; }
         public DateTime CreatedDate { get; set; }
 
+        public int? OrderCode { get; set; }
+
         // Mối quan hệ với Order
         [JsonIgnore]
         public virtual Order Order { get; set; }

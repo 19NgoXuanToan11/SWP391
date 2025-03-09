@@ -49,6 +49,27 @@ namespace SWP391_BE.Controllers
             object? data
         );
 
+        [HttpGet("orderCode/{orderCode}")]
+        public async Task<IActionResult> GetPaymentByOrderCode(int orderCode)
+        {
+            try
+            {
+                var payment = await _paymentService.GetPaymentByOrderCodeAsync(orderCode);
+                if (payment == null)
+                {
+                    return Ok(new Response(-1, "Payment not found", null));
+                }
+
+                return Ok(new Response(0, "success", payment));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Get Payment Error: {e.Message}");
+                return Ok(new Response(-1, "fail", null));
+            }
+        }
+
+
         [HttpPost("create")]
         public async Task<IActionResult> CreatePaymentLink([FromBody] CreatePaymentLinkRequest body)
         {
@@ -97,7 +118,8 @@ namespace SWP391_BE.Controllers
                     BuyerAddress = body.BuyerAddress,
                     BuyerEmail = body.BuyerEmail,
                     BuyerPhone = body.BuyerPhone,
-                    PaymentUrl = createPayment.checkoutUrl
+                    PaymentUrl = createPayment.checkoutUrl,
+                    OrderCode = orderCode
                 };
 
                 await _paymentService.AddPaymentAsync(paymen);
