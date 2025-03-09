@@ -28,17 +28,7 @@ namespace SWP391_BE.Controllers
             string webhook_url
         );
 
-        public class CartItem
-        {
-            public int ProductId { get; set; }
-            public int Quantity { get; set; }
-            public decimal Price { get; set; }
-        }
-   
-        public class Cart
-        {
-            public List<CartItem> items { get; set; } = new List<CartItem>();
-        }
+
 
         public class CreatePaymentLinkRequest
         {
@@ -47,12 +37,12 @@ namespace SWP391_BE.Controllers
             public string BuyerPhone { get; set; }
             public string BuyerAddress { get; set; }
 
-            public Cart Cart { get; set; }
+            public int OrderId { get; set; }
             public int UserId { get; set; }
             public string PaymentMethod { get; set; }
 
         }
-      
+
         public record Response(
             int error,
             string message,
@@ -65,33 +55,12 @@ namespace SWP391_BE.Controllers
             try
             {
 
-                List<OrderDetail> orderDetails = new List<OrderDetail>();
-                decimal totalAmount = 0;
 
-                body.Cart.items.ForEach(item => {
-                    var orderDetail = new OrderDetail
-                    {
-                        ProductId = item.ProductId,
-                        Price = item.Price,
-                        Quantity = item.Quantity,
-                    };
-                    totalAmount = totalAmount + ((decimal)item.Quantity * item.Price);
-                    orderDetails.Add(orderDetail);
-                });
-
-                var order = new Order
+                var order = await _orderService.GetOrderByIdAsync(body.OrderId);
+                if (order == null)
                 {
-                    UserId = body.UserId,
-                    OrderDate = DateTime.Now,
-                    TotalAmount = totalAmount,
-                    Status = "Pending",
-                    PaymentMethod = body.PaymentMethod,
-                    OrderDetails = orderDetails
-                };
-                await _orderService.AddOrderAsync(order);
-
-
-            
+                    return Ok(new Response(-1, "Order not found", null));
+                }
 
                 var odlPayment = await _paymentService.GetPaymentByOrderIdAsync(order.OrderId);
                 if (odlPayment != null)
@@ -99,7 +68,7 @@ namespace SWP391_BE.Controllers
                     return Ok(new Response(0, "success", odlPayment));
                 }
 
-                var cancelUrl = "http://localhost:5173/order-cancel";
+                var cancelUrl = "http://localhost:5173/cart";
                 var returnUrl = "http://localhost:5173/order-success";
                 int orderCode = int.Parse(DateTimeOffset.Now.ToString("ffffff"));
 
@@ -112,7 +81,7 @@ namespace SWP391_BE.Controllers
                     items.Add(item);
                 });
 
-                
+
 
                 PaymentData paymentData = new PaymentData(orderCode, total, $"Mã đơn hàng:{order.OrderId}", items, cancelUrl, returnUrl);
 
@@ -150,7 +119,7 @@ namespace SWP391_BE.Controllers
             {
                 WebhookData data = _payOS.verifyPaymentWebhookData(body);
 
-            
+
                 // Kiểm tra mô tả giao dịch
                 if (data.description == "Ma giao dich thu nghiem" || data.description == "VQRIO123")
                 {

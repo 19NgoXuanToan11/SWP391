@@ -44,6 +44,7 @@ import {
   toggleWishlist,
   selectWishlistItems,
 } from "../../store/slices/wishlistSlice";
+import axios from "axios";
 
 const { Title, Text, Paragraph } = Typography;
 const { Step } = Steps;
@@ -51,8 +52,9 @@ const { Step } = Steps;
 function CartPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  
   const cartItems = useSelector((state) => state.cart.items);
-  const { isAuthenticated } = useSelector(selectAuth);
+  const { isAuthenticated,user } = useSelector(selectAuth);
   const [loading, setLoading] = React.useState(false);
 
   // Lấy danh sách wishlist từ Redux store
@@ -120,7 +122,7 @@ function CartPage() {
     }).format(price);
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (cartItems.length === 0) {
       message.warning("Giỏ hàng của bạn đang trống");
       return;
@@ -132,11 +134,36 @@ function CartPage() {
       return;
     }
 
-    setLoading(true);
-    setTimeout(() => {
+ 
+    const order = {
+      userId: Number(user.id),
+      items: cartItems.map((item) => ({
+        productId: item.id,
+        quantity: item.quantity,
+        price: item.price
+      })),
+    }
+  
+    // console.log(order);
+    // return
+    // TODO: CREATE ORDER
+    try {
+      setLoading(true);
+
+      const res = await axios.post("https://localhost:7285/api/Order", order, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      
+      navigate(`/payment/${res.data.orderId}`);
+    }catch(e) {
+      console.log(e)
+    }finally {
       setLoading(false);
-      navigate("/payment");
-    }, 1000);
+    }
+ 
+
   };
 
   if (!cartItems) {

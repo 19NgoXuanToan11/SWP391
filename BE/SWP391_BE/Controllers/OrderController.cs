@@ -72,8 +72,28 @@ namespace SWP391_BE.Controllers
                 {
                     return BadRequest("Order data is required");
                 }
+                List<OrderDetail> orderDetails = new List<OrderDetail>();
+                decimal totalAmount = 0;
 
-                var order = _mapper.Map<Order>(createOrderDTO);
+                createOrderDTO.Items.ForEach(item => {
+                    var orderDetail = new OrderDetail
+                    {
+                        ProductId = item.ProductId,
+                        Price = item.Price,
+                        Quantity = item.Quantity,
+                    };
+                    totalAmount = totalAmount + ((decimal)item.Quantity * item.Price);
+                    orderDetails.Add(orderDetail);
+                });
+
+                var order = new Order
+                {
+                    UserId = createOrderDTO.UserId,
+                    OrderDate = DateTime.Now,
+                    TotalAmount = totalAmount,
+                    Status = "Pending",
+                    OrderDetails = orderDetails
+                };
                 await _orderService.AddOrderAsync(order);
 
                 var createdOrderDto = _mapper.Map<OrderDTO>(order);
