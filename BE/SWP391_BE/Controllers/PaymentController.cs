@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Net.payOS;
 using Net.payOS.Types;
 using Service;
+using SWP391_BE.DTOs;
+using System.Collections;
+using System.Net.NetworkInformation;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SWP391_BE.Controllers
@@ -25,16 +28,28 @@ namespace SWP391_BE.Controllers
             string webhook_url
         );
 
+        public class CartItem
+        {
+            public int ProductId { get; set; }
+            public int Quantity { get; set; }
+            public decimal Price { get; set; }
+        }
    
-
+        public class Cart
+        {
+            public List<CartItem> items { get; set; } = new List<CartItem>();
+        }
 
         public class CreatePaymentLinkRequest
         {
-            public int OrderId { get; set; }
             public string BuyerName { get; set; }
             public string BuyerEmail { get; set; }
             public string BuyerPhone { get; set; }
             public string BuyerAddress { get; set; }
+
+            public Cart Cart { get; set; }
+            public int UserId { get; set; }
+            public string PaymentMethod { get; set; }
 
         }
       
@@ -49,11 +64,34 @@ namespace SWP391_BE.Controllers
         {
             try
             {
-                var order = await _orderService.GetOrderByIdAsync( body.OrderId );
-                if ( order == null )
+
+                List<OrderDetail> orderDetails = new List<OrderDetail>();
+                decimal totalAmount = 0;
+
+                body.Cart.items.ForEach(item => {
+                    var orderDetail = new OrderDetail
+                    {
+                        ProductId = item.ProductId,
+                        Price = item.Price,
+                        Quantity = item.Quantity,
+                    };
+                    totalAmount = totalAmount + ((decimal)item.Quantity * item.Price);
+                    orderDetails.Add(orderDetail);
+                });
+
+                var order = new Order
                 {
-                    return Ok(new Response(-1, "Order not found", null));
-                }
+                    UserId = body.UserId,
+                    OrderDate = DateTime.Now,
+                    TotalAmount = totalAmount,
+                    Status = "Pending",
+                    PaymentMethod = body.PaymentMethod,
+                    OrderDetails = orderDetails
+                };
+                await _orderService.AddOrderAsync(order);
+
+
+            
 
                 var odlPayment = await _paymentService.GetPaymentByOrderIdAsync(order.OrderId);
                 if (odlPayment != null)
