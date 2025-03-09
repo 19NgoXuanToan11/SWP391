@@ -257,19 +257,13 @@ export function LoginPage() {
                 </div>
               )}
 
-              {/* Nhớ tôi & Quên mật khẩu */}
-              <div className="flex items-center justify-between">
-                <label className="flex items-center space-x-2 text-sm text-gray-600">
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-500"
-                  />
-                  <span>Nhớ tôi</span>
-                </label>
-                <Link to="/reset">
-                  <button className="text-sm text-pink-500 hover:text-pink-600">
-                    Quên mật khẩu?
-                  </button>
+              {/* Quên mật khẩu */}
+              <div className="flex items-center justify-end">
+                <Link
+                  to="/reset"
+                  className="text-sm text-pink-500 hover:text-pink-600"
+                >
+                  Quên mật khẩu?
                 </Link>
               </div>
 

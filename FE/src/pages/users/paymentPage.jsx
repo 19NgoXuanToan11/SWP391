@@ -111,18 +111,11 @@ export function PaymentPage() {
         UserId: Number(user.id),
         paymentMethod: selectedPayment,
       };
+      // TODO: Gọi API tạo đơn hàng thực tế ở đây
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const response = await axios.post(
-        "https://localhost:7285/Payment/create",
-        orderData
-      );
-
-      console.log(response.data)
-      if (response.data && response.data.data) {
-        window.location.href = response.data.data.paymentUrl;
-      } else {
-        message.error("Không thể tạo liên kết thanh toán. Vui lòng thử lại!");
-      }
+      // Chuyển hướng đến trang QR thay vì set paymentSuccess
+      navigate("/qr-payment");
     } catch (error) {
       message.error("Đã xảy ra lỗi. Vui lòng thử lại!");
     } finally {

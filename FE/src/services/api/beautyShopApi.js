@@ -43,6 +43,14 @@ const beautyShopApi = createApi({
       }),
     }),
 
+    forgotPassword: builder.mutation({
+      query: (data) => ({
+        url: "/Auth/forgot-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
     verifyEmail: builder.mutation({
       query: (data) => ({
         url: endpoints.VERIFY_EMAIL,
@@ -216,6 +224,7 @@ export const {
   useCreateBrandMutation,
   useUpdateBrandMutation,
   useDeleteBrandMutation,
+  useForgotPasswordMutation,
 } = beautyShopApi;
 
 export default beautyShopApi;
