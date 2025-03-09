@@ -2,7 +2,6 @@ import "./global.css";
 import { SiteHeader } from "./components/site-header";
 import { SiteFooter } from "./components/site-footer";
 import { Outlet, ScrollRestoration, useLocation } from "react-router-dom";
-import { VerifyEmailPage } from "./pages/login/verifyEmailPage";
 import { AuthProvider } from "./components/auth/AuthProvider";
 
 function App() {
@@ -28,6 +27,7 @@ function App() {
     "/abouts",
     "/verify-email",
     "/admin/login",
+    "/reset",
   ];
 
   // Kiểm tra với pathname đã được chuẩn hóa

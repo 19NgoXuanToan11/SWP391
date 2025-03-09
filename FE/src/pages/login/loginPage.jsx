@@ -264,10 +264,11 @@ export function LoginPage() {
                   />
                   <span>Nhớ tôi</span>
                 </label>
-                <Link to="/reset">
-                  <button className="text-sm text-pink-500 hover:text-pink-600">
-                    Quên mật khẩu?
-                  </button>
+                <Link
+                  to="/reset"
+                  className="text-sm text-pink-500 hover:text-pink-600"
+                >
+                  Quên mật khẩu?
                 </Link>
               </div>
 
