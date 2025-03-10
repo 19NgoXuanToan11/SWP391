@@ -18,11 +18,15 @@ const SidebarAdmin = () => {
   const location = useLocation();
 
   const menuItems = [
-    { path: "/dashboard", icon: <DashboardOutlined />, label: "Dashboard" },
-    { path: "/account", icon: <UserOutlined />, label: "Users" },
-    { path: "/order", icon: <ShoppingCartOutlined />, label: "Orders" },
-    { path: "/category", icon: <AppstoreOutlined />, label: "Categories" },
-    { path: "/brand", icon: <TagOutlined />, label: "Brands" },
+    {
+      path: "/dashboard",
+      icon: <DashboardOutlined />,
+      label: "Bảng điều khiển",
+    },
+    { path: "/account", icon: <UserOutlined />, label: "Tài khoản" },
+    { path: "/order", icon: <ShoppingCartOutlined />, label: "Đơn hàng" },
+    { path: "/category", icon: <AppstoreOutlined />, label: "Danh mục" },
+    { path: "/brand", icon: <TagOutlined />, label: "Thương hiệu" },
   ];
 
   return (
@@ -88,21 +92,6 @@ const SidebarAdmin = () => {
           })}
         </ul>
       </nav>
-
-      {/* Bottom Section */}
-      {!collapsed && (
-        <div className="absolute bottom-0 left-0 right-0 p-6">
-          <div className="bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl p-4">
-            <h3 className="text-sm font-semibold text-gray-300">Need Help?</h3>
-            <p className="text-xs text-gray-400 mt-1">
-              Contact our support team
-            </p>
-            <button className="mt-3 w-full px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
-              Get Support
-            </button>
-          </div>
-        </div>
-      )}
     </aside>
   );
 };

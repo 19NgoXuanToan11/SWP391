@@ -61,7 +61,7 @@ const AccountsPage = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [viewMode, setViewMode] = useState("table"); // table or grid
 
-  // Fetch users from API
+  // Lấy dữ liệu người dùng từ API
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -88,13 +88,13 @@ const AccountsPage = () => {
 
           setUsers(formattedUsers);
 
-          // Filter out admin accounts for the initial display
+          // Lọc tài khoản admin cho hiển thị ban đầu
           const nonAdminUsers = formattedUsers.filter(
             (user) => user.role !== "Admin"
           );
           setFilteredUsers(nonAdminUsers);
 
-          // Tính toán số liệu thống kê (excluding admins for security)
+          // Tính toán số liệu thống kê (không bao gồm admin vì lý do bảo mật)
           setTotalUsers(nonAdminUsers.length);
           setActiveUsers(
             nonAdminUsers.filter((user) => user.status === "Active").length
@@ -104,8 +104,8 @@ const AccountsPage = () => {
           );
         }
       } catch (error) {
-        console.error("Error fetching users:", error);
-        message.error("Failed to fetch users. Please try again later.");
+        console.error("Lỗi khi tải dữ liệu người dùng:", error);
+        message.error("Không thể tải dữ liệu người dùng. Vui lòng thử lại sau.");
       } finally {
         setLoading(false);
       }
@@ -114,16 +114,16 @@ const AccountsPage = () => {
     fetchUsers();
   }, []);
 
-  // Filter users based on search term and active tab
+  // Lọc người dùng dựa trên từ khóa tìm kiếm và tab đang hoạt động
   useEffect(() => {
     let filtered = [...users];
 
-    // First filter out admin accounts unless specifically viewing admin tab
+    // Đầu tiên lọc tài khoản admin trừ khi đang xem tab admin
     if (activeTab !== "admin") {
       filtered = filtered.filter((user) => user.role !== "Admin");
     }
 
-    // Then apply other filters
+    // Sau đó áp dụng các bộ lọc khác
     if (activeTab === "active") {
       filtered = filtered.filter((user) => user.status === "Active");
     } else if (activeTab === "inactive") {
@@ -132,7 +132,7 @@ const AccountsPage = () => {
       filtered = filtered.filter((user) => user.role === "Admin");
     }
 
-    // Filter by search term
+    // Lọc theo từ khóa tìm kiếm
     if (searchTerm.trim() !== "") {
       filtered = filtered.filter(
         (user) =>
@@ -144,7 +144,7 @@ const AccountsPage = () => {
     setFilteredUsers(filtered);
   }, [searchTerm, users, activeTab]);
 
-  // Handle user edit
+  // Xử lý chỉnh sửa người dùng
   const handleEdit = (user) => {
     setEditingUser(user);
     form.setFieldsValue({
@@ -157,39 +157,39 @@ const AccountsPage = () => {
     setIsModalVisible(true);
   };
 
-  // Handle user delete
+  // Xử lý xóa người dùng
   const handleDelete = (userId) => {
     Modal.confirm({
-      title: "Are you sure you want to delete this user?",
-      content: "This action cannot be undone.",
-      okText: "Yes",
+      title: "Bạn có chắc chắn muốn xóa người dùng này không?",
+      content: "Hành động này không thể hoàn tác.",
+      okText: "Đồng ý",
       okType: "danger",
-      cancelText: "No",
+      cancelText: "Hủy",
       onOk: async () => {
         try {
-          // Implement API call to delete user
+          // Thực hiện gọi API để xóa người dùng
           // await axios.delete(`https://localhost:7285/api/User/${userId}`);
 
-          // For now, just update the UI
+          // Tạm thời, chỉ cập nhật giao diện
           const updatedUsers = users.filter((user) => user.id !== userId);
           setUsers(updatedUsers);
-          message.success("User deleted successfully");
+          message.success("Xóa người dùng thành công");
         } catch (error) {
-          console.error("Error deleting user:", error);
-          message.error("Failed to delete user");
+          console.error("Lỗi khi xóa người dùng:", error);
+          message.error("Không thể xóa người dùng");
         }
       },
     });
   };
 
-  // Handle form submission
+  // Xử lý gửi biểu mẫu
   const handleFormSubmit = async (values) => {
     try {
       if (editingUser) {
-        // Implement API call to update user
+        // Thực hiện gọi API để cập nhật người dùng
         // await axios.put(`https://localhost:7285/api/User/${editingUser.id}`, values);
 
-        // For now, just update the UI
+        // Tạm thời, chỉ cập nhật giao diện
         const updatedUsers = users.map((user) => {
           if (user.id === editingUser.id) {
             return { ...user, ...values };
@@ -197,32 +197,32 @@ const AccountsPage = () => {
           return user;
         });
         setUsers(updatedUsers);
-        message.success("User updated successfully");
+        message.success("Cập nhật người dùng thành công");
       } else {
-        // Implement API call to create user
+        // Thực hiện gọi API để tạo người dùng
         // const response = await axios.post("https://localhost:7285/api/User", values);
 
-        // For now, just update the UI
+        // Tạm thời, chỉ cập nhật giao diện
         const newUser = {
-          id: Date.now(), // Temporary ID
+          id: Date.now(), // ID tạm thời
           avatar: `https://ui-avatars.com/api/?name=${values.username}`,
           ...values,
           lastLogin: "N/A",
           joinDate: new Date().toISOString(),
         };
         setUsers([...users, newUser]);
-        message.success("User created successfully");
+        message.success("Tạo người dùng mới thành công");
       }
       setIsModalVisible(false);
       form.resetFields();
       setEditingUser(null);
     } catch (error) {
-      console.error("Error saving user:", error);
-      message.error("Failed to save user");
+      console.error("Lỗi khi lưu người dùng:", error);
+      message.error("Không thể lưu người dùng");
     }
   };
 
-  // Handle add user button click
+  // Xử lý khi nhấn nút thêm người dùng
   const handleAddUser = () => {
     setEditingUser(null);
     form.resetFields();
@@ -230,31 +230,31 @@ const AccountsPage = () => {
     setIsModalVisible(true);
   };
 
-  // Handle bulk actions
+  // Xử lý hành động hàng loạt
   const handleBulkAction = (actionType) => {
     if (selectedRows.length === 0) return;
 
     const actionMap = {
       activate: {
-        title: "Activate Users",
-        content: `Are you sure you want to activate ${selectedRows.length} users?`,
-        success: "Users activated successfully",
-        error: "Failed to activate users",
+        title: "Kích hoạt người dùng",
+        content: `Bạn có chắc chắn muốn kích hoạt ${selectedRows.length} người dùng không?`,
+        success: "Kích hoạt người dùng thành công",
+        error: "Không thể kích hoạt người dùng",
         perform: (user) => ({ ...user, status: "Active" }),
       },
       deactivate: {
-        title: "Deactivate Users",
-        content: `Are you sure you want to deactivate ${selectedRows.length} users?`,
-        success: "Users deactivated successfully",
-        error: "Failed to deactivate users",
+        title: "Vô hiệu hóa người dùng",
+        content: `Bạn có chắc chắn muốn vô hiệu hóa ${selectedRows.length} người dùng không?`,
+        success: "Vô hiệu hóa người dùng thành công",
+        error: "Không thể vô hiệu hóa người dùng",
         perform: (user) => ({ ...user, status: "Inactive" }),
       },
       delete: {
-        title: "Delete Users",
-        content: `Are you sure you want to delete ${selectedRows.length} users? This action cannot be undone.`,
-        success: "Users deleted successfully",
-        error: "Failed to delete users",
-        perform: null, // Special case for delete
+        title: "Xóa người dùng",
+        content: `Bạn có chắc chắn muốn xóa ${selectedRows.length} người dùng không? Hành động này không thể hoàn tác.`,
+        success: "Xóa người dùng thành công",
+        error: "Không thể xóa người dùng",
+        perform: null, // Trường hợp đặc biệt cho xóa
       },
     };
 
@@ -263,19 +263,19 @@ const AccountsPage = () => {
     Modal.confirm({
       title,
       content,
-      okText: "Yes",
+      okText: "Đồng ý",
       okType: actionType === "delete" ? "danger" : "primary",
-      cancelText: "No",
+      cancelText: "Hủy",
       onOk: async () => {
         try {
           if (actionType === "delete") {
-            // For delete, filter out the selected users
+            // Đối với xóa, lọc ra các người dùng đã chọn
             const updatedUsers = users.filter(
               (user) => !selectedRows.includes(user.id)
             );
             setUsers(updatedUsers);
           } else {
-            // For other actions, update the users
+            // Đối với các hành động khác, cập nhật người dùng
             const updatedUsers = users.map((user) => {
               if (selectedRows.includes(user.id)) {
                 return perform(user);
@@ -287,14 +287,14 @@ const AccountsPage = () => {
           setSelectedRows([]);
           message.success(success);
         } catch (err) {
-          console.error(`Error during bulk ${actionType}:`, err);
+          console.error(`Lỗi khi thực hiện hành động hàng loạt ${actionType}:`, err);
           message.error(error);
         }
       },
     });
   };
 
-  // Toggle row selection
+  // Chuyển đổi lựa chọn hàng
   const toggleRowSelection = (userId) => {
     setSelectedRows((prev) =>
       prev.includes(userId)
@@ -303,7 +303,7 @@ const AccountsPage = () => {
     );
   };
 
-  // Toggle all rows selection
+  // Chuyển đổi lựa chọn tất cả hàng
   const toggleAllRows = () => {
     if (selectedRows.length === filteredUsers.length) {
       setSelectedRows([]);
@@ -312,7 +312,7 @@ const AccountsPage = () => {
     }
   };
 
-  // More actions menu
+  // Menu hành động khác
   const moreActionsMenu = (user) => [
     {
       key: "1",
@@ -322,7 +322,7 @@ const AccountsPage = () => {
           onClick={() => handleEdit(user)}
         >
           <EditOutlined className="text-blue-500" />
-          <span>Edit User</span>
+          <span>Chỉnh sửa người dùng</span>
         </div>
       ),
     },
@@ -332,12 +332,12 @@ const AccountsPage = () => {
         <div
           className="flex items-center space-x-2 px-3 py-2"
           onClick={() => {
-            // Implement view user details
-            message.info(`Viewing details for ${user.username}`);
+            // Thực hiện xem chi tiết người dùng
+            message.info(`Xem chi tiết cho ${user.username}`);
           }}
         >
           <EyeOutlined className="text-green-500" />
-          <span>View Details</span>
+          <span>Xem chi tiết</span>
         </div>
       ),
     },
@@ -347,12 +347,12 @@ const AccountsPage = () => {
         <div
           className="flex items-center space-x-2 px-3 py-2"
           onClick={() => {
-            // Implement reset password
-            message.info(`Password reset for ${user.username}`);
+            // Thực hiện đặt lại mật khẩu
+            message.info(`Đặt lại mật khẩu cho ${user.username}`);
           }}
         >
           <LockOutlined className="text-orange-500" />
-          <span>Reset Password</span>
+          <span>Đặt lại mật khẩu</span>
         </div>
       ),
     },
@@ -364,13 +364,13 @@ const AccountsPage = () => {
           onClick={() => handleDelete(user.id)}
         >
           <DeleteOutlined className="text-red-500" />
-          <span>Delete User</span>
+          <span>Xóa người dùng</span>
         </div>
       ),
     },
   ];
 
-  // Get random color for user avatar background
+  // Lấy màu ngẫu nhiên cho nền avatar người dùng
   const getUserColor = (userId) => {
     const colors = [
       "bg-blue-500",
@@ -391,7 +391,7 @@ const AccountsPage = () => {
       <SidebarAdmin />
 
       <div className="flex-1 p-8">
-        {/* Header with animated gradient */}
+        {/* Tiêu đề với gradient hoạt ảnh */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -399,16 +399,16 @@ const AccountsPage = () => {
           className="mb-8 relative overflow-hidden rounded-3xl p-8 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
         >
           <div className="relative z-10">
-            <h1 className="text-3xl font-bold text-white">User Management</h1>
+            <h1 className="text-3xl font-bold text-white">Quản Lý Người Dùng</h1>
             <p className="text-white text-opacity-80 mt-2 max-w-2xl">
-              Manage user accounts, permissions, and access to your application
+              Quản lý tài khoản người dùng, quyền hạn và quyền truy cập vào ứng dụng của bạn
             </p>
           </div>
           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-20 -mt-20"></div>
           <div className="absolute bottom-0 left-0 w-40 h-40 bg-white opacity-10 rounded-full -ml-10 -mb-10"></div>
         </motion.div>
 
-        {/* Stats Cards */}
+        {/* Thẻ thống kê */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -424,10 +424,10 @@ const AccountsPage = () => {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Total Users</p>
+                <p className="text-sm text-gray-500">Tổng số người dùng</p>
                 <p className="text-3xl font-bold text-gray-800">{totalUsers}</p>
                 <p className="text-xs text-gray-400 mt-1">
-                  All registered accounts
+                  Tất cả tài khoản đã đăng ký
                 </p>
               </div>
               <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-md">
@@ -451,13 +451,12 @@ const AccountsPage = () => {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Active Users</p>
+                <p className="text-sm text-gray-500">Người dùng đang hoạt động</p>
                 <p className="text-3xl font-bold text-gray-800">
                   {activeUsers}
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
-                  {Math.round((activeUsers / totalUsers) * 100) || 0}% of total
-                  users
+                  {Math.round((activeUsers / totalUsers) * 100) || 0}% trong tổng số người dùng
                 </p>
               </div>
               <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-md">
@@ -485,13 +484,12 @@ const AccountsPage = () => {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Inactive Users</p>
+                <p className="text-sm text-gray-500">Người dùng không hoạt động</p>
                 <p className="text-3xl font-bold text-gray-800">
                   {inactiveUsers}
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
-                  {Math.round((inactiveUsers / totalUsers) * 100) || 0}% of
-                  total users
+                  {Math.round((inactiveUsers / totalUsers) * 100) || 0}% trong tổng số người dùng
                 </p>
               </div>
               <div className="w-14 h-14 bg-gradient-to-br from-red-400 to-red-600 rounded-2xl flex items-center justify-center shadow-md">
@@ -511,7 +509,7 @@ const AccountsPage = () => {
           </motion.div>
         </motion.div>
 
-        {/* Action Bar */}
+        {/* Thanh hành động */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -524,7 +522,7 @@ const AccountsPage = () => {
                 <SearchOutlined className="absolute left-3 top-3 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search users..."
+                  placeholder="Tìm kiếm người dùng..."
                   className="pl-10 pr-4 py-2 w-64 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition-all"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -549,25 +547,25 @@ const AccountsPage = () => {
                     <Option value="all">
                       <div className="flex items-center gap-2">
                         <TeamOutlined className="text-blue-500" />
-                        <span>All Users</span>
+                        <span>Tất cả người dùng</span>
                       </div>
                     </Option>
                     <Option value="active">
                       <div className="flex items-center gap-2">
                         <CheckCircleOutlined className="text-green-500" />
-                        <span>Active Users</span>
+                        <span>Người dùng đang hoạt động</span>
                       </div>
                     </Option>
                     <Option value="inactive">
                       <div className="flex items-center gap-2">
                         <CloseCircleOutlined className="text-red-500" />
-                        <span>Inactive Users</span>
+                        <span>Người dùng không hoạt động</span>
                       </div>
                     </Option>
                     <Option value="admin">
                       <div className="flex items-center gap-2">
                         <SettingOutlined className="text-purple-500" />
-                        <span>Admins</span>
+                        <span>Quản trị viên</span>
                       </div>
                     </Option>
                   </Select>
@@ -602,9 +600,9 @@ const AccountsPage = () => {
               {selectedRows.length > 0 ? (
                 <div className="flex items-center space-x-2">
                   <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">
-                    {selectedRows.length} selected
+                    Đã chọn {selectedRows.length}
                   </span>
-                  <Tooltip title="Activate Users">
+                  <Tooltip title="Kích hoạt người dùng">
                     <button
                       className="p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
                       onClick={() => handleBulkAction("activate")}
@@ -612,7 +610,7 @@ const AccountsPage = () => {
                       <CheckCircleOutlined />
                     </button>
                   </Tooltip>
-                  <Tooltip title="Deactivate Users">
+                  <Tooltip title="Vô hiệu hóa người dùng">
                     <button
                       className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                       onClick={() => handleBulkAction("deactivate")}
@@ -620,7 +618,7 @@ const AccountsPage = () => {
                       <CloseCircleOutlined />
                     </button>
                   </Tooltip>
-                  <Tooltip title="Delete Users">
+                  <Tooltip title="Xóa người dùng">
                     <button
                       className="p-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
                       onClick={() => handleBulkAction("delete")}
@@ -635,14 +633,14 @@ const AccountsPage = () => {
                   onClick={handleAddUser}
                 >
                   <UserAddOutlined />
-                  <span>Add User</span>
+                  <span>Thêm người dùng</span>
                 </button>
               )}
             </div>
           </div>
         </motion.div>
 
-        {/* Users Content */}
+        {/* Nội dung người dùng */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -653,15 +651,14 @@ const AccountsPage = () => {
               <Spin
                 indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
               />
-              <span className="ml-2">Loading users...</span>
+              <span className="ml-2">Đang tải người dùng...</span>
             </div>
           ) : filteredUsers.length === 0 ? (
             <div className="bg-white rounded-2xl shadow-sm p-10 text-center">
               <Empty
                 description={
                   <span className="text-gray-500">
-                    No users found. Try adjusting your search or create a new
-                    user.
+                    Không tìm thấy người dùng nào. Hãy điều chỉnh tìm kiếm hoặc tạo người dùng mới.
                   </span>
                 }
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -671,7 +668,7 @@ const AccountsPage = () => {
                 onClick={handleAddUser}
               >
                 <UserAddOutlined className="mr-2" />
-                Create New User
+                Tạo người dùng mới
               </button>
             </div>
           ) : viewMode === "table" ? (
@@ -692,24 +689,24 @@ const AccountsPage = () => {
                             onChange={toggleAllRows}
                           />
                           <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                            User
+                            Người dùng
                           </span>
                         </div>
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Contact
+                        Liên hệ
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Role
+                        Vai trò
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Status
+                        Trạng thái
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Join Date
+                        Ngày tham gia
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Actions
+                        Thao tác
                       </th>
                     </tr>
                   </thead>
@@ -768,7 +765,7 @@ const AccountsPage = () => {
                             color={user.role === "Admin" ? "purple" : "blue"}
                             className="px-3 py-1 rounded-full text-xs font-medium"
                           >
-                            {user.role}
+                            {user.role === "Admin" ? "Quản trị viên" : "Người dùng"}
                           </Tag>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -778,7 +775,7 @@ const AccountsPage = () => {
                             }
                             text={
                               <span className="text-sm font-medium">
-                                {user.status}
+                                {user.status === "Active" ? "Hoạt động" : "Không hoạt động"}
                               </span>
                             }
                           />
@@ -791,7 +788,7 @@ const AccountsPage = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <div className="flex items-center space-x-3">
-                            <Tooltip title="Edit">
+                            <Tooltip title="Chỉnh sửa">
                               <button
                                 className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-full transition-colors"
                                 onClick={() => handleEdit(user)}
@@ -799,7 +796,7 @@ const AccountsPage = () => {
                                 <EditOutlined />
                               </button>
                             </Tooltip>
-                            <Tooltip title="Delete">
+                            <Tooltip title="Xóa">
                               <button
                                 className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors"
                                 onClick={() => handleDelete(user.id)}
@@ -824,14 +821,14 @@ const AccountsPage = () => {
                 </table>
               </div>
 
-              {/* Pagination */}
+              {/* Phân trang */}
               <div className="flex justify-between items-center px-6 py-4 bg-gray-50">
                 <div className="text-sm text-gray-500">
-                  Showing {filteredUsers.length} of {totalUsers} users
+                  Hiển thị {filteredUsers.length} trong tổng số {totalUsers} người dùng
                 </div>
                 <div className="flex items-center space-x-2">
                   <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors">
-                    Previous
+                    Trước
                   </button>
                   <button className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
                     1
@@ -843,13 +840,13 @@ const AccountsPage = () => {
                     3
                   </button>
                   <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors">
-                    Next
+                    Tiếp
                   </button>
                 </div>
               </div>
             </div>
           ) : (
-            // Grid View
+            // Chế độ xem lưới
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredUsers.map((user, index) => (
                 <motion.div
@@ -895,7 +892,7 @@ const AccountsPage = () => {
                       </div>
                     </div>
                     <div className="flex space-x-1">
-                      <Tooltip title="Edit">
+                      <Tooltip title="Chỉnh sửa">
                         <button
                           className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
                           onClick={() => handleEdit(user)}
@@ -934,11 +931,11 @@ const AccountsPage = () => {
                       color={user.role === "Admin" ? "purple" : "blue"}
                       className="px-3 py-1 rounded-full text-xs font-medium"
                     >
-                      {user.role}
+                      {user.role === "Admin" ? "Quản trị viên" : "Người dùng"}
                     </Tag>
                     <div className="flex items-center text-xs text-gray-500">
                       <CalendarOutlined className="mr-1" />
-                      Joined {new Date(user.joinDate).toLocaleDateString()}
+                      Tham gia {new Date(user.joinDate).toLocaleDateString()}
                     </div>
                   </div>
                 </motion.div>
@@ -947,9 +944,9 @@ const AccountsPage = () => {
           )}
         </motion.div>
 
-        {/* User Form Modal */}
+        {/* Modal biểu mẫu người dùng */}
         <Modal
-          title={editingUser ? "Edit User" : "Add New User"}
+          title={editingUser ? "Chỉnh sửa người dùng" : "Thêm người dùng mới"}
           open={isModalVisible}
           onCancel={() => setIsModalVisible(false)}
           footer={null}
@@ -969,12 +966,12 @@ const AccountsPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Form.Item
                 name="username"
-                label="Username"
-                rules={[{ required: true, message: "Please enter username" }]}
+                label="Tên người dùng"
+                rules={[{ required: true, message: "Vui lòng nhập tên người dùng" }]}
               >
                 <Input
                   prefix={<UserOutlined className="text-gray-400" />}
-                  placeholder="Enter username"
+                  placeholder="Nhập tên người dùng"
                   className="rounded-xl"
                 />
               </Form.Item>
@@ -983,13 +980,13 @@ const AccountsPage = () => {
                 name="email"
                 label="Email"
                 rules={[
-                  { required: true, message: "Please enter email" },
-                  { type: "email", message: "Please enter a valid email" },
+                  { required: true, message: "Vui lòng nhập email" },
+                  { type: "email", message: "Vui lòng nhập email hợp lệ" },
                 ]}
               >
                 <Input
                   prefix={<MailOutlined className="text-gray-400" />}
-                  placeholder="Enter email"
+                  placeholder="Nhập email"
                   className="rounded-xl"
                 />
               </Form.Item>
@@ -999,29 +996,29 @@ const AccountsPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Form.Item
                   name="password"
-                  label="Password"
+                  label="Mật khẩu"
                   rules={[
                     {
                       required: !editingUser,
-                      message: "Please enter password",
+                      message: "Vui lòng nhập mật khẩu",
                     },
                   ]}
                 >
                   <Password
                     prefix={<LockOutlined className="text-gray-400" />}
-                    placeholder="Enter password"
+                    placeholder="Nhập mật khẩu"
                     className="rounded-xl"
                   />
                 </Form.Item>
 
                 <Form.Item
                   name="confirmPassword"
-                  label="Confirm Password"
+                  label="Xác nhận mật khẩu"
                   dependencies={["password"]}
                   rules={[
                     {
                       required: !editingUser,
-                      message: "Please confirm password",
+                      message: "Vui lòng xác nhận mật khẩu",
                     },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
@@ -1029,7 +1026,7 @@ const AccountsPage = () => {
                           return Promise.resolve();
                         }
                         return Promise.reject(
-                          new Error("Passwords do not match")
+                          new Error("Mật khẩu không khớp")
                         );
                       },
                     }),
@@ -1037,33 +1034,33 @@ const AccountsPage = () => {
                 >
                   <Password
                     prefix={<LockOutlined className="text-gray-400" />}
-                    placeholder="Confirm password"
+                    placeholder="Xác nhận mật khẩu"
                     className="rounded-xl"
                   />
                 </Form.Item>
               </div>
             )}
 
-            <Form.Item name="address" label="Address">
+            <Form.Item name="address" label="Địa chỉ">
               <Input
                 prefix={<HomeOutlined className="text-gray-400" />}
-                placeholder="Enter address"
+                placeholder="Nhập địa chỉ"
                 className="rounded-xl"
               />
             </Form.Item>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Form.Item name="role" label="Role">
+              <Form.Item name="role" label="Vai trò">
                 <Select className="rounded-xl">
-                  <Option value="User">User</Option>
-                  <Option value="Admin">Admin</Option>
+                  <Option value="User">Người dùng</Option>
+                  <Option value="Admin">Quản trị viên</Option>
                 </Select>
               </Form.Item>
 
-              <Form.Item name="status" label="Status">
+              <Form.Item name="status" label="Trạng thái">
                 <Select className="rounded-xl">
-                  <Option value="Active">Active</Option>
-                  <Option value="Inactive">Inactive</Option>
+                  <Option value="Active">Hoạt động</Option>
+                  <Option value="Inactive">Không hoạt động</Option>
                 </Select>
               </Form.Item>
             </div>
@@ -1074,13 +1071,13 @@ const AccountsPage = () => {
                 className="px-6 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
                 onClick={() => setIsModalVisible(false)}
               >
-                Cancel
+                Hủy
               </button>
               <button
                 type="submit"
                 className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-xl hover:opacity-90 transition-all"
               >
-                {editingUser ? "Update User" : "Create User"}
+                {editingUser ? "Cập nhật người dùng" : "Tạo người dùng"}
               </button>
             </div>
           </Form>

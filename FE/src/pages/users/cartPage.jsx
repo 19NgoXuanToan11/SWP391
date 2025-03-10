@@ -337,13 +337,6 @@ function CartPage() {
                             </div>
                           </Space>
                           <Space>
-                            <Tooltip title="Thêm vào danh sách yêu thích">
-                              <Button
-                                icon={<HeartOutlined />}
-                                onClick={() => handleWishlistToggle(item)}
-                                className="border-pink-200 text-pink-500 hover:text-pink-600 hover:border-pink-300"
-                              />
-                            </Tooltip>
                             <Tooltip title="Xóa sản phẩm">
                               <Button
                                 icon={<DeleteOutlined />}
@@ -373,12 +366,6 @@ function CartPage() {
                     <div className="flex justify-between">
                       <Text>Tạm tính</Text>
                       <Text>{formatPrice(calculateTotal())}</Text>
-                    </div>
-                    <div className="flex justify-between">
-                      <Text>Tiết kiệm</Text>
-                      <Text className="text-green-500">
-                        -{formatPrice(calculateDiscount())}
-                      </Text>
                     </div>
                     <Divider className="my-4" />
                     <div className="flex justify-between">

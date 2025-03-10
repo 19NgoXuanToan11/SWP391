@@ -45,7 +45,7 @@ const CategoryPage = () => {
   const [viewMode, setViewMode] = useState("grid"); // grid or list
   const [filterStatus, setFilterStatus] = useState("all"); // all, active, inactive
 
-  // Fetch categories using RTK Query
+  // Lấy danh mục sử dụng RTK Query
   const {
     data: categories,
     isLoading,
@@ -56,19 +56,19 @@ const CategoryPage = () => {
   const [deleteCategory, { isLoading: isDeleting }] =
     useDeleteCategoryMutation();
 
-  // Filter categories based on search term and status
+  // Lọc danh mục dựa trên từ khóa tìm kiếm và trạng thái
   useEffect(() => {
     if (categories) {
       let filtered = [...categories];
 
-      // Filter by status
+      // Lọc theo trạng thái
       if (filterStatus === "active") {
         filtered = filtered.filter((cat) => !cat.isDeleted);
       } else if (filterStatus === "inactive") {
         filtered = filtered.filter((cat) => cat.isDeleted);
       }
 
-      // Filter by search term
+      // Lọc theo từ khóa tìm kiếm
       if (searchTerm.trim() !== "") {
         filtered = filtered.filter(
           (category) =>
@@ -85,7 +85,7 @@ const CategoryPage = () => {
     }
   }, [searchTerm, categories, filterStatus]);
 
-  // Handle category edit
+  // Xử lý chỉnh sửa danh mục
   const handleEdit = (category) => {
     setEditingCategory(category);
     form.setFieldsValue({
@@ -95,28 +95,28 @@ const CategoryPage = () => {
     setIsModalVisible(true);
   };
 
-  // Handle category delete
+  // Xử lý xóa danh mục
   const handleDelete = (categoryId) => {
     Modal.confirm({
-      title: "Are you sure you want to delete this category?",
-      content: "This action cannot be undone.",
-      okText: "Yes",
+      title: "Bạn có chắc chắn muốn xóa danh mục này không?",
+      content: "Hành động này không thể hoàn tác.",
+      okText: "Đồng ý",
       okType: "danger",
-      cancelText: "No",
+      cancelText: "Hủy",
       onOk: async () => {
         try {
           await deleteCategory(categoryId).unwrap();
-          message.success("Category deleted successfully");
+          message.success("Xóa danh mục thành công");
           refetch();
         } catch (error) {
-          console.error("Error deleting category:", error);
-          message.error("Failed to delete category");
+          console.error("Lỗi khi xóa danh mục:", error);
+          message.error("Không thể xóa danh mục");
         }
       },
     });
   };
 
-  // Calculate stats
+  // Tính toán thống kê
   const totalCategories = categories?.length || 0;
   const activeCategories =
     categories?.filter((cat) => !cat.isDeleted)?.length || 0;
@@ -124,7 +124,7 @@ const CategoryPage = () => {
   const totalProducts =
     categories?.reduce((sum, cat) => sum + (cat.productCount || 0), 0) || 0;
 
-  // Get random color for category icon
+  // Lấy màu ngẫu nhiên cho biểu tượng danh mục
   const getCategoryColor = (categoryId) => {
     const colors = [
       "bg-blue-500",
@@ -140,7 +140,7 @@ const CategoryPage = () => {
     return colors[categoryId % colors.length];
   };
 
-  // Get category icon
+  // Lấy biểu tượng danh mục
   const getCategoryIcon = (categoryName) => {
     const firstLetter = categoryName
       ? categoryName.charAt(0).toUpperCase()
@@ -150,7 +150,7 @@ const CategoryPage = () => {
 
   if (isError) {
     message.error(
-      `Failed to fetch categories: ${error?.data?.message || "Unknown error"}`
+      `Không thể tải danh mục: ${error?.data?.message || "Lỗi không xác định"}`
     );
   }
 
@@ -159,7 +159,7 @@ const CategoryPage = () => {
       <SidebarAdmin />
 
       <div className="flex-1 p-8">
-        {/* Header with animated gradient */}
+        {/* Tiêu đề với gradient hoạt ảnh */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -167,19 +167,17 @@ const CategoryPage = () => {
           className="mb-8 relative overflow-hidden rounded-3xl p-8 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500"
         >
           <div className="relative z-10">
-            <h1 className="text-3xl font-bold text-white">
-              Categories Management
-            </h1>
+            <h1 className="text-3xl font-bold text-white">Quản Lý Danh Mục</h1>
             <p className="text-white text-opacity-80 mt-2 max-w-2xl">
-              Organize and manage your product categories to enhance your
-              customers' shopping experience
+              Tổ chức và quản lý các danh mục sản phẩm để nâng cao trải nghiệm
+              mua sắm của khách hàng
             </p>
           </div>
           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-20 -mt-20"></div>
           <div className="absolute bottom-0 left-0 w-40 h-40 bg-white opacity-10 rounded-full -ml-10 -mb-10"></div>
         </motion.div>
 
-        {/* Stats Cards */}
+        {/* Thẻ thống kê */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -195,12 +193,12 @@ const CategoryPage = () => {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Total Categories</p>
+                <p className="text-sm text-gray-500">Tổng số danh mục</p>
                 <p className="text-3xl font-bold text-gray-800">
                   {totalCategories}
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
-                  All registered categories
+                  Tất cả danh mục đã đăng ký
                 </p>
               </div>
               <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-md">
@@ -224,13 +222,13 @@ const CategoryPage = () => {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Active Categories</p>
+                <p className="text-sm text-gray-500">Danh mục đang hoạt động</p>
                 <p className="text-3xl font-bold text-gray-800">
                   {activeCategories}
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
                   {Math.round((activeCategories / totalCategories) * 100) || 0}%
-                  of total categories
+                  trong tổng số danh mục
                 </p>
               </div>
               <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-md">
@@ -250,7 +248,7 @@ const CategoryPage = () => {
           </motion.div>
         </motion.div>
 
-        {/* Action Bar */}
+        {/* Thanh hành động */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -263,7 +261,7 @@ const CategoryPage = () => {
                 <SearchOutlined className="absolute left-3 top-3 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search categories..."
+                  placeholder="Tìm kiếm danh mục..."
                   className="pl-10 pr-4 py-2 w-64 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white transition-all"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -304,13 +302,13 @@ const CategoryPage = () => {
                 }}
               >
                 <PlusOutlined />
-                <span>Add Category</span>
+                <span>Thêm danh mục</span>
               </button>
             </div>
           </div>
         </motion.div>
 
-        {/* Categories Content */}
+        {/* Nội dung danh mục */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -321,15 +319,15 @@ const CategoryPage = () => {
               <Spin
                 indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
               />
-              <span className="ml-2">Loading categories...</span>
+              <span className="ml-2">Đang tải danh mục...</span>
             </div>
           ) : filteredCategories.length === 0 ? (
             <div className="bg-white rounded-2xl shadow-sm p-10 text-center">
               <Empty
                 description={
                   <span className="text-gray-500">
-                    No categories found. Try adjusting your search or create a
-                    new category.
+                    Không tìm thấy danh mục nào. Hãy điều chỉnh tìm kiếm hoặc
+                    tạo danh mục mới.
                   </span>
                 }
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -343,7 +341,7 @@ const CategoryPage = () => {
                 }}
               >
                 <PlusOutlined className="mr-2" />
-                Create New Category
+                Tạo danh mục mới
               </button>
             </div>
           ) : viewMode === "grid" ? (
@@ -379,7 +377,7 @@ const CategoryPage = () => {
                       </div>
                     </div>
                     <div className="flex space-x-1">
-                      <Tooltip title="Edit">
+                      <Tooltip title="Chỉnh sửa">
                         <button
                           className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
                           onClick={() => handleEdit(category)}
@@ -387,7 +385,7 @@ const CategoryPage = () => {
                           <EditOutlined />
                         </button>
                       </Tooltip>
-                      <Tooltip title="Delete">
+                      <Tooltip title="Xóa">
                         <button
                           className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                           onClick={() => handleDelete(category.categoryId)}
@@ -404,14 +402,16 @@ const CategoryPage = () => {
                         status={!category.isDeleted ? "success" : "error"}
                         text={
                           <span className="text-sm font-medium">
-                            {!category.isDeleted ? "Active" : "Inactive"}
+                            {!category.isDeleted
+                              ? "Hoạt động"
+                              : "Không hoạt động"}
                           </span>
                         }
                       />
                     </div>
                     <span className="text-sm text-gray-500 flex items-center">
                       <TagOutlined className="mr-1" />
-                      {category.productCount || 0} products
+                      {category.productCount || 0} sản phẩm
                     </span>
                   </div>
                 </motion.div>
@@ -423,19 +423,19 @@ const CategoryPage = () => {
                 <thead>
                   <tr className="bg-gray-50">
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Category
+                      Danh mục
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Description
+                      Mô tả
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Status
+                      Trạng thái
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Products
+                      Sản phẩm
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Actions
+                      Thao tác
                     </th>
                   </tr>
                 </thead>
@@ -472,7 +472,9 @@ const CategoryPage = () => {
                           status={!category.isDeleted ? "success" : "error"}
                           text={
                             <span className="text-sm font-medium">
-                              {!category.isDeleted ? "Active" : "Inactive"}
+                              {!category.isDeleted
+                                ? "Hoạt động"
+                                : "Không hoạt động"}
                             </span>
                           }
                         />
@@ -484,7 +486,7 @@ const CategoryPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <div className="flex items-center space-x-3">
-                          <Tooltip title="Edit">
+                          <Tooltip title="Chỉnh sửa">
                             <button
                               className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-full transition-colors"
                               onClick={() => handleEdit(category)}
@@ -492,7 +494,7 @@ const CategoryPage = () => {
                               <EditOutlined />
                             </button>
                           </Tooltip>
-                          <Tooltip title="Delete">
+                          <Tooltip title="Xóa">
                             <button
                               className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors"
                               onClick={() => handleDelete(category.categoryId)}
@@ -500,7 +502,7 @@ const CategoryPage = () => {
                               <DeleteOutlined />
                             </button>
                           </Tooltip>
-                          <Tooltip title="View Details">
+                          <Tooltip title="Xem chi tiết">
                             <button className="p-2 text-green-500 hover:text-green-700 hover:bg-green-50 rounded-full transition-colors">
                               <EyeOutlined />
                             </button>
@@ -515,9 +517,9 @@ const CategoryPage = () => {
           )}
         </motion.div>
 
-        {/* Category Form Modal */}
+        {/* Modal Form Danh mục */}
         <Modal
-          title={editingCategory ? "Edit Category" : "Add New Category"}
+          title={editingCategory ? "Chỉnh sửa danh mục" : "Thêm danh mục mới"}
           open={isModalVisible}
           onCancel={() => setIsModalVisible(false)}
           footer={null}
@@ -529,8 +531,8 @@ const CategoryPage = () => {
             form={form}
             layout="vertical"
             onFinish={(values) => {
-              console.log("Form values:", values);
-              // Handle form submission
+              console.log("Giá trị form:", values);
+              // Xử lý gửi form
               setIsModalVisible(false);
             }}
             initialValues={{
@@ -539,30 +541,30 @@ const CategoryPage = () => {
           >
             <Form.Item
               name="categoryName"
-              label="Category Name"
+              label="Tên danh mục"
               rules={[
-                { required: true, message: "Please enter category name" },
+                { required: true, message: "Vui lòng nhập tên danh mục" },
               ]}
             >
-              <Input placeholder="Enter category name" className="rounded-xl" />
+              <Input placeholder="Nhập tên danh mục" className="rounded-xl" />
             </Form.Item>
 
             <Form.Item
               name="description"
-              label="Description"
-              rules={[{ required: true, message: "Please enter description" }]}
+              label="Mô tả"
+              rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
             >
               <TextArea
-                placeholder="Enter category description"
+                placeholder="Nhập mô tả danh mục"
                 rows={4}
                 className="rounded-xl"
               />
             </Form.Item>
 
-            <Form.Item name="status" label="Status">
+            <Form.Item name="status" label="Trạng thái">
               <Select className="rounded-xl">
-                <Option value="active">Active</Option>
-                <Option value="inactive">Inactive</Option>
+                <Option value="active">Hoạt động</Option>
+                <Option value="inactive">Không hoạt động</Option>
               </Select>
             </Form.Item>
 
@@ -572,13 +574,13 @@ const CategoryPage = () => {
                 className="px-6 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
                 onClick={() => setIsModalVisible(false)}
               >
-                Cancel
+                Hủy
               </button>
               <button
                 type="submit"
                 className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-xl hover:opacity-90 transition-all"
               >
-                {editingCategory ? "Update Category" : "Create Category"}
+                {editingCategory ? "Cập nhật danh mục" : "Tạo danh mục"}
               </button>
             </div>
           </Form>

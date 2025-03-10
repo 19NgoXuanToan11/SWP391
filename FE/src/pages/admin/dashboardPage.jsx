@@ -33,23 +33,23 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// Mock data for charts
+// Dữ liệu mẫu cho biểu đồ
 const monthlyRevenue = [
-  { name: "Jan", revenue: 65000, orders: 320, profit: 12000 },
-  { name: "Feb", revenue: 59000, orders: 300, profit: 11000 },
-  { name: "Mar", revenue: 80000, orders: 450, profit: 15000 },
-  { name: "Apr", revenue: 81000, orders: 400, profit: 16000 },
-  { name: "May", revenue: 90000, orders: 500, profit: 18000 },
-  { name: "Jun", revenue: 85000, orders: 480, profit: 17000 },
-  { name: "Jul", revenue: 95000, orders: 550, profit: 19000 },
+  { name: "T1", revenue: 65000, orders: 320, profit: 12000 },
+  { name: "T2", revenue: 59000, orders: 300, profit: 11000 },
+  { name: "T3", revenue: 80000, orders: 450, profit: 15000 },
+  { name: "T4", revenue: 81000, orders: 400, profit: 16000 },
+  { name: "T5", revenue: 90000, orders: 500, profit: 18000 },
+  { name: "T6", revenue: 85000, orders: 480, profit: 17000 },
+  { name: "T7", revenue: 95000, orders: 550, profit: 19000 },
 ];
 
 const productCategories = [
-  { name: "Skincare", value: 4000 },
-  { name: "Makeup", value: 3000 },
-  { name: "Haircare", value: 2000 },
-  { name: "Fragrance", value: 1500 },
-  { name: "Tools", value: 1000 },
+  { name: "Chăm sóc da", value: 4000 },
+  { name: "Trang điểm", value: 3000 },
+  { name: "Chăm sóc tóc", value: 2000 },
+  { name: "Nước hoa", value: 1500 },
+  { name: "Dụng cụ", value: 1000 },
 ];
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
@@ -62,14 +62,14 @@ const Dashboard = () => {
       <SidebarAdmin />
 
       <main className="flex-1 p-8">
-        {/* Header */}
+        {/* Tiêu đề */}
         <header className="flex justify-between items-center mb-8 bg-white p-6 rounded-2xl shadow-sm backdrop-blur-md bg-opacity-80">
           <div>
             <h1 className="text-3xl font-bold text-gray-800">
-              Welcome back, Admin!
+              Chào mừng trở lại, Quản trị viên!
             </h1>
             <p className="text-gray-500 mt-1">
-              Here's what's happening with your store today.
+              Đây là những gì đang diễn ra với cửa hàng của bạn hôm nay.
             </p>
           </div>
           <div className="flex items-center space-x-6">
@@ -77,12 +77,12 @@ const Dashboard = () => {
               <SearchOutlined className="absolute left-3 top-3 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="Tìm kiếm..."
                 className="pl-10 pr-4 py-2 w-64 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-gray-50"
               />
             </div>
 
-            {/* Profile Dropdown */}
+            {/* Menu thả xuống hồ sơ */}
             <div className="relative">
               <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -93,15 +93,15 @@ const Dashboard = () => {
                 </div>
                 <div className="hidden md:block text-left">
                   <p className="text-sm font-medium text-gray-700">
-                    Admin User
+                    Quản trị viên
                   </p>
-                  <p className="text-xs text-gray-500">Super Admin</p>
+                  <p className="text-xs text-gray-500">Quản trị viên cấp cao</p>
                 </div>
               </button>
 
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl py-2 border border-gray-100 z-50 transform transition-all duration-300 ease-in-out">
-                  {/* Profile Header - Modernized */}
+                  {/* Tiêu đề hồ sơ - Hiện đại hóa */}
                   <div className="px-4 py-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
                     <div className="flex items-center space-x-3">
                       <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-xl font-medium shadow-md">
@@ -109,46 +109,46 @@ const Dashboard = () => {
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-800 text-lg">
-                          Admin User
+                          Quản trị viên
                         </h3>
                         <p className="text-sm text-gray-600 flex items-center">
                           <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                           admin@example.com
                         </p>
                         <span className="text-xs bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full mt-1 inline-block font-medium shadow-sm">
-                          Super Admin
+                          Quản trị viên cấp cao
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Menu Items - Modernized */}
+                  {/* Các mục menu - Hiện đại hóa */}
                   <div className="py-3 px-4 space-y-2">
                     <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all duration-200 flex items-center space-x-3 group">
                       <span className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-all duration-200">
                         <UserOutlined />
                       </span>
-                      <span className="font-medium">Your Profile</span>
+                      <span className="font-medium">Hồ sơ của bạn</span>
                     </button>
                     <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 rounded-lg transition-all duration-200 flex items-center space-x-3 group">
                       <span className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-all duration-200">
                         <SettingOutlined />
                       </span>
-                      <span className="font-medium">Settings & Privacy</span>
+                      <span className="font-medium">
+                        Cài đặt & Quyền riêng tư
+                      </span>
                     </button>
                     <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-600 rounded-lg transition-all duration-200 flex items-center space-x-3 group">
                       <span className="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center text-teal-500 group-hover:bg-teal-500 group-hover:text-white transition-all duration-200">
                         <QuestionCircleOutlined />
                       </span>
-                      <span className="font-medium">Help & Support</span>
+                      <span className="font-medium">Trợ giúp & Hỗ trợ</span>
                     </button>
                     <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 rounded-lg transition-all duration-200 flex items-center space-x-3 group">
                       <span className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-all duration-200">
                         <BulbOutlined />
                       </span>
-                      <span className="font-medium">
-                        Display & Accessibility
-                      </span>
+                      <span className="font-medium">Hiển thị & Trợ năng</span>
                     </button>
 
                     <div className="pt-2 mt-2 border-t border-gray-100">
@@ -156,7 +156,7 @@ const Dashboard = () => {
                         <span className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center text-red-500 group-hover:bg-red-500 group-hover:text-white transition-all duration-200">
                           <LogoutOutlined />
                         </span>
-                        <span className="font-medium">Sign Out</span>
+                        <span className="font-medium">Đăng xuất</span>
                       </button>
                     </div>
                   </div>
@@ -166,12 +166,12 @@ const Dashboard = () => {
           </div>
         </header>
 
-        {/* Date and Quick Stats */}
+        {/* Ngày và Thống kê nhanh */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center space-x-2 text-gray-600">
             <CalendarOutlined />
             <span>
-              {new Date().toLocaleDateString("en-US", {
+              {new Date().toLocaleDateString("vi-VN", {
                 weekday: "long",
                 year: "numeric",
                 month: "long",
@@ -181,22 +181,26 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Summary Cards */}
+        {/* Thẻ tóm tắt */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          {/* Total Sales Card */}
+          {/* Thẻ Tổng doanh số */}
           <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500">Total Sales</p>
+                <p className="text-sm font-medium text-gray-500">
+                  Tổng doanh số
+                </p>
                 <p className="text-3xl font-bold text-gray-800 mt-2">
-                  $841,162
+                  841.162.000 đ
                 </p>
                 <div className="flex items-center mt-4 space-x-2">
                   <span className="flex items-center text-red-500 text-sm bg-red-50 px-2 py-1 rounded-lg">
                     <ArrowDownOutlined className="mr-1" />
-                    3.6%
+                    3,6%
                   </span>
-                  <span className="text-gray-400 text-sm">vs last month</span>
+                  <span className="text-gray-400 text-sm">
+                    so với tháng trước
+                  </span>
                 </div>
               </div>
               <div className="bg-pink-500 bg-opacity-10 p-4 rounded-2xl">
@@ -205,20 +209,22 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Total Orders Card */}
+          {/* Thẻ Tổng đơn hàng */}
           <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">
-                  Total Orders
+                  Tổng đơn hàng
                 </p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">123,460</p>
+                <p className="text-3xl font-bold text-gray-800 mt-2">123.460</p>
                 <div className="flex items-center mt-4 space-x-2">
                   <span className="flex items-center text-green-500 text-sm bg-green-50 px-2 py-1 rounded-lg">
                     <ArrowUpOutlined className="mr-1" />
-                    2.8%
+                    2,8%
                   </span>
-                  <span className="text-gray-400 text-sm">vs last month</span>
+                  <span className="text-gray-400 text-sm">
+                    so với tháng trước
+                  </span>
                 </div>
               </div>
               <div className="bg-blue-500 bg-opacity-10 p-4 rounded-2xl">
@@ -227,22 +233,24 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Active Users Card */}
+          {/* Thẻ Người dùng hoạt động */}
           <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">
-                  Active Users
+                  Người dùng hoạt động
                 </p>
                 <p className="text-3xl font-bold text-gray-800 mt-2">
-                  1,014,125
+                  1.014.125
                 </p>
                 <div className="flex items-center mt-4 space-x-2">
                   <span className="flex items-center text-green-500 text-sm bg-green-50 px-2 py-1 rounded-lg">
                     <ArrowUpOutlined className="mr-1" />
-                    1.36%
+                    1,36%
                   </span>
-                  <span className="text-gray-400 text-sm">vs last month</span>
+                  <span className="text-gray-400 text-sm">
+                    so với tháng trước
+                  </span>
                 </div>
               </div>
               <div className="bg-green-500 bg-opacity-10 p-4 rounded-2xl">
@@ -251,18 +259,20 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Growth Card */}
+          {/* Thẻ Tăng trưởng */}
           <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500">Growth</p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">+6.23%</p>
+                <p className="text-sm font-medium text-gray-500">Tăng trưởng</p>
+                <p className="text-3xl font-bold text-gray-800 mt-2">+6,23%</p>
                 <div className="flex items-center mt-4 space-x-2">
                   <span className="flex items-center text-green-500 text-sm bg-green-50 px-2 py-1 rounded-lg">
                     <ArrowUpOutlined className="mr-1" />
-                    2.4%
+                    2,4%
                   </span>
-                  <span className="text-gray-400 text-sm">vs last month</span>
+                  <span className="text-gray-400 text-sm">
+                    so với tháng trước
+                  </span>
                 </div>
               </div>
               <div className="bg-purple-500 bg-opacity-10 p-4 rounded-2xl">
@@ -272,21 +282,21 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Charts Grid */}
+        {/* Lưới biểu đồ */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Revenue Overview Chart */}
+          {/* Biểu đồ tổng quan doanh thu */}
           <div className="bg-white p-6 rounded-2xl shadow-lg">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-gray-800">
-                Revenue Overview
+                Tổng quan doanh thu
               </h2>
               <select
                 className="px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 
                                focus:outline-none focus:ring-2 focus:ring-gray-200"
               >
-                <option>Last 7 days</option>
-                <option>Last 30 days</option>
-                <option>Last 90 days</option>
+                <option>7 ngày qua</option>
+                <option>30 ngày qua</option>
+                <option>90 ngày qua</option>
               </select>
             </div>
             <div className="h-80">
@@ -315,25 +325,26 @@ const Dashboard = () => {
                     stroke="#8884d8"
                     fillOpacity={1}
                     fill="url(#colorRevenue)"
+                    name="Doanh thu"
                   />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          {/* Orders Analytics Chart */}
+          {/* Biểu đồ phân tích đơn hàng */}
           <div className="bg-white p-6 rounded-2xl shadow-lg">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-gray-800">
-                Orders Analytics
+                Phân tích đơn hàng
               </h2>
               <select
                 className="px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 
                                focus:outline-none focus:ring-2 focus:ring-gray-200"
               >
-                <option>Last 7 days</option>
-                <option>Last 30 days</option>
-                <option>Last 90 days</option>
+                <option>7 ngày qua</option>
+                <option>30 ngày qua</option>
+                <option>90 ngày qua</option>
               </select>
             </div>
             <div className="h-80">
@@ -351,6 +362,7 @@ const Dashboard = () => {
                     strokeWidth={2}
                     dot={{ r: 4 }}
                     activeDot={{ r: 8 }}
+                    name="Đơn hàng"
                   />
                   <Line
                     type="monotone"
@@ -359,17 +371,18 @@ const Dashboard = () => {
                     strokeWidth={2}
                     dot={{ r: 4 }}
                     activeDot={{ r: 8 }}
+                    name="Lợi nhuận"
                   />
                 </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          {/* Product Categories Chart */}
+          {/* Biểu đồ danh mục sản phẩm */}
           <div className="bg-white p-6 rounded-2xl shadow-lg">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-gray-800">
-                Product Categories
+                Danh mục sản phẩm
               </h2>
             </div>
             <div className="h-80">
@@ -386,6 +399,7 @@ const Dashboard = () => {
                     outerRadius={100}
                     fill="#8884d8"
                     dataKey="value"
+                    nameKey="name"
                   >
                     {productCategories.map((entry, index) => (
                       <Cell
@@ -401,11 +415,11 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Sales by Category Chart */}
+          {/* Biểu đồ doanh số theo danh mục */}
           <div className="bg-white p-6 rounded-2xl shadow-lg">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-gray-800">
-                Sales by Category
+                Doanh số theo danh mục
               </h2>
             </div>
             <div className="h-80">
@@ -416,7 +430,7 @@ const Dashboard = () => {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="value" fill="#8884d8">
+                  <Bar dataKey="value" fill="#8884d8" name="Doanh số">
                     {productCategories.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
