@@ -478,16 +478,6 @@ const OrdersPage = () => {
                   </Tag>
                 </Menu.Item>
                 <Menu.Item
-                  key="processing"
-                  onClick={() =>
-                    updateOrderStatus(record.orderId, "Processing")
-                  }
-                >
-                  <Tag color="blue" className="mr-2">
-                    Đang xử lý
-                  </Tag>
-                </Menu.Item>
-                <Menu.Item
                   key="shipped"
                   onClick={() => updateOrderStatus(record.orderId, "Shipped")}
                 >
@@ -501,14 +491,6 @@ const OrdersPage = () => {
                 >
                   <Tag color="green" className="mr-2">
                     Đã giao hàng
-                  </Tag>
-                </Menu.Item>
-                <Menu.Item
-                  key="cancelled"
-                  onClick={() => updateOrderStatus(record.orderId, "Cancelled")}
-                >
-                  <Tag color="red" className="mr-2">
-                    Đã hủy
                   </Tag>
                 </Menu.Item>
               </Menu>
