@@ -23,6 +23,7 @@ export function LoginPage() {
     password: "",
     name: "",
     confirmPassword: "",
+    rememberMe: false,
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -57,8 +58,7 @@ export function LoginPage() {
     return valid;
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleLogin = async () => {
     if (!validateForm()) return;
 
     setLoading(true);
@@ -79,7 +79,6 @@ export function LoginPage() {
       if (result.success) {
         const token = result.data;
         const tokenPayload = JSON.parse(atob(token.split(".")[1]));
-
 
         // Kiểm tra xem có phải admin không
         if (tokenPayload.role === "Admin") {
@@ -182,7 +181,13 @@ export function LoginPage() {
               </p>
             </div>
 
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleLogin();
+              }}
+              className="space-y-6"
+            >
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
                   Tên đăng nhập
@@ -262,31 +267,33 @@ export function LoginPage() {
                 <label className="flex items-center space-x-2 text-sm text-gray-600">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-500"
+                    className="rounded text-pink-500 focus:ring-pink-500"
+                    checked={formData.rememberMe}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        rememberMe: e.target.checked,
+                      })
+                    }
                   />
                   <span>Nhớ tôi</span>
                 </label>
-                <Link to="/reset">
-                  <button className="text-sm text-pink-500 hover:text-pink-600">
-                    Quên mật khẩu?
-                  </button>
-                </Link>
+                <button
+                  type="button"
+                  onClick={() => navigate("/forgot-password")}
+                  className="text-sm text-pink-600 hover:text-pink-700"
+                >
+                  Quên mật khẩu?
+                </button>
               </div>
 
               {/* Nút Gửi */}
               <button
                 type="submit"
-                className="w-full py-2.5 px-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl transition-all transform hover:translate-y-[-1px] hover:shadow-lg hover:from-pink-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500/40 active:scale-[0.99]"
+                className="w-full py-2.5 px-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-medium rounded-xl hover:from-pink-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all shadow-md"
+                disabled={loading}
               >
-                {loading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  </div>
-                ) : isLogin ? (
-                  "Đăng nhập"
-                ) : (
-                  "Đăng ký"
-                )}
+                {loading ? "Đang xử lý..." : isLogin ? "Đăng Nhập" : "Đăng Ký"}
               </button>
             </form>
 
