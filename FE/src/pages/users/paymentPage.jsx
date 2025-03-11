@@ -15,6 +15,9 @@ import {
   Tooltip,
   Spin,
   Divider,
+  Form,
+  Input,
+  Modal,
 } from "antd";
 import {
   QrcodeOutlined,
@@ -26,6 +29,10 @@ import {
   WalletOutlined,
   SafetyOutlined,
   ArrowLeftOutlined,
+  UserOutlined,
+  HomeOutlined,
+  PhoneOutlined,
+  MailOutlined,
 } from "@ant-design/icons";
 import { QRCode } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
@@ -45,6 +52,11 @@ export function PaymentPage() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [paymentUrl, setPaymentUrl] = useState("");
+  const [form] = Form.useForm();
 
   useEffect(() => {
     // Nếu không có orderId, điều hướng về trang cart
@@ -143,25 +155,6 @@ export function PaymentPage() {
     },
   ];
 
-  const paymentPartners = [
-    {
-      name: "VNPay",
-      logo: "https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR.png",
-    },
-    {
-      name: "MoMo",
-      logo: "https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png",
-    },
-    {
-      name: "ZaloPay",
-      logo: "https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay.png",
-    },
-    {
-      name: "Banking",
-      logo: "https://cdn-icons-png.flaticon.com/512/2168/2168742.png",
-    },
-  ];
-
   const handlePayment = async () => {
     if (!isAuthenticated) {
       message.warning("Vui lòng đăng nhập để tiếp tục thanh toán");
@@ -171,14 +164,20 @@ export function PaymentPage() {
 
     setIsProcessing(true);
     try {
+      // Validate form first
+      await form.validateFields();
+      const buyerInfo = form.getFieldsValue();
+
+      setLoading(true);
+
       const orderData = {
-        buyerName: "Tên Khách Hàng",
-        buyerEmail: "email@example.com",
-        buyerPhone: "0987654321",
-        buyerAddress: "Địa chỉ khách hàng",
+        buyerName: buyerInfo.name,
+        buyerEmail: buyerInfo.email,
+        buyerPhone: buyerInfo.phone,
+        buyerAddress: buyerInfo.address,
         orderId: orderId,
         UserId: Number(user.id),
-        paymentMethod: selectedPayment,
+        paymentMethod: paymentMethod,
       };
 
       const response = await axios.post(
@@ -196,6 +195,7 @@ export function PaymentPage() {
       message.error("Đã xảy ra lỗi. Vui lòng thử lại!");
     } finally {
       setIsProcessing(false);
+      setLoading(false);
     }
   };
 
@@ -319,52 +319,77 @@ export function PaymentPage() {
                 bordered={false}
                 bodyStyle={{ padding: "1.5rem" }}
               >
-                <Radio.Group
-                  onChange={(e) => setSelectedPayment(e.target.value)}
-                  value={selectedPayment}
-                  className="w-full"
+                <Form
+                  form={form}
+                  layout="vertical"
+                  initialValues={{
+                    name: "",
+                    address: "",
+                    phone: "",
+                    email: "",
+                  }}
                 >
-                  <Space direction="vertical" className="w-full">
-                    {paymentMethods.map((method) => (
-                      <Radio
-                        key={method.value}
-                        value={method.value}
-                        className="w-full p-4 border rounded-xl hover:border-pink-200 transition-all"
-                      >
-                        <Space>
-                          <div className="w-8 h-8 bg-pink-50 rounded-lg flex items-center justify-center text-pink-500">
-                            {method.icon}
-                          </div>
-                          <div>
-                            <div className="font-medium">{method.label}</div>
-                            <Text type="secondary" className="text-sm">
-                              {method.description}
-                            </Text>
-                          </div>
-                          <Image
-                            src={method.image}
-                            alt={method.label}
-                            width={40}
-                            preview={false}
-                            className="ml-auto"
-                          />
-                        </Space>
-                      </Radio>
-                    ))}
-                  </Space>
-                </Radio.Group>
+                  <Form.Item
+                    name="name"
+                    label="Họ và tên"
+                    rules={[
+                      { required: true, message: "Vui lòng nhập họ và tên" },
+                    ]}
+                  >
+                    <Input
+                      prefix={<UserOutlined className="site-form-item-icon" />}
+                      placeholder="Nhập họ và tên người nhận"
+                    />
+                  </Form.Item>
 
-                <div className="mt-4 mb-4 p-3 bg-gray-50 rounded-xl flex items-center">
-                  <Image
-                    src="https://cdn-icons-png.flaticon.com/512/2913/2913133.png"
-                    alt="Secure Payment"
-                    width={30}
-                    preview={false}
-                  />
-                  <Text className="ml-2 text-sm text-gray-600">
-                    Thanh toán an toàn với mã hóa SSL 256-bit
-                  </Text>
-                </div>
+                  <Form.Item
+                    name="address"
+                    label="Địa chỉ"
+                    rules={[
+                      { required: true, message: "Vui lòng nhập địa chỉ" },
+                    ]}
+                  >
+                    <Input.TextArea
+                      prefix={<HomeOutlined className="site-form-item-icon" />}
+                      placeholder="Nhập địa chỉ giao hàng chi tiết"
+                      rows={3}
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="phone"
+                    label="Số điện thoại"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập số điện thoại",
+                      },
+                      {
+                        pattern: /^[0-9]{10}$/,
+                        message: "Số điện thoại không hợp lệ",
+                      },
+                    ]}
+                  >
+                    <Input
+                      prefix={<PhoneOutlined className="site-form-item-icon" />}
+                      placeholder="Nhập số điện thoại"
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="email"
+                    label="Email"
+                    rules={[
+                      { required: true, message: "Vui lòng nhập email" },
+                      { type: "email", message: "Email không hợp lệ" },
+                    ]}
+                  >
+                    <Input
+                      prefix={<MailOutlined className="site-form-item-icon" />}
+                      placeholder="Nhập email"
+                    />
+                  </Form.Item>
+                </Form>
 
                 <div className="mt-6">
                   <Button
@@ -401,29 +426,21 @@ export function PaymentPage() {
               </Card>
             </Col>
           </Row>
-
-          <Divider>
-            <Text type="secondary">Đối tác thanh toán</Text>
-          </Divider>
-
-          <div className="flex justify-center items-center flex-wrap gap-6 mt-4 mb-2">
-            {paymentPartners.map((partner) => (
-              <div key={partner.name} className="text-center">
-                <Image
-                  src={partner.logo}
-                  alt={partner.name}
-                  width={60}
-                  preview={false}
-                  className="grayscale hover:grayscale-0 transition-all duration-300"
-                />
-                <Text className="block text-xs text-gray-500 mt-1">
-                  {partner.name}
-                </Text>
-              </div>
-            ))}
-          </div>
         </Card>
       </div>
+
+      <Modal
+        title="Chuyển đến trang thanh toán"
+        open={isModalOpen}
+        onOk={handlePayNow}
+        onCancel={() => setIsModalOpen(false)}
+        okText="Thanh toán ngay"
+        cancelText="Hủy"
+      >
+        <p>
+          Bạn sẽ được chuyển đến trang thanh toán VNPay để hoàn tất giao dịch.
+        </p>
+      </Modal>
     </div>
   );
 }

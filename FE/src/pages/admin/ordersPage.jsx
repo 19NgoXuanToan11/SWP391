@@ -18,6 +18,11 @@ import {
   ExportOutlined,
   PrinterOutlined,
   CloseOutlined,
+  PhoneOutlined,
+  MailOutlined,
+  HomeOutlined,
+  CheckOutlined,
+  MoreOutlined,
 } from "@ant-design/icons";
 import {
   Table,
@@ -41,14 +46,24 @@ import {
   Empty,
   Image,
   Timeline,
+  Typography,
+  Descriptions,
+  List,
+  Space,
 } from "antd";
 import SidebarAdmin from "../../components/SidebarAdmin.jsx";
 import axios from "axios";
 import { Line } from "@ant-design/charts";
 import { motion } from "framer-motion";
+import dayjs from "dayjs";
+import "dayjs/locale/vi";
+import locale from "antd/es/date-picker/locale/vi_VN";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+const { Title, Text } = Typography;
+
+dayjs.locale("vi");
 
 const OrdersPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -74,13 +89,13 @@ const OrdersPage = () => {
     try {
       setLoading(true);
       const response = await axios.get("https://localhost:7285/api/order");
-      console.log("Orders data:", response.data);
+      console.log("Orders response:", response.data);
 
-      const orders = response.data;
-      setOrders(orders);
+      // Nếu API đã trả về đầy đủ thông tin, không cần gọi thêm API chi tiết
+      setOrders(response.data);
 
-      // Tính toán doanh thu từ các đơn hàng đã thanh toán
-      const totalRevenue = orders
+      // Tính toán thống kê
+      const totalRevenue = response.data
         .filter(
           (o) =>
             o.status.toLowerCase() === "delivered" ||
@@ -88,57 +103,25 @@ const OrdersPage = () => {
         )
         .reduce((sum, order) => sum + order.totalAmount, 0);
 
-      // Tính toán số liệu thống kê
-      const stats = {
-        total: orders.length,
-        pending: orders.filter((o) => o.status.toLowerCase() === "pending")
-          .length,
-        processing: orders.filter(
+      setOrderStats({
+        total: response.data.length,
+        pending: response.data.filter(
+          (o) => o.status.toLowerCase() === "pending"
+        ).length,
+        processing: response.data.filter(
           (o) => o.status.toLowerCase() === "processing"
         ).length,
-        shipped: orders.filter((o) => o.status.toLowerCase() === "shipped")
-          .length,
-        delivered: orders.filter((o) => o.status.toLowerCase() === "delivered")
-          .length,
-        cancelled: orders.filter((o) => o.status.toLowerCase() === "cancelled")
-          .length,
+        shipped: response.data.filter(
+          (o) => o.status.toLowerCase() === "shipped"
+        ).length,
+        delivered: response.data.filter(
+          (o) => o.status.toLowerCase() === "delivered"
+        ).length,
+        cancelled: response.data.filter(
+          (o) => o.status.toLowerCase() === "cancelled"
+        ).length,
         revenue: totalRevenue,
-      };
-
-      setOrderStats(stats);
-
-      // Trong useEffect, tính toán dữ liệu doanh thu theo ngày
-      if (orders.length > 0) {
-        // Nhóm đơn hàng theo ngày và tính tổng doanh thu
-        const revenueByDate = orders
-          .filter(
-            (o) =>
-              o.status.toLowerCase() === "delivered" ||
-              (o.paymentMethod !== null && o.paymentMethod !== "null")
-          )
-          .reduce((acc, order) => {
-            const date = new Date(order.orderDate).toLocaleDateString("vi-VN");
-            if (!acc[date]) {
-              acc[date] = 0;
-            }
-            acc[date] += order.totalAmount;
-            return acc;
-          }, {});
-
-        // Chuyển đổi thành mảng dữ liệu cho biểu đồ
-        const chartData = Object.keys(revenueByDate).map((date) => ({
-          date,
-          revenue: revenueByDate[date],
-        }));
-
-        // Sắp xếp theo ngày
-        chartData.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-        // Lấy 7 ngày gần nhất
-        const recentData = chartData.slice(-7);
-
-        setRevenueData(recentData);
-      }
+      });
     } catch (error) {
       console.error("Error fetching orders:", error);
       message.error("Không thể tải danh sách đơn hàng");
@@ -386,46 +369,87 @@ const OrdersPage = () => {
     },
   };
 
+  // Thêm hàm getStatusTag
+  const getStatusTag = (status) => {
+    switch (status.toLowerCase()) {
+      case "pending":
+        return "Chờ xử lý";
+      case "processing":
+        return "Đang xử lý";
+      case "shipped":
+        return "Đã gửi hàng";
+      case "delivered":
+        return "Đã giao hàng";
+      case "cancelled":
+        return "Đã hủy";
+      default:
+        return status;
+    }
+  };
+
   // Table columns
   const columns = [
     {
       title: "Mã đơn hàng",
       dataIndex: "orderId",
       key: "orderId",
-      render: (text) => (
-        <div className="font-medium text-blue-600">#{text}</div>
+      render: (text) => <span className="font-medium">#{text}</span>,
+    },
+    {
+      title: "Họ tên",
+      dataIndex: "buyerName",
+      key: "buyerName",
+      render: (text, record) => (
+        <div className="flex items-center">
+          <UserOutlined className="mr-2 text-blue-500" />
+          <span>{text || "Không có thông tin"}</span>
+        </div>
       ),
     },
     {
-      title: "Khách hàng",
-      dataIndex: "userId",
-      key: "userId",
-      render: (userId) => (
+      title: "Email",
+      dataIndex: "buyerEmail",
+      key: "buyerEmail",
+      render: (text) => (
         <div className="flex items-center">
-          <Avatar
-            icon={<UserOutlined />}
-            className="bg-gradient-to-r from-blue-400 to-blue-600 mr-2"
-          />
-          <div>
-            <div className="font-medium">Khách hàng #{userId}</div>
-            <div className="text-xs text-gray-500">ID: {userId}</div>
-          </div>
+          <MailOutlined className="mr-2 text-green-500" />
+          <span>{text || "Không có thông tin"}</span>
         </div>
       ),
+    },
+    {
+      title: "Số điện thoại",
+      dataIndex: "buyerPhone",
+      key: "buyerPhone",
+      render: (text) => (
+        <div className="flex items-center">
+          <PhoneOutlined className="mr-2 text-orange-500" />
+          <span>{text || "Không có thông tin"}</span>
+        </div>
+      ),
+    },
+    {
+      title: "Địa chỉ",
+      dataIndex: "buyerAddress",
+      key: "buyerAddress",
+      render: (text) => (
+        <div className="flex items-center">
+          <HomeOutlined className="mr-2 text-purple-500" />
+          <span className="truncate max-w-[200px]" title={text}>
+            {text || "Không có thông tin"}
+          </span>
+        </div>
+      ),
+      ellipsis: true,
     },
     {
       title: "Ngày đặt",
       dataIndex: "orderDate",
       key: "orderDate",
-      render: (date) => (
+      render: (text) => (
         <div className="flex items-center">
-          <Badge status="processing" color="blue" className="mr-2" />
-          <div>
-            <div>{formatDate(date)}</div>
-            <div className="text-xs text-gray-500">
-              {new Date(date).toLocaleDateString("vi-VN", { weekday: "long" })}
-            </div>
-          </div>
+          <CalendarOutlined className="mr-1 text-blue-500" />
+          <span>{formatDate(text)}</span>
         </div>
       ),
     },
@@ -433,79 +457,95 @@ const OrdersPage = () => {
       title: "Tổng tiền",
       dataIndex: "totalAmount",
       key: "totalAmount",
-      render: (amount) => (
-        <div className="font-bold text-pink-600">{formatPrice(amount)}</div>
+      render: (text) => (
+        <span className="font-medium text-red-500">{formatPrice(text)}</span>
       ),
     },
     {
       title: "Thanh toán",
       dataIndex: "paymentMethod",
       key: "paymentMethod",
-      render: (method) => {
-        const color = getPaymentColor(method);
-        const paymentText = getPaymentStatus(method);
-
-        return (
-          <Tag color={color} className="px-3 py-1 rounded-full font-medium">
-            {paymentText}
-          </Tag>
-        );
-      },
+      render: (text) => (
+        <Tag color={getPaymentColor(text)}>{getPaymentStatus(text)}</Tag>
+      ),
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => (
+        <Tag color={getStatusColor(status)} className="px-3 py-1 rounded-full">
+          {getStatusTag(status)}
+        </Tag>
+      ),
     },
     {
       title: "Thao tác",
       key: "action",
       render: (_, record) => (
-        <div className="flex space-x-2">
+        <Space size="middle">
           <Tooltip title="Xem chi tiết">
             <Button
               type="primary"
               shape="circle"
               icon={<EyeOutlined />}
+              size="small"
               onClick={() => viewOrderDetails(record.orderId)}
-              className="bg-blue-500 hover:bg-blue-600 border-none"
+              className="bg-blue-500 hover:bg-blue-600"
             />
           </Tooltip>
           <Dropdown
             overlay={
               <Menu>
                 <Menu.Item
-                  key="pending"
-                  onClick={() => updateOrderStatus(record.orderId, "Pending")}
+                  key="1"
+                  onClick={() =>
+                    updateOrderStatus(record.orderId, "Processing")
+                  }
+                  disabled={record.status !== "Pending"}
                 >
-                  <Tag color="orange" className="mr-2">
-                    Chờ xử lý
-                  </Tag>
+                  <CheckOutlined className="mr-2 text-blue-500" />
+                  Xác nhận đơn hàng
                 </Menu.Item>
                 <Menu.Item
-                  key="shipped"
+                  key="2"
                   onClick={() => updateOrderStatus(record.orderId, "Shipped")}
+                  disabled={record.status !== "Pending"}
                 >
                   <Tag color="cyan" className="mr-2">
                     Đã gửi hàng
                   </Tag>
                 </Menu.Item>
                 <Menu.Item
-                  key="delivered"
+                  key="3"
                   onClick={() => updateOrderStatus(record.orderId, "Delivered")}
+                  disabled={record.status !== "Shipped"}
                 >
                   <Tag color="green" className="mr-2">
                     Đã giao hàng
                   </Tag>
                 </Menu.Item>
+                <Menu.Item
+                  key="4"
+                  onClick={() => updateOrderStatus(record.orderId, "Cancelled")}
+                  disabled={record.status === "Cancelled"}
+                >
+                  <Tag color="red" className="mr-2">
+                    Đã hủy
+                  </Tag>
+                </Menu.Item>
               </Menu>
             }
-            placement="bottomRight"
-            arrow
+            trigger={["click"]}
           >
             <Button
-              type="default"
               shape="circle"
-              icon={<SettingOutlined />}
-              className="border-gray-300 hover:border-blue-500 hover:text-blue-500"
+              icon={<MoreOutlined />}
+              size="small"
+              className="border-gray-300"
             />
           </Dropdown>
-        </div>
+        </Space>
       ),
     },
   ];
@@ -690,6 +730,7 @@ const OrdersPage = () => {
                 }}
                 className="rounded-lg"
                 rowClassName="hover:bg-gray-50"
+                scroll={{ x: 1500 }}
               />
             ) : (
               <Empty
@@ -789,6 +830,67 @@ const OrdersPage = () => {
                   </div>
                 </div>
               </Card>
+            </div>
+
+            <div className="mb-6">
+              <Title level={5} className="flex items-center mb-4">
+                <UserOutlined className="mr-2 text-blue-500" />
+                Thông tin khách hàng
+              </Title>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <div className="flex items-start">
+                  <div className="bg-blue-100 p-2 rounded-lg mr-3">
+                    <UserOutlined className="text-blue-500" />
+                  </div>
+                  <div>
+                    <div className="text-gray-500 text-xs mb-1">Họ và tên</div>
+                    <div className="font-medium">
+                      {selectedOrder.buyerName || "Không có thông tin"}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="bg-green-100 p-2 rounded-lg mr-3">
+                    <MailOutlined className="text-green-500" />
+                  </div>
+                  <div>
+                    <div className="text-gray-500 text-xs mb-1">Email</div>
+                    <div className="font-medium">
+                      {selectedOrder.buyerEmail || "Không có thông tin"}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="bg-orange-100 p-2 rounded-lg mr-3">
+                    <PhoneOutlined className="text-orange-500" />
+                  </div>
+                  <div>
+                    <div className="text-gray-500 text-xs mb-1">
+                      Số điện thoại
+                    </div>
+                    <div className="font-medium">
+                      {selectedOrder.buyerPhone || "Không có thông tin"}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="bg-purple-100 p-2 rounded-lg mr-3">
+                    <HomeOutlined className="text-purple-500" />
+                  </div>
+                  <div>
+                    <div className="text-gray-500 text-xs mb-1">
+                      Địa chỉ giao hàng
+                    </div>
+                    <div className="font-medium">
+                      {selectedOrder.buyerAddress || "Không có thông tin"}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <Card className="rounded-xl shadow-sm border-0 mb-6">
