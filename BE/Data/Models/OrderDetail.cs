@@ -11,6 +11,7 @@ public partial class OrderDetail
     public int OrderDetailId { get; set; }
 
     public int OrderId { get; set; }
+    public int HistoryId { get; set; }
 
     public int ProductId { get; set; }
 
@@ -22,4 +23,6 @@ public partial class OrderDetail
     public virtual Order Order { get; set; } = null!;
     [JsonIgnore]
     public virtual Product Product { get; set; } = null!;
+    [JsonIgnore]
+    public virtual History History { get; set; } = null!;
 }
