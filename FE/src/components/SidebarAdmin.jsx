@@ -10,12 +10,17 @@ import {
   InfoCircleOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../store/slices/authSlice";
 
 const SidebarAdmin = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const menuItems = [
     {
@@ -29,11 +34,16 @@ const SidebarAdmin = () => {
     { path: "/brand", icon: <TagOutlined />, label: "Thương hiệu" },
   ];
 
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/admin/login");
+  };
+
   return (
     <aside
       className={`${
         collapsed ? "w-20" : "w-64"
-      } min-h-screen bg-gradient-to-b from-gray-900 via-slate-800 to-gray-900 text-white transition-all duration-300 ease-in-out relative`}
+      } min-h-screen bg-gradient-to-b from-gray-900 via-slate-800 to-gray-900 text-white transition-all duration-300 ease-in-out relative flex flex-col`}
     >
       {/* Toggle Button */}
       <button
@@ -55,7 +65,7 @@ const SidebarAdmin = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="mt-8 px-4">
+      <nav className="mt-8 px-4 flex-grow">
         <ul className="space-y-2">
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
@@ -92,6 +102,21 @@ const SidebarAdmin = () => {
           })}
         </ul>
       </nav>
+
+      {/* Logout Button */}
+      <div className="mt-auto px-4 pb-6">
+        <button
+          onClick={handleLogout}
+          className={`w-full flex items-center px-4 py-3 rounded-xl transition-all duration-200
+            text-red-300 hover:bg-red-500/20 hover:text-white group
+          `}
+        >
+          <span className="text-xl">
+            <LogoutOutlined />
+          </span>
+          {!collapsed && <span className="ml-4 font-medium">Đăng xuất</span>}
+        </button>
+      </div>
     </aside>
   );
 };

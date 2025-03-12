@@ -28,6 +28,7 @@ function App() {
     "/abouts",
     "/verify-email",
     "/admin/login",
+    "/forgot-password"
   ];
 
   // Kiểm tra với pathname đã được chuẩn hóa

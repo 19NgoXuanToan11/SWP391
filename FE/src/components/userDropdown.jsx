@@ -10,35 +10,56 @@ import {
   SettingOutlined,
   BellOutlined,
 } from "@ant-design/icons";
+import { useDispatch } from "react-redux";
+import { logout } from "../store/slices/authSlice";
+import { message } from "antd";
 
-export const UserDropdown = ({ user }) => {
+export const UserDropdown = ({ user, onLogout }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [userInfo, setUserInfo] = useState({
     name: user?.name || localStorage.getItem("userName") || "User",
-    avatar: localStorage.getItem("userAvatar"),
+    avatar: user?.photoURL || localStorage.getItem("userAvatar"),
   });
 
   // Cập nhật userInfo khi prop user thay đổi
   useEffect(() => {
-    if (user?.name) {
-      setUserInfo((prevState) => ({
-        ...prevState,
-        name: user.name,
-      }));
+    if (user) {
+      setUserInfo({
+        name: user.name || user.username || "User",
+        avatar: user.photoURL || localStorage.getItem("userAvatar"),
+      });
     }
   }, [user]);
 
   // Lắng nghe sự thay đổi của localStorage
   useEffect(() => {
-    const updateUserInfo = () => {
-      setUserInfo({
-        name: localStorage.getItem("userName") || "User",
-        avatar: localStorage.getItem("userAvatar"),
-      });
+    const handleStorageChange = (e) => {
+      // Nếu có thay đổi liên quan đến auth
+      if (
+        e.key === "auth_token" ||
+        e.key === "auth_user" ||
+        e.key === "auth_logout_event" ||
+        e.key === null
+      ) {
+        // Cập nhật thông tin người dùng từ localStorage
+        const userStr = localStorage.getItem("auth_user");
+        if (userStr) {
+          try {
+            const userData = JSON.parse(userStr);
+            setUserInfo({
+              name: userData.name || userData.username || "User",
+              avatar: userData.photoURL || localStorage.getItem("userAvatar"),
+            });
+          } catch (error) {
+            console.error("Error parsing user data from localStorage:", error);
+          }
+        }
+      }
     };
 
-    window.addEventListener("storage", updateUserInfo);
-    return () => window.removeEventListener("storage", updateUserInfo);
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   // Tách tên thành các phần
@@ -64,91 +85,105 @@ export const UserDropdown = ({ user }) => {
     },
   ];
 
+  // Định nghĩa hàm handleLogout
+  const handleLogout = () => {
+    dispatch(logout());
+
+    // Kích hoạt sự kiện storage để các tab khác biết về việc đăng xuất
+    const logoutEvent = new Date().getTime();
+    localStorage.setItem("auth_logout_event", logoutEvent);
+
+    message.success("Đăng xuất thành công!");
+    navigate("/");
+
+    // Gọi callback từ parent component nếu có
+    if (onLogout) {
+      onLogout();
+    }
+  };
+
   const userMenu = (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl py-3 min-w-[240px] w-auto border border-gray-100"
+      transition={{ duration: 0.2 }}
+      className="bg-white rounded-xl shadow-xl p-2 min-w-[250px] border border-gray-100"
     >
-      <div className="px-4 py-3 border-b border-gray-100">
-        <div className="flex items-center space-x-3">
-          <motion.div whileHover={{ scale: 1.05 }}>
-            {userInfo.avatar ? (
-              <img
-                src={userInfo.avatar}
-                alt="avatar"
-                className="w-12 h-12 rounded-xl object-cover ring-2 ring-purple-500/20"
-              />
-            ) : (
-              <div
-                className="w-12 h-12 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 
-                flex items-center justify-center shadow-lg"
-              >
-                <span className="text-white text-lg font-semibold">
-                  {firstName.charAt(0) || "U"}
-                </span>
-              </div>
-            )}
-          </motion.div>
+      <div className="p-3">
+        {/* User Info */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="flex items-center space-x-3 mb-4 pb-3 border-b border-gray-100"
+        >
+          {userInfo.avatar ? (
+            <img
+              src={userInfo.avatar}
+              alt="avatar"
+              className="w-12 h-12 rounded-xl object-cover"
+            />
+          ) : (
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center text-white text-lg font-bold">
+              {firstName.charAt(0) || "U"}
+            </div>
+          )}
           <div>
-            <h3 className="text-base font-semibold text-gray-800">
-              {userInfo.name}
-            </h3>
-            <p className="text-sm text-gray-500">Thành viên</p>
+            <h4 className="font-semibold text-gray-800">{userInfo.name}</h4>
+            <p className="text-xs text-gray-500">
+              {user?.email || "user@example.com"}
+            </p>
           </div>
-        </div>
-      </div>
+        </motion.div>
 
-      <div className="py-2 px-2">
-        {menuItems.map((item, index) => (
+        {/* Menu Items */}
+        <div className="space-y-1">
+          {menuItems.map((item, index) => (
+            <motion.div
+              key={item.path}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 + index * 0.1 }}
+            >
+              <Link
+                to={item.path}
+                className="flex items-center px-3 py-2.5 rounded-xl text-sm text-gray-700 
+                  hover:bg-gray-50 transition-all duration-300 group"
+              >
+                <span
+                  className="w-8 h-8 flex items-center justify-center rounded-lg 
+                  bg-gray-100 group-hover:bg-pink-100 transition-colors duration-300"
+                >
+                  <span className="text-gray-500 group-hover:text-pink-600">
+                    {item.icon}
+                  </span>
+                </span>
+                <span className="ml-3">{item.label}</span>
+              </Link>
+            </motion.div>
+          ))}
+
+          {/* Logout Button */}
           <motion.div
-            key={item.path}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1 }}
+            transition={{ delay: menuItems.length * 0.1 }}
           >
-            <Link
-              to={item.path}
-              className="flex items-center px-3 py-2.5 rounded-xl text-sm text-gray-700 
-                hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 
-                hover:text-purple-600 transition-all duration-300 group"
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center px-3 py-2.5 rounded-xl text-sm text-red-600 
+                hover:bg-red-50 transition-all duration-300 group mt-2"
             >
               <span
                 className="w-8 h-8 flex items-center justify-center rounded-lg 
-                bg-gradient-to-r from-pink-500/10 to-purple-500/10 group-hover:from-pink-500 
-                group-hover:to-purple-500 transition-colors duration-300"
+                bg-red-500/10 group-hover:bg-red-500 transition-colors duration-300"
               >
-                <span className="text-lg text-purple-600 group-hover:text-white">
-                  {item.icon}
-                </span>
+                <LogoutOutlined className="text-lg text-red-600 group-hover:text-white" />
               </span>
-              <span className="ml-3">{item.label}</span>
-            </Link>
+              <span className="ml-3">Đăng xuất</span>
+            </button>
           </motion.div>
-        ))}
-
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: menuItems.length * 0.1 }}
-        >
-          <button
-            onClick={() => {
-              localStorage.clear();
-              navigate("/");
-            }}
-            className="w-full flex items-center px-3 py-2.5 rounded-xl text-sm text-red-600 
-              hover:bg-red-50 transition-all duration-300 group mt-2"
-          >
-            <span
-              className="w-8 h-8 flex items-center justify-center rounded-lg 
-              bg-red-500/10 group-hover:bg-red-500 transition-colors duration-300"
-            >
-              <LogoutOutlined className="text-lg text-red-600 group-hover:text-white" />
-            </span>
-            <span className="ml-3">Đăng xuất</span>
-          </button>
-        </motion.div>
+        </div>
       </div>
     </motion.div>
   );
@@ -182,20 +217,9 @@ export const UserDropdown = ({ user }) => {
             </span>
           </div>
         )}
-
-        <div className="hidden md:flex flex-col items-start overflow-hidden">
-          <p className="text-sm font-medium text-gray-700 truncate max-w-[150px]">
-            {userInfo.name}
-          </p>
-          <p className="text-xs text-gray-500">Thành viên</p>
-        </div>
-
-        {/* Mobile View - Chỉ hiện chữ cái đầu */}
-        <div className="md:hidden flex flex-col items-center">
-          <p className="text-sm font-medium text-gray-700">
-            {firstName.charAt(0)}
-          </p>
-        </div>
+        <span className="text-sm font-medium text-gray-700 hidden md:block">
+          {firstName}
+        </span>
       </motion.button>
     </Dropdown>
   );
