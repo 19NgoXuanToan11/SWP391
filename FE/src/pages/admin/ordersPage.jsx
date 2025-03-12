@@ -53,7 +53,7 @@ import {
 } from "antd";
 import SidebarAdmin from "../../components/SidebarAdmin.jsx";
 import axios from "axios";
-import { Line } from "@ant-design/charts";
+import { Area } from "@ant-design/charts";
 import { motion } from "framer-motion";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
@@ -83,6 +83,14 @@ const OrdersPage = () => {
     revenue: 0,
   });
   const [revenueData, setRevenueData] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [loadingPayments, setLoadingPayments] = useState(false);
+  const [paymentStats, setPaymentStats] = useState({
+    total: 0,
+    pending: 0,
+    completed: 0,
+    totalAmount: 0,
+  });
 
   // Fetch orders from API
   const fetchOrders = async () => {
@@ -130,9 +138,47 @@ const OrdersPage = () => {
     }
   };
 
+  // Fetch payments from API
+  const fetchPayments = async () => {
+    try {
+      setLoadingPayments(true);
+      const response = await axios.get("https://localhost:7285/Payment/all");
+      console.log("Payments response:", response.data);
+
+      if (response.data.data) {
+        setPayments(response.data.data);
+        calculateStats(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching payments:", error);
+      message.error("Không thể tải dữ liệu thanh toán");
+    } finally {
+      setLoadingPayments(false);
+    }
+  };
+
   useEffect(() => {
     fetchOrders();
+    fetchPayments();
   }, []);
+
+  // Calculate payment statistics
+  const calculateStats = (data) => {
+    const stats = data.reduce(
+      (acc, payment) => {
+        acc.total += 1;
+        acc.totalAmount += payment.amount;
+        if (payment.status.toLowerCase() === "pending") {
+          acc.pending += 1;
+        } else if (payment.status.toLowerCase() === "completed") {
+          acc.completed += 1;
+        }
+        return acc;
+      },
+      { total: 0, pending: 0, completed: 0, totalAmount: 0 }
+    );
+    setPaymentStats(stats);
+  };
 
   // Format price to VND
   const formatPrice = (price) => {
@@ -316,56 +362,60 @@ const OrdersPage = () => {
     );
   });
 
-  // Chart data for order trends
-  const chartData = [
-    { month: "Tháng 1", orders: 12 },
-    { month: "Tháng 2", orders: 19 },
-    { month: "Tháng 3", orders: 15 },
-    { month: "Tháng 4", orders: 22 },
-    { month: "Tháng 5", orders: 30 },
-    { month: "Tháng 6", orders: 25 },
-  ];
+  // Filter payments
+  const filteredPayments = payments.filter((payment) => {
+    // Filter by status
+    if (
+      statusFilter !== "all" &&
+      payment.status.toLowerCase() !== statusFilter.toLowerCase()
+    ) {
+      return false;
+    }
 
-  // Chart config
-  const config = {
+    // Filter by date range
+    if (dateRange && dateRange[0] && dateRange[1]) {
+      const paymentDate = new Date(payment.paymentDate);
+      const startDate = dateRange[0].startOf("day").toDate();
+      const endDate = dateRange[1].endOf("day").toDate();
+      if (paymentDate < startDate || paymentDate > endDate) {
+        return false;
+      }
+    }
+
+    // Search by ID, buyer name, or email
+    return (
+      payment.paymentId.toString().includes(searchTerm) ||
+      payment.buyerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      payment.buyerEmail?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
+  // Chart data
+  const chartData = payments.map((payment) => ({
+    date: formatDate(payment.paymentDate),
+    amount: payment.amount,
+  }));
+
+  const chartConfig = {
     data: chartData,
-    xField: "month",
-    yField: "orders",
-    point: {
-      size: 5,
-      shape: "diamond",
-    },
-    label: {
-      style: {
-        fill: "#aaa",
-      },
-    },
-    smooth: true,
-    lineStyle: {
-      stroke: "#5B8FF9",
-      lineWidth: 3,
-    },
-  };
-
-  // Cấu hình biểu đồ doanh thu
-  const revenueChartConfig = {
-    data: revenueData,
     xField: "date",
-    yField: "revenue",
-    point: {
-      size: 5,
-      shape: "diamond",
-    },
-    label: {
-      style: {
-        fill: "#aaa",
-      },
-      formatter: (v) => formatPrice(v.revenue),
-    },
+    yField: "amount",
     smooth: true,
-    lineStyle: {
-      stroke: "#EC4899",
-      lineWidth: 3,
+    areaStyle: {
+      fill: "l(270) 0:#ffffff 0.5:#7ec2f3 1:#1890ff",
+    },
+    tooltip: {
+      formatter: (data) => {
+        return {
+          name: "Doanh thu",
+          value: formatPrice(data.amount),
+        };
+      },
+    },
+    yAxis: {
+      label: {
+        formatter: (value) => formatPrice(value),
+      },
     },
   };
 
@@ -550,196 +600,350 @@ const OrdersPage = () => {
     },
   ];
 
+  // Payment table columns
+  const paymentColumns = [
+    {
+      title: "Mã giao dịch",
+      dataIndex: "paymentId",
+      key: "paymentId",
+      render: (text) => (
+        <div className="flex items-center space-x-2">
+          <span className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg">
+            <DollarOutlined className="text-blue-600" />
+          </span>
+          <Text strong className="text-blue-600">
+            #{text}
+          </Text>
+        </div>
+      ),
+    },
+    {
+      title: "Khách hàng",
+      dataIndex: "buyerName",
+      key: "buyerName",
+      render: (text, record) => (
+        <div className="flex items-center space-x-3">
+          <Avatar
+            className="bg-gradient-to-r from-purple-400 to-pink-500"
+            icon={<UserOutlined />}
+          />
+          <div className="flex flex-col">
+            <Text strong className="text-gray-800">
+              {text}
+            </Text>
+            <Text type="secondary" className="text-xs">
+              ID: {record.paymentId}
+            </Text>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Email",
+      dataIndex: "buyerEmail",
+      key: "buyerEmail",
+      render: (text) => (
+        <div className="flex items-center space-x-2">
+          <MailOutlined className="text-green-500" />
+          <Text className="text-gray-600">{text || "Không có thông tin"}</Text>
+        </div>
+      ),
+    },
+    {
+      title: "Số điện thoại",
+      dataIndex: "buyerPhone",
+      key: "buyerPhone",
+      render: (text) => (
+        <div className="flex items-center space-x-2">
+          <PhoneOutlined className="text-orange-500" />
+          <Text className="text-gray-600">{text || "Không có thông tin"}</Text>
+        </div>
+      ),
+    },
+    {
+      title: "Địa chỉ",
+      dataIndex: "buyerAddress",
+      key: "buyerAddress",
+      render: (text) => (
+        <div className="flex items-center space-x-2">
+          <HomeOutlined className="text-purple-500" />
+          <Text className="text-gray-600 truncate max-w-[200px]" title={text}>
+            {text || "Không có thông tin"}
+          </Text>
+        </div>
+      ),
+      ellipsis: true,
+    },
+    {
+      title: "Ngày thanh toán",
+      dataIndex: "paymentDate",
+      key: "paymentDate",
+      render: (text) => (
+        <div className="flex items-center space-x-2 bg-gray-50 px-3 py-1 rounded-lg">
+          <CalendarOutlined className="text-blue-500" />
+          <Text className="text-gray-600">{formatDate(text)}</Text>
+        </div>
+      ),
+    },
+    {
+      title: "Số tiền",
+      dataIndex: "amount",
+      key: "amount",
+      render: (amount) => (
+        <div className="flex items-center justify-end">
+          <div className="bg-green-50 px-4 py-2 rounded-lg">
+            <Text strong className="text-green-600 text-lg">
+              {formatPrice(amount)}
+            </Text>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => {
+        const isCompleted = status.toLowerCase() === "completed";
+        return (
+          <Tag
+            color={isCompleted ? "success" : "warning"}
+            className="px-4 py-1 rounded-full text-sm font-medium flex items-center w-fit space-x-1"
+          >
+            {isCompleted ? (
+              <>
+                <CheckOutlined />
+                <span>Hoàn thành</span>
+              </>
+            ) : (
+              <>
+                <ClockCircleOutlined />
+                <span>Đang xử lý</span>
+              </>
+            )}
+          </Tag>
+        );
+      },
+    },
+  ];
+
   return (
     <div className="flex h-screen bg-gray-50">
       <SidebarAdmin />
-      <div className="flex-1 overflow-auto p-6">
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-4">
+      <div className="flex-1 overflow-auto p-8">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="space-y-8"
+        >
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-3xl p-8 text-white">
+            <h1 className="text-3xl font-bold mb-2">Quản lý thanh toán</h1>
+            <p className="opacity-80">
+              Theo dõi và quản lý các giao dịch thanh toán
+            </p>
+          </div>
+
+          {/* Statistics Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="mb-8 relative overflow-hidden rounded-3xl p-8 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 w-full"
+              whileHover={{ scale: 1.02 }}
+              className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 shadow-sm border border-blue-200"
             >
-              <div className="relative z-10">
-                <h1 className="text-3xl font-bold text-white">
-                  Quản Lý Đơn Hàng
-                </h1>
-                <p className="text-white text-opacity-80 mt-2 max-w-2xl">
-                  Quản lý và theo dõi tất cả các đơn hàng
-                </p>
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-blue-500/10 p-3 rounded-xl">
+                  <BarChartOutlined className="text-2xl text-blue-600" />
+                </div>
+                <div className="bg-blue-500/10 rounded-full p-2">
+                  <RiseOutlined className="text-blue-600" />
+                </div>
               </div>
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-20 -mt-20"></div>
-              <div className="absolute bottom-0 left-0 w-40 h-40 bg-white opacity-10 rounded-full -ml-10 -mb-10"></div>
+              <h3 className="text-gray-600 text-sm font-medium mb-2">
+                Tổng giao dịch
+              </h3>
+              <Statistic
+                value={paymentStats.total}
+                className="!text-2xl font-bold text-blue-600"
+              />
+              <Progress
+                percent={100}
+                showInfo={false}
+                strokeColor={{
+                  "0%": "#60A5FA",
+                  "100%": "#3B82F6",
+                }}
+                className="mt-4"
+              />
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 shadow-sm border border-green-200"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-green-500/10 p-3 rounded-xl">
+                  <DollarOutlined className="text-2xl text-green-600" />
+                </div>
+                <div className="bg-green-500/10 rounded-full p-2">
+                  <RiseOutlined className="text-green-600" />
+                </div>
+              </div>
+              <h3 className="text-gray-600 text-sm font-medium mb-2">
+                Tổng doanh thu
+              </h3>
+              <Statistic
+                value={formatPrice(paymentStats.totalAmount)}
+                className="!text-2xl font-bold text-green-600"
+              />
+              <Progress
+                percent={100}
+                showInfo={false}
+                strokeColor={{
+                  "0%": "#34D399",
+                  "100%": "#059669",
+                }}
+                className="mt-4"
+              />
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl p-6 shadow-sm border border-yellow-200"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-yellow-500/10 p-3 rounded-xl">
+                  <FilterOutlined className="text-2xl text-yellow-600" />
+                </div>
+                <div className="bg-yellow-500/10 rounded-full p-2">
+                  <RiseOutlined className="text-yellow-600" />
+                </div>
+              </div>
+              <h3 className="text-gray-600 text-sm font-medium mb-2">
+                Đang xử lý
+              </h3>
+              <Statistic
+                value={paymentStats.pending}
+                className="!text-2xl font-bold text-yellow-600"
+              />
+              <Progress
+                percent={(paymentStats.pending / paymentStats.total) * 100}
+                showInfo={false}
+                strokeColor="#faad14"
+                className="mt-4"
+              />
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 shadow-sm border border-purple-200"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-purple-500/10 p-3 rounded-xl">
+                  <CheckOutlined className="text-2xl text-purple-600" />
+                </div>
+                <div className="bg-purple-500/10 rounded-full p-2">
+                  <RiseOutlined className="text-purple-600" />
+                </div>
+              </div>
+              <h3 className="text-gray-600 text-sm font-medium mb-2">
+                Hoàn thành
+              </h3>
+              <Statistic
+                value={paymentStats.completed}
+                className="!text-2xl font-bold text-purple-600"
+              />
+              <Progress
+                percent={(paymentStats.completed / paymentStats.total) * 100}
+                showInfo={false}
+                strokeColor="#722ed1"
+                className="mt-4"
+              />
             </motion.div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <Card className="rounded-xl shadow-sm hover:shadow-md transition-shadow border-0 overflow-hidden">
-              <div className="flex items-center">
-                <div className="bg-blue-100 p-3 rounded-lg mr-4">
-                  <ShoppingCartOutlined className="text-2xl text-blue-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Tổng đơn hàng</p>
-                  <Statistic
-                    value={orderStats.total}
-                    valueStyle={{ fontSize: "24px", fontWeight: "bold" }}
-                  />
-                </div>
-              </div>
-              <div className="mt-3">
-                <Progress
-                  percent={100}
-                  showInfo={false}
-                  strokeColor="#3B82F6"
-                  trailColor="#EFF6FF"
-                  strokeWidth={4}
-                />
-              </div>
-            </Card>
-
-            <Card className="rounded-xl shadow-sm hover:shadow-md transition-shadow border-0 overflow-hidden">
-              <div className="flex items-center">
-                <div className="bg-orange-100 p-3 rounded-lg mr-4">
-                  <ClockCircleOutlined className="text-2xl text-orange-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Chờ xử lý</p>
-                  <Statistic
-                    value={orderStats.pending}
-                    valueStyle={{ fontSize: "24px", fontWeight: "bold" }}
-                  />
-                </div>
-              </div>
-              <div className="mt-3">
-                <Progress
-                  percent={(orderStats.pending / orderStats.total) * 100}
-                  showInfo={false}
-                  strokeColor="#F97316"
-                  trailColor="#FFF7ED"
-                  strokeWidth={4}
-                />
-              </div>
-            </Card>
-
-            <Card className="rounded-xl shadow-sm hover:shadow-md transition-shadow border-0 overflow-hidden">
-              <div className="flex items-center">
-                <div className="bg-green-100 p-3 rounded-lg mr-4">
-                  <CheckSquareOutlined className="text-2xl text-green-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Hoàn thành</p>
-                  <Statistic
-                    value={orderStats.delivered}
-                    valueStyle={{ fontSize: "24px", fontWeight: "bold" }}
-                  />
-                </div>
-              </div>
-              <div className="mt-3">
-                <Progress
-                  percent={(orderStats.delivered / orderStats.total) * 100}
-                  showInfo={false}
-                  strokeColor="#22C55E"
-                  trailColor="#F0FDF4"
-                  strokeWidth={4}
-                />
-              </div>
-            </Card>
-
-            <Card className="rounded-xl shadow-sm hover:shadow-md transition-shadow border-0 overflow-hidden">
-              <div className="flex items-center">
-                <div className="bg-pink-100 p-3 rounded-lg mr-4">
-                  <DollarOutlined className="text-2xl text-pink-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Doanh thu</p>
-                  <Statistic
-                    value={formatPrice(orderStats.revenue)}
-                    valueStyle={{ fontSize: "20px", fontWeight: "bold" }}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    {orderStats.delivered} đơn hàng hoàn thành
-                  </p>
-                </div>
-              </div>
-              <div className="mt-3">
-                <Progress
-                  percent={100}
-                  showInfo={false}
-                  strokeColor="#EC4899"
-                  trailColor="#FDF2F8"
-                  strokeWidth={4}
-                />
-              </div>
-            </Card>
-          </div>
-
-          <Card className="rounded-xl shadow-sm mb-6 border-0">
-            <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0">
-              <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
+          {/* Filters */}
+          <Card className="rounded-2xl shadow-sm border-0 bg-white/80 backdrop-blur-lg">
+            <div className="flex flex-wrap gap-4">
+              <div className="flex-1 min-w-[200px]">
                 <Input
-                  placeholder="Tìm kiếm đơn hàng..."
+                  placeholder="Tìm kiếm giao dịch..."
                   prefix={<SearchOutlined className="text-gray-400" />}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="rounded-lg w-full md:w-64"
+                  className="w-full rounded-lg hover:border-blue-400 focus:border-blue-500"
                   size="large"
                 />
-                <Select
-                  defaultValue="all"
-                  style={{ width: "100%", minWidth: 150 }}
-                  onChange={(value) => setStatusFilter(value)}
-                  className="rounded-lg"
-                  size="large"
-                >
-                  <Option value="all">Tất cả trạng thái</Option>
-                  <Option value="pending">Chờ xử lý</Option>
-                  <Option value="processing">Đang xử lý</Option>
-                  <Option value="shipped">Đã gửi hàng</Option>
-                  <Option value="delivered">Đã giao hàng</Option>
-                  <Option value="cancelled">Đã hủy</Option>
-                </Select>
               </div>
-              <RangePicker
-                onChange={(dates) => setDateRange(dates)}
+              <Select
+                defaultValue="all"
+                style={{ minWidth: 180 }}
+                onChange={setStatusFilter}
+                className="rounded-lg"
                 size="large"
-                className="rounded-lg w-full md:w-auto"
-                placeholder={["Từ ngày", "Đến ngày"]}
+                suffixIcon={<FilterOutlined className="text-gray-400" />}
+              >
+                <Option value="all">Tất cả trạng thái</Option>
+                <Option value="pending">Đang xử lý</Option>
+                <Option value="completed">Hoàn thành</Option>
+              </Select>
+              <RangePicker
+                onChange={setDateRange}
+                className="rounded-lg min-w-[280px]"
+                format="DD/MM/YYYY"
+                size="large"
               />
+              <Button
+                type="primary"
+                icon={<ReloadOutlined />}
+                onClick={fetchPayments}
+                loading={loadingPayments}
+                className="ml-auto bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 border-0 rounded-lg"
+                size="large"
+              >
+                Làm mới
+              </Button>
             </div>
           </Card>
 
-          <Card className="rounded-xl shadow-sm border-0">
-            {loading ? (
+          {/* Payments Table */}
+          <Card className="rounded-2xl shadow-sm border-0 overflow-hidden">
+            <div className="mb-4">
+              <Title level={4} className="!mb-1">
+                Danh sách giao dịch
+              </Title>
+              <Text type="secondary">
+                Quản lý và theo dõi các giao dịch thanh toán
+              </Text>
+            </div>
+
+            {loadingPayments ? (
               <div className="flex justify-center items-center h-64">
                 <Spin size="large" />
               </div>
-            ) : filteredOrders.length > 0 ? (
+            ) : filteredPayments.length > 0 ? (
               <Table
-                columns={columns}
-                dataSource={filteredOrders}
-                rowKey="orderId"
+                columns={paymentColumns}
+                dataSource={filteredPayments}
+                rowKey="paymentId"
                 pagination={{
                   pageSize: 10,
                   showTotal: (total, range) =>
-                    `${range[0]}-${range[1]} của ${total} đơn hàng`,
+                    `${range[0]}-${range[1]} của ${total} giao dịch`,
                   showSizeChanger: true,
                   pageSizeOptions: ["10", "20", "50"],
                 }}
                 className="rounded-lg"
-                rowClassName="hover:bg-gray-50"
-                scroll={{ x: 1500 }}
+                rowClassName="hover:bg-gray-50 transition-colors"
               />
             ) : (
               <Empty
-                description="Không tìm thấy đơn hàng nào"
+                description="Không tìm thấy giao dịch nào"
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
               />
             )}
           </Card>
-        </div>
+        </motion.div>
       </div>
 
       {/* Order Details Modal */}
