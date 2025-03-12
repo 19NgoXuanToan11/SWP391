@@ -1,4 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { clearCart } from "./cartSlice";
+import { clearWishlist } from "./wishlistSlice";
 
 // Hàm lấy dữ liệu an toàn từ localStorage hoặc sessionStorage
 const getFromStorage = (key) => {
@@ -64,6 +66,54 @@ const getAuthFromLocalStorage = () => {
   return null;
 };
 
+// Hàm để chuyển giỏ hàng từ guest sang user khi đăng nhập
+const transferGuestCartToUser = (userId) => {
+  try {
+    // Lấy tất cả giỏ hàng
+    const allCarts = JSON.parse(localStorage.getItem("allCarts")) || {};
+
+    // Nếu có giỏ hàng guest và user chưa có giỏ hàng
+    if (
+      allCarts["guest"] &&
+      allCarts["guest"].items.length > 0 &&
+      !allCarts[userId]
+    ) {
+      // Chuyển giỏ hàng guest cho user
+      allCarts[userId] = allCarts["guest"];
+      // Xóa giỏ hàng guest
+      allCarts["guest"] = { items: [], total: 0, quantity: 0 };
+      // Lưu lại
+      localStorage.setItem("allCarts", JSON.stringify(allCarts));
+    }
+  } catch (error) {
+    console.error("Error transferring guest cart to user:", error);
+  }
+};
+
+// Hàm để chuyển danh sách yêu thích từ guest sang user khi đăng nhập
+const transferGuestWishlistToUser = (userId) => {
+  try {
+    // Lấy tất cả danh sách yêu thích
+    const allWishlists = JSON.parse(localStorage.getItem("allWishlists")) || {};
+
+    // Nếu có danh sách yêu thích guest và user chưa có danh sách yêu thích
+    if (
+      allWishlists["guest"] &&
+      allWishlists["guest"].items.length > 0 &&
+      !allWishlists[userId]
+    ) {
+      // Chuyển danh sách yêu thích guest cho user
+      allWishlists[userId] = allWishlists["guest"];
+      // Xóa danh sách yêu thích guest
+      allWishlists["guest"] = { items: [], total: 0 };
+      // Lưu lại
+      localStorage.setItem("allWishlists", JSON.stringify(allWishlists));
+    }
+  } catch (error) {
+    console.error("Error transferring guest wishlist to user:", error);
+  }
+};
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -83,8 +133,12 @@ const authSlice = createSlice({
       localStorage.setItem("auth_user", JSON.stringify(user));
       localStorage.setItem("auth_sessionId", sessionId);
       localStorage.setItem("auth_isAdmin", (user.role === "Admin").toString());
+
+      // Chuyển giỏ hàng và danh sách yêu thích từ guest sang user
+      transferGuestCartToUser(user.id);
+      transferGuestWishlistToUser(user.id);
     },
-    logout: (state) => {
+    logout: (state, action) => {
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
@@ -96,6 +150,12 @@ const authSlice = createSlice({
       localStorage.removeItem("auth_user");
       localStorage.removeItem("auth_sessionId");
       localStorage.removeItem("auth_isAdmin");
+
+      // Dispatch action để xóa giỏ hàng và danh sách yêu thích trong Redux store
+      if (action.payload && action.payload.dispatch) {
+        action.payload.dispatch(clearCart());
+        action.payload.dispatch(clearWishlist());
+      }
     },
     // Khôi phục trạng thái từ localStorage
     restoreAuth: (state) => {
