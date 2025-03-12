@@ -5,7 +5,7 @@ import { LoginPage } from "../pages/login/loginPage";
 import { RegisterPage } from "../pages/login/registerPage";
 import { AboutPage } from "../pages/users/aboutPage";
 import { ContactPage } from "../pages/users/contactPage";
-import { ProductsPage } from "../pages/users/productPage";
+import ProductsPage from "../pages/users/productPage";
 import { QuizPage } from "../pages/users/quizPage";
 import { QuizLandingPage } from "../pages/users/quizlandingPage";
 import { ForgotPasswordPage } from "../pages/login/resetPage";
