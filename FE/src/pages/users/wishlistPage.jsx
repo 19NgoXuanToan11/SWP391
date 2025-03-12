@@ -152,16 +152,24 @@ const WishlistPage = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 bg-white rounded-lg shadow">
-            <HeartFilled className="text-4xl text-gray-300 mb-4" />
-            <Title level={4}>Danh sách yêu thích trống</Title>
-            <Text className="text-gray-500 block mb-6">
-              Hãy thêm sản phẩm vào danh sách yêu thích của bạn
+          <div className="flex flex-col items-center justify-center py-16 px-6 bg-white rounded-2xl shadow-xl transition-all duration-300 hover:shadow-2xl">
+            <Title level={4} className="!text-2xl font-bold text-gray-800 mb-3">
+              Danh sách yêu thích của bạn đang trống
+            </Title>
+            <Text className="text-gray-500 text-center max-w-md mb-8">
+              Khám phá và thêm những sản phẩm bạn yêu thích để xem chúng ở đây
             </Text>
             <Link to="/product">
-              <Button type="primary" className="bg-pink-600 hover:bg-pink-700">
-                Tiếp tục mua sắm
-              </Button>
+              <button
+                type="primary"
+                size="large"
+                className="bg-gradient-to-r from-pink-500 via-fuchsia-500 to-purple-600 border-0 rounded-full px-8 py-4 h-auto flex items-center gap-2 shadow-lg hover:shadow-2xl transform hover:-translate-y-1.5 hover:scale-105 transition-all duration-300 text-white font-medium backdrop-blur-sm"
+              >
+                <ShoppingCartOutlined className="text-lg animate-bounce" />
+                <span className="relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-white after:transition-all hover:after:w-full">
+                  Khám phá sản phẩm
+                </span>
+              </button>
             </Link>
           </div>
         )}
