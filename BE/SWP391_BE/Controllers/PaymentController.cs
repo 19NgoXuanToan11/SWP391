@@ -49,6 +49,25 @@ namespace SWP391_BE.Controllers
             object? data
         );
 
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllPayments()
+        {
+            try
+            {
+                var payments = await _paymentService.GetAllPaymentsAsync();
+                if (payments == null || !payments.Any())
+                {
+                    return Ok(new Response(-1, "No payments found", null));
+                }
+                return Ok(new Response(0, "success", payments));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Get All Payments Error: {e.Message}");
+                return Ok(new Response(-1, "fail", null));
+            }
+        }
+
         [HttpGet("orderCode/{orderCode}")]
         public async Task<IActionResult> GetPaymentByOrderCode(int orderCode)
         {
