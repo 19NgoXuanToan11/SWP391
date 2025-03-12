@@ -11,6 +11,7 @@ import {
   ShoppingCartOutlined,
   LeftOutlined,
   RightOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import { Button, Drawer, Table } from "antd";
 import { notification } from "antd";
@@ -23,7 +24,7 @@ import {
   selectWishlistItems,
 } from "../../store/slices/wishlistSlice";
 
-export function ProductsPage() {
+export default function ProductsPage() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -175,6 +176,8 @@ export function ProductsPage() {
   };
 
   const handleWishlistToggle = (product) => {
+    const isCurrentlyInWishlist = isProductInWishlist(product.productId);
+
     dispatch(
       toggleWishlist({
         id: product.productId,
@@ -190,13 +193,53 @@ export function ProductsPage() {
       })
     );
 
-    notification.success({
-      message: "Danh sách yêu thích",
-      description: `${product.productName} đã được ${
-        isProductInWishlist(product.productId) ? "xóa khỏi" : "thêm vào"
-      } danh sách yêu thích`,
-      placement: "bottomRight",
-    });
+    if (isCurrentlyInWishlist) {
+      // Thông báo xóa khỏi danh sách yêu thích
+      notification.error({
+        description: (
+          <div className="flex items-center space-x-3">
+            <img
+              src={product.imageUrls}
+              alt={product.productName}
+              className="w-12 h-12 rounded-lg object-cover"
+            />
+            <div>
+              <p className="font-medium">{product.productName}</p>
+              <p className="text-red-600">Đã xóa khỏi danh sách yêu thích</p>
+            </div>
+          </div>
+        ),
+        placement: "bottomRight",
+        duration: 3,
+        className: "custom-notification-error",
+        style: {
+          borderRadius: "16px",
+        },
+      });
+    } else {
+      // Thông báo thêm vào danh sách yêu thích
+      notification.success({
+        description: (
+          <div className="flex items-center space-x-3">
+            <img
+              src={product.imageUrls}
+              alt={product.productName}
+              className="w-12 h-12 rounded-lg object-cover"
+            />
+            <div>
+              <p className="font-medium">{product.productName}</p>
+              <p className="text-green-600">Đã thêm vào danh sách yêu thích</p>
+            </div>
+          </div>
+        ),
+        placement: "bottomRight",
+        duration: 3,
+        className: "custom-notification-success",
+        style: {
+          borderRadius: "16px",
+        },
+      });
+    }
   };
 
   const compareColumns = [
