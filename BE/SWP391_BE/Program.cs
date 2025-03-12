@@ -82,6 +82,9 @@ builder.Services.AddScoped<ISkinRoutineRepository, SkinRoutineRepository>();
 builder.Services.AddScoped<ISkinRoutineService, SkinRoutineService>();
 builder.Services.AddAutoMapper(typeof(SkinRoutineMappingProfile));
 
+builder.Services.AddScoped<IHistoryService, HistoryService>();
+builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
+
 // Register Payment related services
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
