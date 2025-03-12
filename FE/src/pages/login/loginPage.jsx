@@ -263,7 +263,7 @@ export function LoginPage() {
             transition={{ duration: 1.5, ease: "easeOut" }}
             className="absolute inset-0"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-900/40 to-pink-900/40 mix-blend-multiply z-10" />
+            <div className="absolute inset-0 bg-gradient-to-r" />
             <motion.img
               initial={{ scale: 1.1 }}
               animate={{
