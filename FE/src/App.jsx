@@ -28,7 +28,8 @@ function App() {
     "/abouts",
     "/verify-email",
     "/admin/login",
-    "/forgot-password"
+    "/forgot-password",
+    "/reset-password"
   ];
 
   // Kiểm tra với pathname đã được chuẩn hóa
