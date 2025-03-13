@@ -41,13 +41,7 @@ export function Sidebar({ onFilterChange }) {
     "Kem chống nắng",
     "Kem dưỡng",
   ];
-  const skinTypeOptions = [
-    "Da dầu",
-    "Da khô",
-    "Da hỗn hợp",
-    "Da nhạy cảm",
-    "Mọi loại da",
-  ];
+  const skinTypeOptions = ["Da dầu", "Da khô", "Da hỗn hợp", "Da nhạy cảm"];
 
   // Xử lý thay đổi tìm kiếm
   const handleSearchChange = (e) => {

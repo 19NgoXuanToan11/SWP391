@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Form,
@@ -24,6 +24,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import uploadFile from "../../utils/upload";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { updateUserProfile } from "../../store/slices/profileSlice";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -44,6 +47,31 @@ export default function EditProfilePage() {
   ]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+  const dispatch = useDispatch();
+  const [initialValues, setInitialValues] = useState({
+    username: "",
+    email: "",
+  });
+
+  useEffect(() => {
+    // Lấy thông tin từ auth_user trong localStorage
+    const authUserStr = localStorage.getItem("auth_user");
+    if (authUserStr) {
+      try {
+        const authUser = JSON.parse(authUserStr);
+        setInitialValues({
+          username: authUser.username || "",
+          email: authUser.email || "",
+        });
+        form.setFieldsValue({
+          username: authUser.username || "",
+          email: authUser.email || "",
+        });
+      } catch (error) {
+        console.error("Error parsing auth_user:", error);
+      }
+    }
+  }, [form]);
 
   const colors = {
     primary: "#ff4d6d",
@@ -182,27 +210,26 @@ export default function EditProfilePage() {
     try {
       setLoading(true);
 
-      if (fileList[0]?.originFileObj) {
-        message.loading({ content: "Đang tải ảnh lên...", key: "upload" });
-        const url = await uploadFile(fileList[0].originFileObj);
-        localStorage.setItem("userAvatar", url);
-        message.success({
-          content: "Cập nhật ảnh đại diện thành công!",
-          key: "upload",
-        });
+      // Lấy thông tin hiện tại từ auth_user
+      const authUserStr = localStorage.getItem("auth_user");
+      if (authUserStr) {
+        const authUser = JSON.parse(authUserStr);
+
+        // Cập nhật thông tin mới
+        authUser.username = values.username;
+        authUser.email = values.email;
+
+        // Lưu lại vào localStorage
+        localStorage.setItem("auth_user", JSON.stringify(authUser));
+
+        // Trigger storage event manually để cập nhật các component khác
+        window.dispatchEvent(new Event("storage"));
+
+        message.success("Cập nhật thông tin thành công!");
+        navigate("/profile");
+      } else {
+        message.error("Không tìm thấy thông tin người dùng!");
       }
-
-      // Lưu thông tin vào localStorage
-      localStorage.setItem("userName", values.name);
-      localStorage.setItem("userEmail", values.email);
-      localStorage.setItem("userLocation", values.location);
-      localStorage.setItem("userBio", values.bio);
-
-      // Trigger storage event manually để UserDropdown cập nhật
-      window.dispatchEvent(new Event("storage"));
-
-      message.success("Cập nhật thông tin thành công!");
-      navigate("/profile");
     } catch (error) {
       console.error("Save error:", error);
       message.error("Có lỗi xảy ra khi lưu thông tin!");
@@ -242,59 +269,7 @@ export default function EditProfilePage() {
             Cập nhật thông tin cá nhân của bạn
           </Text>
         </motion.div>
-
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          style={styles.uploadSection}
-        >
-          <Upload
-            listType="picture-circle"
-            fileList={fileList}
-            onPreview={handlePreview}
-            onChange={handleChange}
-            maxCount={1}
-            beforeUpload={() => false}
-            showUploadList={false}
-          >
-            {fileList.length >= 1 ? (
-              <div
-                style={{
-                  width: 150,
-                  height: 150,
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  position: "relative",
-                }}
-              >
-                <img
-                  src={fileList[0].url}
-                  alt="avatar"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                />
-              </div>
-            ) : (
-              <div style={styles.uploadButton}>
-                <div style={{ textAlign: "center" }}>
-                  <CameraOutlined
-                    style={{ fontSize: 24, color: colors.primary }}
-                  />
-                  <p style={styles.uploadText}>Thay đổi ảnh đại diện</p>
-                </div>
-              </div>
-            )}
-          </Upload>
-        </motion.div>
-
+        
         <Divider style={{ borderColor: "rgba(0,0,0,0.06)" }} />
 
         <motion.div
@@ -305,22 +280,17 @@ export default function EditProfilePage() {
           <Form
             form={form}
             layout="vertical"
-            initialValues={{
-              name: localStorage.getItem("userName") || "",
-              email: localStorage.getItem("userEmail") || "",
-              location: localStorage.getItem("userLocation") || "",
-              bio: localStorage.getItem("userBio") || "",
-            }}
+            initialValues={initialValues}
             onFinish={handleSubmit}
           >
             <Form.Item
-              name="name"
-              label={<Text style={styles.formLabel}>Họ và tên</Text>}
-              rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}
+              name="username"
+              label={<Text style={styles.formLabel}>Username</Text>}
+              rules={[{ required: true, message: "Vui lòng nhập username" }]}
             >
               <Input
                 prefix={<UserOutlined style={{ color: colors.primary }} />}
-                placeholder="Nhập họ và tên của bạn"
+                placeholder="Nhập username của bạn"
                 style={styles.input}
               />
             </Form.Item>
@@ -337,34 +307,6 @@ export default function EditProfilePage() {
                 prefix={<MailOutlined style={{ color: colors.primary }} />}
                 placeholder="Nhập địa chỉ email"
                 style={styles.input}
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="location"
-              label={<Text style={styles.formLabel}>Địa chỉ</Text>}
-              rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}
-            >
-              <Input
-                prefix={
-                  <EnvironmentOutlined style={{ color: colors.primary }} />
-                }
-                placeholder="Nhập địa chỉ của bạn"
-                style={styles.input}
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="bio"
-              label={<Text style={styles.formLabel}>Giới thiệu</Text>}
-              rules={[{ required: true, message: "Vui lòng nhập giới thiệu" }]}
-            >
-              <TextArea
-                placeholder="Viết một vài dòng giới thiệu về bản thân"
-                rows={4}
-                style={styles.textarea}
-                showCount
-                maxLength={500}
               />
             </Form.Item>
 

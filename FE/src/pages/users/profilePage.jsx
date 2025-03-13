@@ -7,54 +7,76 @@ import {
   Typography,
   Button,
   Divider,
-  Statistic,
   Space,
   Tag,
   theme,
+  Skeleton,
 } from "antd";
 import {
   EditOutlined,
-  EnvironmentOutlined,
   MailOutlined,
   UserOutlined,
+  SafetyCertificateOutlined,
+  LineChartOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import axios from "axios";
 
 const { Title, Text, Paragraph } = Typography;
 
 const ProfilePage = () => {
   const { token } = theme.useToken();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState({
-    name: localStorage.getItem("userName") || "Nguyễn Văn A",
-    email: localStorage.getItem("userEmail") || "nguyenvana@example.com",
+    username: "",
+    email: "",
     avatar:
-      localStorage.getItem("userAvatar") ||
       "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    location: localStorage.getItem("userLocation") || "Hà Nội, Việt Nam",
-    bio:
-      localStorage.getItem("userBio") ||
-      "Tôi là chuyên gia tư vấn làm đẹp với hơn 3 năm kinh nghiệm trong ngành mỹ phẩm cao cấp.",
-    coverPhoto: "https://source.unsplash.com/random/1600x400",
   });
 
   useEffect(() => {
-    const updateUserInfo = () => {
-      setUserInfo({
-        name: localStorage.getItem("userName") || userInfo.name,
-        email: localStorage.getItem("userEmail") || userInfo.email,
-        avatar: localStorage.getItem("userAvatar") || userInfo.avatar,
-        location: localStorage.getItem("userLocation") || userInfo.location,
-        bio: localStorage.getItem("userBio") || userInfo.bio,
-        coverPhoto: userInfo.coverPhoto,
-      });
+    // Giả lập thời gian tải
+    setTimeout(() => {
+      setLoading(false);
+    }, 800);
+
+    // Lấy thông tin từ auth_user trong localStorage
+    const authUserStr = localStorage.getItem("auth_user");
+    if (authUserStr) {
+      try {
+        const authUser = JSON.parse(authUserStr);
+        setUserInfo({
+          username: authUser.username || "",
+          email: authUser.email || "",
+          avatar: userInfo.avatar, // Giữ nguyên avatar mặc định
+        });
+      } catch (error) {
+        console.error("Error parsing auth_user:", error);
+      }
+    }
+
+    // Lắng nghe sự thay đổi của localStorage
+    const handleStorageChange = () => {
+      const authUserStr = localStorage.getItem("auth_user");
+      if (authUserStr) {
+        try {
+          const authUser = JSON.parse(authUserStr);
+          setUserInfo({
+            username: authUser.username || "",
+            email: authUser.email || "",
+            avatar: userInfo.avatar,
+          });
+        } catch (error) {
+          console.error("Error parsing auth_user:", error);
+        }
+      }
     };
 
-    window.addEventListener("storage", updateUserInfo);
-
+    window.addEventListener("storage", handleStorageChange);
     return () => {
-      window.removeEventListener("storage", updateUserInfo);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
@@ -67,6 +89,8 @@ const ProfilePage = () => {
     red: "#ff0a54",
     gradient: "linear-gradient(135deg, #ff4d6d 0%, #ff8fa3 100%)",
     bgLight: "#fef6f7",
+    glassBg: "rgba(255, 255, 255, 0.8)",
+    glassBorder: "rgba(255, 255, 255, 0.18)",
   };
 
   const customStyles = {
@@ -74,77 +98,92 @@ const ProfilePage = () => {
       padding: "40px 24px",
       maxWidth: 1200,
       margin: "0 auto",
-      background: `linear-gradient(180deg, ${colors.bgLight} 0%, #ffffff 100%)`,
+      background: `linear-gradient(135deg, ${colors.bgLight} 0%, #ffffff 100%)`,
       minHeight: "100vh",
+      position: "relative",
+      overflow: "hidden",
+    },
+    backgroundPattern: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundImage: `radial-gradient(${colors.secondary}22 2px, transparent 2px)`,
+      backgroundSize: "30px 30px",
+      zIndex: 0,
     },
     mainCard: {
-      overflow: "hidden",
-      borderRadius: 30,
-      border: "none",
-      background: colors.light,
-      boxShadow: "0 20px 40px rgba(255, 77, 109, 0.08)",
-      transition: "all 0.3s ease",
-    },
-    coverPhoto: {
-      height: 400,
-      backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%), url(${userInfo.coverPhoto})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      position: "relative",
-      transition: "all 0.5s ease",
-      "&:before": {
-        content: '""',
-        position: "absolute",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: "150px",
-        background:
-          "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%)",
-      },
-    },
-    avatarSection: {
-      marginTop: -120,
       position: "relative",
       zIndex: 1,
-      textAlign: "center",
-      padding: "0 20px",
+      overflow: "visible",
+      borderRadius: 30,
+      border: "none",
+      background: "transparent",
+      boxShadow: "none",
+    },
+    glassCard: {
+      background: colors.glassBg,
+      backdropFilter: "blur(10px)",
+      borderRadius: 30,
+      border: `1px solid ${colors.glassBorder}`,
+      boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.07)",
+      padding: 40,
+      overflow: "hidden",
+      position: "relative",
+    },
+    profileHeader: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: 40,
+      position: "relative",
+    },
+    avatarContainer: {
+      position: "relative",
+      marginBottom: 24,
+    },
+    avatarGlow: {
+      position: "absolute",
+      top: -15,
+      left: -15,
+      right: -15,
+      bottom: -15,
+      borderRadius: "50%",
+      background: colors.gradient,
+      opacity: 0.5,
+      filter: "blur(20px)",
+      zIndex: -1,
     },
     avatar: {
-      border: `8px solid ${colors.light}`,
-      boxShadow: "0 12px 28px rgba(255, 77, 109, 0.15)",
+      border: `4px solid ${colors.light}`,
+      boxShadow: "0 12px 28px rgba(255, 77, 109, 0.2)",
       backgroundColor: colors.secondary,
       transition: "all 0.3s ease",
       cursor: "pointer",
       "&:hover": {
-        transform: "scale(1.05) translateY(-5px)",
-        boxShadow: "0 20px 40px rgba(255, 77, 109, 0.2)",
+        transform: "scale(1.05)",
+        boxShadow: "0 20px 40px rgba(255, 77, 109, 0.3)",
       },
     },
     nameTitle: {
-      fontSize: 32,
-      fontWeight: 700,
+      fontSize: 36,
+      fontWeight: 800,
       background: colors.gradient,
       WebkitBackgroundClip: "text",
       WebkitTextFillColor: "transparent",
-      marginTop: 24,
-      marginBottom: 12,
+      marginBottom: 8,
+      textAlign: "center",
     },
-    locationBadge: {
-      background: "rgba(255,77,109,0.1)",
-      padding: "10px 20px",
-      borderRadius: 25,
-      display: "inline-flex",
+    emailText: {
+      fontSize: 16,
+      color: "rgba(0,0,0,0.6)",
+      marginBottom: 24,
+      display: "flex",
       alignItems: "center",
+      justifyContent: "center",
       gap: 8,
-      marginTop: 16,
-      backdropFilter: "blur(5px)",
-      border: "1px solid rgba(255,77,109,0.2)",
-      transition: "all 0.3s ease",
-      "&:hover": {
-        transform: "translateY(-2px)",
-        boxShadow: "0 5px 15px rgba(255,77,109,0.1)",
-      },
     },
     editButton: {
       height: 48,
@@ -155,12 +194,11 @@ const ProfilePage = () => {
       color: colors.light,
       fontSize: 16,
       fontWeight: 600,
-      boxShadow: "0 8px 20px rgba(255,77,109,0.3)",
-      marginTop: 25,
+      boxShadow: "0 8px 20px rgba(255, 77, 109, 0.3)",
       transition: "all 0.3s ease",
       "&:hover": {
         transform: "translateY(-3px)",
-        boxShadow: "0 12px 25px rgba(255,77,109,0.4)",
+        boxShadow: "0 12px 25px rgba(255, 77, 109, 0.4)",
       },
     },
     infoCard: {
@@ -170,6 +208,7 @@ const ProfilePage = () => {
       boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
       overflow: "hidden",
       transition: "all 0.3s ease",
+      height: "100%",
       "&:hover": {
         transform: "translateY(-5px)",
         boxShadow: "0 15px 35px rgba(0,0,0,0.1)",
@@ -181,6 +220,7 @@ const ProfilePage = () => {
       color: colors.dark,
       position: "relative",
       paddingBottom: 12,
+      marginBottom: 24,
       "&::after": {
         content: '""',
         position: "absolute",
@@ -200,147 +240,190 @@ const ProfilePage = () => {
       alignItems: "center",
       gap: 8,
     },
-    bioSection: {
-      padding: 30,
-      background: "rgba(255,77,109,0.03)",
+    infoValue: {
+      marginTop: 8,
+      fontSize: 16,
+      color: colors.dark,
+      fontWeight: 500,
+    },
+    statCard: {
+      padding: 24,
       borderRadius: 20,
-      marginTop: 15,
-      border: "1px solid rgba(255,77,109,0.1)",
+      background: "white",
+      boxShadow: "0 8px 20px rgba(0,0,0,0.05)",
+      height: "100%",
       transition: "all 0.3s ease",
-      position: "relative",
+      border: "1px solid rgba(255,77,109,0.1)",
       "&:hover": {
-        background: "rgba(255,77,109,0.05)",
-        borderColor: colors.primary,
-        transform: "translateY(-3px)",
+        transform: "translateY(-5px)",
+        boxShadow: "0 15px 30px rgba(0,0,0,0.1)",
       },
-      "&:before": {
-        content: '""',
-        position: "absolute",
-        top: 15,
-        left: 15,
-        width: 30,
-        height: 30,
-        background: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23ff4d6d' viewBox='0 0 24 24'%3E%3Cpath d='M6.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35.208-.086.39-.16.539-.222.302-.125.474-.197.474-.197L9.758 4.03c0 0-.218.052-.597.144C8.97 4.222 8.737 4.278 8.472 4.345c-.271.05-.56.187-.882.312C7.272 4.799 6.904 4.895 6.562 5.123c-.344.218-.741.4-1.091.692C5.132 6.116 4.723 6.377 4.421 6.76c-.33.358-.656.734-.909 1.162C3.219 8.33 3.02 8.778 2.81 9.221c-.19.443-.343.896-.468 1.336-.237.882-.343 1.72-.384 2.437-.034.718-.014 1.315.028 1.747.015.204.043.402.063.539.017.109.025.168.025.168l.026-.006C2.535 17.474 4.338 19 6.5 19c2.485 0 4.5-2.015 4.5-4.5S8.985 10 6.5 10zM17.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35.208-.086.39-.16.539-.222.302-.125.474-.197.474-.197L20.758 4.03c0 0-.218.052-.597.144-.191.048-.424.104-.689.171-.271.05-.56.187-.882.312-.317.143-.686.238-1.028.467-.344.218-.741.4-1.091.692-.339.301-.748.562-1.05.944-.33.358-.656.734-.909 1.162C14.219 8.33 14.02 8.778 13.81 9.221c-.19.443-.343.896-.468 1.336-.237.882-.343 1.72-.384 2.437-.034.718-.014 1.315.028 1.747.015.204.043.402.063.539.017.109.025.168.025.168l.026-.006C13.535 17.474 15.338 19 17.5 19c2.485 0 4.5-2.015 4.5-4.5S19.985 10 17.5 10z'/%3E%3C/svg%3E") no-repeat center center`,
-        opacity: 0.1,
-      },
+    },
+    statIcon: {
+      fontSize: 24,
+      color: colors.primary,
+      marginBottom: 16,
+      padding: 12,
+      borderRadius: "50%",
+      background: "rgba(255,77,109,0.1)",
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    statTitle: {
+      fontSize: 14,
+      color: "rgba(0,0,0,0.5)",
+      marginBottom: 8,
+    },
+    statValue: {
+      fontSize: 24,
+      fontWeight: 700,
+      color: colors.dark,
+    },
+    decorCircle1: {
+      position: "absolute",
+      top: "10%",
+      right: "5%",
+      width: 300,
+      height: 300,
+      borderRadius: "50%",
+      background: `linear-gradient(45deg, ${colors.primary}11, ${colors.secondary}22)`,
+      filter: "blur(60px)",
+      zIndex: 0,
+    },
+    decorCircle2: {
+      position: "absolute",
+      bottom: "15%",
+      left: "10%",
+      width: 200,
+      height: 200,
+      borderRadius: "50%",
+      background: `linear-gradient(45deg, ${colors.secondary}22, ${colors.accent}33)`,
+      filter: "blur(50px)",
+      zIndex: 0,
     },
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
       style={customStyles.pageContainer}
     >
+      <div style={customStyles.backgroundPattern} />
+      <div style={customStyles.decorCircle1} />
+      <div style={customStyles.decorCircle2} />
+
       <Card bordered={false} style={customStyles.mainCard}>
         <motion.div
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.5 }}
-          style={customStyles.coverPhoto}
-        />
-
-        <div style={{ padding: "0 40px 40px" }}>
-          <Row gutter={[40, 40]}>
-            <Col xs={24} md={8}>
-              <motion.div
-                initial={{ y: 50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                style={customStyles.avatarSection}
-              >
-                <Avatar
-                  src={userInfo.avatar}
-                  size={220}
-                  style={customStyles.avatar}
-                />
-                <Title style={customStyles.nameTitle}>{userInfo.name}</Title>
+          initial={{ y: 30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          style={customStyles.glassCard}
+        >
+          {loading ? (
+            <div style={{ textAlign: "center", padding: "40px 0" }}>
+              <Skeleton.Avatar active size={120} style={{ marginBottom: 24 }} />
+              <Skeleton active paragraph={{ rows: 2 }} />
+              <Skeleton.Button active style={{ marginTop: 24, width: 150 }} />
+            </div>
+          ) : (
+            <>
+              <div style={customStyles.profileHeader}>
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  style={customStyles.locationBadge}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5, duration: 0.5 }}
                 >
-                  <EnvironmentOutlined
-                    style={{ color: colors.primary, fontSize: 18 }}
-                  />
-                  <Text style={{ color: colors.primary, fontSize: 16 }}>
-                    {userInfo.location}
-                  </Text>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.02 }}>
-                  <Button
-                    type="primary"
-                    icon={<EditOutlined />}
-                    size="large"
-                    style={customStyles.editButton}
-                    onClick={() => navigate("/edit-profile")}
-                  >
-                    Chỉnh sửa hồ sơ
-                  </Button>
-                </motion.div>
-              </motion.div>
-            </Col>
-
-            <Col xs={24} md={16}>
-              <motion.div
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                <Card style={customStyles.infoCard}>
-                  <Title level={4} style={customStyles.sectionTitle}>
-                    Thông tin cá nhân
+                  <Title level={2} style={customStyles.nameTitle}>
+                    {userInfo.username || "Username"}
                   </Title>
-                  <Divider style={{ borderColor: "rgba(255,77,109,0.1)" }} />
+                  <Text style={customStyles.emailText}>
+                    <MailOutlined style={{ color: colors.primary }} />
+                    {userInfo.email || "email@example.com"}
+                  </Text>
 
-                  <Space
-                    direction="vertical"
-                    size="large"
-                    style={{ width: "100%" }}
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    <motion.div whileHover={{ x: 5 }}>
-                      <Text style={customStyles.infoLabel}>
-                        <MailOutlined style={{ fontSize: 18 }} />
-                        Email
-                      </Text>
-                      <Paragraph
-                        style={{
-                          marginTop: 8,
-                          fontSize: 16,
-                          color: colors.dark,
-                        }}
-                      >
-                        {userInfo.email}
-                      </Paragraph>
-                    </motion.div>
+                    <Button
+                      type="primary"
+                      icon={<EditOutlined />}
+                      size="large"
+                      style={customStyles.editButton}
+                      onClick={() => navigate("/edit-profile")}
+                    >
+                      Chỉnh sửa hồ sơ
+                    </Button>
+                  </motion.div>
+                </motion.div>
+              </div>
 
-                    <motion.div whileHover={{ x: 5 }}>
-                      <Text style={customStyles.infoLabel}>
-                        <UserOutlined style={{ fontSize: 18 }} />
-                        Giới thiệu
-                      </Text>
-                      <motion.div
-                        whileHover={{ scale: 1.01 }}
-                        style={customStyles.bioSection}
-                      >
-                        <Paragraph
-                          style={{
-                            color: colors.dark,
-                            margin: 0,
-                            lineHeight: 1.8,
-                            fontSize: 16,
-                          }}
-                        >
-                          {userInfo.bio}
-                        </Paragraph>
-                      </motion.div>
-                    </motion.div>
-                  </Space>
-                </Card>
-              </motion.div>
-            </Col>
-          </Row>
-        </div>
+              <Divider style={{ borderColor: "rgba(255,77,109,0.1)" }} />
+
+              <Row gutter={[24, 24]}>
+                <Col xs={24} md={8}>
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.6, duration: 0.5 }}
+                    whileHover={{ y: -5 }}
+                    style={customStyles.statCard}
+                  >
+                    <div style={{ textAlign: "center" }}>
+                      <div style={customStyles.statIcon}>
+                        <SafetyCertificateOutlined />
+                      </div>
+                      <div style={customStyles.statTitle}>Vai trò</div>
+                      <div style={customStyles.statValue}>Khách hàng</div>
+                    </div>
+                  </motion.div>
+                </Col>
+                <Col xs={24} md={8}>
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.7, duration: 0.5 }}
+                    whileHover={{ y: -5 }}
+                    style={customStyles.statCard}
+                  >
+                    <div style={{ textAlign: "center" }}>
+                      <div style={customStyles.statIcon}>
+                        <LineChartOutlined />
+                      </div>
+                      <div style={customStyles.statTitle}>Đơn hàng</div>
+                      <div style={customStyles.statValue}>0</div>
+                    </div>
+                  </motion.div>
+                </Col>
+                <Col xs={24} md={8}>
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.8, duration: 0.5 }}
+                    whileHover={{ y: -5 }}
+                    style={customStyles.statCard}
+                  >
+                    <div style={{ textAlign: "center" }}>
+                      <div style={customStyles.statIcon}>
+                        <UserOutlined />
+                      </div>
+                      <div style={customStyles.statTitle}>Thành viên từ</div>
+                      <div style={customStyles.statValue}>
+                        {new Date().toLocaleDateString("vi-VN", {
+                          year: "numeric",
+                          month: "long",
+                        })}
+                      </div>
+                    </div>
+                  </motion.div>
+                </Col>
+              </Row>
+            </>
+          )}
+        </motion.div>
       </Card>
     </motion.div>
   );

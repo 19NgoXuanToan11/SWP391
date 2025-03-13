@@ -488,10 +488,24 @@ export default function ProductsPage() {
                               )}
                             </button>
                             <button
-                              className="p-2 bg-white rounded-full shadow-md hover:bg-purple-50 transition-colors"
+                              className={`p-2 rounded-full shadow-md transition-all duration-300 ${
+                                productsToCompare.find(
+                                  (p) => p.productId === product.productId
+                                )
+                                  ? "bg-purple-500 text-white"
+                                  : "bg-white hover:bg-purple-50"
+                              }`}
                               onClick={() => handleCompareToggle(product)}
                             >
-                              <SwapOutlined className="text-purple-500 text-xl" />
+                              <SwapOutlined
+                                className={`text-xl ${
+                                  productsToCompare.find(
+                                    (p) => p.productId === product.productId
+                                  )
+                                    ? "text-white"
+                                    : "text-purple-500"
+                                }`}
+                              />
                             </button>
                           </div>
                         </div>
@@ -599,14 +613,17 @@ export default function ProductsPage() {
                       />
                       <div className="mt-6 flex justify-end gap-4">
                         {productsToCompare.map((product) => (
-                          <Button
+                          <motion.button
                             key={product.productId}
                             type="primary"
                             onClick={() => handleBuyNowClick(product.productId)}
-                            className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+                            className="px-4 py-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-medium shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 flex items-center gap-2"
+                            whileHover={{ y: -3 }}
+                            whileTap={{ scale: 0.95 }}
                           >
-                            Mua {product.productName}
-                          </Button>
+                            <ShoppingCartOutlined />
+                            <span>Mua {product.productName}</span>
+                          </motion.button>
                         ))}
                       </div>
                     </div>
