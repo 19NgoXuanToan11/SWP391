@@ -5,7 +5,7 @@ import { LoginPage } from "../pages/login/loginPage";
 import { RegisterPage } from "../pages/login/registerPage";
 import { AboutPage } from "../pages/users/aboutPage";
 import { ContactPage } from "../pages/users/contactPage";
-import { ProductsPage } from "../pages/users/productPage";
+import ProductsPage from "../pages/users/productPage";
 import { QuizPage } from "../pages/users/quizPage";
 import { QuizLandingPage } from "../pages/users/quizlandingPage";
 import { ForgotPasswordPage } from "../pages/login/resetPage";
@@ -33,6 +33,7 @@ import OrderSuccessPage from "../pages/users/orderSuccessPage";
 import OrdersHistoryPage from "../pages/users/ordersHistoryPage";
 import { AdminProtectedRoute } from "../components/auth/AdminProtectedRoute";
 import { AdminLoginPage } from "../pages/admin/adminLoginPage";
+import { ResetPasswordPage } from "../pages/login/resetPasswordPage";
 
 export const router = createBrowserRouter([
   {
@@ -74,6 +75,14 @@ export const router = createBrowserRouter([
       {
         path: "register",
         element: <RegisterPage />,
+      },
+      {
+        path: "forgot-password",
+        element: <ForgotPasswordPage />,
+      },
+      {
+        path: "reset-password",
+        element: <ResetPasswordPage />,
       },
       {
         path: "reset",
@@ -174,6 +183,10 @@ export const router = createBrowserRouter([
       {
         path: "order-success",
         element: <OrderSuccessPage />,
+      },
+      {
+        path: "reset-password",
+        element: <ResetPasswordPage />,
       },
     ],
   },

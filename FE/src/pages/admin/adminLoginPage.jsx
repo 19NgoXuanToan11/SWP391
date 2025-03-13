@@ -5,7 +5,11 @@ import { useDispatch } from "react-redux";
 import { setCredentials, logout } from "../../store/slices/authSlice";
 import { message } from "antd";
 import { motion } from "framer-motion";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  LockOutlined,
+  UserOutlined,
+  ArrowLeftOutlined,
+} from "@ant-design/icons";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 
 export function AdminLoginPage() {
@@ -88,6 +92,10 @@ export function AdminLoginPage() {
     }
   };
 
+  const handleBackToUserLogin = () => {
+    navigate("/login");
+  };
+
   return (
     <div className="min-h-screen flex overflow-hidden">
       {/* Phần bên trái - Hình ảnh */}
@@ -119,15 +127,15 @@ export function AdminLoginPage() {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col items-center mb-8"
+            className="flex flex-col items-center mb-8 mt-6"
           >
             <motion.h2
-              className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-red-500 bg-clip-text text-transparent"
+              className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-red-500 bg-clip-text text-transparent"
               initial={{ y: -20 }}
               animate={{ y: 0 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              WELCOME ADMIN
+              CHÀO MỪNG QUẢN TRỊ VIÊN
             </motion.h2>
             <motion.div
               className="h-1 w-20 bg-gradient-to-r from-purple-600 to-red-500 mt-2 rounded-full"
@@ -212,10 +220,25 @@ export function AdminLoginPage() {
                   className="inline-block w-6 h-6 border-2 border-white border-t-transparent rounded-full"
                 />
               ) : (
-                "Access Dashboard"
+                "Truy cập"
               )}
             </motion.button>
           </form>
+
+          {/* Back to User Login Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0, duration: 0.5 }}
+            className="mt-6 text-center"
+          >
+            <button
+              onClick={handleBackToUserLogin}
+              className="text-gray-600 hover:text-purple-600 transition-colors text-sm font-medium flex items-center justify-center gap-2 mx-auto"
+            >
+              <ArrowLeftOutlined /> Quay lại đăng nhập người dùng
+            </button>
+          </motion.div>
         </motion.div>
       </div>
     </div>

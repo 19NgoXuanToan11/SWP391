@@ -1,4 +1,5 @@
 using Data.Models;
+using Microsoft.EntityFrameworkCore;
 using Repo;
 
 namespace Service
@@ -10,6 +11,10 @@ namespace Service
         public PaymentService(IPaymentRepository paymentRepository)
         {
             _paymentRepository = paymentRepository;
+        }
+        public async Task<Payment?> GetPaymentByOrderCodeAsync(int orderCode)
+        {
+            return await _paymentRepository.GetPaymentByOrderCodeAsync(orderCode);
         }
 
         public async Task<IEnumerable<Payment>> GetAllPaymentsAsync()

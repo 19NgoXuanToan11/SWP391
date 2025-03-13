@@ -2,14 +2,22 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const loadCartState = () => {
   try {
-    const cartState = localStorage.getItem("cartState");
-    return cartState
-      ? JSON.parse(cartState)
-      : {
-          items: [],
-          total: 0,
-          quantity: 0,
-        };
+    // Lấy thông tin người dùng hiện tại từ localStorage
+    const userStr = localStorage.getItem("auth_user");
+    const currentUser = userStr ? JSON.parse(userStr) : null;
+    const userId = currentUser ? currentUser.id : "guest";
+
+    // Lấy tất cả giỏ hàng từ localStorage
+    const allCarts = JSON.parse(localStorage.getItem("allCarts")) || {};
+
+    // Trả về giỏ hàng của người dùng hiện tại hoặc giỏ hàng trống nếu chưa có
+    return (
+      allCarts[userId] || {
+        items: [],
+        total: 0,
+        quantity: 0,
+      }
+    );
   } catch (err) {
     return {
       items: [],
@@ -21,7 +29,19 @@ const loadCartState = () => {
 
 const saveCartState = (state) => {
   try {
-    localStorage.setItem("cartState", JSON.stringify(state));
+    // Lấy thông tin người dùng hiện tại từ localStorage
+    const userStr = localStorage.getItem("auth_user");
+    const currentUser = userStr ? JSON.parse(userStr) : null;
+    const userId = currentUser ? currentUser.id : "guest";
+
+    // Lấy tất cả giỏ hàng từ localStorage
+    const allCarts = JSON.parse(localStorage.getItem("allCarts")) || {};
+
+    // Cập nhật giỏ hàng của người dùng hiện tại
+    allCarts[userId] = state;
+
+    // Lưu lại tất cả giỏ hàng vào localStorage
+    localStorage.setItem("allCarts", JSON.stringify(allCarts));
   } catch (err) {
     console.error("Could not save cart state:", err);
   }

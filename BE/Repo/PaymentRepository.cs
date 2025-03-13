@@ -55,5 +55,11 @@ namespace Repo
             await _context.PaymentHistories.AddAsync(history);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Payment?> GetPaymentByOrderCodeAsync(int orderCode)
+        {
+            return await _context.Payments.FirstOrDefaultAsync(p => p.OrderCode == orderCode);
+        }
+
     }
 }

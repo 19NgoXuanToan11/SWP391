@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FaGoogle } from "react-icons/fa";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import background from "../../assets/pictures/background_login.jpg";
@@ -10,7 +10,12 @@ import { auth } from "../../config/firebase";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { setCredentials, logout } from "../../store/slices/authSlice";
-import { LockOutlined } from "@ant-design/icons";
+import {
+  LockOutlined,
+  UserOutlined,
+  KeyOutlined,
+  MailOutlined,
+} from "@ant-design/icons";
 
 export function LoginPage() {
   const dispatch = useDispatch();
@@ -23,10 +28,32 @@ export function LoginPage() {
     password: "",
     name: "",
     confirmPassword: "",
+    rememberMe: false,
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [login, { isLoading }] = useLoginMutation();
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 300, damping: 24 },
+    },
+  };
 
   const validateForm = () => {
     let valid = true;
@@ -57,8 +84,7 @@ export function LoginPage() {
     return valid;
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleLogin = async () => {
     if (!validateForm()) return;
 
     setLoading(true);
@@ -79,7 +105,6 @@ export function LoginPage() {
       if (result.success) {
         const token = result.data;
         const tokenPayload = JSON.parse(atob(token.split(".")[1]));
-
 
         // Kiểm tra xem có phải admin không
         if (tokenPayload.role === "Admin") {
@@ -125,22 +150,61 @@ export function LoginPage() {
     }
   };
 
-  const handleLoginByGoogle = () => {
+  const handleLoginByGoogle = async () => {
     const provider = new GoogleAuthProvider();
+    setLoading(true);
 
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const token = result.user.accessToken;
-        const user = result.user;
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
 
-        console.log(user);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.customData.email;
-        const credential = GoogleAuthProvider.credentialFromError(error);
-      });
+      // Get the Google access token
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+
+      // Create user data object from Google profile
+      const userData = {
+        username: user.displayName,
+        name: user.displayName,
+        role: "User", // Default role for Google sign-in users
+        email: user.email,
+        id: user.uid,
+        isAdmin: false,
+        photoURL: user.photoURL,
+      };
+
+      // Store user data in Redux and localStorage
+      dispatch(
+        setCredentials({
+          user: userData,
+          token: user.accessToken, // Use Firebase token
+        })
+      );
+
+      message.success("Đăng nhập Google thành công!");
+
+      // Navigate to home page
+      const redirectPath = location.state?.from;
+      if (redirectPath && redirectPath === "/payment") {
+        navigate("/qr-payment", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
+    } catch (error) {
+      console.error("Google login error:", error);
+
+      // Handle specific error cases
+      if (error.code === "auth/popup-closed-by-user") {
+        message.info("Đăng nhập đã bị hủy.");
+      } else if (error.code === "auth/cancelled-popup-request") {
+        // This is a common error that happens when multiple popups are triggered
+        // We can safely ignore this
+      } else {
+        message.error("Đăng nhập Google thất bại. Vui lòng thử lại!");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleAdminLogin = () => {
@@ -148,161 +212,301 @@ export function LoginPage() {
   };
 
   return (
-    <div className="h-screen flex overflow-hidden">
-      {/* Phần bên trái */}
-      <div className="hidden lg:block lg:w-1/2 relative">
-        <motion.img
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.5 }}
-          src={background}
-          alt="Hình nền trang trí"
-          className="absolute inset-0 w-full h-full object-cover"
+    <div className="h-screen flex overflow-hidden bg-gradient-to-br from-gray-50 to-white">
+      {/* Floating shapes for decoration */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <motion.div
+          animate={{
+            y: [0, 15, 0],
+            rotate: [0, 5, 0],
+          }}
+          transition={{
+            repeat: Infinity,
+            duration: 20,
+            ease: "easeInOut",
+          }}
+          className="absolute top-[15%] left-[10%] w-64 h-64 rounded-full bg-gradient-to-r from-pink-200/20 to-purple-200/20 blur-3xl"
+        />
+        <motion.div
+          animate={{
+            y: [0, -20, 0],
+            rotate: [0, -5, 0],
+          }}
+          transition={{
+            repeat: Infinity,
+            duration: 25,
+            ease: "easeInOut",
+          }}
+          className="absolute bottom-[20%] right-[15%] w-80 h-80 rounded-full bg-gradient-to-r from-blue-200/20 to-purple-200/20 blur-3xl"
+        />
+        <motion.div
+          animate={{
+            y: [0, 10, 0],
+            x: [0, 10, 0],
+          }}
+          transition={{
+            repeat: Infinity,
+            duration: 15,
+            ease: "easeInOut",
+          }}
+          className="absolute top-[40%] right-[30%] w-40 h-40 rounded-full bg-gradient-to-r from-yellow-200/20 to-pink-200/20 blur-3xl"
         />
       </div>
 
-      {/* Phần bên phải */}
-      <div className="w-full lg:w-1/2 h-full bg-gradient-to-br from-gray-50 to-white relative">
-        {/* Các yếu tố trang trí */}
-        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-pink-50/50 to-transparent" />
-        <div className="absolute bottom-0 right-0 w-full h-32 bg-gradient-to-t from-purple-50/50 to-transparent" />
+      {/* Main content */}
+      <div className="flex w-full h-full relative z-10">
+        {/* Left side - Image */}
+        <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
+          <motion.div
+            initial={{ scale: 1.2, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="absolute inset-0"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r" />
+            <motion.img
+              initial={{ scale: 1.1 }}
+              animate={{
+                scale: [1, 1.05, 1],
+                rotate: [0, 1, 0],
+              }}
+              transition={{
+                duration: 20,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut",
+              }}
+              src={background}
+              alt="Hình nền trang trí"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </motion.div>
+        </div>
 
-        {/* Container nội dung chính */}
-        <div className="h-full flex flex-col px-8 md:px-12 py-6">
-          {/* Phần Form */}
-          <div className="flex-1 flex flex-col justify-center">
-            <div className="mb-6">
+        {/* Right side - Form */}
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="w-full max-w-md"
+          >
+            <motion.div variants={itemVariants} className="mb-8">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
                 {isLogin ? "Chào mừng trở lại" : "Tạo tài khoản"}
               </h2>
-              <p className="mt-1 text-gray-600">
+              <p className="mt-2 text-gray-600">
                 {isLogin
                   ? "Đăng nhập để tiếp tục hành trình của bạn"
                   : "Đăng ký để bắt đầu hành trình của bạn"}
               </p>
-            </div>
+            </motion.div>
 
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Tên đăng nhập
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
-                  placeholder="Nhập tên đăng nhập"
-                  value={formData.username}
-                  onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
-                  }
-                />
-                {errors.username && (
-                  <p className="text-red-500 text-xs">{errors.username}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Mật khẩu
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
-                    placeholder="••••••••"
-                    value={formData.password}
-                    onChange={(e) =>
-                      setFormData({ ...formData, password: e.target.value })
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showPassword ? (
-                      <HiEyeOff size={18} />
-                    ) : (
-                      <HiEye size={18} />
-                    )}
-                  </button>
-                </div>
-                {errors.password && (
-                  <p className="text-red-500 text-xs">{errors.password}</p>
-                )}
-              </div>
-
-              {!isLogin && (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleLogin();
+              }}
+              className="space-y-5"
+            >
+              <motion.div variants={itemVariants}>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Xác nhận mật khẩu
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <UserOutlined /> Tên đăng nhập
                   </label>
-                  <input
-                    type="password"
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
-                    placeholder="••••••••"
-                    value={formData.confirmPassword}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        confirmPassword: e.target.value,
-                      })
-                    }
-                  />
-                  {errors.confirmPassword && (
-                    <p className="text-red-500 text-xs">
-                      {errors.confirmPassword}
-                    </p>
+                  <div className="relative group">
+                    <input
+                      type="text"
+                      className="w-full px-4 py-3 pl-10 rounded-xl bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/30 focus:border-pink-500 transition-all shadow-sm"
+                      placeholder="Nhập tên đăng nhập"
+                      value={formData.username}
+                      onChange={(e) =>
+                        setFormData({ ...formData, username: e.target.value })
+                      }
+                    />
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-pink-500 transition-colors">
+                      <UserOutlined />
+                    </div>
+                    <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-pink-500 to-purple-500 w-0 group-focus-within:w-full transition-all duration-300 rounded-full"></div>
+                  </div>
+                  {errors.username && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-red-500 text-xs mt-1"
+                    >
+                      {errors.username}
+                    </motion.p>
                   )}
                 </div>
-              )}
+              </motion.div>
 
-              {/* Nhớ tôi & Quên mật khẩu */}
-              <div className="flex items-center justify-between">
-                <label className="flex items-center space-x-2 text-sm text-gray-600">
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-500"
-                  />
-                  <span>Nhớ tôi</span>
-                </label>
-                <Link to="/reset">
-                  <button className="text-sm text-pink-500 hover:text-pink-600">
-                    Quên mật khẩu?
-                  </button>
-                </Link>
-              </div>
-
-              {/* Nút Gửi */}
-              <button
-                type="submit"
-                className="w-full py-2.5 px-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl transition-all transform hover:translate-y-[-1px] hover:shadow-lg hover:from-pink-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500/40 active:scale-[0.99]"
-              >
-                {loading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <motion.div variants={itemVariants}>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <KeyOutlined /> Mật khẩu
+                  </label>
+                  <div className="relative group">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      className="w-full px-4 py-3 pl-10 rounded-xl bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/30 focus:border-pink-500 transition-all shadow-sm"
+                      placeholder="••••••••"
+                      value={formData.password}
+                      onChange={(e) =>
+                        setFormData({ ...formData, password: e.target.value })
+                      }
+                    />
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-pink-500 transition-colors">
+                      <KeyOutlined />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                    >
+                      {showPassword ? (
+                        <HiEyeOff size={18} />
+                      ) : (
+                        <HiEye size={18} />
+                      )}
+                    </button>
+                    <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-pink-500 to-purple-500 w-0 group-focus-within:w-full transition-all duration-300 rounded-full"></div>
                   </div>
-                ) : isLogin ? (
-                  "Đăng nhập"
-                ) : (
-                  "Đăng ký"
+                  {errors.password && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-red-500 text-xs mt-1"
+                    >
+                      {errors.password}
+                    </motion.p>
+                  )}
+                </div>
+              </motion.div>
+
+              <AnimatePresence>
+                {!isLogin && (
+                  <motion.div
+                    variants={itemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="hidden"
+                  >
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                        <KeyOutlined /> Xác nhận mật khẩu
+                      </label>
+                      <div className="relative group">
+                        <input
+                          type="password"
+                          className="w-full px-4 py-3 pl-10 rounded-xl bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/30 focus:border-pink-500 transition-all shadow-sm"
+                          placeholder="••••••••"
+                          value={formData.confirmPassword}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              confirmPassword: e.target.value,
+                            })
+                          }
+                        />
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-pink-500 transition-colors">
+                          <KeyOutlined />
+                        </div>
+                        <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-pink-500 to-purple-500 w-0 group-focus-within:w-full transition-all duration-300 rounded-full"></div>
+                      </div>
+                      {errors.confirmPassword && (
+                        <motion.p
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="text-red-500 text-xs mt-1"
+                        >
+                          {errors.confirmPassword}
+                        </motion.p>
+                      )}
+                    </div>
+                  </motion.div>
                 )}
-              </button>
+              </AnimatePresence>
+
+              {/* Remember me & Forgot password */}
+              <motion.div
+                variants={itemVariants}
+                className="flex items-center justify-end"
+              >
+                <button
+                  type="button"
+                  onClick={() => navigate("/forgot-password")}
+                  className="text-sm text-pink-600 hover:text-pink-700 font-medium transition-colors"
+                >
+                  Quên mật khẩu?
+                </button>
+              </motion.div>
+
+              {/* Submit Button */}
+              <motion.div variants={itemVariants}>
+                <button
+                  type="submit"
+                  className="w-full py-3 px-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-medium rounded-xl hover:from-pink-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all shadow-md relative overflow-hidden group"
+                  disabled={loading}
+                >
+                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
+                  {loading ? (
+                    <div className="flex items-center justify-center">
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          repeat: Infinity,
+                          duration: 1,
+                          ease: "linear",
+                        }}
+                        className="w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"
+                      />
+                      <span>Đang xử lý...</span>
+                    </div>
+                  ) : isLogin ? (
+                    "Đăng Nhập"
+                  ) : (
+                    "Đăng Ký"
+                  )}
+                </button>
+              </motion.div>
+
+              {/* Google Login Button */}
+              <motion.div variants={itemVariants}>
+                <button
+                  type="button"
+                  onClick={handleLoginByGoogle}
+                  className="w-full py-3 px-4 bg-white text-gray-700 font-medium rounded-xl border border-gray-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all shadow-sm flex items-center justify-center gap-2"
+                >
+                  <FaGoogle className="text-red-500" />
+                  <span>Đăng nhập với Google</span>
+                </button>
+              </motion.div>
             </form>
 
-            {/* Liên kết Đăng ký */}
-            {isLogin && (
-              <div className="text-center mt-4">
+            {/* Register Link */}
+            <motion.div variants={itemVariants} className="text-center mt-6">
+              {isLogin ? (
                 <Link
                   to="/register"
                   className="text-sm text-gray-600 hover:text-pink-500 transition-colors"
                 >
-                  Bạn chưa có tài khoản? Đăng ký
+                  Bạn chưa có tài khoản?{" "}
+                  <span className="font-medium text-pink-500">Đăng ký</span>
                 </Link>
-              </div>
-            )}
+              ) : (
+                <Link
+                  to="/login"
+                  className="text-sm text-gray-600 hover:text-pink-500 transition-colors"
+                >
+                  Đã có tài khoản?{" "}
+                  <span className="font-medium text-pink-500">Đăng nhập</span>
+                </Link>
+              )}
+            </motion.div>
 
-            <div className="mt-6 space-y-4">
+            {/* Admin Login Section */}
+            <motion.div variants={itemVariants} className="mt-8">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-pink-100"></div>
@@ -314,18 +518,23 @@ export function LoginPage() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3">
-                <button
+              <div className="mt-4">
+                <motion.button
+                  whileHover={{
+                    scale: 1.02,
+                    boxShadow: "0 10px 25px -5px rgba(236, 72, 153, 0.3)",
+                  }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={handleAdminLogin}
-                  className="group relative py-3 px-6 rounded-xl overflow-hidden bg-gradient-to-r from-pink-400 to-pink-600 hover:from-pink-500 hover:to-pink-700 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg hover:shadow-pink-400/30"
+                  className="w-full group relative py-3 px-6 rounded-xl overflow-hidden bg-gradient-to-r from-pink-400 to-pink-600 hover:from-pink-500 hover:to-pink-700 transition-all duration-300"
                 >
-                  {/* Hiệu ứng lóe sáng */}
+                  {/* Shine effect */}
                   <div className="absolute inset-0 w-[200%] translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none"></div>
 
                   {/* Border gradient */}
                   <div className="absolute inset-0 rounded-xl p-[1px] bg-gradient-to-r from-pink-200 to-pink-400 opacity-50"></div>
 
-                  {/* Nội dung nút */}
+                  {/* Button content */}
                   <div className="relative flex items-center justify-center gap-3 text-white">
                     <div className="w-8 h-8 rounded-full bg-pink-500/30 flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
                       <LockOutlined className="text-white text-lg group-hover:rotate-12 transition-transform" />
@@ -335,12 +544,12 @@ export function LoginPage() {
                     </span>
                   </div>
 
-                  {/* Hiệu ứng hover glow */}
+                  {/* Hover glow effect */}
                   <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-pink-400/20 to-pink-600/20 blur-xl"></div>
-                </button>
+                </motion.button>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </div>

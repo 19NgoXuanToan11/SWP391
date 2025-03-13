@@ -258,14 +258,6 @@ export default function ProductDetailPage() {
                 <span className="text-4xl font-bold text-pink-600">
                   {formatPrice(product?.price)}
                 </span>
-                <span className="text-lg text-gray-500 line-through">
-                  {formatPrice(product?.price * 1.2)}
-                </span>
-                <Badge
-                  count="-20%"
-                  className="bg-pink-500"
-                  style={{ backgroundColor: "#ff4d4f" }}
-                />
               </div>
               <div className="flex items-center text-pink-600">
                 <GiftOutlined className="mr-2" />
@@ -422,7 +414,7 @@ export default function ProductDetailPage() {
               </div>
             </TabPane>
 
-            <TabPane
+            {/* <TabPane
               tab={
                 <span className="flex items-center gap-2 px-6 py-3 font-medium text-pink-600">
                   <StarOutlined className="text-lg" />
@@ -439,7 +431,7 @@ export default function ProductDetailPage() {
                   </p>
                 </div>
               </div>
-            </TabPane>
+            </TabPane> */}
           </Tabs>
         </div>
       </div>

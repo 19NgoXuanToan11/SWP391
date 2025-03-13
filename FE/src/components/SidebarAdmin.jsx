@@ -10,26 +10,40 @@ import {
   InfoCircleOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../store/slices/authSlice";
 
 const SidebarAdmin = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const menuItems = [
-    { path: "/dashboard", icon: <DashboardOutlined />, label: "Dashboard" },
-    { path: "/account", icon: <UserOutlined />, label: "Users" },
-    { path: "/order", icon: <ShoppingCartOutlined />, label: "Orders" },
-    { path: "/category", icon: <AppstoreOutlined />, label: "Categories" },
-    { path: "/brand", icon: <TagOutlined />, label: "Brands" },
+    {
+      path: "/dashboard",
+      icon: <DashboardOutlined />,
+      label: "Bảng điều khiển",
+    },
+    { path: "/account", icon: <UserOutlined />, label: "Tài khoản" },
+    { path: "/order", icon: <ShoppingCartOutlined />, label: "Đơn hàng" },
+    { path: "/category", icon: <AppstoreOutlined />, label: "Danh mục" },
+    { path: "/brand", icon: <TagOutlined />, label: "Thương hiệu" },
   ];
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/admin/login");
+  };
 
   return (
     <aside
       className={`${
         collapsed ? "w-20" : "w-64"
-      } min-h-screen bg-gradient-to-b from-gray-900 via-slate-800 to-gray-900 text-white transition-all duration-300 ease-in-out relative`}
+      } min-h-screen bg-gradient-to-b from-gray-900 via-slate-800 to-gray-900 text-white transition-all duration-300 ease-in-out relative flex flex-col`}
     >
       {/* Toggle Button */}
       <button
@@ -51,7 +65,7 @@ const SidebarAdmin = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="mt-8 px-4">
+      <nav className="mt-8 px-4 flex-grow">
         <ul className="space-y-2">
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
@@ -89,20 +103,20 @@ const SidebarAdmin = () => {
         </ul>
       </nav>
 
-      {/* Bottom Section */}
-      {!collapsed && (
-        <div className="absolute bottom-0 left-0 right-0 p-6">
-          <div className="bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl p-4">
-            <h3 className="text-sm font-semibold text-gray-300">Need Help?</h3>
-            <p className="text-xs text-gray-400 mt-1">
-              Contact our support team
-            </p>
-            <button className="mt-3 w-full px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
-              Get Support
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Logout Button */}
+      <div className="mt-auto px-4 pb-6">
+        <button
+          onClick={handleLogout}
+          className={`w-full flex items-center px-4 py-3 rounded-xl transition-all duration-200
+            text-red-300 hover:bg-red-500/20 hover:text-white group
+          `}
+        >
+          <span className="text-xl">
+            <LogoutOutlined />
+          </span>
+          {!collapsed && <span className="ml-4 font-medium">Đăng xuất</span>}
+        </button>
+      </div>
     </aside>
   );
 };

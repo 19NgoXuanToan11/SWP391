@@ -11,24 +11,28 @@ import {
 } from "@ant-design/icons";
 import blackWhiteLogo from "../assets/pictures/black_white_on_trans.png";
 import { Link } from "react-router-dom";
-import { Dropdown } from "antd";
+import { Dropdown, message } from "antd";
 import { UserDropdown } from "./userDropdown";
 import { useSelector, useDispatch } from "react-redux";
-import { setCredentials } from "../store/slices/authSlice";
+import {
+  setCredentials,
+  logout,
+  checkSession,
+} from "../store/slices/authSlice";
 
 export function SiteHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const isAuthenticated = !!localStorage.getItem("token");
 
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
-  const user = auth?.user;
+  const { user, isAuthenticated } = auth;
 
   // Lấy số lượng sản phẩm từ Redux store
   const cartQuantity = useSelector((state) => state.cart.quantity);
   const wishlistTotal = useSelector((state) => state.wishlist.total);
 
+  // Xử lý scroll
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -37,25 +41,47 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Kiểm tra xem có thông tin người dùng trong Redux không
+  // Kiểm tra trạng thái đăng nhập khi component mount
   useEffect(() => {
-    // Nếu đã đăng nhập nhưng không có thông tin user trong Redux
-    if (isAuthenticated && !user) {
-      // Lấy thông tin từ localStorage
-      const userName = localStorage.getItem("userName");
-      const token = localStorage.getItem("token");
+    dispatch(checkSession());
+  }, [dispatch]);
 
-      if (userName && token) {
-        // Khôi phục thông tin vào Redux
-        dispatch(
-          setCredentials({
-            user: { name: userName, username: userName },
-            token: token,
-          })
-        );
+  // Lắng nghe sự kiện localStorage để đồng bộ trạng thái đăng nhập giữa các tab
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      // Nếu có thay đổi liên quan đến auth
+      if (e.key === "auth_token" || e.key === "auth_user" || e.key === null) {
+        // Kiểm tra lại phiên đăng nhập
+        dispatch(checkSession());
       }
-    }
-  }, [isAuthenticated, user, dispatch]);
+    };
+
+    // Thêm event listener
+    window.addEventListener("storage", handleStorageChange);
+
+    // Kiểm tra phiên đăng nhập mỗi 30 giây
+    const intervalId = setInterval(() => {
+      dispatch(checkSession());
+    }, 30000);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(intervalId);
+    };
+  }, [dispatch]);
+
+  // Hàm đăng xuất
+  const handleLogout = () => {
+    dispatch(logout());
+    message.success("Đăng xuất thành công!");
+
+    // Kích hoạt sự kiện storage để các tab khác biết về việc đăng xuất
+    // Lưu ý: localStorage.setItem sẽ không kích hoạt sự kiện storage trong cùng tab
+    // Nhưng chúng ta có thể sử dụng một trick nhỏ để kích hoạt nó
+    const logoutEvent = new Date().getTime();
+    localStorage.setItem("auth_logout_event", logoutEvent);
+  };
 
   return (
     <header
@@ -136,7 +162,7 @@ export function SiteHeader() {
 
               {/* Phần xác thực */}
               <div className="flex items-center space-x-4">
-                {isAuthenticated ? (
+                {isAuthenticated && user ? (
                   <>
                     {/* Wishlist Icon với số lượng */}
                     <Link
@@ -153,7 +179,7 @@ export function SiteHeader() {
                         </span>
                       )}
                     </Link>
-                    <UserDropdown user={user} />
+                    <UserDropdown user={user} onLogout={handleLogout} />
                   </>
                 ) : (
                   <Link

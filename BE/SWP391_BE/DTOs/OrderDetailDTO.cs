@@ -5,6 +5,7 @@ namespace SWP391_BE.DTOs
         public int OrderDetailId { get; set; }
         public int OrderId { get; set; }
         public int ProductId { get; set; }
+        public int HistoryId { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
     }
@@ -13,13 +14,15 @@ namespace SWP391_BE.DTOs
     {
         public int OrderId { get; set; }
         public int ProductId { get; set; }
+        public int HistoryId { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
     }
 
     public class UpdateOrderDetailDTO
     {
+        public int HistoryId { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
     }
-} 
+}

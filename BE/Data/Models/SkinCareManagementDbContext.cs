@@ -51,6 +51,7 @@ public partial class SkinCareManagementDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<Volume> Volume { get; set; }
+    public DbSet<History> History { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

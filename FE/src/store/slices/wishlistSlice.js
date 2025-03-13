@@ -3,13 +3,21 @@ import { createSlice } from "@reduxjs/toolkit";
 // Hàm load state từ localStorage
 const loadWishlistState = () => {
   try {
-    const wishlistState = localStorage.getItem("wishlistState");
-    return wishlistState
-      ? JSON.parse(wishlistState)
-      : {
-          items: [],
-          total: 0,
-        };
+    // Lấy thông tin người dùng hiện tại từ localStorage
+    const userStr = localStorage.getItem("auth_user");
+    const currentUser = userStr ? JSON.parse(userStr) : null;
+    const userId = currentUser ? currentUser.id : "guest";
+
+    // Lấy tất cả danh sách yêu thích từ localStorage
+    const allWishlists = JSON.parse(localStorage.getItem("allWishlists")) || {};
+
+    // Trả về danh sách yêu thích của người dùng hiện tại hoặc danh sách trống nếu chưa có
+    return (
+      allWishlists[userId] || {
+        items: [],
+        total: 0,
+      }
+    );
   } catch (err) {
     console.error("Error loading wishlist state:", err);
     return {
@@ -22,7 +30,19 @@ const loadWishlistState = () => {
 // Hàm lưu state vào localStorage
 const saveWishlistState = (state) => {
   try {
-    localStorage.setItem("wishlistState", JSON.stringify(state));
+    // Lấy thông tin người dùng hiện tại từ localStorage
+    const userStr = localStorage.getItem("auth_user");
+    const currentUser = userStr ? JSON.parse(userStr) : null;
+    const userId = currentUser ? currentUser.id : "guest";
+
+    // Lấy tất cả danh sách yêu thích từ localStorage
+    const allWishlists = JSON.parse(localStorage.getItem("allWishlists")) || {};
+
+    // Cập nhật danh sách yêu thích của người dùng hiện tại
+    allWishlists[userId] = state;
+
+    // Lưu lại tất cả danh sách yêu thích vào localStorage
+    localStorage.setItem("allWishlists", JSON.stringify(allWishlists));
   } catch (err) {
     console.error("Error saving wishlist state:", err);
   }
