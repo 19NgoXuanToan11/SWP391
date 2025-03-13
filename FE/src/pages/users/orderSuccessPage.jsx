@@ -12,8 +12,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { PaymentSteps } from "../../components/PaymentStep";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { clearCart } from "../../store/slices/cartSlice";
 const { Title, Text, Paragraph } = Typography;
 
 function OrderSuccessPage() {
@@ -25,7 +23,6 @@ function OrderSuccessPage() {
 
   const [payment, setPayment] = useState(null);
   const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (orderCode) {
@@ -40,10 +37,6 @@ function OrderSuccessPage() {
         .finally(() => setLoading(false));
     }
   }, [orderCode]);
-
-  useEffect(() => {
-    dispatch(clearCart());
-  }, [dispatch]);
 
   console.log(payment);
   return (
