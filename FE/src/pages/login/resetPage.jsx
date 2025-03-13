@@ -9,9 +9,6 @@ import {
   ArrowLeftOutlined,
 } from "@ant-design/icons";
 import background from "../../assets/pictures/background_login.jpg";
-import axios from "axios";
-import endpoints from "../../constants/endpoint";
-import api from "../../config/axios";
 
 export function ForgotPasswordPage() {
   const navigate = useNavigate();
@@ -80,35 +77,22 @@ export function ForgotPasswordPage() {
 
     setLoading(true);
     try {
-      // Send just the email string as JSON, not an object
-      const response = await api.post(
-        "/Auth/forgot-password",
-        JSON.stringify(email),
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      // Implement API call to request password reset
+      // const result = await requestPasswordReset({ email }).unwrap();
 
-      // Check if the request was successful
-      if (response.data && response.data.success) {
-        message.success(
-          response.data.message ||
-            "Đã gửi link đặt lại mật khẩu vào email của bạn"
-        );
-      } else {
-        message.error(
-          response.data.message || "Không thể gửi liên kết đặt lại mật khẩu"
-        );
-      }
+      // Simulate API call for now
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      message.success(
+        "Liên kết đặt lại mật khẩu đã được gửi đến email của bạn!"
+      );
+      // In a real implementation, you might want to navigate to a confirmation page
+      // or stay on this page with a message
     } catch (err) {
       console.error("Reset request error:", err);
-      // Check if there's a specific error message from the server
-      const errorMessage =
-        err.response?.data?.message ||
-        "Không thể gửi liên kết đặt lại mật khẩu. Vui lòng thử lại!";
-      message.error(errorMessage);
+      message.error(
+        "Không thể gửi liên kết đặt lại mật khẩu. Vui lòng thử lại!"
+      );
     } finally {
       setLoading(false);
     }
@@ -120,19 +104,18 @@ export function ForgotPasswordPage() {
 
     setLoading(true);
     try {
-      // Implement API call to reset password with token
-      const response = await api.post("/Auth/reset-password", {
-        email: email,
-        token: resetToken,
-        newPassword: formData.password,
-      });
+      // Implement API call to reset password
+      // const result = await resetPassword({
+      //   token: resetToken,
+      //   email: email,
+      //   password: formData.password
+      // }).unwrap();
 
-      if (response.data.success) {
-        message.success("Mật khẩu đã được đặt lại thành công!");
-        navigate("/login");
-      } else {
-        message.error(response.data.message || "Không thể đặt lại mật khẩu");
-      }
+      // Simulate API call for now
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      message.success("Mật khẩu đã được đặt lại thành công!");
+      navigate("/login");
     } catch (err) {
       console.error("Reset password error:", err);
       message.error("Không thể đặt lại mật khẩu. Vui lòng thử lại!");
