@@ -33,7 +33,6 @@ import OrderSuccessPage from "../pages/users/orderSuccessPage";
 import OrdersHistoryPage from "../pages/users/ordersHistoryPage";
 import { AdminProtectedRoute } from "../components/auth/AdminProtectedRoute";
 import { AdminLoginPage } from "../pages/admin/adminLoginPage";
-import { ResetPasswordPage } from "../pages/login/resetPasswordPage";
 
 export const router = createBrowserRouter([
   {
@@ -79,10 +78,6 @@ export const router = createBrowserRouter([
       {
         path: "forgot-password",
         element: <ForgotPasswordPage />,
-      },
-      {
-        path: "reset-password",
-        element: <ResetPasswordPage />,
       },
       {
         path: "reset",
@@ -183,10 +178,6 @@ export const router = createBrowserRouter([
       {
         path: "order-success",
         element: <OrderSuccessPage />,
-      },
-      {
-        path: "reset-password",
-        element: <ResetPasswordPage />,
       },
     ],
   },
