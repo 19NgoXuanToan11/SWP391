@@ -88,7 +88,7 @@ export function SiteHeader() {
       className={`sticky top-0 z-50 w-full transition-all duration-500 ${
         isScrolled
           ? "bg-white/70 backdrop-blur-lg border-b border-gray-100/50 shadow-sm h-[80px]"
-          : "bg-white h-[150px]"
+          : "bg-white h-[100px]"
       }`}
     >
       <div className="max-w-7xl mx-auto px-8 h-full">
