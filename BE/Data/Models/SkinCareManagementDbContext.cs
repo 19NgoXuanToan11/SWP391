@@ -215,7 +215,6 @@ public partial class SkinCareManagementDbContext : DbContext
             entity.Property(e => e.OrderDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.PaymentMethod).HasMaxLength(50);
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasDefaultValue("Pending");
@@ -408,7 +407,6 @@ public partial class SkinCareManagementDbContext : DbContext
             entity.Property(e => e.OrderDate).HasColumnType("datetime");
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(18,2)");
             entity.Property(e => e.Status).HasMaxLength(50);
-            entity.Property(e => e.PaymentMethod).HasMaxLength(50);
 
             // Configure relationship with User
             entity.HasOne(d => d.User)
