@@ -10,7 +10,7 @@ import {
   HiUserCircle,
 } from "react-icons/hi";
 import { message } from "antd";
-import background from "../../assets/pictures/background_login.jpg";
+import background from "../../assets/pictures/model.jpg";
 import { useRegisterMutation } from "../../services/api/beautyShopApi";
 
 export function RegisterPage() {

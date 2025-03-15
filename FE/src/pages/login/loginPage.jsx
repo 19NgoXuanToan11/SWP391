@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGoogle } from "react-icons/fa";
 import { HiEye, HiEyeOff } from "react-icons/hi";
-import background from "../../assets/pictures/background_login.jpg";
+import background from "../../assets/pictures/model.jpg";
 import { useLoginMutation } from "../../services/api/beautyShopApi";
 import { message } from "antd";
 import { auth } from "../../config/firebase";
