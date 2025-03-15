@@ -154,6 +154,10 @@ const authSlice = createSlice({
       localStorage.removeItem("auth_sessionId");
       localStorage.removeItem("auth_isAdmin");
 
+      // Xóa giỏ hàng và danh sách yêu thích trong localStorage
+      localStorage.removeItem("allCarts");
+      localStorage.removeItem("allWishlists");
+
       // Không xóa avatar để duy trì giữa các phiên đăng nhập của cùng một user
       // Nhưng không giữ lại giữa các user khác nhau
       // if (username) {
@@ -201,11 +205,20 @@ const authSlice = createSlice({
       state.isAdmin = authData.isAdmin;
       state.sessionId = authData.sessionId;
     },
+    // Thêm reducer mới để cập nhật thủ công state
+    manualUpdate: (state, action) => {
+      return { ...state, ...action.payload };
+    },
   },
 });
 
-export const { setCredentials, logout, restoreAuth, checkSession } =
-  authSlice.actions;
+export const {
+  setCredentials,
+  logout,
+  restoreAuth,
+  checkSession,
+  manualUpdate,
+} = authSlice.actions;
 
 export const selectAuth = (state) => state.auth;
 export const selectCurrentUser = (state) => state.auth.user;
