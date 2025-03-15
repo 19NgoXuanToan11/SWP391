@@ -195,6 +195,24 @@ const beautyShopApi = createApi({
       }),
       invalidatesTags: ["Brands"],
     }),
+
+    // Forgot password endpoint
+    forgotPassword: builder.mutation({
+      query: (data) => ({
+        url: endpoints.FORGOT_PASSWORD,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    // Reset password endpoint
+    resetPassword: builder.mutation({
+      query: (data) => ({
+        url: endpoints.RESET_PASSWORD,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -216,6 +234,8 @@ export const {
   useCreateBrandMutation,
   useUpdateBrandMutation,
   useDeleteBrandMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
 } = beautyShopApi;
 
 export default beautyShopApi;

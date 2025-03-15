@@ -8,7 +8,8 @@ import {
   KeyOutlined,
   ArrowLeftOutlined,
 } from "@ant-design/icons";
-import background from "../../assets/pictures/background_login.jpg";
+import background from "../../assets/pictures/model.jpg";
+import { useForgotPasswordMutation } from "../../services/api/beautyShopApi";
 
 export function ForgotPasswordPage() {
   const navigate = useNavigate();
@@ -24,6 +25,9 @@ export function ForgotPasswordPage() {
   const [resetToken, setResetToken] = useState("");
   const [email, setEmail] = useState("");
   const [step, setStep] = useState(1); // 1: Enter email, 2: Enter new password
+
+  // RTK Query hook for forgotPassword API
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
 
   // Extract token from URL if present
   useEffect(() => {
@@ -77,17 +81,30 @@ export function ForgotPasswordPage() {
 
     setLoading(true);
     try {
-      // Implement API call to request password reset
-      // const result = await requestPasswordReset({ email }).unwrap();
-
-      // Simulate API call for now
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      message.success(
-        "Liên kết đặt lại mật khẩu đã được gửi đến email của bạn!"
+      // Gọi API trực tiếp để kiểm tra định dạng nào hoạt động
+      const response = await fetch(
+        "https://localhost:7285/api/Auth/forgot-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          // Thử các định dạng khác nhau
+          body: JSON.stringify(email), // Thử 1: Gửi email trực tiếp
+          // body: JSON.stringify({ email }), // Thử 2: Gửi object với trường email
+          // body: JSON.stringify({ Email: email }), // Thử 3: Gửi với key viết hoa
+        }
       );
-      // In a real implementation, you might want to navigate to a confirmation page
-      // or stay on this page with a message
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        message.success(
+          "Liên kết đặt lại mật khẩu đã được gửi đến email của bạn!"
+        );
+      } else {
+        throw new Error(data.message || "Có lỗi xảy ra");
+      }
     } catch (err) {
       console.error("Reset request error:", err);
       message.error(
@@ -219,9 +236,9 @@ export function ForgotPasswordPage() {
                   whileTap={{ scale: 0.98 }}
                   type="submit"
                   className="w-full py-3 px-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-medium rounded-xl hover:from-pink-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all shadow-md"
-                  disabled={loading}
+                  disabled={loading || isLoading}
                 >
-                  {loading ? (
+                  {loading || isLoading ? (
                     <div className="flex items-center justify-center">
                       <motion.div
                         animate={{ rotate: 360 }}
@@ -254,22 +271,26 @@ export function ForgotPasswordPage() {
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
+                      name="password"
                       className="w-full px-4 py-3 rounded-xl bg-white/50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
-                      placeholder="••••••••"
+                      placeholder="Nhập mật khẩu mới"
                       value={formData.password}
                       onChange={(e) =>
-                        setFormData({ ...formData, password: e.target.value })
+                        setFormData({
+                          ...formData,
+                          password: e.target.value,
+                        })
                       }
                     />
                     <button
                       type="button"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-pink-500"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
                       {showPassword ? (
-                        <HiEyeOff size={18} />
+                        <HiEyeOff size={20} />
                       ) : (
-                        <HiEye size={18} />
+                        <HiEye size={20} />
                       )}
                     </button>
                   </div>
@@ -285,8 +306,9 @@ export function ForgotPasswordPage() {
                   <div className="relative">
                     <input
                       type={showConfirmPassword ? "text" : "password"}
+                      name="confirmPassword"
                       className="w-full px-4 py-3 rounded-xl bg-white/50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
-                      placeholder="••••••••"
+                      placeholder="Xác nhận mật khẩu mới"
                       value={formData.confirmPassword}
                       onChange={(e) =>
                         setFormData({
@@ -297,15 +319,15 @@ export function ForgotPasswordPage() {
                     />
                     <button
                       type="button"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-pink-500"
                       onClick={() =>
                         setShowConfirmPassword(!showConfirmPassword)
                       }
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
                       {showConfirmPassword ? (
-                        <HiEyeOff size={18} />
+                        <HiEyeOff size={20} />
                       ) : (
-                        <HiEye size={18} />
+                        <HiEye size={20} />
                       )}
                     </button>
                   </div>
