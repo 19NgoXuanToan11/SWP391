@@ -172,7 +172,7 @@ function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-violet-50 via-indigo-50 to-white py-12 px-4">
+    <div className="min-h-screen py-12 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Progress Steps - Cập nhật current={0} vì đang ở bước giỏ hàng */}
         <div className="mb-8">
@@ -400,25 +400,6 @@ function CartPage() {
                       </>
                     )}
                   </button>
-                </Card>
-
-                <Card className="rounded-3xl bg-pink-50 border-pink-100">
-                  <Space direction="vertical" className="w-full">
-                    <Space>
-                      <CarOutlined className="text-pink-500" />
-                      <Text>
-                        Miễn phí vận chuyển cho đơn hàng trên 500.000đ
-                      </Text>
-                    </Space>
-                    <Space>
-                      <GiftOutlined className="text-pink-500" />
-                      <Text>Tặng mẫu thử cho mỗi đơn hàng</Text>
-                    </Space>
-                    <Space>
-                      <SafetyCertificateOutlined className="text-pink-500" />
-                      <Text>Cam kết 100% chính hãng</Text>
-                    </Space>
-                  </Space>
                 </Card>
               </div>
             </Col>
