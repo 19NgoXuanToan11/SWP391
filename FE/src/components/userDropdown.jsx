@@ -35,21 +35,43 @@ export const UserDropdown = ({ user, onLogout }) => {
   // Lắng nghe sự thay đổi của localStorage
   useEffect(() => {
     const handleStorageChange = (e) => {
-      // Nếu có thay đổi liên quan đến auth
       if (
         e.key === "auth_token" ||
         e.key === "auth_user" ||
         e.key === "auth_logout_event" ||
+        e.key?.startsWith("userAvatar_") ||
         e.key === null
       ) {
-        // Cập nhật thông tin người dùng từ localStorage
         const userStr = localStorage.getItem("auth_user");
+
         if (userStr) {
           try {
             const userData = JSON.parse(userStr);
+            const username = userData.username || userData.name || "User";
+
+            // Tạo key riêng cho mỗi user
+            const avatarKey = `userAvatar_${username}`;
+
+            // Thử lấy avatar từ nhiều nguồn
+            const avatarUrl =
+              userData.photoURL ||
+              localStorage.getItem(avatarKey) ||
+              sessionStorage.getItem(avatarKey);
+
+            // Nếu không có avatar, thử lấy từ IndexedDB
+            if (!avatarUrl) {
+              getAvatarFromIndexedDB(username).then((url) => {
+                if (url) {
+                  setUserInfo((prev) => ({ ...prev, avatar: url }));
+                  // Khôi phục vào localStorage với key riêng
+                  localStorage.setItem(avatarKey, url);
+                }
+              });
+            }
+
             setUserInfo({
-              name: userData.name || userData.username || "User",
-              avatar: userData.photoURL || localStorage.getItem("userAvatar"),
+              name: username,
+              avatar: avatarUrl || null,
             });
           } catch (error) {
             console.error("Error parsing user data from localStorage:", error);
@@ -61,6 +83,11 @@ export const UserDropdown = ({ user, onLogout }) => {
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
+
+  // Thêm hàm lấy avatar từ IndexedDB (giống như trong ProfilePage)
+  const getAvatarFromIndexedDB = (username) => {
+    // ... code giống như trong ProfilePage
+  };
 
   // Tách tên thành các phần
   const nameParts = userInfo.name.split(" ");
@@ -121,10 +148,13 @@ export const UserDropdown = ({ user, onLogout }) => {
             <img
               src={userInfo.avatar}
               alt="avatar"
-              className="w-12 h-12 rounded-xl object-cover"
+              className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-lg"
             />
           ) : (
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center text-white text-lg font-bold">
+            <div
+              className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 
+              flex items-center justify-center text-white text-lg font-bold border-2 border-white shadow-lg"
+            >
               {firstName.charAt(0) || "U"}
             </div>
           )}
@@ -195,32 +225,27 @@ export const UserDropdown = ({ user, onLogout }) => {
       placement="bottomRight"
       overlayClassName="user-dropdown-menu"
     >
-      <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        className="flex items-center gap-3 hover:bg-white/80 rounded-xl transition-all 
-          duration-300 p-2 backdrop-blur-lg shadow-sm hover:shadow-md"
-      >
+      <div className="flex items-center gap-3 cursor-pointer group">
         {userInfo.avatar ? (
           <img
             src={userInfo.avatar}
             alt="avatar"
-            className="w-9 h-9 rounded-lg object-cover ring-2 ring-purple-500/20 flex-shrink-0"
+            className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm
+              group-hover:border-pink-100 transition-all"
           />
         ) : (
           <div
-            className="w-9 h-9 rounded-lg bg-gradient-to-r from-pink-500 to-purple-500 
-            flex items-center justify-center shadow-lg flex-shrink-0"
+            className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 
+            flex items-center justify-center text-white font-medium border-2 border-white
+            group-hover:border-pink-100 transition-all"
           >
-            <span className="text-white font-semibold">
-              {firstName.charAt(0) || "U"}
-            </span>
+            {userInfo.name.charAt(0)}
           </div>
         )}
-        <span className="text-sm font-medium text-gray-700 hidden md:block">
-          {firstName}
+        <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
+          {userInfo.name}
         </span>
-      </motion.button>
+      </div>
     </Dropdown>
   );
 };

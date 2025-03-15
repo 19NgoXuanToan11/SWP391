@@ -130,8 +130,8 @@ export default function ProductDetailPage() {
     if (!product) return;
 
     const cartItem = {
-      id: product.productId, // Đổi từ id sang productId
-      name: product.productName, // Đổi từ name sang productName
+      id: product.productId,
+      name: product.productName,
       price: product.price,
       quantity: quantity,
       image: product.imageUrls,
@@ -139,8 +139,42 @@ export default function ProductDetailPage() {
     };
 
     dispatch(addToCart(cartItem));
-    message.success("Đã thêm sản phẩm vào giỏ hàng");
-    navigate("/cart");
+
+    // Hiển thị thông báo thành công với nút "Xem giỏ hàng"
+    notification.success({
+      message: "Thêm vào giỏ hàng thành công",
+      description: (
+        <div className="flex flex-col">
+          <div className="flex items-center gap-3 mb-2">
+            <img
+              src={product.imageUrls}
+              alt={product.productName}
+              className="w-12 h-12 rounded-lg object-cover"
+            />
+            <div>
+              <p className="font-medium">{product.productName}</p>
+              <p className="text-gray-500">Số lượng: {quantity}</p>
+            </div>
+          </div>
+          <button
+            type="link"
+            onClick={() => navigate("/cart")}
+            className="self-end p-0 text-pink-600 hover:text-pink-700"
+          >
+            Xem giỏ hàng
+          </button>
+        </div>
+      ),
+      placement: "bottomRight",
+      duration: 3,
+      className: "custom-notification-success",
+      style: {
+        borderRadius: "16px",
+      },
+    });
+
+    // Chuyển về trang sản phẩm
+    navigate("/product");
   };
 
   const handleWishlistToggle = () => {

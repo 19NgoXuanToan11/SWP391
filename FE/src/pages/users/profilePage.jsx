@@ -32,8 +32,7 @@ const ProfilePage = () => {
   const [userInfo, setUserInfo] = useState({
     username: "",
     email: "",
-    avatar:
-      "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
+    avatar: localStorage.getItem("userAvatar") || null, // Lấy từ localStorage
   });
 
   useEffect(() => {
@@ -47,11 +46,43 @@ const ProfilePage = () => {
     if (authUserStr) {
       try {
         const authUser = JSON.parse(authUserStr);
+        const username = authUser.username || "";
+
+        // Tạo key riêng cho mỗi user
+        const avatarKey = `userAvatar_${username}`;
+
+        // Thử lấy avatar từ nhiều nguồn
+        let avatarUrl =
+          authUser.photoURL ||
+          localStorage.getItem(avatarKey) ||
+          sessionStorage.getItem(avatarKey);
+
+        // Nếu không tìm thấy, thử lấy từ IndexedDB
+        if (!avatarUrl) {
+          getAvatarFromIndexedDB(username).then((url) => {
+            if (url) {
+              setUserInfo((prev) => ({ ...prev, avatar: url }));
+              // Khôi phục vào localStorage với key riêng
+              localStorage.setItem(avatarKey, url);
+
+              // Cập nhật auth_user
+              const updatedUser = { ...authUser, photoURL: url };
+              localStorage.setItem("auth_user", JSON.stringify(updatedUser));
+            }
+          });
+        }
+
         setUserInfo({
-          username: authUser.username || "",
+          username: username,
           email: authUser.email || "",
-          avatar: userInfo.avatar, // Giữ nguyên avatar mặc định
+          avatar: avatarUrl,
         });
+
+        // Đảm bảo lưu avatar URL vào localStorage với key riêng
+        if (avatarUrl) {
+          localStorage.setItem(avatarKey, avatarUrl);
+          sessionStorage.setItem(avatarKey, avatarUrl);
+        }
       } catch (error) {
         console.error("Error parsing auth_user:", error);
       }
@@ -63,11 +94,19 @@ const ProfilePage = () => {
       if (authUserStr) {
         try {
           const authUser = JSON.parse(authUserStr);
+          const avatarUrl =
+            authUser.photoURL || localStorage.getItem("userAvatar");
+
           setUserInfo({
             username: authUser.username || "",
             email: authUser.email || "",
-            avatar: userInfo.avatar,
+            avatar: avatarUrl,
           });
+
+          // Đảm bảo lưu avatar URL vào localStorage
+          if (avatarUrl) {
+            localStorage.setItem("userAvatar", avatarUrl);
+          }
         } catch (error) {
           console.error("Error parsing auth_user:", error);
         }
@@ -79,6 +118,56 @@ const ProfilePage = () => {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
+
+  // Hàm lấy avatar từ IndexedDB
+  const getAvatarFromIndexedDB = (username) => {
+    return new Promise((resolve) => {
+      if (!window.indexedDB) {
+        console.log("Trình duyệt không hỗ trợ IndexedDB");
+        resolve(null);
+        return;
+      }
+
+      const request = window.indexedDB.open("UserAvatarDB", 1);
+
+      request.onerror = () => {
+        console.error("Lỗi khi mở IndexedDB");
+        resolve(null);
+      };
+
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains("avatars")) {
+          db.createObjectStore("avatars", { keyPath: "username" });
+        }
+      };
+
+      request.onsuccess = (event) => {
+        const db = event.target.result;
+        try {
+          const transaction = db.transaction(["avatars"], "readonly");
+          const store = transaction.objectStore("avatars");
+          const getRequest = store.get(username);
+
+          getRequest.onsuccess = () => {
+            if (getRequest.result) {
+              resolve(getRequest.result.avatarUrl);
+            } else {
+              resolve(null);
+            }
+          };
+
+          getRequest.onerror = () => {
+            console.error("Lỗi khi lấy avatar từ IndexedDB");
+            resolve(null);
+          };
+        } catch (error) {
+          console.error("Lỗi khi truy cập IndexedDB:", error);
+          resolve(null);
+        }
+      };
+    });
+  };
 
   const colors = {
     primary: "#ff4d6d",
@@ -98,7 +187,6 @@ const ProfilePage = () => {
       padding: "40px 24px",
       maxWidth: 1200,
       margin: "0 auto",
-      background: `linear-gradient(135deg, ${colors.bgLight} 0%, #ffffff 100%)`,
       minHeight: "100vh",
       position: "relative",
       overflow: "hidden",
@@ -143,28 +231,29 @@ const ProfilePage = () => {
     avatarContainer: {
       position: "relative",
       marginBottom: 24,
+      display: "inline-block",
     },
     avatarGlow: {
       position: "absolute",
-      top: -15,
-      left: -15,
-      right: -15,
-      bottom: -15,
+      top: -8,
+      left: -8,
+      right: -8,
+      bottom: -8,
       borderRadius: "50%",
       background: colors.gradient,
       opacity: 0.5,
-      filter: "blur(20px)",
+      filter: "blur(15px)",
       zIndex: -1,
     },
     avatar: {
-      border: `4px solid ${colors.light}`,
-      boxShadow: "0 12px 28px rgba(255, 77, 109, 0.2)",
+      border: "4px solid white",
+      boxShadow: "0 8px 24px rgba(255,77,109,0.2)",
       backgroundColor: colors.secondary,
       transition: "all 0.3s ease",
-      cursor: "pointer",
+      objectFit: "cover",
       "&:hover": {
         transform: "scale(1.05)",
-        boxShadow: "0 20px 40px rgba(255, 77, 109, 0.3)",
+        boxShadow: "0 12px 28px rgba(255,77,109,0.3)",
       },
     },
     nameTitle: {
@@ -331,6 +420,15 @@ const ProfilePage = () => {
           ) : (
             <>
               <div style={customStyles.profileHeader}>
+                <motion.div style={customStyles.avatarContainer}>
+                  <div style={customStyles.avatarGlow} />
+                  <Avatar
+                    size={120}
+                    src={userInfo.avatar}
+                    icon={!userInfo.avatar && <UserOutlined />}
+                    style={customStyles.avatar}
+                  />
+                </motion.div>
                 <motion.div
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}

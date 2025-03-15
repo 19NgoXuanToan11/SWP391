@@ -37,7 +37,11 @@ import {
   MinusOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import { removeFromCart, updateQuantity } from "../../store/slices/cartSlice";
+import {
+  removeFromCart,
+  updateQuantity,
+  clearCart,
+} from "../../store/slices/cartSlice";
 import { PaymentSteps } from "../../components/PaymentStep";
 import { selectAuth } from "../../store/slices/authSlice";
 import {
@@ -163,6 +167,11 @@ function CartPage() {
     }
   };
 
+  const handleClearCart = () => {
+    dispatch(clearCart());
+    message.success("Đã xóa tất cả sản phẩm khỏi giỏ hàng");
+  };
+
   if (!cartItems) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -181,17 +190,30 @@ function CartPage() {
 
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
-          <Link to="/product">
-            <button
-              type="button"
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-white hover:bg-pink-50 
-                text-gray-600 hover:text-pink-500 font-medium transition-all duration-300
-                shadow-sm hover:shadow-md transform hover:scale-105 border border-gray-200"
-            >
-              <ArrowLeftOutlined className="text-lg" />
-              <span>Tiếp Tục Mua Sắm</span>
-            </button>
-          </Link>
+          <div className="flex gap-4">
+            <Link to="/product">
+              <button
+                type="button"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white hover:bg-pink-50 
+                  text-gray-600 hover:text-pink-500 font-medium transition-all duration-300
+                  shadow-sm hover:shadow-md transform hover:scale-105 border border-gray-200"
+              >
+                <ArrowLeftOutlined className="text-lg" />
+                <span>Tiếp Tục Mua Sắm</span>
+              </button>
+            </Link>
+            {cartItems.length > 0 && (
+              <button
+                onClick={handleClearCart}
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white hover:bg-red-50 
+                  text-gray-600 hover:text-red-500 font-medium transition-all duration-300
+                  shadow-sm hover:shadow-md transform hover:scale-105 border border-gray-200"
+              >
+                <DeleteOutlined className="text-lg" />
+                <span>Xóa Tất Cả</span>
+              </button>
+            )}
+          </div>
           <Title level={2} className="!mb-0 flex items-center gap-3">
             <ShoppingCartOutlined className="text-pink-500" />
             Giỏ Hàng Của Bạn
