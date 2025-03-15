@@ -139,6 +139,9 @@ const authSlice = createSlice({
       transferGuestWishlistToUser(user.id);
     },
     logout: (state, action) => {
+      // Lưu username trước khi xóa state
+      const username = state.user?.username;
+
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
@@ -150,6 +153,12 @@ const authSlice = createSlice({
       localStorage.removeItem("auth_user");
       localStorage.removeItem("auth_sessionId");
       localStorage.removeItem("auth_isAdmin");
+
+      // Không xóa avatar để duy trì giữa các phiên đăng nhập của cùng một user
+      // Nhưng không giữ lại giữa các user khác nhau
+      // if (username) {
+      //   localStorage.removeItem(`userAvatar_${username}`);
+      // }
 
       // Dispatch action để xóa giỏ hàng và danh sách yêu thích trong Redux store
       if (action.payload && action.payload.dispatch) {
