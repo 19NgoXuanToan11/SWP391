@@ -114,18 +114,29 @@ export const UserDropdown = ({ user, onLogout }) => {
 
   // Định nghĩa hàm handleLogout
   const handleLogout = () => {
-    dispatch(logout());
+    try {
+      // Xóa giỏ hàng và danh sách yêu thích trong localStorage
+      localStorage.removeItem("allCarts");
+      localStorage.removeItem("allWishlists");
 
-    // Kích hoạt sự kiện storage để các tab khác biết về việc đăng xuất
-    const logoutEvent = new Date().getTime();
-    localStorage.setItem("auth_logout_event", logoutEvent);
+      // Xóa thông tin đăng nhập từ localStorage ngay lập tức
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("auth_user");
+      localStorage.removeItem("auth_sessionId");
+      localStorage.removeItem("auth_isAdmin");
 
-    message.success("Đăng xuất thành công!");
-    navigate("/");
+      // Hiển thị thông báo
+      message.success("Đăng xuất thành công!");
 
-    // Gọi callback từ parent component nếu có
-    if (onLogout) {
-      onLogout();
+      // Kích hoạt sự kiện storage để các tab khác biết về việc đăng xuất
+      const logoutEvent = new Date().getTime();
+      localStorage.setItem("auth_logout_event", logoutEvent);
+
+      // Sử dụng window.location.reload() để tải lại trang hiện tại
+      window.location.reload();
+    } catch (error) {
+      console.error("Lỗi khi đăng xuất:", error);
+      message.error("Có lỗi xảy ra khi đăng xuất");
     }
   };
 

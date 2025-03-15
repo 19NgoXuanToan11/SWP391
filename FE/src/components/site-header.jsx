@@ -73,14 +73,30 @@ export function SiteHeader() {
 
   // Hàm đăng xuất
   const handleLogout = () => {
-    dispatch(logout());
-    message.success("Đăng xuất thành công!");
+    try {
+      // Xóa giỏ hàng và danh sách yêu thích trong localStorage
+      localStorage.removeItem("allCarts");
+      localStorage.removeItem("allWishlists");
 
-    // Kích hoạt sự kiện storage để các tab khác biết về việc đăng xuất
-    // Lưu ý: localStorage.setItem sẽ không kích hoạt sự kiện storage trong cùng tab
-    // Nhưng chúng ta có thể sử dụng một trick nhỏ để kích hoạt nó
-    const logoutEvent = new Date().getTime();
-    localStorage.setItem("auth_logout_event", logoutEvent);
+      // Xóa thông tin đăng nhập từ localStorage ngay lập tức
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("auth_user");
+      localStorage.removeItem("auth_sessionId");
+      localStorage.removeItem("auth_isAdmin");
+
+      // Hiển thị thông báo
+      message.success("Đăng xuất thành công!");
+
+      // Kích hoạt sự kiện storage để các tab khác biết về việc đăng xuất
+      const logoutEvent = new Date().getTime();
+      localStorage.setItem("auth_logout_event", logoutEvent);
+
+      // Sử dụng window.location.reload() để tải lại trang hiện tại
+      navigate("/");
+    } catch (error) {
+      console.error("Lỗi khi đăng xuất:", error);
+      message.error("Có lỗi xảy ra khi đăng xuất");
+    }
   };
 
   return (
@@ -144,16 +160,16 @@ export function SiteHeader() {
               <Link
                 to="/cart"
                 className="flex items-center space-x-3 px-4 py-2.5 text-gray-700 border border-gray-200 
-                          rounded-lg hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 group"
+                rounded-lg hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 group relative"
               >
-                <ShoppingCartOutlined className="text-xl text-gray-500 group-hover:text-pink-700 transition-colors" />
+                <ShoppingCartOutlined className="text-xl" />
                 <span className="font-medium text-base whitespace-nowrap">
                   Giỏ hàng
                 </span>
-                {cartQuantity > 0 && (
+                {cartQuantity > 0 && isAuthenticated && (
                   <span
-                    className="flex items-center justify-center w-6 h-6 bg-pink-100 text-pink-700 
-                              text-sm font-semibold rounded-full group-hover:bg-pink-200 transition-colors"
+                    className="ml-1 w-5 h-5 bg-pink-500 text-white 
+                               text-xs rounded-full flex items-center justify-center"
                   >
                     {cartQuantity}
                   </span>
@@ -167,7 +183,7 @@ export function SiteHeader() {
                     {/* Wishlist Icon với số lượng */}
                     <Link
                       to="/wishlist"
-                      className="relative p-2 text-gray-600 hover:text-pink-600 transition-colors"
+                      className="relative p-2 text-gray-700 hover:text-gray-900 transition-colors"
                     >
                       <HeartOutlined className="text-xl" />
                       {wishlistTotal > 0 && (
