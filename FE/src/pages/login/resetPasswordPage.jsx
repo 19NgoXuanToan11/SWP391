@@ -23,13 +23,11 @@ const ResetPasswordPage = () => {
   const [countdown, setCountdown] = useState(5);
 
   const [formData, setFormData] = useState({
-    oldPassword: "",
     password: "",
     confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({
-    oldPassword: "",
     password: "",
     confirmPassword: "",
   });
@@ -49,16 +47,9 @@ const ResetPasswordPage = () => {
   const validateForm = () => {
     let valid = true;
     let newErrors = {
-      oldPassword: "",
       password: "",
       confirmPassword: "",
     };
-
-    // Kiểm tra mật khẩu cũ
-    if (!formData.oldPassword) {
-      newErrors.oldPassword = "Mật khẩu cũ là bắt buộc";
-      valid = false;
-    }
 
     // Password validation
     if (!formData.password) {
@@ -70,7 +61,10 @@ const ResetPasswordPage = () => {
     }
 
     // Confirm password validation
-    if (formData.password !== formData.confirmPassword) {
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = "Xác nhận mật khẩu là bắt buộc";
+      valid = false;
+    } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Mật khẩu không khớp";
       valid = false;
     }
@@ -95,36 +89,51 @@ const ResetPasswordPage = () => {
     setLoading(true);
 
     try {
-      // Replace with your actual API call
-      // const response = await resetPassword({
-      //   token: token,
-      //   oldPassword: formData.oldPassword,
-      //   password: formData.password
-      // });
+      // Gọi API đặt lại mật khẩu
+      const response = await fetch(
+        "https://localhost:7285/api/Auth/reset-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            accept: "text/plain",
+          },
+          body: JSON.stringify({
+            token: token,
+            newPassword: formData.password,
+            confirmPassword: formData.confirmPassword,
+          }),
+        }
+      );
 
-      // Simulate API call for now
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const data = await response.json();
 
-      setResetStatus("success");
-      message.success("Mật khẩu đã được đặt lại thành công!");
+      if (response.ok && data.success) {
+        message.success(data.message || "Đặt lại mật khẩu thành công");
+        setResetStatus("success");
 
-      // Start countdown to redirect
-      const timer = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            clearInterval(timer);
+        // Bắt đầu đếm ngược để chuyển hướng
+        let count = 5;
+        setCountdown(count);
+
+        const countdownInterval = setInterval(() => {
+          count -= 1;
+          setCountdown(count);
+
+          if (count <= 0) {
+            clearInterval(countdownInterval);
             navigate("/login");
-            return 0;
           }
-          return prev - 1;
-        });
-      }, 1000);
-
-      return () => clearInterval(timer);
+        }, 1000);
+      } else {
+        throw new Error(data.message || "Có lỗi xảy ra khi đặt lại mật khẩu");
+      }
     } catch (error) {
       console.error("Reset password error:", error);
+      message.error(
+        error.message || "Không thể đặt lại mật khẩu. Vui lòng thử lại!"
+      );
       setResetStatus("error");
-      message.error("Không thể đặt lại mật khẩu. Vui lòng thử lại!");
     } finally {
       setLoading(false);
     }
@@ -137,20 +146,20 @@ const ResetPasswordPage = () => {
         return (
           <>
             <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.7 }}
-              className="mb-8 text-center"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="text-center mb-8"
             >
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <HiOutlineCheck className="text-2xl text-green-500" />
+              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <HiOutlineCheck className="text-4xl text-green-500" />
               </div>
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">
                 Đặt lại mật khẩu thành công!
               </h2>
-              <p className="mt-2 text-gray-600">
-                Mật khẩu của bạn đã được cập nhật. Chuyển hướng sau {countdown}{" "}
-                giây...
+              <p className="text-gray-600">
+                Mật khẩu của bạn đã được cập nhật. Bạn sẽ được chuyển hướng đến
+                trang đăng nhập trong {countdown} giây.
               </p>
             </motion.div>
 
@@ -158,7 +167,7 @@ const ResetPasswordPage = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => navigate("/login")}
-              className="px-6 py-2 w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-medium rounded-xl hover:from-pink-600 hover:to-purple-600 transition-all shadow-md"
+              className="w-full py-3 px-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-medium rounded-xl hover:from-pink-600 hover:to-purple-600 transition-all shadow-md"
             >
               Đăng nhập ngay
             </motion.button>
@@ -223,37 +232,6 @@ const ResetPasswordPage = () => {
               onSubmit={handleResetPassword}
               className="space-y-6"
             >
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Mật khẩu cũ
-                </label>
-                <div className="relative">
-                  <input
-                    type={showOldPassword ? "text" : "password"}
-                    name="oldPassword"
-                    className="w-full pl-10 pr-10 py-3 rounded-xl bg-white/50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
-                    placeholder="Nhập mật khẩu cũ"
-                    value={formData.oldPassword}
-                    onChange={handleInputChange}
-                  />
-                  <LockOutlined className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <button
-                    type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-pink-500"
-                    onClick={() => setShowOldPassword(!showOldPassword)}
-                  >
-                    {showOldPassword ? (
-                      <HiEyeOff size={20} />
-                    ) : (
-                      <HiEye size={20} />
-                    )}
-                  </button>
-                </div>
-                {errors.oldPassword && (
-                  <p className="text-red-500 text-xs">{errors.oldPassword}</p>
-                )}
-              </div>
-
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
                   Mật khẩu mới
