@@ -770,7 +770,7 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br">
       <div className="max-w-[1440px] mx-auto px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Sidebar cho desktop */}
@@ -895,10 +895,13 @@ export default function ProductsPage() {
               onClick={() => setIsCompareDrawerOpen(true)}
               className="flex items-center gap-2 px-6 py-3 text-white font-medium rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
-              <Badge count={productsToCompare.length} color="#ff4d6d">
+              <div className="flex items-center">
                 <SwapOutlined className="text-xl" />
-              </Badge>
-              <span className="ml-2">So sánh sản phẩm</span>
+                <span className="ml-2 bg-white/20 px-2 py-0.5 rounded-full text-sm">
+                  {productsToCompare.length}/4
+                </span>
+              </div>
+              <span className="ml-1">So sánh sản phẩm</span>
             </motion.button>
           </motion.div>
         )}
@@ -909,16 +912,6 @@ export default function ProductsPage() {
         title={
           <div className="flex items-center justify-between">
             <span className="text-xl font-medium">So sánh sản phẩm</span>
-            <Badge
-              count={productsToCompare.length}
-              color="#ff4d6d"
-              overflowCount={4}
-              className="ml-2"
-            >
-              <span className="text-gray-500 text-sm">
-                {productsToCompare.length}/4 sản phẩm
-              </span>
-            </Badge>
           </div>
         }
         placement="right"
