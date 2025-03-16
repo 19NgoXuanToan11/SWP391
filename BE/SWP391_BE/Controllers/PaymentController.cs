@@ -123,7 +123,7 @@ namespace SWP391_BE.Controllers
 
 
 
-                PaymentData paymentData = new PaymentData(orderCode, total, $"Mã đơn hàng:{order.OrderId}", items, cancelUrl, returnUrl);
+                PaymentData paymentData = new PaymentData(orderCode, total, $"{order.OrderId}", items, cancelUrl, returnUrl);
 
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
 
@@ -132,7 +132,7 @@ namespace SWP391_BE.Controllers
                     OrderId = order.OrderId,
                     CreatedDate = DateTime.Now,
                     Amount = total,
-                    Status = "PENDING",
+                    Status = createPayment.status,
                     BuyerName = body.BuyerName,
                     BuyerAddress = body.BuyerAddress,
                     BuyerEmail = body.BuyerEmail,
@@ -160,7 +160,8 @@ namespace SWP391_BE.Controllers
             {
                 WebhookData data = _payOS.verifyPaymentWebhookData(body);
 
-
+                Console.WriteLine($"Description: {data.description}");
+                Console.WriteLine($"Description: {data.code}");
                 // Kiểm tra mô tả giao dịch
                 if (data.description == "Ma giao dich thu nghiem" || data.description == "VQRIO123")
                 {
@@ -203,15 +204,9 @@ namespace SWP391_BE.Controllers
         {
             try
             {
-                // Tách chuỗi theo dấu ":" => ["Mã đơn hàng", "12345"]
-                var parts = description.Split(':');
-                if (parts.Length < 2)
-                {
-                    return null;
-                }
 
                 // Lấy phần số, loại bỏ khoảng trắng thừa
-                if (int.TryParse(parts[1].Trim(), out int orderId))
+                if (int.TryParse(description.Trim(), out int orderId))
                 {
                     return orderId;
                 }
