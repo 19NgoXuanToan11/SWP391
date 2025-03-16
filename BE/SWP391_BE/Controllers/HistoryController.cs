@@ -5,7 +5,7 @@ using Service;
 
 namespace SWP391_BE.Controllers
 {
-    public class HistoryController :ControllerBase
+    public class HistoryController : ControllerBase
     {
         private readonly IHistoryService _historyService;
 
@@ -18,6 +18,48 @@ namespace SWP391_BE.Controllers
         {
             var histories = await _historyService.GetAllHistoriesAsync();
             return Ok(histories);
+        }
+        [HttpGet("order/{orderId}")]
+        public async Task<IActionResult> GetHistoryByOrderId(int orderId)
+        {
+            var history = await _historyService.GetOrderHistoryByOrderIdAsync(orderId);
+            if (history == null)
+            {
+                return NotFound(new { message = "Không tìm thấy lịch sử đơn hàng!" });
+            }
+
+            return Ok(new
+            {
+                TrackingCode = history.TrackingCode,
+                Shipper = history.Shipper,
+                Status = history.Status,
+                Products = history.OrderDetails.Select(od => new
+                {
+                    ProductName = od.Product.ProductName,
+                    ProductImage = od.Product.Images.Select(img => img.ImageUrl).ToList()
+                }).ToList()
+            });
+        }
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetHistoriesByUserId(int userId)
+        {
+            var histories = await _historyService.GetHistoriesByUserIdAsync(userId);
+            if (!histories.Any())
+            {
+                return NotFound(new { message = "Không có lịch sử đơn hàng nào!" });
+            }
+
+            return Ok(histories.Select(history => new
+            {
+                TrackingCode = history.TrackingCode,
+                Shipper = history.Shipper,
+                Status = history.Status,
+                Products = history.OrderDetails.Select(od => new
+                {
+                    ProductName = od.Product.ProductName,
+                    ProductImages = od.Product.Images.Select(img => img.ImageUrl).ToList()
+                }).ToList()
+            }));
         }
 
         // API tìm kiếm theo mã vận đơn

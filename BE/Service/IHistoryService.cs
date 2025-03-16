@@ -13,5 +13,7 @@ namespace Service
         Task<History?> GetHistoryByTrackingCodeAsync(string trackingCode);
         Task AddHistoryAsync(History history);
         Task UpdateHistoryStatusAsync(string trackingCode, string status);
+        Task<History?> GetOrderHistoryByOrderIdAsync(int orderId);
+        Task<IEnumerable<History>> GetHistoriesByUserIdAsync(int userId);
     }
 }
