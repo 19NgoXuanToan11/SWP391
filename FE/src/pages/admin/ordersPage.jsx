@@ -170,7 +170,10 @@ const OrdersPage = () => {
         acc.totalAmount += payment.amount;
         if (payment.status.toLowerCase() === "pending") {
           acc.pending += 1;
-        } else if (payment.status.toLowerCase() === "completed") {
+        } else if (
+          payment.status.toLowerCase() === "paid" ||
+          payment.status.toLowerCase() === "completed"
+        ) {
           acc.completed += 1;
         }
         return acc;
@@ -221,13 +224,17 @@ const OrdersPage = () => {
   // Get payment status
   const getPaymentStatus = (method) => {
     if (!method) return "Chưa thanh toán";
-    return method === "null" ? "Chưa thanh toán" : "Đã thanh toán";
+    if (method === "null") return "Chưa thanh toán";
+    if (method.toLowerCase() === "paid") return "Đã thanh toán";
+    return method;
   };
 
   // Get payment color
   const getPaymentColor = (method) => {
     if (!method) return "red";
-    return method === "null" ? "red" : "green";
+    if (method === "null") return "red";
+    if (method.toLowerCase() === "paid") return "green";
+    return method.toLowerCase() === "pending" ? "orange" : "green";
   };
 
   // View order details
@@ -704,16 +711,18 @@ const OrdersPage = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => {
-        const isCompleted = status.toLowerCase() === "completed";
+        const isPaid =
+          status.toLowerCase() === "paid" ||
+          status.toLowerCase() === "completed";
         return (
           <Tag
-            color={isCompleted ? "success" : "warning"}
+            color={isPaid ? "success" : "warning"}
             className="px-4 py-1 rounded-full text-sm font-medium flex items-center w-fit space-x-1"
           >
-            {isCompleted ? (
+            {isPaid ? (
               <>
                 <CheckOutlined />
-                <span>Hoàn thành</span>
+                <span>Đã thanh toán</span>
               </>
             ) : (
               <>
