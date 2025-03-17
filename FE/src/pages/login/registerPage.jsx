@@ -10,7 +10,7 @@ import {
   HiUserCircle,
 } from "react-icons/hi";
 import { message } from "antd";
-import background from "../../assets/pictures/login.jpg";
+import backgroundVideo from "../../assets/videos/beauty-background-1.mp4";
 import { useRegisterMutation } from "../../services/api/beautyShopApi";
 
 export function RegisterPage() {
@@ -242,11 +242,29 @@ export function RegisterPage() {
       <div className="flex w-full h-full relative z-10">
         {/* Left side - Image */}
         <div className="hidden lg:block lg:w-1/2 relative overflow-hidden fixed left-0 h-screen">
-          <div className="absolute inset-0 bg-gradient-to-r" />
-          <img
-            src={background}
-            alt="Hình nền trang trí"
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent z-10" />
+
+          {/* Video background thay thế cho hình ảnh */}
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
             className="absolute inset-0 w-full h-full object-cover object-center"
+            style={{
+              position: "fixed",
+              left: 0,
+              width: "50%",
+              height: "100vh",
+            }}
+          >
+            <source src={backgroundVideo} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+
+          {/* Thêm overlay để tăng độ tương phản */}
+          <div
+            className="absolute inset-0 mix-blend-overlay"
             style={{
               position: "fixed",
               left: 0,

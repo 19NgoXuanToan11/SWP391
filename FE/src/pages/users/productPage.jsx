@@ -759,7 +759,7 @@ export default function ProductsPage() {
   // Loading state với hiệu ứng đẹp mắt
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50">
+      <div className="min-h-screen flex flex-col items-center justify-center">
         <div className="relative w-24 h-24">
           <div className="absolute top-0 left-0 w-full h-full rounded-full border-4 border-pink-200 opacity-20"></div>
           <div className="absolute top-0 left-0 w-full h-full rounded-full border-4 border-t-pink-500 animate-spin"></div>

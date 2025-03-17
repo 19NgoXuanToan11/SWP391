@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { setCredentials, logout } from "../../store/slices/authSlice";
 import { message } from "antd";
 import { motion } from "framer-motion";
+import backgroundVideo from "../../assets/videos/beauty-background-3.mp4";
 import {
   LockOutlined,
   UserOutlined,
@@ -97,22 +98,22 @@ export function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex overflow-hidden">
-      {/* Phần bên trái - Hình ảnh */}
-      <div className="hidden lg:block lg:w-1/2 relative">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.5 }}
-          className="absolute inset-0 bg-gradient-to-br from-purple-900 to-indigo-900"
+    <div className="h-screen flex overflow-hidden">
+      {/* Left side - Video */}
+      <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-black/20 z-10" />
+
+        {/* Video background thay thế cho hình ảnh */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
         >
-          <div className="absolute inset-0 opacity-20 bg-pattern"></div>
-          <img
-            src="../../src/assets/pictures/admin.jpg"
-            alt="Admin Login"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        </motion.div>
+          <source src={backgroundVideo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       </div>
 
       {/* Phần bên phải - Form đăng nhập */}

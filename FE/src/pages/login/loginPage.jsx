@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGoogle } from "react-icons/fa";
 import { HiEye, HiEyeOff } from "react-icons/hi";
-import background from "../../assets/pictures/login.jpg";
+import backgroundVideo from "../../assets/videos/beauty-background.mp4";
 import { useLoginMutation } from "../../services/api/beautyShopApi";
 import { message } from "antd";
 import { auth } from "../../config/firebase";
@@ -255,31 +255,31 @@ export function LoginPage() {
 
       {/* Main content */}
       <div className="flex w-full h-full relative z-10">
-        {/* Left side - Image */}
+        {/* Left side - Video thay vì Image */}
         <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
           <motion.div
-            initial={{ scale: 1.2, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
             className="absolute inset-0"
           >
-            <div className="absolute inset-0 bg-gradient-to-r" />
-            <motion.img
-              initial={{ scale: 1.1 }}
-              animate={{
-                scale: [1, 1.05, 1],
-                rotate: [0, 1, 0],
-              }}
-              transition={{
-                duration: 20,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
-              }}
-              src={background}
-              alt="Hình nền trang trí"
+            <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent z-10" />
+
+            {/* Video background thay thế cho hình ảnh */}
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
               className="absolute inset-0 w-full h-full object-cover"
-            />
+            >
+              <source src={backgroundVideo} type="video/mp4" />
+              {/* Fallback nếu trình duyệt không hỗ trợ video */}
+              Your browser does not support the video tag.
+            </video>
+
+            {/* Thêm overlay để tăng độ tương phản cho text */}
+            <div className="absolute inset-0 mix-blend-overlay" />
           </motion.div>
         </div>
 
