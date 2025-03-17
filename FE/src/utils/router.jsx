@@ -19,7 +19,6 @@ import PaymentPage from "../pages/users/paymentPage";
 import CustomerOrderPage from "../pages/admin/customerorderPage";
 import ProfilePage from "../pages/users/profilePage";
 import WishlistPage from "../pages/users/wishlistPage";
-import QRPaymentPage from "../pages/users/qrPaymentPage";
 import EditProfilePage from "../pages/users/editProfilePage";
 import { SkinCareRoutinePage } from "../pages/users/skinCareRoutine";
 import { ProductRecommendationPage } from "../pages/users/productRecommendation";
@@ -94,13 +93,9 @@ export const router = createBrowserRouter([
       },
       {
         path: "payment/:orderId",
-        element: <PaymentPage />,
-      },
-      {
-        path: "qr-payment",
         element: (
           <ProtectedRoute>
-            <QRPaymentPage />
+            <PaymentPage />
           </ProtectedRoute>
         ),
       },

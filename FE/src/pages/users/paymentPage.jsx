@@ -273,8 +273,11 @@ export function PaymentPage() {
                           preview={false}
                           fallback="https://placehold.co/80x80/pink/white?text=BeautyCare"
                         />
-                        <div>
-                          <Text strong className="text-lg">
+                        <div className="max-w-[70%]">
+                          <Text
+                            strong
+                            className="text-lg line-clamp-2 break-words"
+                          >
                             {item.productName || "Sản phẩm"}
                           </Text>
                           <div>
@@ -284,7 +287,10 @@ export function PaymentPage() {
                           </div>
                         </div>
                       </div>
-                      <Text strong className="text-lg text-pink-500">
+                      <Text
+                        strong
+                        className="text-lg text-pink-500 whitespace-nowrap min-w-[100px] text-right"
+                      >
                         {formatPrice(item.price)}
                       </Text>
                     </div>
