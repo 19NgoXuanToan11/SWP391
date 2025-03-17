@@ -12,16 +12,6 @@ export function QuizLandingPage() {
 
       {/* Main Content */}
       <div className="relative min-h-screen flex flex-col items-center justify-center px-6">
-        {/* Decorative Elements */}
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.5, type: "spring" }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px]"
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-full blur-3xl animate-pulse" />
-        </motion.div>
-
         {/* Content Section */}
         <div className="max-w-6xl mx-auto text-center relative z-10">
           <motion.div
