@@ -6,7 +6,7 @@ import { RegisterPage } from "../pages/login/registerPage";
 import { AboutPage } from "../pages/users/aboutPage";
 import { ContactPage } from "../pages/users/contactPage";
 import ProductsPage from "../pages/users/productPage";
-import { QuizPage } from "../pages/users/quizPage";
+import QuizPage from "../pages/users/quizPage";
 import { QuizLandingPage } from "../pages/users/quizlandingPage";
 import { ForgotPasswordPage } from "../pages/login/forgotPasswordPage";
 import DashboardPage from "../pages/admin/dashboardPage";
@@ -34,6 +34,7 @@ import OrdersHistoryPage from "../pages/users/ordersHistoryPage";
 import { AdminProtectedRoute } from "../components/auth/AdminProtectedRoute";
 import { AdminLoginPage } from "../pages/admin/adminLoginPage";
 import ResetPasswordPage from "../pages/login/resetPasswordPage";
+import QuizResultsPage from "../pages/users/quizResultsPage";
 
 export const router = createBrowserRouter([
   {
@@ -59,6 +60,10 @@ export const router = createBrowserRouter([
       {
         path: "quiz",
         element: <QuizPage />,
+      },
+      {
+        path: "quiz-results",
+        element: <QuizResultsPage />,
       },
       {
         path: "product",
@@ -157,7 +162,7 @@ export const router = createBrowserRouter([
         element: <WishlistPage />,
       },
       {
-        path: "skin-care-routine",
+        path: "skincare-routine",
         element: <SkinCareRoutinePage />,
       },
       {

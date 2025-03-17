@@ -86,7 +86,7 @@ export function NewsPage() {
   const visibleArticles = articles.slice(currentIndex, currentIndex + 3);
 
   return (
-    <section className="min-h-screen py-20 bg-gradient-to-br from-pink-50 via-white to-purple-50">
+    <section className="min-h-screen py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

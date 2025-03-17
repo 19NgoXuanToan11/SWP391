@@ -77,7 +77,7 @@ export function BlogPage() {
   const handleMouseLeave = () => setIsPaused(false);
 
   return (
-    <section className="relative py-24 overflow-hidden bg-gradient-to-br from-pink-50 via-white to-purple-50">
+    <section className="relative py-24 overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-20 left-10 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>

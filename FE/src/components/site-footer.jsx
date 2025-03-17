@@ -12,191 +12,142 @@ import {
 
 export function SiteFooter() {
   return (
-    <footer className="relative bg-gradient-to-b from-gray-900 via-gray-900 to-black text-gray-300 pt-24 pb-12 overflow-hidden">
+    <footer className="relative bg-white text-gray-700 pt-24 pb-12 overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-pink-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-1/4 w-64 h-64 bg-violet-500/5 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-40 right-1/4 w-60 h-60 bg-blue-500/5 rounded-full blur-3xl" />
+        {/* Removed dark background overlay */}
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {/* Brand Section */}
-          <div className="lg:col-span-5">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <h3 className="text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-violet-500 bg-clip-text text-transparent mb-6">
-                Beauty & Care
-              </h3>
-              <p className="text-gray-400 mb-8 leading-relaxed max-w-md text-lg">
-                Chuyên gia chăm sóc sắc đẹp của bạn. Với đội ngũ chuyên nghiệp
-                và sản phẩm cao cấp, chúng tôi cam kết mang đến cho bạn trải
-                nghiệm làm đẹp tốt nhất.
-              </p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="backdrop-blur-sm bg-white p-6 rounded-2xl border border-gray-200 shadow-xl h-full"
+          >
+            <h3 className="text-3xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-violet-500 bg-clip-text text-transparent mb-6">
+              Beauty & Care
+            </h3>
+            <p className="text-gray-600 mb-8 leading-relaxed text-base">
+              Chuyên gia chăm sóc sắc đẹp của bạn. Với đội ngũ chuyên nghiệp và
+              sản phẩm cao cấp, chúng tôi cam kết mang đến cho bạn trải nghiệm
+              làm đẹp tốt nhất.
+            </p>
 
-              {/* Social Links */}
-              <div className="flex space-x-5">
-                {[
-                  { icon: <FacebookOutlined />, href: "#" },
-                  { icon: <InstagramOutlined />, href: "#" },
-                  { icon: <LinkedinOutlined />, href: "#" },
-                ].map((social, index) => (
-                  <motion.a
-                    key={index}
-                    href={social.href}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="w-12 h-12 rounded-full bg-gray-800 hover:bg-pink-500/20 flex items-center justify-center 
-                      transition-all duration-300 group border border-gray-700 hover:border-pink-500/50"
+            {/* Social Links */}
+            <div className="flex space-x-4">
+              {[
+                {
+                  icon: <FacebookOutlined />,
+                  href: "https://www.facebook.com/xuantoan.ngo.18/",
+                },
+                {
+                  icon: <InstagramOutlined />,
+                  href: "https://www.instagram.com/xuantoannn_30/",
+                },
+              ].map((social, index) => (
+                <motion.a
+                  key={index}
+                  href={social.href}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gradient-to-br hover:from-pink-500/20 hover:to-purple-500/20 flex items-center justify-center 
+                    transition-all duration-300 group border border-gray-200 hover:border-pink-500/50 backdrop-blur-sm shadow-lg"
+                >
+                  <span className="text-lg text-gray-600 group-hover:text-pink-600 transition-colors duration-300">
+                    {social.icon}
+                  </span>
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Company Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="backdrop-blur-sm bg-white p-6 rounded-2xl border border-gray-200 shadow-xl h-full flex flex-col"
+          >
+            <h4 className="text-xl font-semibold text-gray-800 mb-6">
+              Công ty
+            </h4>
+            <ul className="space-y-4 flex-grow">
+              {[
+                { name: "Về chúng tôi", path: "/about" },
+                { name: "Blog", path: "/news" },
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link
+                    to={item.path}
+                    className="text-gray-600 hover:text-pink-500 transition-colors duration-300 flex items-center group"
                   >
-                    <span className="text-xl text-gray-400 group-hover:text-pink-500 transition-colors duration-300">
-                      {social.icon}
+                    <span className="w-0 group-hover:w-4 overflow-hidden transition-all duration-300 flex items-center">
+                      <ArrowRightOutlined className="opacity-0 group-hover:opacity-100 transition-all duration-300" />
                     </span>
-                  </motion.a>
-                ))}
-              </div>
-            </motion.div>
-          </div>
+                    <span className="group-hover:translate-x-2 transition-transform duration-300">
+                      {item.name}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
 
-          {/* Quick Links */}
-          <div className="lg:col-span-2">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="space-y-6"
-            >
-              <h4 className="text-lg font-semibold text-white">Dịch vụ</h4>
-              <ul className="space-y-4">
-                {[
-                  "Chăm sóc da",
-                  "Massage",
-                  "Spa",
-                  "Trang điểm",
-                  "Điều trị mụn",
-                  "Trẻ hóa da",
-                ].map((item) => (
-                  <li key={item}>
-                    <Link
-                      to="#"
-                      className="text-gray-400 hover:text-pink-500 transition-colors duration-300 flex items-center group"
-                    >
-                      <ArrowRightOutlined className="mr-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-1" />
-                      {item}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          </div>
-
-          <div className="lg:col-span-2">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="space-y-6"
-            >
-              <h4 className="text-lg font-semibold text-white">Công ty</h4>
-              <ul className="space-y-4">
-                {[
-                  "Về chúng tôi",
-                  "Đội ngũ",
-                  "Liên hệ",
-                  "Cơ hội nghề nghiệp",
-                  "Đối tác",
-                  "Blog",
-                ].map((item) => (
-                  <li key={item}>
-                    <Link
-                      to="#"
-                      className="text-gray-400 hover:text-pink-500 transition-colors duration-300 flex items-center group"
-                    >
-                      <ArrowRightOutlined className="mr-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-1" />
-                      {item}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          </div>
+            {/* Additional content to balance height */}
+            <div className="mt-auto pt-4">
+              <div className="h-1 w-16 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full mb-4"></div>
+              <p className="text-sm text-gray-500">
+                Đồng hành cùng vẻ đẹp của bạn
+              </p>
+            </div>
+          </motion.div>
 
           {/* Contact Info */}
-          <div className="lg:col-span-3">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              <h4 className="text-lg font-semibold text-white mb-6">Liên hệ</h4>
-              <ul className="space-y-4">
-                {[
-                  {
-                    icon: <MailOutlined className="text-pink-500" />,
-                    text: "contact@beauty.com",
-                  },
-                  {
-                    icon: <PhoneOutlined className="text-pink-500" />,
-                    text: "(84) 123-456-789",
-                  },
-                  {
-                    icon: <EnvironmentOutlined className="text-pink-500" />,
-                    text: "123 Đường ABC, Quận XYZ, HCMC",
-                  },
-                ].map((item, index) => (
-                  <li key={index} className="flex items-center space-x-3 group">
-                    <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center group-hover:bg-pink-500/20 transition-colors duration-300">
-                      {item.icon}
-                    </div>
-                    <span className="text-gray-400">{item.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="backdrop-blur-sm bg-white p-6 rounded-2xl border border-gray-200 shadow-xl h-full"
+          >
+            <h4 className="text-xl font-semibold text-gray-800 mb-6">
+              Liên hệ
+            </h4>
+            <ul className="space-y-4">
+              {[
+                {
+                  icon: <MailOutlined className="text-pink-500" />,
+                  text: "toannxse171297@fpt.edu.vn",
+                },
+                {
+                  icon: <PhoneOutlined className="text-pink-500" />,
+                  text: "0786485999",
+                },
+                {
+                  icon: <EnvironmentOutlined className="text-pink-500" />,
+                  text: "Thành phố Hồ Chí Minh",
+                },
+              ].map((item, index) => (
+                <li key={index} className="flex items-center space-x-3 group">
+                  <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-pink-500/20 group-hover:to-purple-500/20 transition-all duration-300 shadow-lg">
+                    {item.icon}
+                  </div>
+                  <span className="text-gray-600 group-hover:text-gray-800 transition-colors duration-300">
+                    {item.text}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
         </div>
-
-        {/* Newsletter Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="border-t border-gray-800 pt-8 pb-12"
-        >
-          <div className="max-w-2xl mx-auto text-center">
-            <h5 className="text-2xl font-semibold text-white mb-3">
-              Đăng ký nhận bản tin
-            </h5>
-            <p className="text-gray-400 mb-6">
-              Nhận thông tin cập nhật mới nhất về các ưu đãi và dịch vụ của
-              chúng tôi.
-            </p>
-            <form className="flex flex-col sm:flex-row gap-3 justify-center">
-              <input
-                type="email"
-                placeholder="Nhập email của bạn"
-                className="px-6 py-4 bg-gray-800 text-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 
-                  flex-grow max-w-md border border-gray-700 hover:border-gray-600 transition-colors duration-300"
-              />
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl 
-                  hover:opacity-90 transition-opacity duration-300 font-medium"
-              >
-                Đăng ký
-              </motion.button>
-            </form>
-          </div>
-        </motion.div>
 
         {/* Bottom Bar */}
         <motion.div
@@ -204,26 +155,10 @@ export function SiteFooter() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.6 }}
-          className="border-t border-gray-800 pt-8 mt-8"
+          className="border-t border-gray-200 pt-8 mt-8 backdrop-blur-sm"
         >
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-gray-400 text-sm">
-              © 2025 Beauty & Care. Bảo lưu mọi quyền.
-            </p>
-            <div className="flex space-x-6">
-              <Link
-                to="#"
-                className="text-gray-400 hover:text-pink-500 text-sm transition-colors duration-300"
-              >
-                Điều khoản
-              </Link>
-              <Link
-                to="#"
-                className="text-gray-400 hover:text-pink-500 text-sm transition-colors duration-300"
-              >
-                Chính sách bảo mật
-              </Link>
-            </div>
+            <p className="text-gray-600 text-sm">© 2025 Beauty & Care</p>
           </div>
         </motion.div>
       </div>

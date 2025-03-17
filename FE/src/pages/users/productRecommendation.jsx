@@ -67,6 +67,23 @@ export function ProductRecommendationPage() {
     return skinConcerns[concernKey] || concernKey;
   };
 
+  // Thêm hàm chuyển đổi từ tiếng Anh sang tiếng Việt
+  const translateSkinConcern = (concern) => {
+    const translations = {
+      acne: "Mụn & Thâm mụn",
+      wrinkles: "Nếp nhăn & Lão hóa",
+      darkSpots: "Đốm nâu & Tăng sắc tố",
+      dullness: "Da xỉn màu & Không đều",
+      dryness: "Da khô & Thiếu ẩm",
+      oiliness: "Da dầu",
+      largePores: "Lỗ chân lông to",
+      sensitivity: "Da nhạy cảm",
+      redness: "Da đỏ & Kích ứng",
+      unevenTexture: "Kết cấu da không đều",
+    };
+    return translations[concern] || concern;
+  };
+
   // Fetch tất cả sản phẩm từ API
   useEffect(() => {
     const fetchProducts = async () => {
@@ -83,41 +100,92 @@ export function ProductRecommendationPage() {
   // Lọc sản phẩm theo loại da
   useEffect(() => {
     const loadRecommendations = () => {
+      if (!quizResults || !allProducts.length) return;
+
       const userSkinType = quizResults?.skinType;
+      const userConcerns = quizResults?.concerns || [];
       console.log("User skin type:", userSkinType);
+      console.log("User concerns:", userConcerns);
 
       // Lọc sản phẩm phù hợp với loại da
       const matchingProducts = allProducts
         .filter((product) => {
-          // Kiểm tra nếu sản phẩm phù hợp với da dầu
-          if (userSkinType === "Da dầu") {
-            return product.skinTypeName === "Da dầu";
+          // Kiểm tra nếu sản phẩm phù hợp với loại da
+          if (
+            userSkinType === "Da dầu" &&
+            (product.skinTypeName === "Da dầu" ||
+              product.skinTypeName === "Mọi loại da")
+          ) {
+            return true;
           }
-          // Thêm các điều kiện cho các loại da khác
+          if (
+            userSkinType === "Da khô" &&
+            (product.skinTypeName === "Da khô" ||
+              product.skinTypeName === "Mọi loại da")
+          ) {
+            return true;
+          }
+          if (
+            userSkinType === "Da hỗn hợp" &&
+            (product.skinTypeName === "Da hỗn hợp" ||
+              product.skinTypeName === "Mọi loại da")
+          ) {
+            return true;
+          }
+          if (
+            userSkinType === "Da nhạy cảm" &&
+            (product.skinTypeName === "Da nhạy cảm" ||
+              product.skinTypeName === "Mọi loại da")
+          ) {
+            return true;
+          }
+
           return false;
         })
-        .map((product) => ({
-          id: product.productId,
-          name: product.productName,
-          brand: product.brandName,
-          price: product.price,
-          rating: 4.8, // Có thể thay đổi thành dữ liệu thực từ API
-          reviews: 128, // Có thể thay đổi thành dữ liệu thực từ API
-          image: product.imageUrls,
-          matchScore: 95, // Có thể tính toán dựa trên mức độ phù hợp
-          description: product.description,
-          benefits: [product.mainIngredients], // Chuyển thành array nếu cần
-          stockStatus: product.stock > 0 ? "Còn hàng" : "Hết hàng",
-          isNew: true, // Có thể xác định dựa trên ngày tạo sản phẩm
-        }));
+        .map((product) => {
+          // Tính điểm phù hợp dựa trên loại da và vấn đề da
+          let matchScore = 70; // Điểm cơ bản
 
-      console.log("Matching products:", matchingProducts);
+          // Nếu sản phẩm phù hợp chính xác với loại da
+          if (product.skinTypeName === userSkinType) {
+            matchScore += 20;
+          } else if (product.skinTypeName === "Mọi loại da") {
+            matchScore += 10;
+          }
+
+          // Nếu sản phẩm giải quyết các vấn đề da của người dùng
+          const productConcerns = product.skinConcerns || [];
+          const matchingConcerns = userConcerns.filter((concern) =>
+            productConcerns.includes(concern)
+          );
+
+          if (matchingConcerns.length > 0) {
+            matchScore += matchingConcerns.length * 5;
+          }
+
+          return {
+            id: product.productId,
+            name: product.productName,
+            brand: product.brandName,
+            price: product.price,
+            rating: product.rating || 4.5,
+            reviews: product.reviewCount || 0,
+            image: product.imageUrls,
+            matchScore: Math.min(matchScore, 100), // Giới hạn điểm tối đa là 100
+            description: product.description,
+            benefits: [product.mainIngredients], // Chuyển thành array nếu cần
+            stockStatus: product.stock > 0 ? "Còn hàng" : "Hết hàng",
+            isNew: product.isNew || false,
+            skinType: product.skinTypeName,
+            concerns: product.skinConcerns || [],
+          };
+        })
+        .sort((a, b) => b.matchScore - a.matchScore); // Sắp xếp theo điểm phù hợp
+
       setRecommendations(matchingProducts);
     };
 
-    if (allProducts.length > 0) {
-      loadRecommendations();
-    }
+    loadRecommendations();
   }, [quizResults, allProducts]);
 
   const formatPrice = (price) => {
@@ -173,180 +241,193 @@ export function ProductRecommendationPage() {
   };
 
   return (
-    <div className="min-h-screen py-12">
-      <div className="max-w-6xl mx-auto px-4">
-        {/* Header Section với animation và gradient */}
+    <div className="min-h-screen py-12 px-4">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <Title level={1} className="text-4xl md:text-5xl font-bold mb-6">
-            Sản Phẩm Được Đề Xuất Cho{" "}
-            <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-transparent bg-clip-text">
-              {quizResults?.skinType || "Bạn"}
-            </span>
-          </Title>
-          <Paragraph className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Dựa trên kết quả phân tích làn da của bạn, chúng tôi đã chọn ra
-            những sản phẩm phù hợp nhất để giúp bạn đạt được làn da khỏe mạnh và
-            rạng rỡ.
-          </Paragraph>
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text mb-4">
+            Sản Phẩm Phù Hợp Với Làn Da Của Bạn
+          </h1>
+          <p className="text-gray-600 max-w-3xl mx-auto">
+            Dựa trên kết quả phân tích làn da, chúng tôi đã chọn ra những sản
+            phẩm phù hợp nhất để giúp bạn đạt được làn da khỏe mạnh và rạng rỡ.
+          </p>
         </motion.div>
 
-        {/* Kết quả phân tích với thiết kế mới */}
+        {/* Kết quả phân tích da */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/80 backdrop-blur-lg rounded-2xl p-8 mb-12 shadow-xl"
+          className="bg-white/90 backdrop-blur-md rounded-3xl p-6 mb-10 shadow-xl border border-white/50"
         >
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <Title
-                level={3}
-                className="mb-4 bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text"
-              >
-                Kết Quả Phân Tích Da Của Bạn
-              </Title>
-              <div className="flex flex-wrap gap-3">
-                <Tag color="blue" className="px-4 py-2 rounded-full text-base">
-                  Loại da: {quizResults?.skinType || "Chưa xác định"}
-                </Tag>
-                {quizResults?.concerns?.length > 0 ? (
-                  <Tag
-                    color="pink"
-                    className="px-4 py-2 rounded-full text-base"
-                  >
-                    Vấn đề về da: {quizResults?.concerns?.join(", ")}
-                  </Tag>
-                ) : (
-                  <Tag
-                    color="pink"
-                    className="px-4 py-2 rounded-full text-base"
-                  >
-                    Vấn đề về da: Chưa xác định
-                  </Tag>
-                )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Loại da */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-pink-100/50 transition-all hover:shadow-md h-full">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                  <span className="text-blue-600 text-xl">👤</span>
+                </div>
+                <div>
+                  <p className="text-gray-500 text-sm">Loại da của bạn</p>
+                  <p className="font-semibold text-lg text-blue-600">
+                    {quizResults?.skinType || "Chưa xác định"}
+                  </p>
+                </div>
               </div>
             </div>
-            <Button
+
+            {/* Vấn đề về da */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-pink-100/50 transition-all hover:shadow-md h-full">
+              <div className="flex items-start gap-3">
+                <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center">
+                  <span className="text-pink-600 text-xl">⚠️</span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-gray-500 text-sm">
+                    Vấn đề về da cần quan tâm
+                  </p>
+
+                  {quizResults?.concerns?.length > 0 ? (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {quizResults.concerns.map((concern, index) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-pink-700 rounded-full text-sm font-medium border border-pink-200/50"
+                        >
+                          {translateSkinConcern(concern)}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="font-semibold text-lg text-green-600 mt-1">
+                      Không có vấn đề đặc biệt
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Nút làm lại bài kiểm tra */}
+          <div className="flex justify-center mt-4">
+            <button
               onClick={() => navigate("/quiz")}
-              className="bg-gradient-to-r from-pink-500 to-purple-500 border-none text-white px-8 py-5 h-auto rounded-full text-base font-medium hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300"
+              className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full text-sm font-medium shadow-sm hover:shadow-md transform hover:scale-105 transition-all duration-300"
             >
+              <span className="text-xs">↺</span>
               Làm lại bài kiểm tra
-            </Button>
+            </button>
           </div>
         </motion.div>
 
-        {/* Danh sách sản phẩm với thiết kế mới */}
-        {recommendations.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {recommendations.map((product) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="flex flex-col h-full"
-              >
-                <Card
-                  hoverable
-                  className="h-full rounded-2xl overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col"
-                  cover={
-                    <div
-                      className="relative aspect-[4/3] overflow-hidden cursor-pointer"
-                      onClick={() => handleProductClick(product.id)}
-                    >
-                      <img
-                        alt={product.name}
-                        src={product.image}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        {/* Danh sách sản phẩm */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center">
+            <span className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center mr-2">
+              <span className="text-pink-600">✓</span>
+            </span>
+            Sản phẩm được đề xuất cho {quizResults?.skinType}
+          </h2>
 
-                      {/* Brand Tag */}
-                      <div className="absolute bottom-4 left-4">
-                        <Tag className="m-0 bg-white/90 backdrop-blur-sm text-gray-800 border-none px-3 py-1.5 rounded-full font-medium">
-                          {product.brand}
-                        </Tag>
-                      </div>
-                    </div>
-                  }
+          {recommendations.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {recommendations.map((product) => (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="bg-white/90 backdrop-blur-sm rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-white/50"
                 >
-                  <div className="flex flex-col flex-grow p-6 space-y-4">
-                    {/* Product Name - Thêm cursor-pointer và onClick */}
-                    <Text
-                      className="text-lg font-bold line-clamp-2 min-h-[3rem] cursor-pointer hover:text-pink-600 transition-colors duration-300"
-                      onClick={() => handleProductClick(product.id)}
-                    >
-                      {product.name}
-                    </Text>
+                  <div className="relative">
+                    <img
+                      src={
+                        product.image[0] ||
+                        "https://via.placeholder.com/300x300"
+                      }
+                      alt={product.name}
+                      className="w-full h-64 object-cover"
+                    />
+                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-sm font-medium text-pink-600 border border-pink-100">
+                      Phù hợp {product.matchScore}%
+                    </div>
+                    {product.isNew && (
+                      <div className="absolute top-3 left-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full px-3 py-1 text-xs font-medium">
+                        Mới
+                      </div>
+                    )}
+                  </div>
 
-                    {/* Price and Rating Row */}
-                    <div className="flex justify-between items-center">
-                      <Text className="text-xl font-semibold text-pink-600">
-                        {formatPrice(product.price)}
-                      </Text>
+                  <div className="p-5">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="text-lg font-bold text-gray-800 line-clamp-2">
+                        {product.name}
+                      </h3>
+                      <span className="text-pink-600 font-bold">
+                        {product.price.toLocaleString()}₫
+                      </span>
                     </div>
 
-                    {/* Description */}
-                    <Text className="text-gray-600 text-sm line-clamp-2 flex-grow">
-                      {product.description}
-                    </Text>
+                    <p className="text-sm text-gray-500 mb-3">
+                      {product.brand}
+                    </p>
 
-                    {/* Benefits/Tags */}
-                    <div className="flex flex-wrap gap-1.5 pt-3">
-                      {product.benefits.map((benefit, index) => (
-                        <Tag
+                    <div className="flex items-center gap-1 mb-3">
+                      <div className="flex">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <span
+                            key={star}
+                            className={`text-${
+                              star <= Math.floor(product.rating)
+                                ? "yellow"
+                                : "gray"
+                            }-400`}
+                          >
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                      <span className="text-sm text-gray-500">
+                        ({product.reviews})
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">
+                        {product.skinType}
+                      </span>
+                      {product.concerns.slice(0, 2).map((concern, index) => (
+                        <span
                           key={index}
-                          className="bg-pink-50 text-pink-600 border-pink-200 rounded-full text-xs py-1"
+                          className="px-2 py-1 bg-pink-100 text-pink-700 rounded-full text-xs"
                         >
-                          {benefit}
-                        </Tag>
+                          {translateSkinConcern(concern)}
+                        </span>
                       ))}
                     </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex gap-2 pt-4 mt-auto">
-                      <button
-                        onClick={() => handleAddToCart(product)}
-                        className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 border-none rounded-full hover:from-pink-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1 flex items-center justify-center gap-2 py-2.5 text-white font-medium"
-                      >
-                        <ShoppingOutlined className="text-lg" />
-                        <span>Thêm vào giỏ</span>
-                      </button>
-                      <button
-                        onClick={() => handleToggleWishlist(product)}
-                        className={`aspect-square rounded-full border ${
-                          wishlist.some((item) => item.id === product.id)
-                            ? "border-pink-500 text-pink-500 bg-pink-50"
-                            : "border-pink-200 text-gray-400 hover:border-pink-500 hover:text-pink-500"
-                        } p-2.5 hover:bg-pink-50 transition-all duration-300 flex items-center justify-center`}
-                      >
-                        {wishlist.some((item) => item.id === product.id) ? (
-                          <HeartFilled className="text-lg hover:scale-110 transition-transform" />
-                        ) : (
-                          <HeartOutlined className="text-lg hover:scale-110 transition-transform" />
-                        )}
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => navigate(`/product/${product.id}`)}
+                      className="w-full py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-medium hover:shadow-md transition-all duration-300"
+                    >
+                      Xem chi tiết
+                    </button>
                   </div>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-16 bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl"
-          >
-            <Text className="text-gray-500 text-lg">
-              Chưa có sản phẩm được đề xuất. Vui lòng làm bài kiểm tra để nhận
-              gợi ý sản phẩm phù hợp.
-            </Text>
-          </motion.div>
-        )}
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-white/80 backdrop-blur-sm rounded-2xl">
+              <p className="text-gray-600">
+                Không tìm thấy sản phẩm phù hợp. Vui lòng thử lại bài kiểm tra.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

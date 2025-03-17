@@ -6,12 +6,9 @@ import model from "../../assets/pictures/login.jpg";
 
 export function QuizLandingPage() {
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-pink-700 font-orbitron">
+    <div className="min-h-screen relative overflow-hidden font-orbitron">
       {/* Animated Background with Grain */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-grainy opacity-20 animate-slide" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/50 to-purple-900/80" />
-      </div>
+      <div className="absolute inset-0"></div>
 
       {/* Main Content */}
       <div className="relative min-h-screen flex flex-col items-center justify-center px-6">
@@ -34,18 +31,18 @@ export function QuizLandingPage() {
           >
             <h1 className="text-7xl md:text-8xl font-bold text-white mb-8 tracking-tight">
               <span
-                className="bg-clip-text text-transparent bg-gradient-to-r from-pink-300 via-purple-300 to-white"
+                className="bg-clip-text"
                 style={{ textShadow: "0 0 10px rgba(236, 72, 153, 0.8)" }}
               >
                 Khám Phá
               </span>
               <br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-pink-300 to-purple-300">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-pink-500 to-purple-300">
                 Làn Da Của Bạn
               </span>
             </h1>
 
-            <p className="max-w-2xl mx-auto text-gray-200 mb-12 text-xl leading-relaxed">
+            <p className="max-w-2xl mx-auto text-gray-400 mb-12 text-xl leading-relaxed">
               Hành trình chăm sóc da hoàn hảo bắt đầu bằng việc hiểu rõ làn da
               của bạn.
             </p>
@@ -83,16 +80,6 @@ export function QuizLandingPage() {
             }}
           />
         ))}
-
-        {/* Model Image */}
-        <motion.img
-          src={model}
-          alt="Skin Model"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="absolute bottom-10 right-10 w-64 h-64 object-cover rounded-full shadow-xl border border-white/20"
-        />
       </div>
     </div>
   );

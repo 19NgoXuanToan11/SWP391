@@ -49,7 +49,7 @@ export function ProductsSection() {
   ];
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-rose-50 via-white to-purple-50 py-20 overflow-hidden">
+    <section className="relative min-h-screen py-20 overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-pink-200/20 rounded-full blur-3xl animate-blob" />

@@ -10,6 +10,7 @@ import {
   Tooltip,
   Modal,
   Tag,
+  Divider,
 } from "antd";
 import {
   SkinOutlined,
@@ -24,7 +25,12 @@ import {
   BulbOutlined,
   ShoppingOutlined,
 } from "@ant-design/icons";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  translateSkinConcern,
+  getSkinTypeInfo,
+} from "../../utils/skinCareUtils";
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
@@ -38,6 +44,7 @@ export function SkinCareRoutinePage() {
   const [recommendations, setRecommendations] = useState(null);
   const [showTips, setShowTips] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const navigate = useNavigate();
 
   const productDetails = {
     "Sữa rửa mặt dịu nhẹ": {
@@ -359,11 +366,16 @@ export function SkinCareRoutinePage() {
 
   const translateSkinConcern = (englishConcern) => {
     const translations = {
-      Acne: "Mụn & Thâm mụn",
-      Aging: "Nếp nhăn & Lão hóa",
-      Pigmentation: "Đốm nâu & Tăng sắc tố",
-      Dullness: "Da xỉn màu & Không đều",
-      // ... thêm các translations khác
+      acne: "Mụn & Thâm mụn",
+      wrinkles: "Nếp nhăn & Lão hóa",
+      darkSpots: "Đốm nâu & Tăng sắc tố",
+      dullness: "Da xỉn màu & Không đều",
+      dryness: "Da khô & Thiếu ẩm",
+      oiliness: "Da dầu",
+      largePores: "Lỗ chân lông to",
+      sensitivity: "Da nhạy cảm",
+      redness: "Da đỏ & Kích ứng",
+      unevenTexture: "Kết cấu da không đều",
     };
     return translations[englishConcern] || englishConcern;
   };
@@ -413,9 +425,9 @@ export function SkinCareRoutinePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-purple-100 py-12 px-4">
       <div className="max-w-5xl mx-auto">
-        <Card className="shadow-xl rounded-2xl border-0">
+        <Card className="shadow-xl rounded-2xl border-0 overflow-hidden">
           <div className="text-center mb-8">
             <Title level={2} className="!mb-2">
               <SkinOutlined className="mr-2 text-purple-500" />
@@ -485,82 +497,81 @@ export function SkinCareRoutinePage() {
               </Form.Item>
             </div>
 
-            <button
-              type="primary"
-              htmlType="submit"
-              size="large"
-              className="w-full md:w-auto px-8 bg-gradient-to-r text-white from-purple-500 to-pink-500 border-0 rounded-full h-12 font-medium hover:shadow-lg transition-shadow duration-200"
-            >
-              Tạo Quy Trình
-            </button>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="bg-gradient-to-r from-pink-500 to-purple-500 border-none"
+              >
+                Tạo Quy Trình Chăm Sóc Da
+              </Button>
+            </Form.Item>
           </Form>
 
           {recommendations && (
-            <>
-              <div className="mb-8 bg-blue-50 p-4 rounded-lg">
-                <div className="flex items-start">
-                  <ExperimentOutlined className="text-blue-500 text-xl mt-1 mr-3" />
-                  <div>
-                    <Text strong className="text-blue-700">
-                      Mẹo Quan Trọng Cho Quy Trình Của Bạn:
-                    </Text>
-                    <ul className="list-disc pl-5 mt-2 space-y-2">
-                      {skinCareTips.general.map((tip, index) => (
-                        <li key={index} className="text-blue-600">
-                          {tip}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-8"
+            >
+              <Divider>
+                <Title level={4} className="!m-0 text-purple-700">
+                  Quy Trình Chăm Sóc Da Cho {form.getFieldValue("skinType")}
+                </Title>
+              </Divider>
 
-              <div className="mt-12 space-y-12">
-                <div className="bg-white rounded-xl p-6 shadow-lg">
-                  <div className="flex items-center mb-6">
-                    <SunOutlined className="text-2xl text-yellow-500 mr-3" />
-                    <Title level={3} className="!mb-0">
-                      Lịch trình buổi sáng
-                    </Title>
-                  </div>
-                  <Paragraph className="mb-6 text-gray-600">
-                    Tập trung vào bảo vệ và chuẩn bị da cho ngày hôm sau
-                  </Paragraph>
-                  <div className="space-y-4">
-                    {recommendations.morning.map((step, index) =>
-                      renderRoutineStep(
-                        step,
-                        index,
-                        index === recommendations.morning.length - 1,
-                        "morning"
-                      )
-                    )}
-                  </div>
-                </div>
+              {recommendations.map((routine, index) => (
+                <Card
+                  key={index}
+                  className="rounded-xl shadow-md hover:shadow-lg transition-shadow"
+                  title={
+                    <div className="flex items-center">
+                      <ClockCircleOutlined className="text-pink-500 mr-2" />
+                      <span className="font-bold">{routine.time}</span>
+                    </div>
+                  }
+                >
+                  <Steps
+                    direction="vertical"
+                    current={-1}
+                    className="custom-steps"
+                  >
+                    {routine.steps.map((step, stepIndex) => (
+                      <Step
+                        key={stepIndex}
+                        title={
+                          <Text strong className="text-gray-800">
+                            {step.name}
+                          </Text>
+                        }
+                        description={
+                          <Text className="text-gray-600">
+                            {step.description}
+                          </Text>
+                        }
+                        icon={
+                          <div className="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center">
+                            <span className="text-pink-600">
+                              {stepIndex + 1}
+                            </span>
+                          </div>
+                        }
+                      />
+                    ))}
+                  </Steps>
+                </Card>
+              ))}
 
-                <div className="bg-white rounded-xl p-6 shadow-lg">
-                  <div className="flex items-center mb-6">
-                    <MoonOutlined className="text-2xl text-blue-500 mr-3" />
-                    <Title level={3} className="!mb-0">
-                      Lịch trình buổi tối
-                    </Title>
-                  </div>
-                  <Paragraph className="mb-6 text-gray-600">
-                    Tập trung vào làm sạch và sửa chữa trong khi da tái tạo
-                  </Paragraph>
-                  <div className="space-y-4">
-                    {recommendations.evening.map((step, index) =>
-                      renderRoutineStep(
-                        step,
-                        index,
-                        index === recommendations.evening.length - 1,
-                        "evening"
-                      )
-                    )}
-                  </div>
-                </div>
+              <div className="flex justify-center mt-8">
+                <Button
+                  type="primary"
+                  onClick={() => navigate("/product-recommendation")}
+                  className="bg-gradient-to-r from-pink-500 to-purple-500 border-none"
+                >
+                  Xem Sản Phẩm Phù Hợp
+                </Button>
               </div>
-            </>
+            </motion.div>
           )}
         </Card>
       </div>
