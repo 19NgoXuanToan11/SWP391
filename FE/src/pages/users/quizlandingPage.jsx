@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import model from "../../assets/pictures/model.jpg";
+import model from "../../assets/pictures/login.jpg";
 
 export function QuizLandingPage() {
   return (

@@ -150,7 +150,7 @@ export function SiteHeader() {
               <NavLink
                 to="/quiz-landing"
                 icon={<FileDoneOutlined className="text-xl" />}
-                text="Kiểm tra"
+                text="Trắc nghiệm"
               />
             </div>
 

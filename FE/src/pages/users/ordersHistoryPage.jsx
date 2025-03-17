@@ -61,31 +61,31 @@ const FilterControls = ({ onSearch, onStatusChange }) => {
                     className="w-3 h-3 rounded-full bg-gradient-to-r from-green-400 to-green-500
                     shadow-sm animate-pulse"
                   />
-                  <span className="font-medium">Hoàn thành</span>
+                  <span className="font-medium">Đã thanh toán</span>
                 </div>
               ),
             },
             {
-              value: "processing",
+              value: "shipping",
               label: (
                 <div className="flex items-center gap-3 py-1">
                   <div
                     className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-400 to-blue-500
                     shadow-sm animate-pulse"
                   />
-                  <span className="font-medium">Đang xử lý</span>
+                  <span className="font-medium">Đang giao hàng</span>
                 </div>
               ),
             },
             {
-              value: "cancelled",
+              value: "pending",
               label: (
                 <div className="flex items-center gap-3 py-1">
                   <div
-                    className="w-3 h-3 rounded-full bg-gradient-to-r from-red-400 to-red-500
+                    className="w-3 h-3 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-500
                     shadow-sm"
                   />
-                  <span className="font-medium">Đã hủy</span>
+                  <span className="font-medium">Chờ xác nhận</span>
                 </div>
               ),
             },
@@ -107,9 +107,27 @@ const OrdersHistoryPage = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
-  const currentUser = { id: "user123" }; // Replace with actual user data
 
-  // Update the API_BASE_URL to match the endpoint shown in Swagger
+  // Lấy userId từ localStorage
+  const [userId, setUserId] = useState(() => {
+    try {
+      const authUserStr = localStorage.getItem("auth_user");
+
+      if (authUserStr) {
+        const authUser = JSON.parse(authUserStr);
+
+        if (authUser && authUser.id) {
+          return authUser.id;
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error("Error parsing auth_user:", error);
+      return null;
+    }
+  });
+
+  // API base URL
   const API_BASE_URL = "https://localhost:7285";
 
   useEffect(() => {
@@ -117,8 +135,8 @@ const OrdersHistoryPage = () => {
   }, [filterStatus]);
 
   const fetchOrders = async () => {
-    // We can still check for user authentication if needed
-    if (!currentUser || !currentUser.id) {
+    // Kiểm tra userId có tồn tại không
+    if (!userId) {
       setError("Vui lòng đăng nhập để xem lịch sử đơn hàng");
       setLoading(false);
       return;
@@ -128,23 +146,59 @@ const OrdersHistoryPage = () => {
     setError(null);
 
     try {
-      const response = await axios.get(`${API_BASE_URL}/GetAllHistory`, {
+      console.log(`Fetching orders for user ID: ${userId}`);
+
+      // Sử dụng endpoint /user/{userId} như yêu cầu
+      const response = await axios.get(`${API_BASE_URL}/user/${userId}`, {
         headers: {
           accept: "*/*",
         },
       });
 
-      // Based on the response shown in your screenshot
+      console.log("API response:", response.data);
+
+      // Process the response based on the API structure
       if (response.data && Array.isArray(response.data)) {
-        const formattedOrders = response.data.map((order) => ({
-          id: order.historyId.toString(),
-          trackingCode: order.trackingCode,
-          shipper: order.shipper,
-          status: order.status.toLowerCase(),
-          date: new Date().toISOString(),
-          total: 0,
-          orderDetails: order.orderDetails || [],
-        }));
+        const formattedOrders = response.data.map((order) => {
+          // Tính tổng tiền từ các sản phẩm
+          let totalAmount = 0;
+          if (order.products && Array.isArray(order.products)) {
+            totalAmount = order.products.reduce((sum, product) => {
+              return sum + (product.price || 0) * (product.quantity || 1);
+            }, 0);
+          }
+
+          // Chuyển đổi trạng thái từ API sang trạng thái trong ứng dụng
+          let status = (order.status || "").toLowerCase();
+
+          // Đảm bảo trạng thái khớp với các giá trị trong dropdown
+          switch (status) {
+            case "completed":
+              status = "completed";
+              break;
+            case "shipping":
+              status = "shipping";
+              break;
+            case "pending":
+              status = "pending";
+              break;
+            case "cancelled":
+              status = "cancelled";
+              break;
+            default:
+              status = "pending"; // Trạng thái mặc định nếu không xác định
+          }
+
+          return {
+            id: order.trackingCode || "N/A",
+            trackingCode: order.trackingCode || "N/A",
+            shipper: order.shipper || "Chưa xác định",
+            status: status,
+            date: new Date().toISOString(), // Sử dụng ngày hiện tại nếu không có
+            total: totalAmount,
+            products: order.products || [],
+          };
+        });
 
         setOrders(formattedOrders);
       } else {
@@ -175,8 +229,10 @@ const OrdersHistoryPage = () => {
     switch (status) {
       case "completed":
         return "bg-green-500";
-      case "processing":
+      case "shipping":
         return "bg-blue-500";
+      case "pending":
+        return "bg-yellow-500";
       case "cancelled":
         return "bg-red-500";
       default:
@@ -188,27 +244,27 @@ const OrdersHistoryPage = () => {
     switch (status) {
       case "completed":
         return <CheckCircleOutlined className="text-green-500" />;
-      case "processing":
+      case "shipping":
         return <LoadingOutlined className="text-blue-500" />;
+      case "pending":
+        return <ClockCircleOutlined className="text-yellow-500" />;
       case "cancelled":
         return <CloseCircleOutlined className="text-red-500" />;
       default:
-        return <ClockCircleOutlined className="text-gray-500" />;
+        return <InfoCircleOutlined className="text-gray-500" />;
     }
   };
 
   const getStatusText = (status) => {
     switch (status) {
       case "completed":
-        return "Hoàn thành";
-      case "processing":
-        return "Đang xử lý";
-      case "cancelled":
-        return "Đã hủy";
+        return "Đã thanh toán";
       case "pending":
         return "Chờ xác nhận";
       case "shipping":
         return "Đang giao hàng";
+      case "cancelled":
+        return "Đã hủy";
       default:
         return "Không xác định";
     }
@@ -230,13 +286,37 @@ const OrdersHistoryPage = () => {
   };
 
   // Filter orders based on search term
-  const filteredOrders = orders.filter(
-    (order) =>
-      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.items.some((item) =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-  );
+  const filteredOrders = orders.filter((order) => {
+    // Lọc theo trạng thái nếu có chọn trạng thái
+    if (filterStatus && filterStatus !== "all") {
+      if (order.status !== filterStatus) {
+        return false;
+      }
+    }
+
+    // Nếu không có searchTerm, hiển thị tất cả đơn hàng (đã qua lọc trạng thái)
+    if (!searchTerm) return true;
+
+    // Lọc theo ID đơn hàng
+    if (
+      order.id &&
+      order.id.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    ) {
+      return true;
+    }
+
+    // Lọc theo chi tiết đơn hàng nếu có
+    if (order.products && Array.isArray(order.products)) {
+      return order.products.some(
+        (product) =>
+          product &&
+          product.productName &&
+          product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    return false;
+  });
 
   return (
     <div className="min-h-screen py-12 px-4">
@@ -344,18 +424,34 @@ const OrdersHistoryPage = () => {
                       <div className="border-t border-gray-100 my-4"></div>
 
                       <div className="space-y-3">
-                        {order.orderDetails && order.orderDetails.length > 0 ? (
-                          order.orderDetails.map((item, index) => (
+                        {order.products && order.products.length > 0 ? (
+                          order.products.map((product, index) => (
                             <div
                               key={index}
                               className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0"
                             >
-                              <div className="flex items-center gap-2">
-                                <ShoppingOutlined className="text-gray-400" />
-                                <span>Sản phẩm #{index + 1}</span>
+                              <div className="flex items-center gap-3">
+                                {product.productImages ? (
+                                  <img
+                                    src={product.productImages}
+                                    alt={product.productName}
+                                    className="w-12 h-12 object-cover rounded-md"
+                                  />
+                                ) : (
+                                  <ShoppingOutlined className="text-gray-400 text-2xl" />
+                                )}
+                                <div>
+                                  <span className="font-medium">
+                                    {product.productName ||
+                                      `Sản phẩm #${index + 1}`}
+                                  </span>
+                                  <div className="text-sm text-gray-500">
+                                    Số lượng: {product.quantity || 1}
+                                  </div>
+                                </div>
                               </div>
                               <span className="font-medium">
-                                {formatPrice(0)}
+                                {formatPrice(product.price || 0)}
                               </span>
                             </div>
                           ))
@@ -373,16 +469,6 @@ const OrdersHistoryPage = () => {
                         <span className="text-xl font-bold text-pink-600">
                           {formatPrice(order.total)}
                         </span>
-                      </div>
-
-                      <div className="mt-4 flex justify-end">
-                        <Link
-                          to={`/order-detail/${order.id}`}
-                          className="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full 
-                            hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
-                        >
-                          Xem chi tiết
-                        </Link>
                       </div>
                     </div>
                   </motion.div>
