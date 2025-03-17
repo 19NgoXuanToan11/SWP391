@@ -30,21 +30,21 @@ export function ProductsSection() {
   const features = [
     {
       icon: <SafetyCertificateOutlined className="text-2xl" />,
-      title: "Lịch Trình Cá Nhân Hóa",
+      title: "Chăm Sóc Da Đặc Biệt",
       description:
-        "Nhận một lịch trình chăm sóc da được tùy chỉnh dựa trên loại da và mối quan tâm của bạn",
+        "Tìm ra một kế hoạch chăm sóc da độc quyền phù hợp với từng loại da.  ",
     },
     {
       icon: <ExperimentOutlined className="text-2xl" />,
-      title: "Nguyên Liệu Tự Nhiên",
+      title: "Thành Phần Tự Nhiên",
       description:
-        "Sản phẩm làm đẹp sạch được làm từ các nguyên liệu tự nhiên được chọn lọc kỹ lưỡng",
+        "Sản phẩm làm đẹp được chiết xuất từ thiên nhiên, an toàn và hiệu quả cho làn da của bạn.",
     },
     {
       icon: <ThunderboltOutlined className="text-2xl" />,
-      title: "Được Kiểm Nghiệm",
+      title: "Chất Lượng Đảm Bảo",
       description:
-        "Tất cả sản phẩm đều được kiểm tra và phê duyệt bởi các bác sĩ da liễu có chứng nhận",
+        "Tất cả sản phẩm đều được kiểm tra chất lượng kỹ lưỡng bởi đội ngũ chuyên gia da liễu hàng đầu.",
     },
   ];
 
