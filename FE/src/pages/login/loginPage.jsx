@@ -291,11 +291,11 @@ export function LoginPage() {
             animate="visible"
             className="w-full max-w-md"
           >
-            <motion.div variants={itemVariants} className="mb-8">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                {isLogin ? "Chào mừng trở lại" : "Tạo tài khoản"}
+            <motion.div variants={itemVariants} className="mb-8 text-center">
+              <h2 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-700">
+                {isLogin ? "Chào mừng đến với Beauty & Care" : "Tạo tài khoản"}
               </h2>
-              <p className="mt-2 text-gray-600">
+              <p className="mt-2 text-gray-700 text-lg">
                 {isLogin
                   ? "Đăng nhập để tiếp tục hành trình của bạn"
                   : "Đăng ký để bắt đầu hành trình của bạn"}

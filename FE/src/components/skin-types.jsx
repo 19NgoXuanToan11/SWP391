@@ -92,12 +92,12 @@ export function SkinTypes() {
         transition={{ duration: 0.8 }}
         className="max-w-7xl mx-auto text-center mb-20"
       >
-        <h1 className="text-4xl md:text-5xl font-bold mb-6 relative inline-block">
+        <h1 className="text-4xl md:text-5xl font-bold mb-6 ">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600">
             Tìm Hiểu Loại Da Của Bạn
           </span>
           <motion.div
-            className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-pink-400 to-purple-500"
+            className="absolute -bottom-2 left-0 right-0 h-1 "
             initial={{ width: "0%" }}
             animate={{ width: "100%" }}
             transition={{ delay: 0.5, duration: 0.8 }}
@@ -293,6 +293,7 @@ export function SkinTypes() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
+        s
         className="max-w-4xl mx-auto mt-16"
       >
         <div className="relative bg-white/90 backdrop-blur-md rounded-3xl p-10 shadow-xl overflow-hidden">

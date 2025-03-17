@@ -71,6 +71,10 @@ export function ProductsSection() {
               Vẻ Đẹp Tự Nhiên
             </span>
           </motion.h1>
+          <p className="text-lg text-gray-600 mt-4">
+            Khám phá các sản phẩm chăm sóc da tự nhiên, an toàn và hiệu quả cho
+            làn da của bạn.
+          </p>
         </div>
 
         {/* Collections Grid */}

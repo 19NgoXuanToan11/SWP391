@@ -132,21 +132,21 @@ export function SiteHeader() {
                 icon={<HomeOutlined className="text-xl" />}
                 text="Trang chủ"
               />
-              <NavLink
+              {/* <NavLink
                 to="/about"
                 icon={<UserOutlined className="text-xl" />}
                 text="Giới thiệu"
-              />
+              /> */}
               <NavLink
                 to="/product"
                 icon={<ShoppingOutlined className="text-xl" />}
                 text="Sản phẩm"
               />
-              <NavLink
+              {/* <NavLink
                 to="/contact"
                 icon={<ContactsOutlined className="text-xl" />}
                 text="Liên hệ"
-              />
+              /> */}
               <NavLink
                 to="/quiz-landing"
                 icon={<FileDoneOutlined className="text-xl" />}
