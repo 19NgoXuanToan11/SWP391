@@ -208,11 +208,15 @@ const OrdersPage = () => {
     switch (status.toLowerCase()) {
       case "pending":
         return "orange";
-      case "processing":
+      case "confirmed":
         return "blue";
-      case "shipped":
+      case "processing":
         return "cyan";
+      case "shipping":
+        return "geekblue";
       case "delivered":
+        return "purple";
+      case "completed":
         return "green";
       case "cancelled":
         return "red";
@@ -430,13 +434,17 @@ const OrdersPage = () => {
   const getStatusTag = (status) => {
     switch (status.toLowerCase()) {
       case "pending":
-        return "Chờ xử lý";
+        return "Chờ xác nhận";
+      case "confirmed":
+        return "Đã xác nhận";
       case "processing":
-        return "Đang xử lý";
-      case "shipped":
-        return "Đã gửi hàng";
+        return "Đang chuẩn bị";
+      case "shipping":
+        return "Đang giao hàng";
       case "delivered":
         return "Đã giao hàng";
+      case "completed":
+        return "Hoàn thành";
       case "cancelled":
         return "Đã hủy";
       default:
@@ -527,13 +535,37 @@ const OrdersPage = () => {
       ),
     },
     {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag color={getStatusColor(status)} className="px-3 py-1 rounded-full">
-          {getStatusTag(status)}
-        </Tag>
+      title: "Trạng thái đơn hàng",
+      key: "orderStatus",
+      render: (_, record) => (
+        <Select
+          defaultValue={record.status || "pending"}
+          style={{ width: 140 }}
+          onChange={(value) => updateOrderStatus(record.orderId, value)}
+          className="rounded-lg"
+        >
+          <Option value="pending">
+            <Tag color="orange">Chờ xác nhận</Tag>
+          </Option>
+          <Option value="confirmed">
+            <Tag color="blue">Đã xác nhận</Tag>
+          </Option>
+          <Option value="processing">
+            <Tag color="cyan">Đang chuẩn bị</Tag>
+          </Option>
+          <Option value="shipping">
+            <Tag color="geekblue">Đang giao hàng</Tag>
+          </Option>
+          <Option value="delivered">
+            <Tag color="purple">Đã giao hàng</Tag>
+          </Option>
+          <Option value="completed">
+            <Tag color="green">Hoàn thành</Tag>
+          </Option>
+          <Option value="cancelled">
+            <Tag color="red">Đã hủy</Tag>
+          </Option>
+        </Select>
       ),
     },
     {
@@ -1251,7 +1283,7 @@ const OrdersPage = () => {
                       }
                     >
                       <Tag color="orange" className="mr-2">
-                        Chờ xử lý
+                        Chờ xác nhận
                       </Tag>
                     </Menu.Item>
                     <Menu.Item
@@ -1280,7 +1312,7 @@ const OrdersPage = () => {
                         updateOrderStatus(selectedOrder.orderId, "Delivered")
                       }
                     >
-                      <Tag color="green" className="mr-2">
+                      <Tag color="purple" className="mr-2">
                         Đã giao hàng
                       </Tag>
                     </Menu.Item>

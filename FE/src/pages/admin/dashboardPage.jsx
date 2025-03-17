@@ -15,6 +15,8 @@ import {
   BulbOutlined,
   LogoutOutlined,
   SettingOutlined,
+  EyeOutlined,
+  TagOutlined,
 } from "@ant-design/icons";
 import {
   LineChart,
@@ -78,12 +80,22 @@ const Dashboard = () => {
   const [revenueData, setRevenueData] = useState([]);
   const [productCategories, setProductCategories] = useState([]);
   const [growthRate, setGrowthRate] = useState(6.23);
+  const [brandStats, setBrandStats] = useState([]);
+  const [categoryStats, setCategoryStats] = useState([]);
 
   // Hàm định dạng giá tiền
   const formatPrice = (price) => {
+    // Làm tròn số trước khi định dạng để tránh số lẻ
+    const roundedPrice = Math.round(price);
     return new Intl.NumberFormat("vi-VN", {
       style: "decimal",
-    }).format(price);
+      maximumFractionDigits: 0, // Không hiển thị phần thập phân
+    }).format(roundedPrice);
+  };
+
+  // Hàm định dạng ngày tháng
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString("vi-VN");
   };
 
   // Fetch orders from API
@@ -96,13 +108,16 @@ const Dashboard = () => {
       setOrders(response.data);
 
       // Tính toán thống kê
-      const totalRevenue = response.data
+      let totalRevenue = response.data
         .filter(
           (o) =>
             o.status.toLowerCase() === "delivered" ||
             (o.paymentMethod !== null && o.paymentMethod !== "null")
         )
         .reduce((sum, order) => sum + order.totalAmount, 0);
+
+      // Làm tròn tổng doanh thu đến hàng nghìn
+      totalRevenue = Math.round(totalRevenue / 1000) * 1000;
 
       setOrderStats({
         total: response.data.length,
@@ -285,103 +300,11 @@ const Dashboard = () => {
               Đây là những gì đang diễn ra với cửa hàng của bạn hôm nay.
             </p>
           </div>
-          <div className="flex items-center space-x-6">
-            <div className="relative">
-              <SearchOutlined className="absolute left-3 top-3 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Tìm kiếm..."
-                className="pl-10 pr-4 py-2 w-64 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-gray-50"
-              />
-            </div>
-
-            {/* Menu thả xuống hồ sơ */}
-            <div className="relative">
-              <button
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center space-x-3 hover:bg-gray-100 rounded-xl transition-colors p-2"
-              >
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
-                  A
-                </div>
-                <div className="hidden md:block text-left">
-                  <p className="text-sm font-medium text-gray-700">
-                    Quản trị viên
-                  </p>
-                  <p className="text-xs text-gray-500">Quản trị viên cấp cao</p>
-                </div>
-              </button>
-
-              {isProfileOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl py-2 border border-gray-100 z-50 transform transition-all duration-300 ease-in-out">
-                  {/* Tiêu đề hồ sơ - Hiện đại hóa */}
-                  <div className="px-4 py-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-xl font-medium shadow-md">
-                        A
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-800 text-lg">
-                          Quản trị viên
-                        </h3>
-                        <p className="text-sm text-gray-600 flex items-center">
-                          <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                          admin@example.com
-                        </p>
-                        <span className="text-xs bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full mt-1 inline-block font-medium shadow-sm">
-                          Quản trị viên cấp cao
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Các mục menu - Hiện đại hóa */}
-                  <div className="py-3 px-4 space-y-2">
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all duration-200 flex items-center space-x-3 group">
-                      <span className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-all duration-200">
-                        <UserOutlined />
-                      </span>
-                      <span className="font-medium">Hồ sơ của bạn</span>
-                    </button>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 rounded-lg transition-all duration-200 flex items-center space-x-3 group">
-                      <span className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-all duration-200">
-                        <SettingOutlined />
-                      </span>
-                      <span className="font-medium">
-                        Cài đặt & Quyền riêng tư
-                      </span>
-                    </button>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-teal-50 hover:text-teal-600 rounded-lg transition-all duration-200 flex items-center space-x-3 group">
-                      <span className="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center text-teal-500 group-hover:bg-teal-500 group-hover:text-white transition-all duration-200">
-                        <QuestionCircleOutlined />
-                      </span>
-                      <span className="font-medium">Trợ giúp & Hỗ trợ</span>
-                    </button>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 rounded-lg transition-all duration-200 flex items-center space-x-3 group">
-                      <span className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-all duration-200">
-                        <BulbOutlined />
-                      </span>
-                      <span className="font-medium">Hiển thị & Trợ năng</span>
-                    </button>
-
-                    <div className="pt-2 mt-2 border-t border-gray-100">
-                      <button className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 flex items-center space-x-3 group">
-                        <span className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center text-red-500 group-hover:bg-red-500 group-hover:text-white transition-all duration-200">
-                          <LogoutOutlined />
-                        </span>
-                        <span className="font-medium">Đăng xuất</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
         </header>
 
         {/* Ngày và Thống kê nhanh */}
         <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center space-x-2 text-gray-600">
+          <div className="flex items-center space-x-2 text-gray-600 bg-white px-4 py-2 rounded-xl shadow-sm">
             <CalendarOutlined />
             <span>
               {new Date().toLocaleDateString("vi-VN", {
@@ -401,9 +324,9 @@ const Dashboard = () => {
         ) : (
           <>
             {/* Thẻ tóm tắt */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {/* Thẻ Tổng doanh số */}
-              <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+              <div className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-500">
@@ -426,10 +349,17 @@ const Dashboard = () => {
                     <DollarOutlined className="text-3xl text-pink-500" />
                   </div>
                 </div>
+                {/* Thêm thanh tiến trình */}
+                <div className="mt-4 h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-pink-500 rounded-full"
+                    style={{ width: "76%" }}
+                  ></div>
+                </div>
               </div>
 
               {/* Thẻ Tổng đơn hàng */}
-              <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+              <div className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-500">
@@ -452,10 +382,17 @@ const Dashboard = () => {
                     <ShoppingOutlined className="text-3xl text-blue-500" />
                   </div>
                 </div>
+                {/* Thêm thanh tiến trình */}
+                <div className="mt-4 h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-blue-500 rounded-full"
+                    style={{ width: "82%" }}
+                  ></div>
+                </div>
               </div>
 
               {/* Thẻ Người dùng hoạt động */}
-              <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+              <div className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-500">
@@ -478,200 +415,187 @@ const Dashboard = () => {
                     <UserOutlined className="text-3xl text-green-500" />
                   </div>
                 </div>
-              </div>
-
-              {/* Thẻ Tăng trưởng */}
-              <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">
-                      Tăng trưởng
-                    </p>
-                    <p className="text-3xl font-bold text-gray-800 mt-2">
-                      +{growthRate}%
-                    </p>
-                    <div className="flex items-center mt-4 space-x-2">
-                      <span className="flex items-center text-green-500 text-sm bg-green-50 px-2 py-1 rounded-lg">
-                        <ArrowUpOutlined className="mr-1" />
-                        2,4%
-                      </span>
-                      <span className="text-gray-400 text-sm">
-                        so với tháng trước
-                      </span>
-                    </div>
-                  </div>
-                  <div className="bg-purple-500 bg-opacity-10 p-4 rounded-2xl">
-                    <RiseOutlined className="text-3xl text-purple-500" />
-                  </div>
+                {/* Thêm thanh tiến trình */}
+                <div className="mt-4 h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-green-500 rounded-full"
+                    style={{ width: "60%" }}
+                  ></div>
                 </div>
               </div>
             </div>
 
-            {/* Lưới biểu đồ */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              {/* Biểu đồ tổng quan doanh thu */}
-              <div className="bg-white p-6 rounded-2xl shadow-lg">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold text-gray-800">
-                    Tổng quan doanh thu
-                  </h2>
-                  <select
-                    className="px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 
-                                   focus:outline-none focus:ring-2 focus:ring-gray-200"
-                  >
-                    <option>7 ngày qua</option>
-                    <option>30 ngày qua</option>
-                    <option>90 ngày qua</option>
-                  </select>
+            {/* Thêm thống kê trạng thái đơn hàng */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-gray-500">
+                    Chờ xác nhận
+                  </p>
+                  <p className="text-lg font-bold text-gray-800">
+                    {orderStats.pending}
+                  </p>
                 </div>
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={revenueData}>
-                      <defs>
-                        <linearGradient
-                          id="colorRevenue"
-                          x1="0"
-                          y1="0"
-                          x2="0"
-                          y2="1"
-                        >
-                          <stop
-                            offset="5%"
-                            stopColor="#8884d8"
-                            stopOpacity={0.8}
-                          />
-                          <stop
-                            offset="95%"
-                            stopColor="#8884d8"
-                            stopOpacity={0}
-                          />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip formatter={(value) => formatPrice(value)} />
-                      <Legend />
-                      <Area
-                        type="monotone"
-                        dataKey="revenue"
-                        stroke="#8884d8"
-                        fillOpacity={1}
-                        fill="url(#colorRevenue)"
-                        name="Doanh thu"
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
+                <div className="bg-yellow-100 p-2 rounded-lg">
+                  <span className="text-yellow-500 text-lg">⏳</span>
                 </div>
               </div>
 
-              {/* Biểu đồ phân tích đơn hàng */}
-              <div className="bg-white p-6 rounded-2xl shadow-lg">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold text-gray-800">
-                    Phân tích đơn hàng
-                  </h2>
-                  <select
-                    className="px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 
-                                   focus:outline-none focus:ring-2 focus:ring-gray-200"
-                  >
-                    <option>7 ngày qua</option>
-                    <option>30 ngày qua</option>
-                    <option>90 ngày qua</option>
-                  </select>
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-gray-500">
+                    Đang xử lý
+                  </p>
+                  <p className="text-lg font-bold text-gray-800">
+                    {orderStats.processing}
+                  </p>
                 </div>
-                <div className="h-80">
+                <div className="bg-blue-100 p-2 rounded-lg">
+                  <span className="text-blue-500 text-lg">🔄</span>
+                </div>
+              </div>
+
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-gray-500">Đang giao</p>
+                  <p className="text-lg font-bold text-gray-800">
+                    {orderStats.shipped}
+                  </p>
+                </div>
+                <div className="bg-indigo-100 p-2 rounded-lg">
+                  <span className="text-indigo-500 text-lg">🚚</span>
+                </div>
+              </div>
+
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-gray-500">Đã giao</p>
+                  <p className="text-lg font-bold text-gray-800">
+                    {orderStats.delivered}
+                  </p>
+                </div>
+                <div className="bg-green-100 p-2 rounded-lg">
+                  <span className="text-green-500 text-lg">✅</span>
+                </div>
+              </div>
+
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-gray-500">Đã hủy</p>
+                  <p className="text-lg font-bold text-gray-800">
+                    {orderStats.cancelled}
+                  </p>
+                </div>
+                <div className="bg-red-100 p-2 rounded-lg">
+                  <span className="text-red-500 text-lg">❌</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Thống kê người dùng và đơn hàng */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              {/* Thống kê người dùng */}
+              <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <UserOutlined className="mr-2 text-blue-500" />
+                  Thống kê người dùng
+                </h2>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <p className="text-sm text-gray-500">Tổng người dùng</p>
+                    <p className="text-2xl font-bold text-gray-800">
+                      {userStats.total}
+                    </p>
+                  </div>
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <p className="text-sm text-gray-500">
+                      Người dùng hoạt động
+                    </p>
+                    <p className="text-2xl font-bold text-gray-800">
+                      {userStats.active}
+                    </p>
+                  </div>
+                </div>
+                <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={monthlyRevenue}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
+                    <BarChart
+                      data={[
+                        { name: "Hoạt động", value: userStats.active },
+                        { name: "Không hoạt động", value: userStats.inactive },
+                      ]}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                      <YAxis tick={{ fontSize: 12 }} />
                       <Tooltip />
-                      <Legend />
-                      <Line
-                        type="monotone"
-                        dataKey="orders"
-                        stroke="#82ca9d"
-                        strokeWidth={2}
-                        dot={{ r: 4 }}
-                        activeDot={{ r: 8 }}
-                        name="Đơn hàng"
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="profit"
-                        stroke="#ffc658"
-                        strokeWidth={2}
-                        dot={{ r: 4 }}
-                        activeDot={{ r: 8 }}
-                        name="Lợi nhuận"
-                      />
-                    </LineChart>
+                      <Bar dataKey="value" fill="#3b82f6" name="Người dùng" />
+                    </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              {/* Biểu đồ danh mục sản phẩm */}
-              <div className="bg-white p-6 rounded-2xl shadow-lg">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold text-gray-800">
-                    Danh mục sản phẩm
-                  </h2>
+              {/* Thống kê đơn hàng */}
+              <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <ShoppingOutlined className="mr-2 text-pink-500" />
+                  Thống kê đơn hàng
+                </h2>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="bg-purple-50 p-4 rounded-lg">
+                    <p className="text-sm text-gray-500">Tổng đơn hàng</p>
+                    <p className="text-2xl font-bold text-gray-800">
+                      {orderStats.total}
+                    </p>
+                  </div>
+                  <div className="bg-yellow-50 p-4 rounded-lg">
+                    <p className="text-sm text-gray-500">Đơn hàng đã giao</p>
+                    <p className="text-2xl font-bold text-gray-800">
+                      {orderStats.delivered}
+                    </p>
+                  </div>
                 </div>
-                <div className="h-80">
+                <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={productCategories}
+                        data={[
+                          {
+                            name: "Chờ xác nhận",
+                            value: orderStats.pending || 1,
+                          },
+                          {
+                            name: "Đang xử lý",
+                            value: orderStats.processing || 1,
+                          },
+                          { name: "Đang giao", value: orderStats.shipped || 1 },
+                          { name: "Đã giao", value: orderStats.delivered || 1 },
+                          { name: "Đã hủy", value: orderStats.cancelled || 1 },
+                        ]}
                         cx="50%"
                         cy="50%"
-                        labelLine={false}
-                        label={({ name, percent }) =>
-                          `${name} ${(percent * 100).toFixed(0)}%`
-                        }
-                        outerRadius={100}
+                        innerRadius={60}
+                        outerRadius={80}
                         fill="#8884d8"
                         dataKey="value"
                         nameKey="name"
+                        label={({ name, percent }) =>
+                          `${(percent * 100).toFixed(0)}%`
+                        }
+                        labelLine={false}
                       >
-                        {productCategories.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={COLORS[index % COLORS.length]}
-                          />
-                        ))}
+                        <Cell fill="#eab308" />
+                        <Cell fill="#3b82f6" />
+                        <Cell fill="#6366f1" />
+                        <Cell fill="#10b981" />
+                        <Cell fill="#ef4444" />
                       </Pie>
-                      <Tooltip />
-                      <Legend />
+                      <Tooltip formatter={(value) => value} />
+                      <Legend
+                        layout="vertical"
+                        verticalAlign="middle"
+                        align="right"
+                      />
                     </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* Biểu đồ doanh số theo danh mục */}
-              <div className="bg-white p-6 rounded-2xl shadow-lg">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold text-gray-800">
-                    Doanh số theo danh mục
-                  </h2>
-                </div>
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={productCategories}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="value" fill="#8884d8" name="Doanh số">
-                        {productCategories.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={COLORS[index % COLORS.length]}
-                          />
-                        ))}
-                      </Bar>
-                    </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
