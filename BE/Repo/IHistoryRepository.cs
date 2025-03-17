@@ -15,5 +15,6 @@ namespace Repo
         Task UpdateAsync(History history);
         Task<History?> GetOrderHistoryByOrderIdAsync(int orderId);
         Task<IEnumerable<History>> GetHistoriesByUserIdAsync(int userId);
+
     }
 }
