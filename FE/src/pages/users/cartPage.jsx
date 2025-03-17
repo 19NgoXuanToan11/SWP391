@@ -138,20 +138,23 @@ function CartPage() {
       return;
     }
 
-    const order = {
-      userId: Number(user.id),
-      items: cartItems.map((item) => ({
-        productId: item.id,
-        quantity: item.quantity,
-        price: item.price,
-      })),
-    };
-
-    // console.log(order);
-    // return
-    // TODO: CREATE ORDER
     try {
       setLoading(true);
+
+      // Kiểm tra và xử lý ID người dùng
+      let userId = user.id;
+
+      // Tạo đối tượng đơn hàng
+      const order = {
+        userId: userId,
+        items: cartItems.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      };
+
+      console.log("Sending order:", order);
 
       const res = await axios.post("https://localhost:7285/api/Order", order, {
         headers: {
@@ -161,7 +164,8 @@ function CartPage() {
 
       navigate(`/payment/${res.data.orderId}`);
     } catch (e) {
-      console.log(e);
+      console.log("Error creating order:", e);
+      message.error("Đã xảy ra lỗi khi tạo đơn hàng. Vui lòng thử lại!");
     } finally {
       setLoading(false);
     }

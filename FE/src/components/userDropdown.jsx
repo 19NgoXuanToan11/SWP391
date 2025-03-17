@@ -132,8 +132,8 @@ export const UserDropdown = ({ user, onLogout }) => {
       const logoutEvent = new Date().getTime();
       localStorage.setItem("auth_logout_event", logoutEvent);
 
-      // Sử dụng window.location.reload() để tải lại trang hiện tại
-      window.location.reload();
+      // Chuyển hướng đến trang login thay vì tải lại trang hiện tại
+      navigate("/login");
     } catch (error) {
       console.error("Lỗi khi đăng xuất:", error);
       message.error("Có lỗi xảy ra khi đăng xuất");

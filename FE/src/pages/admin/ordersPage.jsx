@@ -747,12 +747,23 @@ const OrdersPage = () => {
           className="space-y-8"
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-3xl p-8 text-white">
-            <h1 className="text-3xl font-bold mb-2">Quản lý thanh toán</h1>
-            <p className="opacity-80">
-              Theo dõi và quản lý các giao dịch thanh toán
-            </p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-8 relative overflow-hidden rounded-3xl p-8 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+          >
+            <div className="relative z-10">
+              <h1 className="text-3xl font-bold text-white">
+                Quản Lý Đơn Hàng
+              </h1>
+              <p className="text-white text-opacity-80 mt-2 max-w-2xl">
+                Theo dõi và quản lý các đơn hàng
+              </p>
+            </div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-20 -mt-20"></div>
+            <div className="absolute bottom-0 left-0 w-40 h-40 bg-white opacity-10 rounded-full -ml-10 -mb-10"></div>
+          </motion.div>
 
           {/* Statistics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

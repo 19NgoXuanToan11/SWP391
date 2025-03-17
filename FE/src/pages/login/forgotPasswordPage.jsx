@@ -8,7 +8,7 @@ import {
   KeyOutlined,
   ArrowLeftOutlined,
 } from "@ant-design/icons";
-import background from "../../assets/pictures/model.jpg";
+import background from "../../assets/pictures/login.jpg";
 import { useForgotPasswordMutation } from "../../services/api/beautyShopApi";
 
 export function ForgotPasswordPage() {
