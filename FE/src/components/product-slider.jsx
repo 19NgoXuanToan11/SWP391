@@ -82,8 +82,12 @@ export function ProductSlider() {
   return (
     <section className="py-16 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-center mb-12">
-          <span className="font-bold text-pink-500">Sản phẩm</span> Bán Chạy
+        <h2 className="text-4xl font-bold text-center mb-14 tracking-tight">
+          <span>Sản phẩm</span>{" "}
+          <span className="relative inline-block">
+            <span className="text-pink-500 animate-pulse">nổi bật</span>
+            <span className="absolute -bottom-2 left-0 w-full h-1 bg-pink-500 rounded-full transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100"></span>
+          </span>
         </h2>
 
         <div className="relative">
