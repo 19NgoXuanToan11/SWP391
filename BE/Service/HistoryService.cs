@@ -15,7 +15,7 @@ namespace Service
         {
             _historyrepo = historyrepo;
         }
-        public async Task AddHistoryAsync(History history)
+        public async Task AddAsync(History history)
         {
             await _historyrepo.AddAsync(history);
         }

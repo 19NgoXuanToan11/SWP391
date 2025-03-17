@@ -11,7 +11,7 @@ namespace Service
     {
         Task<IEnumerable<History>> GetAllHistoriesAsync();
         Task<History?> GetHistoryByTrackingCodeAsync(string trackingCode);
-        Task AddHistoryAsync(History history);
+        Task AddAsync(History history);
         Task UpdateHistoryStatusAsync(string trackingCode, string status);
         Task<History?> GetOrderHistoryByOrderIdAsync(int orderId);
         Task<IEnumerable<History>> GetHistoriesByUserIdAsync(int userId);

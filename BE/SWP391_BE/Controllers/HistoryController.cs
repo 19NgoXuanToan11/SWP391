@@ -57,7 +57,12 @@ namespace SWP391_BE.Controllers
                 Products = history.OrderDetails.Select(od => new
                 {
                     ProductName = od.Product.ProductName,
-                    ProductImages = od.Product.Images.Select(img => img.ImageUrl).ToList()
+                    ProductImages = od.Product.Images
+                        .Where(img => img.IsMainImage)
+                        .Select(img => img.ImageUrl)
+                        .FirstOrDefault() ?? od.Product.Images.FirstOrDefault()?.ImageUrl ?? "default-image.jpg", // Hình ảnh sản phẩm
+                    Quantity = od.Quantity,
+                    Price = od.Price
                 }).ToList()
             }));
         }
@@ -77,7 +82,7 @@ namespace SWP391_BE.Controllers
         [HttpPost("AddHistory")]
         public async Task<IActionResult> AddHistory([FromBody] History history)
         {
-            await _historyService.AddHistoryAsync(history);
+            await _historyService.AddAsync(history);
             return Ok("Lịch sử đơn hàng đã được thêm.");
         }
 

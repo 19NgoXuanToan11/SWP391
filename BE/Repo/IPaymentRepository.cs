@@ -12,5 +12,6 @@ namespace Repo
         Task UpdateAsync(Payment payment);
         Task DeleteAsync(int id);
         Task AddPaymentHistoryAsync(PaymentHistory history);
+        Task<IEnumerable<Payment>> GetPaidPaymentsByUserIdAsync(int userId);
     }
 }

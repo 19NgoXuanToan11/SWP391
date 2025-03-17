@@ -51,5 +51,10 @@ namespace Service
         {
             await _paymentRepository.AddPaymentHistoryAsync(history);
         }
+
+        public async Task<IEnumerable<Payment>> GetPaidPaymentsByUserIdAsync(int userId)
+        {
+             return await _paymentRepository.GetPaidPaymentsByUserIdAsync(userId);
+        }
     }
 }
