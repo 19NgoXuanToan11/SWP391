@@ -13,6 +13,7 @@ import {
 import { useDispatch } from "react-redux";
 import { logout } from "../store/slices/authSlice";
 import { message } from "antd";
+import UserAvatar from "./common/UserAvatar";
 
 export const UserDropdown = ({ user, onLogout }) => {
   const navigate = useNavigate();
@@ -148,35 +149,6 @@ export const UserDropdown = ({ user, onLogout }) => {
       className="bg-white rounded-xl shadow-xl p-2 min-w-[250px] border border-gray-100"
     >
       <div className="p-3">
-        {/* User Info */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="flex items-center space-x-3 mb-4 pb-3 border-b border-gray-100"
-        >
-          {userInfo.avatar ? (
-            <img
-              src={userInfo.avatar}
-              alt="avatar"
-              className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-lg"
-            />
-          ) : (
-            <div
-              className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 
-              flex items-center justify-center text-white text-lg font-bold border-2 border-white shadow-lg"
-            >
-              {firstName.charAt(0) || "U"}
-            </div>
-          )}
-          <div>
-            <h4 className="font-semibold text-gray-800">{userInfo.name}</h4>
-            <p className="text-xs text-gray-500">
-              {user?.email || "user@example.com"}
-            </p>
-          </div>
-        </motion.div>
-
         {/* Menu Items */}
         <div className="space-y-1">
           {menuItems.map((item, index) => (
@@ -236,23 +208,8 @@ export const UserDropdown = ({ user, onLogout }) => {
       placement="bottomRight"
       overlayClassName="user-dropdown-menu"
     >
-      <div className="flex items-center gap-3 cursor-pointer group">
-        {userInfo.avatar ? (
-          <img
-            src={userInfo.avatar}
-            alt="avatar"
-            className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm
-              group-hover:border-pink-100 transition-all"
-          />
-        ) : (
-          <div
-            className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 
-            flex items-center justify-center text-white font-medium border-2 border-white
-            group-hover:border-pink-100 transition-all"
-          >
-            {userInfo.name.charAt(0)}
-          </div>
-        )}
+      <div className="flex items-center space-x-2 cursor-pointer">
+        <UserAvatar size={40} className="cursor-pointer" />
         <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
           {userInfo.name}
         </span>
