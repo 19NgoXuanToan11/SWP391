@@ -237,7 +237,12 @@ export function ProductRecommendationPage() {
 
   // Thêm hàm xử lý click vào sản phẩm
   const handleProductClick = (productId) => {
-    navigate(`/product/${productId}`);
+    window.location.href = `/product/${productId}`;
+  };
+
+  // Tương tự với các navigation khác
+  const handleQuizRetake = () => {
+    window.location.href = "/quiz";
   };
 
   return (
@@ -315,7 +320,7 @@ export function ProductRecommendationPage() {
           {/* Nút làm lại bài kiểm tra */}
           <div className="flex justify-center mt-4">
             <button
-              onClick={() => navigate("/quiz")}
+              onClick={handleQuizRetake}
               className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full text-sm font-medium shadow-sm hover:shadow-md transform hover:scale-105 transition-all duration-300"
             >
               <span className="text-xs">↺</span>
@@ -411,7 +416,7 @@ export function ProductRecommendationPage() {
                     </div>
 
                     <button
-                      onClick={() => navigate(`/product/${product.id}`)}
+                      onClick={() => handleProductClick(product.id)}
                       className="w-full py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-medium hover:shadow-md transition-all duration-300"
                     >
                       Xem chi tiết
