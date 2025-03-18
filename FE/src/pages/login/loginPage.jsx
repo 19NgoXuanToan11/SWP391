@@ -129,6 +129,12 @@ export function LoginPage() {
           })
         );
 
+        // Lưu thông tin người dùng vào localStorage
+        localStorage.setItem("auth_user", JSON.stringify(userData));
+
+        // Kích hoạt sự kiện userLoggedIn để cập nhật avatar ngay lập tức
+        window.dispatchEvent(new Event("userLoggedIn"));
+
         message.success("Đăng nhập thành công!");
 
         const redirectPath = location.state?.from;
@@ -180,6 +186,12 @@ export function LoginPage() {
           token: user.accessToken, // Use Firebase token
         })
       );
+
+      // Lưu thông tin người dùng vào localStorage
+      localStorage.setItem("auth_user", JSON.stringify(userData));
+
+      // Kích hoạt sự kiện userLoggedIn để cập nhật avatar ngay lập tức
+      window.dispatchEvent(new Event("userLoggedIn"));
 
       message.success("Đăng nhập Google thành công!");
 
