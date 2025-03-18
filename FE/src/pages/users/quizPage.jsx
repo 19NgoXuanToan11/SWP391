@@ -278,7 +278,7 @@ const QuizPage = () => {
                     className={`flex items-center w-full p-5 rounded-2xl border border-gray-100 cursor-pointer transition-all duration-300 
                       ${
                         selectedAnswers[currentQuestion]?.includes(option)
-                          ? "bg-gradient-to-r from-pink-50 to-purple-50 border-pink-300 shadow-md"
+                          ? "  shadow-md"
                           : "bg-white hover:bg-pink-50/30 hover:border-pink-200 hover:shadow-sm"
                       }`}
                   >
@@ -313,7 +313,7 @@ const QuizPage = () => {
                     className={`flex items-center w-full p-5 rounded-2xl border cursor-pointer transition-all duration-300
                       ${
                         selectedAnswers[currentQuestion] === option
-                          ? "bg-gradient-to-r from-pink-50 to-purple-50 border-pink-300 shadow-md"
+                          ? " border-pink-300 shadow-md"
                           : "bg-white hover:bg-pink-50/30 border-gray-100 hover:border-pink-200 hover:shadow-sm"
                       }`}
                   >
@@ -366,139 +366,151 @@ const QuizPage = () => {
   `;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-purple-100 py-12 px-4">
+    <div className="min-h-screen py-12 px-4 relative overflow-hidden bg-white">
       <style>{customStyles}</style>
-      <div className="max-w-3xl mx-auto">
-        <AnimatePresence mode="wait">
-          {!showResults ? (
-            <motion.div
-              key="quiz"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-white/50"
-            >
-              {/* Header */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="max-w-5xl mx-auto"
+      >
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="bg-white shadow-xl rounded-3xl border border-gray-100 overflow-hidden"
+        >
+          <AnimatePresence mode="wait">
+            {!showResults ? (
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-10"
+                key="quiz"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-white/50"
               >
-                <h1 className="text-2xl md:text-3xl font-bold text-center mb-4 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                  Phân Tích Làn Da Của Bạn
-                </h1>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-gray-600 font-medium">
-                    Câu hỏi {currentQuestion + 1} / {questions.length}
-                  </span>
-                  <span className="text-pink-600 font-medium">
-                    {Math.round(progress)}%
-                  </span>
-                </div>
-                <Progress
-                  percent={progress}
-                  showInfo={false}
-                  strokeColor={{
-                    "0%": "#ec4899",
-                    "100%": "#a855f7",
-                  }}
-                  className="h-2 rounded-full overflow-hidden"
-                  trailColor="#f3e8ff"
-                />
-              </motion.div>
-
-              {/* Question */}
-              <AnimatePresence mode="wait">
+                {/* Header */}
                 <motion.div
-                  key={currentQuestion}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
                   className="mb-10"
                 >
-                  {renderQuestion()}
+                  <h1 className="text-2xl md:text-3xl font-bold text-center mb-4 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                    Phân Tích Làn Da Của Bạn
+                  </h1>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-600 font-medium">
+                      Câu hỏi {currentQuestion + 1} / {questions.length}
+                    </span>
+                    <span className="text-pink-600 font-medium">
+                      {Math.round(progress)}%
+                    </span>
+                  </div>
+                  <Progress
+                    percent={progress}
+                    showInfo={false}
+                    strokeColor={{
+                      "0%": "#ec4899",
+                      "100%": "#a855f7",
+                    }}
+                    className="h-2 rounded-full overflow-hidden"
+                    trailColor="#f3e8ff"
+                  />
                 </motion.div>
-              </AnimatePresence>
 
-              {/* Navigation Buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex justify-between mt-8"
-              >
-                <button
-                  onClick={handlePreviousQuestion}
-                  disabled={currentQuestion === 0}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-                    currentQuestion === 0
-                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                      : "bg-white text-gray-700 border border-gray-200 hover:border-pink-400 hover:text-pink-500 hover:shadow-md"
-                  }`}
-                >
-                  <span className="text-sm">←</span>
-                  <span>Quay Lại</span>
-                </button>
+                {/* Question */}
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentQuestion}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="mb-10"
+                  >
+                    {renderQuestion()}
+                  </motion.div>
+                </AnimatePresence>
 
-                <button
-                  onClick={handleNextQuestion}
-                  className="flex items-center gap-2 px-6 py-3 rounded-full font-medium text-white bg-gradient-to-r from-pink-500 to-purple-500 hover:shadow-lg hover:shadow-pink-500/30 transform hover:scale-105 transition-all duration-300"
+                {/* Navigation Buttons */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex justify-between mt-8"
                 >
-                  <span>
-                    {currentQuestion === questions.length - 1
-                      ? "Hoàn Thành"
-                      : "Câu Tiếp Theo"}
-                  </span>
-                  {currentQuestion !== questions.length - 1 && (
-                    <span className="text-sm">→</span>
-                  )}
-                </button>
+                  <button
+                    onClick={handlePreviousQuestion}
+                    disabled={currentQuestion === 0}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-300 ${
+                      currentQuestion === 0
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : "bg-white text-gray-700 border border-gray-200 hover:border-pink-400 hover:text-pink-500 hover:shadow-md"
+                    }`}
+                  >
+                    <span className="text-sm">←</span>
+                    <span>Quay Lại</span>
+                  </button>
+
+                  <button
+                    onClick={handleNextQuestion}
+                    className="flex items-center gap-2 px-6 py-3 rounded-full font-medium text-white bg-gradient-to-r from-pink-500 to-purple-500 hover:shadow-lg hover:shadow-pink-500/30 transform hover:scale-105 transition-all duration-300"
+                  >
+                    <span>
+                      {currentQuestion === questions.length - 1
+                        ? "Hoàn Thành"
+                        : "Câu Tiếp Theo"}
+                    </span>
+                    {currentQuestion !== questions.length - 1 && (
+                      <span className="text-sm">→</span>
+                    )}
+                  </button>
+                </motion.div>
               </motion.div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="loading"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-12 border border-white/50 text-center"
-            >
-              <div className="relative w-24 h-24 mx-auto mb-8">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 animate-ping opacity-20"></div>
-                <div className="absolute inset-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 animate-pulse"></div>
-                <div className="absolute inset-4 rounded-full border-4 border-white border-t-transparent animate-spin"></div>
-              </div>
+            ) : (
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-12 border border-white/50 text-center"
+              >
+                <div className="relative w-24 h-24 mx-auto mb-8">
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 animate-ping opacity-20"></div>
+                  <div className="absolute inset-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 animate-pulse"></div>
+                  <div className="absolute inset-4 rounded-full border-4 border-white border-t-transparent animate-spin"></div>
+                </div>
 
-              <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                Đang Phân Tích Kết Quả...
-              </h2>
+                <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                  Đang Phân Tích Kết Quả...
+                </h2>
 
-              <p className="text-gray-600 max-w-md mx-auto">
-                Chúng tôi đang xác định loại da và các vấn đề cần quan tâm dựa
-                trên câu trả lời của bạn. Vui lòng đợi trong giây lát.
-              </p>
+                <p className="text-gray-600 max-w-md mx-auto">
+                  Chúng tôi đang xác định loại da và các vấn đề cần quan tâm dựa
+                  trên câu trả lời của bạn. Vui lòng đợi trong giây lát.
+                </p>
 
-              <div className="mt-8 flex justify-center space-x-2">
-                <div
-                  className="w-3 h-3 rounded-full bg-pink-500 animate-bounce"
-                  style={{ animationDelay: "0s" }}
-                ></div>
-                <div
-                  className="w-3 h-3 rounded-full bg-pink-400 animate-bounce"
-                  style={{ animationDelay: "0.2s" }}
-                ></div>
-                <div
-                  className="w-3 h-3 rounded-full bg-pink-300 animate-bounce"
-                  style={{ animationDelay: "0.4s" }}
-                ></div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                <div className="mt-8 flex justify-center space-x-2">
+                  <div
+                    className="w-3 h-3 rounded-full bg-pink-500 animate-bounce"
+                    style={{ animationDelay: "0s" }}
+                  ></div>
+                  <div
+                    className="w-3 h-3 rounded-full bg-pink-400 animate-bounce"
+                    style={{ animationDelay: "0.2s" }}
+                  ></div>
+                  <div
+                    className="w-3 h-3 rounded-full bg-pink-300 animate-bounce"
+                    style={{ animationDelay: "0.4s" }}
+                  ></div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-        {/* Decorative elements */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-pink-400/20 rounded-full blur-3xl -z-10"></div>
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-purple-400/20 rounded-full blur-3xl -z-10"></div>
-      </div>
+          {/* Decorative elements */}
+          <div className="absolute top-20 left-10 w-32 h-32 bg-pink-400/20 rounded-full blur-3xl -z-10"></div>
+          <div className="absolute bottom-20 right-10 w-40 h-40 bg-purple-400/20 rounded-full blur-3xl -z-10"></div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };

@@ -86,6 +86,14 @@ const QuizResultsPage = () => {
         "Tránh tẩy tế bào chết quá thường xuyên",
       ],
       color: "#f9a8d4",
+      recommendedIngredients: [
+        "Hyaluronic Acid",
+        "Ceramides",
+        "Glycerin",
+        "Squalane",
+        "Vitamin E",
+        "Aloe Vera",
+      ],
     },
     "Da dầu": {
       description:
@@ -97,6 +105,14 @@ const QuizResultsPage = () => {
         "Đắp mặt nạ đất sét 1-2 lần/tuần",
       ],
       color: "#93c5fd",
+      recommendedIngredients: [
+        "Salicylic Acid",
+        "Niacinamide",
+        "Tea Tree Oil",
+        "Zinc",
+        "Witch Hazel",
+        "Clay",
+      ],
     },
     "Da hỗn hợp": {
       description:
@@ -108,6 +124,14 @@ const QuizResultsPage = () => {
         "Sử dụng kem dưỡng ẩm nhẹ cho toàn mặt",
       ],
       color: "#a5b4fc",
+      recommendedIngredients: [
+        "Niacinamide",
+        "Hyaluronic Acid",
+        "AHAs",
+        "Antioxidants",
+        "Aloe Vera",
+        "Panthenol",
+      ],
     },
     "Da thường": {
       description:
@@ -119,6 +143,14 @@ const QuizResultsPage = () => {
         "Thêm các sản phẩm chống oxy hóa để bảo vệ da",
       ],
       color: "#c4b5fd",
+      recommendedIngredients: [
+        "Vitamin C",
+        "Peptides",
+        "Coenzyme Q10",
+        "Green Tea Extract",
+        "Resveratrol",
+        "Allantoin",
+      ],
     },
     "Da nhạy cảm": {
       description:
@@ -130,6 +162,14 @@ const QuizResultsPage = () => {
         "Sử dụng sản phẩm có thành phần làm dịu như lô hội, yến mạch",
       ],
       color: "#fbcfe8",
+      recommendedIngredients: [
+        "Cica (Centella Asiatica)",
+        "Allantoin",
+        "Aloe Vera",
+        "Oat Extract",
+        "Panthenol",
+        "Bisabolol",
+      ],
     },
   };
 
@@ -178,7 +218,7 @@ const QuizResultsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-purple-100 py-12 px-4 relative overflow-hidden">
+    <div className="min-h-screen py-12 px-4 relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-20 left-10 w-64 h-64 bg-pink-400/20 rounded-full blur-3xl -z-10"></div>
       <div className="absolute bottom-20 right-10 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl -z-10"></div>
@@ -192,16 +232,9 @@ const QuizResultsPage = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <div className="inline-block mb-4 p-2 bg-white/30 backdrop-blur-sm rounded-full">
-            <div className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-2 rounded-full">
-              <CheckCircleOutlined className="mr-2" />
-              Phân tích hoàn tất
-            </div>
-          </div>
-
-          <Title className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text mb-4">
+          <span className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-transparent bg-clip-text mb-4">
             Kết Quả Phân Tích Da
-          </Title>
+          </span>
 
           <Paragraph className="text-gray-600 text-lg max-w-2xl mx-auto">
             Dựa trên câu trả lời của bạn, chúng tôi đã xác định được loại da và
@@ -223,21 +256,6 @@ const QuizResultsPage = () => {
           </div>
 
           <div className="relative flex flex-col md:flex-row items-center md:items-start gap-8">
-            {/* Icon loại da */}
-            <div className="relative">
-              <div
-                className="w-32 h-32 rounded-full flex items-center justify-center shadow-lg"
-                style={{ backgroundColor: skinTypeInfo?.color || "#d8b4fe" }}
-              >
-                <span className="text-5xl">💧</span>
-              </div>
-              <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-1 shadow-md">
-                <div className="bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center">
-                  <StarOutlined />
-                </div>
-              </div>
-            </div>
-
             {/* Thông tin loại da */}
             <div className="flex-1">
               <Title
@@ -310,52 +328,25 @@ const QuizResultsPage = () => {
             <span className="inline-block w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
               <span className="text-purple-700">💡</span>
             </span>
-            Lời khuyên cho {results?.skinType}
+            Lời khuyên
           </Title>
 
           <ul className="space-y-4">
-            {skinTypeInfo?.tips.map((tip, index) => (
-              <motion.li
-                key={index}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: 0.5 + index * 0.1 }}
-                className="flex items-start bg-gradient-to-r from-pink-50 to-purple-50 p-4 rounded-xl"
-              >
-                <div className="text-pink-500 mr-3 mt-1 text-lg">✦</div>
-                <Text className="text-gray-700">{tip}</Text>
-              </motion.li>
-            ))}
+            {results?.skinType &&
+              skinTypeInfo[results.skinType]?.tips &&
+              skinTypeInfo[results.skinType].tips.map((tip, index) => (
+                <motion.li
+                  key={index}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: 0.5 + index * 0.1 }}
+                  className="flex items-start bg-gradient-to-r from-pink-50 to-purple-50 p-4 rounded-xl"
+                >
+                  <div className="text-pink-500 mr-3 mt-1 text-lg">✦</div>
+                  <Text className="text-gray-700 mt-2">{tip}</Text>
+                </motion.li>
+              ))}
           </ul>
-        </motion.div>
-
-        {/* Thành phần được khuyên dùng */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-xl mb-8 border border-white/50"
-        >
-          <Title level={3} className="text-purple-700 mb-6 flex items-center">
-            <span className="inline-block w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-              <span className="text-purple-700">🧪</span>
-            </span>
-            Thành phần nên tìm kiếm
-          </Title>
-
-          <div className="flex flex-wrap gap-3">
-            {skinTypeInfo?.recommendedIngredients.map((ingredient, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: 0.6 + index * 0.05 }}
-                className="bg-white px-4 py-2 rounded-full shadow-sm border border-purple-100 text-purple-700"
-              >
-                {ingredient}
-              </motion.div>
-            ))}
-          </div>
         </motion.div>
 
         {/* Nút hành động */}
@@ -365,17 +356,17 @@ const QuizResultsPage = () => {
           transition={{ duration: 0.5, delay: 0.6 }}
           className="flex flex-col sm:flex-row justify-center gap-4 mt-10"
         >
-          <Button
+          <button
             type="primary"
             size="large"
             icon={<ShoppingOutlined />}
-            onClick={() => navigate("/product-recommendation")}
-            className="bg-gradient-to-r from-pink-500 to-purple-500 border-none h-auto py-4 px-8 rounded-full text-base font-medium shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/40 transform hover:scale-105 transition-all duration-300"
+            onClick={() => navigate("/product-recommendations")}
+            className="bg-gradient-to-r from-pink-500 to-purple-500 border-none h-auto py-4 px-8 rounded-full text-base text-white font-medium shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/40 transform hover:scale-105 transition-all duration-300"
           >
             Xem Sản Phẩm Phù Hợp
-          </Button>
+          </button>
 
-          <Button
+          <button
             type="default"
             size="large"
             icon={<FileTextOutlined />}
@@ -383,16 +374,16 @@ const QuizResultsPage = () => {
             className="border-pink-400 text-pink-600 h-auto py-4 px-8 rounded-full text-base font-medium hover:border-pink-500 hover:text-pink-700 hover:shadow-lg transform hover:scale-105 transition-all duration-300 bg-white/80 backdrop-blur-sm"
           >
             Tạo Quy Trình Chăm Sóc Da
-          </Button>
+          </button>
 
-          <Button
-            type="link"
-            icon={<ArrowLeftOutlined />}
+          <button
+            type="button"
             onClick={() => navigate("/quiz")}
-            className="text-gray-600 hover:text-pink-600 transition-colors"
+            className="flex items-center text-gray-600 hover:text-pink-600 transition-colors duration-300 transform hover:scale-105"
           >
-            Làm Lại Bài Kiểm Tra
-          </Button>
+            <ArrowLeftOutlined className="mr-2" />
+            <span className="font-semibold">Làm Lại Bài Kiểm Tra</span>
+          </button>
         </motion.div>
       </div>
     </div>
