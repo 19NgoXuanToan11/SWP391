@@ -22,7 +22,6 @@ namespace SWP391_BE.Controllers
             return Ok(histories);
         }
         [HttpGet("order/{orderId}")]
-        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetHistoryByOrderId(int orderId)
         {
             var history = await _historyService.GetOrderHistoryByOrderIdAsync(orderId);
