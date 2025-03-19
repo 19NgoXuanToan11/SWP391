@@ -67,50 +67,7 @@ const { Title, Text } = Typography;
 
 dayjs.locale("vi");
 
-// Thêm CSS tùy chỉnh cho các select dropdown
-const customSelectStyles = `
-  .custom-order-select .ant-select-selector {
-    padding: 8px 12px !important;
-    border-radius: 12px !important;
-    border: 1px solid #e5e7eb !important;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
-    transition: all 0.3s ease !important;
-  }
-  
-  .custom-order-select .ant-select-selector:hover {
-    border-color: #a5b4fc !important;
-    box-shadow: 0 3px 10px rgba(99, 102, 241, 0.1) !important;
-  }
-  
-  .custom-order-select .ant-select-focused .ant-select-selector {
-    border-color: #818cf8 !important;
-    box-shadow: 0 3px 10px rgba(99, 102, 241, 0.2) !important;
-  }
-  
-  .custom-order-select .ant-select-selection-item {
-    display: flex !important;
-    align-items: center !important;
-    font-weight: 500 !important;
-  }
-  
-  .custom-select-dropdown .ant-select-item {
-    padding: 10px 12px !important;
-    border-radius: 8px !important;
-    margin: 4px 0 !important;
-    transition: all 0.2s ease !important;
-  }
-  
-  .custom-select-dropdown .ant-select-item-option-selected {
-    background-color: rgba(99, 102, 241, 0.1) !important;
-    color: #4f46e5 !important;
-  }
-  
-  .custom-select-dropdown .ant-select-item-option-active {
-    background-color: rgba(99, 102, 241, 0.05) !important;
-  }
-`;
-
-const StaffOrdersPage = () => {
+const OrdersPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -497,241 +454,6 @@ const StaffOrdersPage = () => {
     }
   };
 
-  // Table columns
-  const columns = [
-    {
-      title: "Mã đơn hàng",
-      dataIndex: "orderId",
-      key: "orderId",
-      render: (text) => <span className="font-medium">#{text}</span>,
-    },
-    {
-      title: "Họ tên",
-      dataIndex: "buyerName",
-      key: "buyerName",
-      render: (text, record) => (
-        <div className="flex items-center">
-          <UserOutlined className="mr-2 text-blue-500" />
-          <span>{text || "Không có thông tin"}</span>
-        </div>
-      ),
-    },
-    {
-      title: "Email",
-      dataIndex: "buyerEmail",
-      key: "buyerEmail",
-      render: (text) => (
-        <div className="flex items-center">
-          <MailOutlined className="mr-2 text-green-500" />
-          <span>{text || "Không có thông tin"}</span>
-        </div>
-      ),
-    },
-    {
-      title: "Số điện thoại",
-      dataIndex: "buyerPhone",
-      key: "buyerPhone",
-      render: (text) => (
-        <div className="flex items-center">
-          <PhoneOutlined className="mr-2 text-orange-500" />
-          <span>{text || "Không có thông tin"}</span>
-        </div>
-      ),
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "buyerAddress",
-      key: "buyerAddress",
-      render: (text) => (
-        <div className="flex items-center">
-          <HomeOutlined className="mr-2 text-purple-500" />
-          <span className="truncate max-w-[200px]" title={text}>
-            {text || "Không có thông tin"}
-          </span>
-        </div>
-      ),
-      ellipsis: true,
-    },
-    {
-      title: "Ngày đặt",
-      dataIndex: "orderDate",
-      key: "orderDate",
-      render: (text) => (
-        <div className="flex items-center">
-          <CalendarOutlined className="mr-1 text-blue-500" />
-          <span>{formatDate(text)}</span>
-        </div>
-      ),
-    },
-    {
-      title: "Tổng tiền",
-      dataIndex: "totalAmount",
-      key: "totalAmount",
-      render: (text) => (
-        <div className="flex items-center">
-          <div className="bg-green-50 px-4 py-2 rounded-lg">
-            <Text strong className="text-green-600">
-              {formatPrice(text)}
-            </Text>
-          </div>
-        </div>
-      ),
-      sorter: (a, b) => a.totalAmount - b.totalAmount,
-    },
-    {
-      title: "Thanh toán",
-      dataIndex: "paymentMethod",
-      key: "paymentMethod",
-      render: (text) => (
-        <Tag color={getPaymentColor(text)}>{getPaymentStatus(text)}</Tag>
-      ),
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => {
-        let color, text;
-
-        switch (status?.toLowerCase()) {
-          case "pending":
-            color = "orange";
-            text = "Chờ xác nhận";
-            break;
-          case "processing":
-            color = "blue";
-            text = "Đang xử lý";
-            break;
-          case "shipping":
-            color = "cyan";
-            text = "Đang giao hàng";
-            break;
-          case "delivered":
-            color = "green";
-            text = "Đã giao hàng";
-            break;
-          case "completed":
-            color = "purple";
-            text = "Hoàn thành";
-            break;
-          case "cancelled":
-            color = "red";
-            text = "Đã hủy";
-            break;
-          default:
-            color = "default";
-            text = "Chưa xác định";
-        }
-
-        return (
-          <Tag color={color} className="px-3 py-1 rounded-full">
-            {text}
-          </Tag>
-        );
-      },
-    },
-    {
-      title: "Cập nhật trạng thái",
-      key: "updateStatus",
-      render: (_, record) => (
-        <Select
-          defaultValue={record.status || "pending"}
-          style={{ width: 140 }}
-          onChange={(value) => updateOrderStatus(record.orderId, value)}
-          className="rounded-lg"
-        >
-          <Option value="pending">
-            <div className="flex items-center">
-              <ClockCircleOutlined className="text-orange-500 mr-2" />
-              <span>Chờ xác nhận</span>
-            </div>
-          </Option>
-          <Option value="shipping">
-            <div className="flex items-center">
-              <CarOutlined className="text-cyan-500 mr-2" />
-              <span>Đang giao hàng</span>
-            </div>
-          </Option>
-          <Option value="delivered">
-            <div className="flex items-center">
-              <CheckCircleOutlined className="text-green-500 mr-2" />
-              <span>Đã giao hàng</span>
-            </div>
-          </Option>
-        </Select>
-      ),
-    },
-    {
-      title: "Thao tác",
-      key: "action",
-      render: (_, record) => (
-        <Space size="middle">
-          <Tooltip title="Xem chi tiết">
-            <Button
-              type="primary"
-              shape="circle"
-              icon={<EyeOutlined />}
-              size="small"
-              onClick={() => viewOrderDetails(record.orderId)}
-              className="bg-blue-500 hover:bg-blue-600"
-            />
-          </Tooltip>
-          <Dropdown
-            overlay={
-              <Menu>
-                <Menu.Item
-                  key="1"
-                  onClick={() =>
-                    updateOrderStatus(record.orderId, "Processing")
-                  }
-                  disabled={record.status !== "Pending"}
-                >
-                  <CheckOutlined className="mr-2 text-blue-500" />
-                  Xác nhận đơn hàng
-                </Menu.Item>
-                <Menu.Item
-                  key="2"
-                  onClick={() => updateOrderStatus(record.orderId, "Shipped")}
-                  disabled={record.status !== "Pending"}
-                >
-                  <Tag color="cyan" className="mr-2">
-                    Đã gửi hàng
-                  </Tag>
-                </Menu.Item>
-                <Menu.Item
-                  key="3"
-                  onClick={() => updateOrderStatus(record.orderId, "Delivered")}
-                  disabled={record.status !== "Shipped"}
-                >
-                  <Tag color="green" className="mr-2">
-                    Đã giao hàng
-                  </Tag>
-                </Menu.Item>
-                <Menu.Item
-                  key="4"
-                  onClick={() => updateOrderStatus(record.orderId, "Cancelled")}
-                  disabled={record.status === "Cancelled"}
-                >
-                  <Tag color="red" className="mr-2">
-                    Đã hủy
-                  </Tag>
-                </Menu.Item>
-              </Menu>
-            }
-            trigger={["click"]}
-          >
-            <Button
-              shape="circle"
-              icon={<MoreOutlined />}
-              size="small"
-              className="border-gray-300"
-            />
-          </Dropdown>
-        </Space>
-      ),
-    },
-  ];
-
   // Payment table columns
   const paymentColumns = [
     {
@@ -755,17 +477,52 @@ const StaffOrdersPage = () => {
       key: "buyerName",
       render: (text, record) => (
         <div className="flex items-center space-x-3">
-          <Avatar
-            className="bg-gradient-to-r from-purple-400 to-pink-500"
-            icon={<UserOutlined />}
-          />
           <div className="flex flex-col">
             <Text strong className="text-gray-800">
               {text}
             </Text>
+            <Text type="secondary" className="text-xs">
+              ID: {record.paymentId}
+            </Text>
           </div>
         </div>
       ),
+    },
+    {
+      title: "Email",
+      dataIndex: "buyerEmail",
+      key: "buyerEmail",
+      render: (text) => (
+        <div className="flex items-center space-x-2">
+          <MailOutlined className="text-green-500" />
+          <Text className="text-gray-600">{text || "Không có thông tin"}</Text>
+        </div>
+      ),
+    },
+    {
+      title: "Số điện thoại",
+      dataIndex: "buyerPhone",
+      key: "buyerPhone",
+      render: (text) => (
+        <div className="flex items-center space-x-2">
+          <PhoneOutlined className="text-orange-500" />
+          <Text className="text-gray-600">{text || "Không có thông tin"}</Text>
+        </div>
+      ),
+    },
+    {
+      title: "Địa chỉ",
+      dataIndex: "buyerAddress",
+      key: "buyerAddress",
+      render: (text) => (
+        <div className="flex items-center space-x-2">
+          <HomeOutlined className="text-purple-500" />
+          <Text className="text-gray-600 truncate max-w-[200px]" title={text}>
+            {text || "Không có thông tin"}
+          </Text>
+        </div>
+      ),
+      ellipsis: true,
     },
     {
       title: "Ngày thanh toán",
@@ -782,19 +539,16 @@ const StaffOrdersPage = () => {
       title: "Số tiền",
       dataIndex: "amount",
       key: "amount",
-      align: "left",
       render: (amount) => (
-        <div className="flex items-center">
+        <div className="flex items-center justify-end">
           <div className="bg-green-50 px-4 py-2 rounded-lg">
-            <Text strong className="text-green-600">
-              {formatPrice(amount)}
-            </Text>
+            {formatPrice(amount)}
           </div>
         </div>
       ),
     },
     {
-      title: "Trạng thái thanh toán",
+      title: "Trạng thái",
       dataIndex: "status",
       key: "status",
       render: (status) => {
@@ -802,10 +556,7 @@ const StaffOrdersPage = () => {
           status.toLowerCase() === "paid" ||
           status.toLowerCase() === "completed";
         return (
-          <Tag
-            color={isPaid ? "success" : "warning"}
-            className="px-4 py-1 rounded-full text-sm font-medium flex items-center w-fit space-x-1"
-          >
+          <Tag color={isPaid ? "success" : "warning"}>
             {isPaid ? (
               <>
                 <CheckOutlined />
@@ -814,7 +565,7 @@ const StaffOrdersPage = () => {
             ) : (
               <>
                 <ClockCircleOutlined />
-                <span>Chưa thanh toán</span>
+                <span>Đang xử lý</span>
               </>
             )}
           </Tag>
@@ -928,15 +679,12 @@ const StaffOrdersPage = () => {
           transition={{ duration: 0.5 }}
           className="space-y-8"
         >
-          {/* Thêm CSS tùy chỉnh */}
-          <style>{customSelectStyles}</style>
-
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mb-8 relative overflow-hidden rounded-3xl p-8 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500"
+            className="mb-8 relative overflow-hidden rounded-3xl p-8 bg-gradient-to-r from-blue-300 via-purple-500 to-pink-500"
           >
             <div className="relative z-10">
               <h1 className="text-3xl font-bold text-white">
@@ -946,10 +694,8 @@ const StaffOrdersPage = () => {
                 Theo dõi và quản lý các đơn hàng
               </p>
             </div>
-            {/* Trang trí background hiệu ứng đẹp hơn */}
-            <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white opacity-10"></div>
-            <div className="absolute -left-5 bottom-0 w-24 h-24 rounded-full bg-white opacity-10"></div>
-            <div className="absolute right-1/4 bottom-5 w-12 h-12 rounded-full bg-white opacity-20"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-20 -mt-20"></div>
+            <div className="absolute bottom-0 left-0 w-40 h-40 bg-white opacity-10 rounded-full -ml-10 -mb-10"></div>
           </motion.div>
 
           {/* Statistics Cards */}
@@ -1114,7 +860,7 @@ const StaffOrdersPage = () => {
           </Card>
 
           {/* Payments Table */}
-          <Card className="rounded-2xl shadow-sm border-0 overflow-hidden">
+          <Card className="rounded-2xl shadow-sm border-0">
             <div className="mb-4">
               <Title level={4} className="!mb-1">
                 Danh sách giao dịch
@@ -1129,20 +875,23 @@ const StaffOrdersPage = () => {
                 <Spin size="large" />
               </div>
             ) : filteredPayments.length > 0 ? (
-              <Table
-                columns={paymentColumns}
-                dataSource={filteredPayments}
-                rowKey="paymentId"
-                pagination={{
-                  pageSize: 10,
-                  showTotal: (total, range) =>
-                    `${range[0]}-${range[1]} của ${total} giao dịch`,
-                  showSizeChanger: true,
-                  pageSizeOptions: ["10", "20", "50"],
-                }}
-                className="rounded-lg"
-                rowClassName="hover:bg-gray-50 transition-colors"
-              />
+              <div className="overflow-x-auto">
+                <Table
+                  columns={paymentColumns}
+                  dataSource={filteredPayments}
+                  rowKey="paymentId"
+                  pagination={{
+                    pageSize: 10,
+                    showTotal: (total, range) =>
+                      `${range[0]}-${range[1]} của ${total} giao dịch`,
+                    showSizeChanger: true,
+                    pageSizeOptions: ["10", "20", "50"],
+                  }}
+                  scroll={{ x: 1800 }}
+                  className="rounded-lg"
+                  rowClassName="hover:bg-gray-50 transition-colors"
+                />
+              </div>
             ) : (
               <Empty
                 description="Không tìm thấy giao dịch nào"
@@ -1156,4 +905,4 @@ const StaffOrdersPage = () => {
   );
 };
 
-export default StaffOrdersPage;
+export default OrdersPage;

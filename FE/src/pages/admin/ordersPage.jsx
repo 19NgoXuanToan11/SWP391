@@ -454,134 +454,6 @@ const OrdersPage = () => {
     }
   };
 
-  // Table columns
-  const columns = [
-    {
-      title: "Mã đơn hàng",
-      dataIndex: "orderId",
-      key: "orderId",
-      width: 120,
-      fixed: "left",
-      render: (text) => <span className="font-medium">#{text}</span>,
-    },
-    {
-      title: "Khách hàng",
-      dataIndex: "buyerName",
-      key: "buyerName",
-      width: 200,
-      render: (text, record) => (
-        <div className="flex items-center">
-          <UserOutlined className="mr-2 text-blue-500" />
-          <span>{text || "Không có thông tin"}</span>
-        </div>
-      ),
-    },
-    {
-      title: "Email",
-      dataIndex: "buyerEmail",
-      key: "buyerEmail",
-      width: 250,
-      render: (text) => (
-        <div className="flex items-center">
-          <MailOutlined className="mr-2 text-green-500" />
-          <span>{text || "Không có thông tin"}</span>
-        </div>
-      ),
-    },
-    {
-      title: "Số điện thoại",
-      dataIndex: "buyerPhone",
-      key: "buyerPhone",
-      width: 150,
-      render: (text) => (
-        <div className="flex items-center">
-          <PhoneOutlined className="mr-2 text-orange-500" />
-          <span>{text || "Không có thông tin"}</span>
-        </div>
-      ),
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "buyerAddress",
-      key: "buyerAddress",
-      width: 250,
-      render: (text) => (
-        <div className="flex items-center">
-          <HomeOutlined className="mr-2 text-purple-500" />
-          <span className="truncate max-w-[200px]" title={text}>
-            {text || "Không có thông tin"}
-          </span>
-        </div>
-      ),
-    },
-    {
-      title: "Ngày đặt",
-      dataIndex: "orderDate",
-      key: "orderDate",
-      width: 180,
-      render: (text) => (
-        <div className="flex items-center">
-          <CalendarOutlined className="mr-1 text-blue-500" />
-          <span>{formatDate(text)}</span>
-        </div>
-      ),
-    },
-    {
-      title: "Tổng tiền",
-      dataIndex: "totalAmount",
-      key: "totalAmount",
-      width: 150,
-      render: (text) => (
-        <div className="bg-green-50 px-4 py-2 rounded-lg">
-          <Text strong className="text-green-600">
-            {formatPrice(text)}
-          </Text>
-        </div>
-      ),
-    },
-    {
-      title: "Thanh toán",
-      dataIndex: "paymentMethod",
-      key: "paymentMethod",
-      width: 150,
-      render: (text) => (
-        <Tag color={getPaymentColor(text)}>{getPaymentStatus(text)}</Tag>
-      ),
-    },
-    {
-      title: "Trạng thái đơn hàng",
-      key: "orderStatus",
-      width: 180,
-      render: (_, record) => (
-        <Select
-          defaultValue={record.status || "pending"}
-          style={{ width: 140 }}
-          onChange={(value) => updateOrderStatus(record.orderId, value)}
-          className="rounded-lg"
-        >
-          <Option value="pending">
-            <div className="flex items-center">
-              <ClockCircleOutlined className="text-orange-500 mr-2" />
-              <span>Chờ xác nhận</span>
-            </div>
-          </Option>
-          <Option value="shipping">
-            <div className="flex items-center">
-              <CarOutlined className="text-cyan-500 mr-2" />
-              <span>Đang giao hàng</span>
-            </div>
-          </Option>
-          <Option value="delivered">
-            <div className="flex items-center">
-              <CheckCircleOutlined className="text-green-500 mr-2" />
-              <span>Đã giao hàng</span>
-            </div>
-          </Option>
-        </Select>
-      ),
-    },
-  ];
-
   // Payment table columns
   const paymentColumns = [
     {
@@ -703,30 +575,93 @@ const OrdersPage = () => {
     {
       title: "Trạng thái đơn hàng",
       key: "orderStatus",
-      width: 180,
       render: (_, record) => (
         <Select
-          defaultValue={record.status || "pending"}
-          style={{ width: 140 }}
-          onChange={(value) => updateOrderStatus(record.orderId, value)}
-          className="rounded-lg"
+          defaultValue={record.orderStatus || "pending"}
+          style={{
+            width: 180,
+            fontSize: 14,
+          }}
+          onChange={(value) => {
+            if (record.orderId) {
+              updateOrderStatus(record.orderId, value);
+            } else {
+              message.error({
+                content: "Không tìm thấy mã đơn hàng",
+                duration: 2,
+              });
+            }
+          }}
+          className="custom-order-select"
+          dropdownClassName="custom-select-dropdown"
+          dropdownStyle={{
+            borderRadius: "12px",
+            boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+            padding: "8px",
+          }}
+          optionLabelProp="label"
         >
-          <Option value="pending">
-            <div className="flex items-center">
-              <ClockCircleOutlined className="text-orange-500 mr-2" />
-              <span>Chờ xác nhận</span>
+          <Option
+            value="pending"
+            label={
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                <span>Chờ xác nhận</span>
+              </div>
+            }
+          >
+            <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 mr-3">
+                <ClockCircleOutlined className="text-orange-500 text-sm" />
+              </div>
+              <div>
+                <span className="text-gray-800 font-medium">Chờ xác nhận</span>
+                <p className="text-xs text-gray-500 mt-0.5">Đơn hàng mới</p>
+              </div>
             </div>
           </Option>
-          <Option value="shipping">
-            <div className="flex items-center">
-              <CarOutlined className="text-cyan-500 mr-2" />
-              <span>Đang giao hàng</span>
+          <Option
+            value="shipping"
+            label={
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 rounded-full bg-cyan-500"></div>
+                <span>Đang giao hàng</span>
+              </div>
+            }
+          >
+            <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-cyan-100 mr-3">
+                <CarOutlined className="text-cyan-500 text-sm" />
+              </div>
+              <div>
+                <span className="text-gray-800 font-medium">
+                  Đang giao hàng
+                </span>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Đã chuyển cho đơn vị vận chuyển
+                </p>
+              </div>
             </div>
           </Option>
-          <Option value="delivered">
-            <div className="flex items-center">
-              <CheckCircleOutlined className="text-green-500 mr-2" />
-              <span>Đã giao hàng</span>
+          <Option
+            value="delivered"
+            label={
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                <span>Đã giao hàng</span>
+              </div>
+            }
+          >
+            <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 mr-3">
+                <CheckCircleOutlined className="text-green-500 text-sm" />
+              </div>
+              <div>
+                <span className="text-gray-800 font-medium">Đã giao hàng</span>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Khách hàng đã nhận
+                </p>
+              </div>
             </div>
           </Option>
         </Select>
