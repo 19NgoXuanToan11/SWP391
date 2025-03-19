@@ -525,12 +525,12 @@ export function LoginPage() {
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="px-4 bg-white text-pink-400 font-medium">
-                    Bạn là quản trị viên?
+                    Đăng nhập với vai trò khác
                   </span>
                 </div>
               </div>
 
-              <div className="mt-4">
+              <div className="mt-4 space-y-3">
                 <motion.button
                   whileHover={{
                     scale: 1.02,
@@ -558,6 +558,40 @@ export function LoginPage() {
 
                   {/* Hover glow effect */}
                   <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-pink-400/20 to-pink-600/20 blur-xl"></div>
+                </motion.button>
+
+                {/* Staff Login Button - New addition */}
+                <motion.button
+                  whileHover={{
+                    scale: 1.02,
+                    boxShadow: "0 10px 25px -5px rgba(255, 135, 135, 0.4)",
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => navigate("/staff/login")}
+                  className="w-full group relative py-3 px-6 rounded-xl overflow-hidden bg-gradient-to-r from-green-100 to-green-200 hover:from-green-200 hover:to-green-400 transition-all duration-300"
+                >
+                  {/* Shine effect */}
+                  <div className="absolute inset-0 w-[200%] translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none"></div>
+
+                  {/* Border gradient */}
+                  <div className="absolute inset-0 rounded-xl p-[1px] bg-gradient-to-r from-green-500/30 to-green-500/90 opacity-50"></div>
+
+                  {/* Button content */}
+                  <div className="relative flex items-center justify-center gap-3 text-white">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500/40 to-green-500/40 flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform duration-300 border border-white/20">
+                      <UserOutlined className="text-white text-lg group-hover:rotate-12 transition-transform" />
+                    </div>
+                    <span className="text-sm font-medium tracking-wide drop-shadow-sm">
+                      Đăng nhập Nhân viên
+                    </span>
+                  </div>
+
+                  {/* Hover glow effect */}
+                  <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-[#FF8787]/20 to-[#FFDAB9]/20 blur-xl"></div>
+
+                  {/* Sparkle effect */}
+                  <div className="absolute top-0 right-0 -mt-1 -mr-1 w-2 h-2 rounded-full bg-white opacity-70 group-hover:animate-ping"></div>
+                  <div className="absolute bottom-0 left-0 -mb-1 -ml-1 w-2 h-2 rounded-full bg-white opacity-70 group-hover:animate-ping delay-300"></div>
                 </motion.button>
               </div>
             </motion.div>

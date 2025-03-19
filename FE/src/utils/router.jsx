@@ -33,6 +33,8 @@ import { AdminProtectedRoute } from "../components/auth/AdminProtectedRoute";
 import { AdminLoginPage } from "../pages/admin/adminLoginPage";
 import ResetPasswordPage from "../pages/login/resetPasswordPage";
 import QuizResultsPage from "../pages/users/quizResultsPage";
+import StaffLoginPage from "../pages/staff/staffLoginPage";
+import StaffOrdersPage from "../pages/staff/staffOrdersPage";
 
 export const router = createBrowserRouter([
   {
@@ -110,6 +112,14 @@ export const router = createBrowserRouter([
       {
         path: "admin/login",
         element: <AdminLoginPage />,
+      },
+      {
+        path: "staff/login",
+        element: <StaffLoginPage />,
+      },
+      {
+        path: "staff/orders",
+        element: <StaffOrdersPage />,
       },
       {
         path: "account",

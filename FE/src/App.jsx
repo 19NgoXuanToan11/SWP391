@@ -29,6 +29,9 @@ function App() {
     "/admin/login",
     "/forgot-password",
     "/reset-password",
+    "/staff/login",
+    "/staff/orders",
+    "/staff/notifications",
   ];
 
   // Kiểm tra với pathname đã được chuẩn hóa

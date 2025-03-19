@@ -211,21 +211,6 @@ export function SiteHeader() {
               </div>
             </div>
           </nav>
-
-          <div className="user-section">
-            {isAuthenticated ? (
-              <div className="flex items-center space-x-2"></div>
-            ) : (
-              <Link
-                to="/login"
-                className="flex items-center space-x-3 px-4 py-2.5 text-gray-700 hover:text-gray-900 
-                             transition-colors whitespace-nowrap text-base font-medium"
-              >
-                <UserOutlined className="text-xl" />
-                <span>Đăng nhập/Đăng ký</span>
-              </Link>
-            )}
-          </div>
         </div>
       </div>
     </header>
