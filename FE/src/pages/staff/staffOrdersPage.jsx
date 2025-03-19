@@ -322,22 +322,32 @@ const OrdersPage = () => {
   };
 
   // Update order status
-  const updateOrderStatus = async (orderId, newStatus) => {
+  const updateOrderStatus = (orderId, newStatus) => {
     try {
       setLoading(true);
-      await axios.put(`https://localhost:7285/api/order/${orderId}/status`, {
-        status: newStatus,
+      // Update local state
+      const updatedOrders = orders.map((order) => {
+        if (order.orderId === orderId) {
+          return {
+            ...order,
+            status: newStatus,
+          };
+        }
+        return order;
       });
 
+      setOrders(updatedOrders);
       message.success("Cập nhật trạng thái đơn hàng thành công");
 
-      // Cập nhật lại danh sách đơn hàng và doanh thu
-      fetchOrders();
-
-      // Đóng modal chi tiết nếu đang mở
-      if (orderDetailsVisible) {
-        setOrderDetailsVisible(false);
-      }
+      // Update localStorage to sync with user view
+      const orderStatusUpdates = JSON.parse(
+        localStorage.getItem("orderStatusUpdates") || "{}"
+      );
+      orderStatusUpdates[orderId] = newStatus;
+      localStorage.setItem(
+        "orderStatusUpdates",
+        JSON.stringify(orderStatusUpdates)
+      );
     } catch (error) {
       console.error("Error updating order status:", error);
       message.error("Không thể cập nhật trạng thái đơn hàng");
