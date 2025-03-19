@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repo;
 using Service;
@@ -14,12 +15,14 @@ namespace SWP391_BE.Controllers
             _historyService = historyService;
         }
         [HttpGet("GetAllHistory")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetAllHistories()
         {
             var histories = await _historyService.GetAllHistoriesAsync();
             return Ok(histories);
         }
         [HttpGet("order/{orderId}")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetHistoryByOrderId(int orderId)
         {
             var history = await _historyService.GetOrderHistoryByOrderIdAsync(orderId);
@@ -41,6 +44,7 @@ namespace SWP391_BE.Controllers
             });
         }
         [HttpGet("user/{userId}")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetHistoriesByUserId(int userId)
         {
             var histories = await _historyService.GetHistoriesByUserIdAsync(userId);
@@ -69,6 +73,7 @@ namespace SWP391_BE.Controllers
 
         // API tìm kiếm theo mã vận đơn
         [HttpGet("SearchHistory")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetHistoryByTrackingCode([FromQuery] string trackingCode)
         {
             var history = await _historyService.GetHistoryByTrackingCodeAsync(trackingCode);
@@ -80,6 +85,7 @@ namespace SWP391_BE.Controllers
         }
         // API thêm lịch sử đơn hàng
         [HttpPost("AddHistory")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddHistory([FromBody] History history)
         {
             await _historyService.AddAsync(history);
@@ -88,8 +94,21 @@ namespace SWP391_BE.Controllers
 
         // API cập nhật trạng thái đơn hàng
         [HttpPut("update-status")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> UpdateStatus([FromQuery] string trackingCode, [FromQuery] string status)
         {
+            var userRole = User.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+
+            // Nếu là Staff, chỉ được cập nhật một số trạng thái nhất định
+            if (userRole == "Staff")
+            {
+                var allowedStatuses = new List<string> { "Pending", "Delivering","Completed" };
+                if (!allowedStatuses.Contains(status))
+                {
+                    return Forbid("Staff không thể cập nhật trạng thái này.");
+                }
+            }
+
             await _historyService.UpdateHistoryStatusAsync(trackingCode, status);
             return Ok("Cập nhật trạng thái đơn hàng thành công.");
         }

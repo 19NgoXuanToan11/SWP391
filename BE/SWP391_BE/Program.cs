@@ -7,6 +7,7 @@ using Net.payOS;
 using Repo;
 using Service;
 using SWP391_BE.Mappings;
+using SWP391_BE.Middleware;
 using System.Text;
 
 IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
@@ -159,6 +160,7 @@ if (app.Environment.IsDevelopment())
 
 // Remove UseHttpsRedirection if testing with HTTP
 // app.UseHttpsRedirection();
+
 
 app.UseCors("AllowFrontend");
 app.UseAuthentication();
