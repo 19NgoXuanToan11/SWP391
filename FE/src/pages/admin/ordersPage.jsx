@@ -23,6 +23,8 @@ import {
   HomeOutlined,
   CheckOutlined,
   MoreOutlined,
+  CarOutlined,
+  CheckCircleOutlined,
 } from "@ant-design/icons";
 import {
   Table,
@@ -458,12 +460,15 @@ const OrdersPage = () => {
       title: "Mã đơn hàng",
       dataIndex: "orderId",
       key: "orderId",
+      width: 120,
+      fixed: "left",
       render: (text) => <span className="font-medium">#{text}</span>,
     },
     {
-      title: "Họ tên",
+      title: "Khách hàng",
       dataIndex: "buyerName",
       key: "buyerName",
+      width: 200,
       render: (text, record) => (
         <div className="flex items-center">
           <UserOutlined className="mr-2 text-blue-500" />
@@ -475,6 +480,7 @@ const OrdersPage = () => {
       title: "Email",
       dataIndex: "buyerEmail",
       key: "buyerEmail",
+      width: 250,
       render: (text) => (
         <div className="flex items-center">
           <MailOutlined className="mr-2 text-green-500" />
@@ -486,6 +492,7 @@ const OrdersPage = () => {
       title: "Số điện thoại",
       dataIndex: "buyerPhone",
       key: "buyerPhone",
+      width: 150,
       render: (text) => (
         <div className="flex items-center">
           <PhoneOutlined className="mr-2 text-orange-500" />
@@ -497,6 +504,7 @@ const OrdersPage = () => {
       title: "Địa chỉ",
       dataIndex: "buyerAddress",
       key: "buyerAddress",
+      width: 250,
       render: (text) => (
         <div className="flex items-center">
           <HomeOutlined className="mr-2 text-purple-500" />
@@ -505,12 +513,12 @@ const OrdersPage = () => {
           </span>
         </div>
       ),
-      ellipsis: true,
     },
     {
       title: "Ngày đặt",
       dataIndex: "orderDate",
       key: "orderDate",
+      width: 180,
       render: (text) => (
         <div className="flex items-center">
           <CalendarOutlined className="mr-1 text-blue-500" />
@@ -522,14 +530,20 @@ const OrdersPage = () => {
       title: "Tổng tiền",
       dataIndex: "totalAmount",
       key: "totalAmount",
+      width: 150,
       render: (text) => (
-        <span className="font-medium text-red-500">{formatPrice(text)}</span>
+        <div className="bg-green-50 px-4 py-2 rounded-lg">
+          <Text strong className="text-green-600">
+            {formatPrice(text)}
+          </Text>
+        </div>
       ),
     },
     {
       title: "Thanh toán",
       dataIndex: "paymentMethod",
       key: "paymentMethod",
+      width: 150,
       render: (text) => (
         <Tag color={getPaymentColor(text)}>{getPaymentStatus(text)}</Tag>
       ),
@@ -537,6 +551,7 @@ const OrdersPage = () => {
     {
       title: "Trạng thái đơn hàng",
       key: "orderStatus",
+      width: 180,
       render: (_, record) => (
         <Select
           defaultValue={record.status || "pending"}
@@ -545,96 +560,24 @@ const OrdersPage = () => {
           className="rounded-lg"
         >
           <Option value="pending">
-            <Tag color="orange">Chờ xác nhận</Tag>
-          </Option>
-          <Option value="confirmed">
-            <Tag color="blue">Đã xác nhận</Tag>
-          </Option>
-          <Option value="processing">
-            <Tag color="cyan">Đang chuẩn bị</Tag>
+            <div className="flex items-center">
+              <ClockCircleOutlined className="text-orange-500 mr-2" />
+              <span>Chờ xác nhận</span>
+            </div>
           </Option>
           <Option value="shipping">
-            <Tag color="geekblue">Đang giao hàng</Tag>
+            <div className="flex items-center">
+              <CarOutlined className="text-cyan-500 mr-2" />
+              <span>Đang giao hàng</span>
+            </div>
           </Option>
           <Option value="delivered">
-            <Tag color="purple">Đã giao hàng</Tag>
-          </Option>
-          <Option value="completed">
-            <Tag color="green">Hoàn thành</Tag>
-          </Option>
-          <Option value="cancelled">
-            <Tag color="red">Đã hủy</Tag>
+            <div className="flex items-center">
+              <CheckCircleOutlined className="text-green-500 mr-2" />
+              <span>Đã giao hàng</span>
+            </div>
           </Option>
         </Select>
-      ),
-    },
-    {
-      title: "Thao tác",
-      key: "action",
-      render: (_, record) => (
-        <Space size="middle">
-          <Tooltip title="Xem chi tiết">
-            <Button
-              type="primary"
-              shape="circle"
-              icon={<EyeOutlined />}
-              size="small"
-              onClick={() => viewOrderDetails(record.orderId)}
-              className="bg-blue-500 hover:bg-blue-600"
-            />
-          </Tooltip>
-          <Dropdown
-            overlay={
-              <Menu>
-                <Menu.Item
-                  key="1"
-                  onClick={() =>
-                    updateOrderStatus(record.orderId, "Processing")
-                  }
-                  disabled={record.status !== "Pending"}
-                >
-                  <CheckOutlined className="mr-2 text-blue-500" />
-                  Xác nhận đơn hàng
-                </Menu.Item>
-                <Menu.Item
-                  key="2"
-                  onClick={() => updateOrderStatus(record.orderId, "Shipped")}
-                  disabled={record.status !== "Pending"}
-                >
-                  <Tag color="cyan" className="mr-2">
-                    Đã gửi hàng
-                  </Tag>
-                </Menu.Item>
-                <Menu.Item
-                  key="3"
-                  onClick={() => updateOrderStatus(record.orderId, "Delivered")}
-                  disabled={record.status !== "Shipped"}
-                >
-                  <Tag color="green" className="mr-2">
-                    Đã giao hàng
-                  </Tag>
-                </Menu.Item>
-                <Menu.Item
-                  key="4"
-                  onClick={() => updateOrderStatus(record.orderId, "Cancelled")}
-                  disabled={record.status === "Cancelled"}
-                >
-                  <Tag color="red" className="mr-2">
-                    Đã hủy
-                  </Tag>
-                </Menu.Item>
-              </Menu>
-            }
-            trigger={["click"]}
-          >
-            <Button
-              shape="circle"
-              icon={<MoreOutlined />}
-              size="small"
-              className="border-gray-300"
-            />
-          </Dropdown>
-        </Space>
       ),
     },
   ];
@@ -662,10 +605,6 @@ const OrdersPage = () => {
       key: "buyerName",
       render: (text, record) => (
         <div className="flex items-center space-x-3">
-          <Avatar
-            className="bg-gradient-to-r from-purple-400 to-pink-500"
-            icon={<UserOutlined />}
-          />
           <div className="flex flex-col">
             <Text strong className="text-gray-800">
               {text}
@@ -731,9 +670,7 @@ const OrdersPage = () => {
       render: (amount) => (
         <div className="flex items-center justify-end">
           <div className="bg-green-50 px-4 py-2 rounded-lg">
-            <Text strong className="text-green-600 text-lg">
-              {formatPrice(amount)}
-            </Text>
+            {formatPrice(amount)}
           </div>
         </div>
       ),
@@ -747,10 +684,7 @@ const OrdersPage = () => {
           status.toLowerCase() === "paid" ||
           status.toLowerCase() === "completed";
         return (
-          <Tag
-            color={isPaid ? "success" : "warning"}
-            className="px-4 py-1 rounded-full text-sm font-medium flex items-center w-fit space-x-1"
-          >
+          <Tag color={isPaid ? "success" : "warning"}>
             {isPaid ? (
               <>
                 <CheckOutlined />
@@ -765,6 +699,38 @@ const OrdersPage = () => {
           </Tag>
         );
       },
+    },
+    {
+      title: "Trạng thái đơn hàng",
+      key: "orderStatus",
+      width: 180,
+      render: (_, record) => (
+        <Select
+          defaultValue={record.status || "pending"}
+          style={{ width: 140 }}
+          onChange={(value) => updateOrderStatus(record.orderId, value)}
+          className="rounded-lg"
+        >
+          <Option value="pending">
+            <div className="flex items-center">
+              <ClockCircleOutlined className="text-orange-500 mr-2" />
+              <span>Chờ xác nhận</span>
+            </div>
+          </Option>
+          <Option value="shipping">
+            <div className="flex items-center">
+              <CarOutlined className="text-cyan-500 mr-2" />
+              <span>Đang giao hàng</span>
+            </div>
+          </Option>
+          <Option value="delivered">
+            <div className="flex items-center">
+              <CheckCircleOutlined className="text-green-500 mr-2" />
+              <span>Đã giao hàng</span>
+            </div>
+          </Option>
+        </Select>
+      ),
     },
   ];
 
@@ -959,7 +925,7 @@ const OrdersPage = () => {
           </Card>
 
           {/* Payments Table */}
-          <Card className="rounded-2xl shadow-sm border-0 overflow-hidden">
+          <Card className="rounded-2xl shadow-sm border-0">
             <div className="mb-4">
               <Title level={4} className="!mb-1">
                 Danh sách giao dịch
@@ -974,20 +940,23 @@ const OrdersPage = () => {
                 <Spin size="large" />
               </div>
             ) : filteredPayments.length > 0 ? (
-              <Table
-                columns={paymentColumns}
-                dataSource={filteredPayments}
-                rowKey="paymentId"
-                pagination={{
-                  pageSize: 10,
-                  showTotal: (total, range) =>
-                    `${range[0]}-${range[1]} của ${total} giao dịch`,
-                  showSizeChanger: true,
-                  pageSizeOptions: ["10", "20", "50"],
-                }}
-                className="rounded-lg"
-                rowClassName="hover:bg-gray-50 transition-colors"
-              />
+              <div className="overflow-x-auto">
+                <Table
+                  columns={paymentColumns}
+                  dataSource={filteredPayments}
+                  rowKey="paymentId"
+                  pagination={{
+                    pageSize: 10,
+                    showTotal: (total, range) =>
+                      `${range[0]}-${range[1]} của ${total} giao dịch`,
+                    showSizeChanger: true,
+                    pageSizeOptions: ["10", "20", "50"],
+                  }}
+                  scroll={{ x: 1800 }}
+                  className="rounded-lg"
+                  rowClassName="hover:bg-gray-50 transition-colors"
+                />
+              </div>
             ) : (
               <Empty
                 description="Không tìm thấy giao dịch nào"

@@ -63,6 +63,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState([]);
   const [users, setUsers] = useState([]);
+  const [username, setUsername] = useState("");
   const [orderStats, setOrderStats] = useState({
     total: 0,
     pending: 0,
@@ -283,6 +284,17 @@ const Dashboard = () => {
   useEffect(() => {
     fetchOrders();
     fetchUsers();
+
+    // Lấy username từ localStorage
+    const authUserStr = localStorage.getItem("auth_user");
+    if (authUserStr) {
+      try {
+        const authUser = JSON.parse(authUserStr);
+        setUsername(authUser.username || "");
+      } catch (error) {
+        console.error("Error parsing auth_user:", error);
+      }
+    }
   }, []);
 
   return (
@@ -294,7 +306,7 @@ const Dashboard = () => {
         <header className="flex justify-between items-center mb-8 bg-white p-6 rounded-2xl shadow-sm backdrop-blur-md bg-opacity-80">
           <div>
             <h1 className="text-3xl font-bold text-gray-800">
-              Chào mừng trở lại, Quản trị viên!
+              Chào mừng trở lại, {username || "Quản trị viên"}!
             </h1>
             <p className="text-gray-500 mt-1">
               Đây là những gì đang diễn ra với cửa hàng của bạn hôm nay.
