@@ -9,5 +9,6 @@ namespace Service
         Task AddUserAsync(User user);
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(int id);
+        Task<bool> ExistsAsync(int id);
     }
 }

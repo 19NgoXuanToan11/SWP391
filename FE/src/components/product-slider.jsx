@@ -1,70 +1,83 @@
 import { useEffect, useState } from "react";
-import vitaminC from "../assets/pictures/vitamin_C_serum.jpg";
-import hyaluronic from "../assets/pictures/hyaluronic_acid.jpg";
-import retinol from "../assets/pictures/retinol_cream.jpg";
-import niacinamide from "../assets/pictures/niacinamide_serum.jpg";
-import sunscreen from "../assets/pictures/sunscreen_SPF_50.jpg";
 import { Link } from "react-router-dom";
-
-const products = [
-  {
-    id: 1,
-    name: "Serum Vitamin C",
-    price: "890.000đ",
-    image: vitaminC,
-    description: "Serum làm sáng da",
-  },
-  {
-    id: 2,
-    name: "Hyaluronic Acid",
-    price: "750.000đ",
-    image: hyaluronic,
-    description: "Serum cấp ẩm sâu",
-  },
-  {
-    id: 3,
-    name: "Kem Retinol",
-    price: "1.290.000đ",
-    image: retinol,
-    description: "Kem chống lão hóa",
-  },
-  {
-    id: 4,
-    name: "Serum Niacinamide",
-    price: "690.000đ",
-    image: niacinamide,
-    description: "Serum se khít lỗ chân lông",
-  },
-  {
-    id: 5,
-    name: "Kem Chống Nắng SPF 50",
-    price: "540.000đ",
-    image: sunscreen,
-    description: "Kem chống nắng bảo vệ da",
-  },
-];
+import { Spin } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  toggleWishlist,
+  selectWishlistItems,
+} from "../store/slices/wishlistSlice";
+import { HeartOutlined, HeartFilled } from "@ant-design/icons";
+import { notification } from "antd";
+import api from "../config/axios";
+import endpoints from "../constants/endpoint";
 
 export function ProductSlider() {
+  const [products, setProducts] = useState([]);
   const [position, setPosition] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const wishlistItems = useSelector(selectWishlistItems);
 
   useEffect(() => {
-    // Log để kiểm tra vị trí
-    console.log("Vị trí hiện tại:", position);
-
-    const interval = setInterval(() => {
-      setPosition((prev) => {
-        const newPosition = (prev - 1) % (products.length * 320);
-        console.log("Vị trí mới:", newPosition);
-        return newPosition;
-      });
-    }, 50);
-
-    return () => clearInterval(interval);
+    fetchProducts();
   }, []);
 
-  // Log để kiểm tra sản phẩm
-  console.log("Sản phẩm:", products);
-  console.log("Hình ảnh sản phẩm đầu tiên:", products[0].image);
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get(endpoints.GET_PRODUCTS);
+      setProducts(response.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      notification.error({
+        message: "Lỗi",
+        description: "Không thể tải danh sách sản phẩm",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (products.length > 0) {
+      const interval = setInterval(() => {
+        setPosition((prev) => {
+          const newPosition = (prev - 1) % (products.length * 320);
+          return newPosition;
+        });
+      }, 50);
+
+      return () => clearInterval(interval);
+    }
+  }, [products.length]);
+
+  const isInWishlist = (productId) => {
+    return wishlistItems.some((item) => item.id === productId);
+  };
+
+  const handleWishlistToggle = (product) => {
+    dispatch(
+      toggleWishlist({
+        id: product.productId,
+        name: product.productName,
+        price: product.price,
+        image: product.imageUrl,
+        brand: product.brandName,
+        description: product.description,
+        stock: product.stock > 0,
+        discount: product.discount,
+        originalPrice: product.originalPrice,
+      })
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-[400px] flex items-center justify-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
     <section className="py-16 overflow-hidden">
@@ -87,54 +100,36 @@ export function ProductSlider() {
               className="flex transition-transform duration-1000 ease-linear"
               style={{ transform: `translateX(${position}px)` }}
             >
-              {/* Nhân đôi mảng sản phẩm để tạo hiệu ứng cuộn vô hạn */}
-              {[...products, ...products, ...products].map((product, index) => {
-                console.log(
-                  "Đang hiển thị sản phẩm:",
-                  product.name,
-                  "với hình ảnh:",
-                  product.image
-                );
-                return (
-                  <div
-                    key={`${product.id}-${index}`}
-                    className="flex-none w-80 mx-4"
-                  >
-                    <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                      <div className="relative h-64">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) =>
-                            console.error("Hình ảnh không thể tải:", e)
-                          }
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {products.map((product, index) => (
+                <div
+                  key={`${product.productId}-${index}`}
+                  className="flex-none w-80 mx-4"
+                >
+                  <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
+                    <div className="relative h-64 overflow-hidden">
+                      <img
+                        src={product.imageUrls}
+                        alt={product.productName}
+                        className="w-full h-full object-cover transition-all duration-300 group-hover:opacity-50 group-hover:scale-110"
+                      />
+
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                        <Link
+                          to={`/product/${product.productId}`}
+                          className="px-6 py-3 bg-gradient-to-r from-pink-400 to-purple-500 text-white rounded-full 
+                            hover:from-pink-500 hover:to-purple-600 hover:shadow-lg hover:shadow-purple-200/50
+                            transition-all duration-300 transform hover:scale-110 font-medium"
+                        >
+                          Mua ngay
+                        </Link>
                       </div>
-                      <div className="p-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                          {product.name}
-                        </h3>
-                        <p className="text-gray-600 mb-4">
-                          {product.description}
-                        </p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-pink-500 font-bold">
-                            {product.price}
-                          </span>
-                          <Link
-                            to={`/product`}
-                            className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors duration-300"
-                          >
-                            Mua ngay
-                          </Link>
-                        </div>
-                      </div>
+
+                      {/* Dark Overlay on Hover */}
+                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           </div>
 

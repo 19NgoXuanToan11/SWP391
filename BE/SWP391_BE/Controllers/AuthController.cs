@@ -38,6 +38,16 @@ namespace SWP391_BE.Controllers
             return Ok(response);
         }
 
+        [AllowAnonymous]
+        [HttpPost("google-login")]
+        public async Task<ActionResult<ServiceResponse<string>>> GoogleLogin([FromBody] string token)
+        {
+            var response = await _authService.GoogleLogin(token);
+            if (!response.Success)
+                return BadRequest(response);
+            return Ok(response);
+        }
+
         [HttpGet("verify-email")]
         public async Task<ActionResult<ServiceResponse<string>>> VerifyEmail([FromQuery] string token)
         {
@@ -64,5 +74,10 @@ namespace SWP391_BE.Controllers
                 return BadRequest(response);
             return Ok(response);
         }
+    }
+
+    public class GoogleLoginDTO
+    {
+        public string Token { get; set; }
     }
 }

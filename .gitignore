@@ -1,0 +1,26 @@
+# Bỏ qua thư mục Visual Studio
+.vs/
+
+# Bỏ qua file chỉ mục của Copilot
+CopilotIndices/
+
+# Bỏ qua file build của .NET
+bin/
+obj/
+
+# Bỏ qua file tạm thời
+*.suo
+*.user
+*.cache
+*.db
+*.db-shm
+*.db-wal
+
+# Bỏ qua thư mục build
+bin/
+obj/
+
+# Bỏ qua file DLL, PDB, EXE
+*.dll
+*.pdb
+*.exe
