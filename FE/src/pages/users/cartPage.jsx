@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Card,
   Typography,
@@ -13,37 +15,50 @@ import {
   Tag,
   message,
   Tooltip,
+  Steps,
+  Skeleton,
+  notification,
+  Spin,
 } from "antd";
 import {
   ShoppingCartOutlined,
   DeleteOutlined,
   HeartOutlined,
+  HeartFilled,
   ArrowLeftOutlined,
   GiftOutlined,
   SafetyCertificateOutlined,
   ShoppingOutlined,
   CarOutlined,
+  ClockCircleOutlined,
+  CheckCircleOutlined,
+  InfoCircleOutlined,
+  SyncOutlined,
+  MinusOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
-<<<<<<< Updated upstream
-import { removeFromCart, updateQuantity } from "../../store/slices/cartSlice";
+import {
+  removeFromCart,
+  updateQuantity,
+  clearCart,
+} from "../../store/slices/cartSlice";
 import { PaymentSteps } from "../../components/PaymentStep";
 import { selectAuth } from "../../store/slices/authSlice";
 import {
   toggleWishlist,
   selectWishlistItems,
 } from "../../store/slices/wishlistSlice";
-=======
-import { Link, useNavigate } from "react-router-dom";
->>>>>>> Stashed changes
+import axios from "axios";
 
 const { Title, Text, Paragraph } = Typography;
+const { Step } = Steps;
 
 function CartPage() {
   const navigate = useNavigate();
-<<<<<<< Updated upstream
   const dispatch = useDispatch();
+
   const cartItems = useSelector((state) => state.cart.items);
-  const { isAuthenticated } = useSelector(selectAuth);
+  const { isAuthenticated, user } = useSelector(selectAuth);
   const [loading, setLoading] = React.useState(false);
 
   // Lấy danh sách wishlist từ Redux store
@@ -53,62 +68,40 @@ function CartPage() {
   const isInWishlist = (productId) => {
     return wishlistItems.some((item) => item.id === productId);
   };
-=======
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Kem Nền Hoàn Hảo",
-      brand: "Luxe Beauty",
-      price: 890000,
-      originalPrice: 1200000,
-      quantity: 2,
-      image: "https://source.unsplash.com/random/400x400/?foundation",
-      color: "Beige Tự Nhiên",
-      discount: 25,
-      stock: 10,
-    },
-    {
-      id: 2,
-      name: "Serum Dưỡng Ẩm",
-      brand: "Pure Skin",
-      price: 750000,
-      originalPrice: 850000,
-      quantity: 1,
-      image: "https://source.unsplash.com/random/400x400/?serum",
-      size: "30ml",
-      discount: 12,
-      stock: 5,
-    },
-    {
-      id: 3,
-      name: "Bộ Son Môi Matte",
-      brand: "Color Pop",
-      price: 450000,
-      originalPrice: 500000,
-      quantity: 2,
-      image: "https://source.unsplash.com/random/400x400/?lipstick",
-      color: "Đỏ Ruby",
-      discount: 10,
-      stock: 8,
-    },
-  ]);
->>>>>>> Stashed changes
 
   const handleQuantityChange = (id, value) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: value } : item
-      )
-    );
+    dispatch(updateQuantity({ id, quantity: value }));
+    message.success("Số lượng đã được cập nhật");
   };
 
   const handleRemoveItem = (id) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
+    dispatch(removeFromCart(id));
     message.success("Sản phẩm đã được xóa khỏi giỏ hàng");
   };
 
-  const handleMoveToWishlist = (id) => {
-    message.success("Sản phẩm đã được thêm vào danh sách yêu thích");
+  const handleWishlistToggle = (item) => {
+    const productData = {
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      brand: item.brand,
+      description: item.description,
+      stock: item.stock,
+      discount: item.discount,
+      originalPrice: item.originalPrice,
+      rating: item.rating,
+    };
+
+    dispatch(toggleWishlist(productData));
+
+    notification.success({
+      message: "Danh sách yêu thích",
+      description: `${item.name} đã được ${
+        isInWishlist(item.id) ? "xóa khỏi" : "thêm vào"
+      } danh sách yêu thích`,
+      placement: "bottomRight",
+    });
   };
 
   const calculateTotal = () => {
@@ -118,15 +111,22 @@ function CartPage() {
     );
   };
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat("en-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price); // Chuyển đổi USD sang VND
+  const calculateDiscount = () => {
+    return cartItems.reduce(
+      (total, item) =>
+        total + (item.originalPrice - item.price) * item.quantity,
+      0
+    );
   };
 
-<<<<<<< Updated upstream
-  const handleCheckout = () => {
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(price);
+  };
+
+  const handleCheckout = async () => {
     if (cartItems.length === 0) {
       message.warning("Giỏ hàng của bạn đang trống");
       return;
@@ -138,11 +138,42 @@ function CartPage() {
       return;
     }
 
-    setLoading(true);
-    setTimeout(() => {
+    try {
+      setLoading(true);
+
+      // Kiểm tra và xử lý ID người dùng
+      let userId = user.id;
+
+      // Tạo đối tượng đơn hàng
+      const order = {
+        userId: userId,
+        items: cartItems.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      };
+
+      console.log("Sending order:", order);
+
+      const res = await axios.post("https://localhost:7285/api/Order", order, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      navigate(`/payment/${res.data.orderId}`);
+    } catch (e) {
+      console.log("Error creating order:", e);
+      message.error("Đã xảy ra lỗi khi tạo đơn hàng. Vui lòng thử lại!");
+    } finally {
       setLoading(false);
-      navigate("/payment");
-    }, 1000);
+    }
+  };
+
+  const handleClearCart = () => {
+    dispatch(clearCart());
+    message.success("Đã xóa tất cả sản phẩm khỏi giỏ hàng");
   };
 
   if (!cartItems) {
@@ -154,35 +185,39 @@ function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-violet-50 via-indigo-50 to-white py-12 px-4">
-=======
-  return (
-    <div className="min-h-screen bg-gradient-to-b py-12 px-4">
->>>>>>> Stashed changes
+    <div className="min-h-screen py-12 px-4">
       <div className="max-w-7xl mx-auto">
+        {/* Progress Steps - Cập nhật current={0} vì đang ở bước giỏ hàng */}
+        <div className="mb-8">
+          <PaymentSteps current={0} />
+        </div>
+
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
-          <Link to="/product">
-<<<<<<< Updated upstream
-            <button
-              type="button"
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-white hover:bg-pink-50 
-                text-gray-600 hover:text-pink-500 font-medium transition-all duration-300
-                shadow-sm hover:shadow-md transform hover:scale-105 border border-gray-200"
-            >
-              <ArrowLeftOutlined className="text-lg" />
-              <span>Tiếp Tục Mua Sắm</span>
-            </button>
-=======
-            <Button
-              type="link"
-              icon={<ArrowLeftOutlined />}
-              className="text-gray-600 hover:text-pink-500 flex items-center"
-            >
-              Tiếp Tục Mua Sắm
-            </Button>
->>>>>>> Stashed changes
-          </Link>
+          <div className="flex gap-4">
+            <Link to="/product">
+              <button
+                type="button"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white hover:bg-pink-50 
+                  text-gray-600 hover:text-pink-500 font-medium transition-all duration-300
+                  shadow-sm hover:shadow-md transform hover:scale-105 border border-gray-200"
+              >
+                <ArrowLeftOutlined className="text-lg" />
+                <span>Tiếp Tục Mua Sắm</span>
+              </button>
+            </Link>
+            {cartItems.length > 0 && (
+              <button
+                onClick={handleClearCart}
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white hover:bg-red-50 
+                  text-gray-600 hover:text-red-500 font-medium transition-all duration-300
+                  shadow-sm hover:shadow-md transform hover:scale-105 border border-gray-200"
+              >
+                <DeleteOutlined className="text-lg" />
+                <span>Xóa Tất Cả</span>
+              </button>
+            )}
+          </div>
           <Title level={2} className="!mb-0 flex items-center gap-3">
             <ShoppingCartOutlined className="text-pink-500" />
             Giỏ Hàng Của Bạn
@@ -195,19 +230,27 @@ function CartPage() {
         {cartItems.length === 0 ? (
           <Card className="text-center py-12 rounded-3xl shadow-md">
             <Empty
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              imageStyle={{ height: 200 }}
               description={
                 <Space direction="vertical" size="large">
-                  <Text className="text-lg">Giỏ hàng của bạn đang trống</Text>
-                  <Link to="/products">
-                    <Button
-                      type="primary"
-                      size="large"
-                      icon={<ShoppingOutlined />}
-                      className="bg-gradient-to-r from-pink-500 to-purple-500"
+                  <Title level={3} className="!mb-0">
+                    Giỏ hàng của bạn đang trống
+                  </Title>
+                  <Paragraph type="secondary">
+                    Hãy thêm một số sản phẩm vào giỏ hàng để tiến hành thanh
+                    toán
+                  </Paragraph>
+                  <Link to="/product" className="flex justify-center">
+                    <button
+                      type="button"
+                      className="flex items-center gap-3 px-6 py-3 text-white font-medium rounded-full
+                        bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600
+                        transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl
+                        active:scale-95"
                     >
-                      Khám Phá Sản Phẩm
-                    </Button>
+                      <ShoppingOutlined className="text-xl" />
+                      <span>Khám Phá Sản Phẩm</span>
+                    </button>
                   </Link>
                 </Space>
               }
@@ -220,23 +263,34 @@ function CartPage() {
                 {cartItems.map((item) => (
                   <div key={item.id}>
                     <div className="flex gap-6 py-6">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        width={140}
-                        height={140}
-                        className="rounded-2xl object-cover"
-                        preview={false}
-                      />
+                      <div className="relative">
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          width={140}
+                          height={140}
+                          className="rounded-2xl object-cover"
+                          preview={false}
+                        />
+                        {item.discount > 0 && (
+                          <div className="absolute top-2 left-2">
+                            <Tag color="red" className="px-2 py-1">
+                              -{item.discount}%
+                            </Tag>
+                          </div>
+                        )}
+                      </div>
                       <div className="flex-grow">
                         <div className="flex justify-between">
                           <div>
                             <Title level={4} className="!mb-1">
                               {item.name}
                             </Title>
-                            <Text type="secondary" className="text-sm">
-                              Thương hiệu: {item.brand}
-                            </Text>
+                            <Space size="small" className="mb-2">
+                              {item.isNew && (
+                                <Tag color="blue">Sản phẩm mới</Tag>
+                              )}
+                            </Space>
                             {item.color && (
                               <div className="mt-1">
                                 <Text type="secondary" className="text-sm">
@@ -250,11 +304,6 @@ function CartPage() {
                                   Kích thước: {item.size}
                                 </Text>
                               </div>
-                            )}
-                            {item.discount > 0 && (
-                              <Tag color="red" className="mt-2">
-                                Giảm giá {item.discount}%
-                              </Tag>
                             )}
                           </div>
                           <div className="text-right">
@@ -270,36 +319,50 @@ function CartPage() {
                         </div>
                         <div className="flex justify-between items-end mt-4">
                           <Space size="large">
-                            <div>
-                              <Text className="text-sm mb-2 block">
+                            <div className="flex flex-col">
+                              <Text className="text-sm font-medium text-gray-600 mb-2">
                                 Số lượng:
                               </Text>
-                              <InputNumber
-                                min={1}
-                                max={item.stock}
-                                value={item.quantity}
-                                onChange={(value) =>
-                                  handleQuantityChange(item.id, value)
-                                }
-                                className="w-32"
-                              />
+                              <div className="flex items-center space-x-2">
+                                <Button
+                                  icon={<MinusOutlined />}
+                                  onClick={() =>
+                                    handleQuantityChange(
+                                      item.id,
+                                      Math.max(1, item.quantity - 1)
+                                    )
+                                  }
+                                  className="border-gray-300 hover:border-pink-400 hover:text-pink-500 transition-colors"
+                                  disabled={item.quantity <= 1}
+                                />
+                                <InputNumber
+                                  min={1}
+                                  max={item.stock}
+                                  value={item.quantity}
+                                  onChange={(value) =>
+                                    handleQuantityChange(
+                                      item.id,
+                                      parseInt(value) || 1
+                                    )
+                                  }
+                                  className="w-20 text-center focus:border-pink-400 hover:border-pink-400"
+                                  controls={false}
+                                />
+                                <Button
+                                  icon={<PlusOutlined />}
+                                  onClick={() =>
+                                    handleQuantityChange(
+                                      item.id,
+                                      Math.min(item.stock, item.quantity + 1)
+                                    )
+                                  }
+                                  className="border-gray-300 hover:border-pink-400 hover:text-pink-500 transition-colors"
+                                  disabled={item.quantity >= item.stock}
+                                />
+                              </div>
                             </div>
-                            <Text type="secondary" className="text-sm">
-                              {item.stock} sản phẩm có sẵn
-                            </Text>
                           </Space>
                           <Space>
-                            <Tooltip title="Thêm vào danh sách yêu thích">
-                              <Button
-                                icon={<HeartOutlined />}
-<<<<<<< Updated upstream
-                                onClick={() => handleWishlistToggle(item)}
-=======
-                                onClick={() => handleMoveToWishlist(item.id)}
->>>>>>> Stashed changes
-                                className="border-pink-200 text-pink-500 hover:text-pink-600 hover:border-pink-300"
-                              />
-                            </Tooltip>
                             <Tooltip title="Xóa sản phẩm">
                               <Button
                                 icon={<DeleteOutlined />}
@@ -327,80 +390,42 @@ function CartPage() {
 
                   <div className="space-y-4">
                     <div className="flex justify-between">
-                      <Text>Tổng phụ</Text>
+                      <Text>Tạm tính</Text>
                       <Text>{formatPrice(calculateTotal())}</Text>
-                    </div>
-                    <div className="flex justify-between">
-<<<<<<< Updated upstream
-                      <Text>Tiết kiệm</Text>
-                      <Text className="text-green-500">
-                        -{formatPrice(calculateDiscount())}
-                      </Text>
-=======
-                      <Text>Vận chuyển</Text>
-                      <Text className="text-green-500">Miễn phí</Text>
->>>>>>> Stashed changes
                     </div>
                     <Divider className="my-4" />
                     <div className="flex justify-between">
-                      <Text strong>Tổng cộng</Text>
-                      <Title level={3} className="!mb-0 text-pink-500">
+                      <Text strong>Tổng cộng:</Text>
+                      <Title level={3} className="text-pink-500">
                         {formatPrice(calculateTotal())}
                       </Title>
                     </div>
                   </div>
 
-                  <Button
-                    type="primary"
-                    size="large"
-                    block
-                    className="mt-6 h-12 text-lg bg-gradient-to-r from-pink-500 to-purple-500 hover:!text-white hover:opacity-90 transition-all duration-300"
-                    onClick={() => navigate("/payment")}
-                    style={{
-                      background: "linear-gradient(to right, #ec4899, #a855f7)",
-                      borderColor: "transparent",
-                    }}
+                  <button
+                    type="button"
+                    disabled={loading || cartItems.length === 0}
+                    onClick={handleCheckout}
+                    className="w-full py-2 px-6 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 
+                      text-white font-medium text-lg hover:from-pink-600 hover:to-purple-600 
+                      transform hover:scale-105 transition-all duration-300 
+                      flex items-center justify-center gap-3 shadow-lg hover:shadow-xl
+                      disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
-                    Tiến Hành Thanh Toán
-                  </Button>
-                </Card>
-
-                <Card className="rounded-3xl bg-pink-50 border-pink-100">
-                  <Space direction="vertical" className="w-full">
-                    <Space>
-                      <CarOutlined className="text-pink-500" />
-                      <Text>
-                        Miễn phí vận chuyển cho đơn hàng trên 460.000 VND
-                      </Text>
-                    </Space>
-                    <Space>
-                      <GiftOutlined className="text-pink-500" />
-                      <Text>Miễn phí mẫu cho mỗi đơn hàng</Text>
-                    </Space>
-                    <Space>
-                      <SafetyCertificateOutlined className="text-pink-500" />
-                      <Text>Sản phẩm 100% chính hãng</Text>
-                    </Space>
-                  </Space>
-                </Card>
-
-                <Card className="rounded-3xl bg-pink-50 border-pink-100">
-                  <Space direction="vertical" className="w-full">
-                    <Space>
-                      <CarOutlined className="text-pink-500" />
-                      <Text>
-                        Miễn phí vận chuyển cho đơn hàng trên 500.000đ
-                      </Text>
-                    </Space>
-                    <Space>
-                      <GiftOutlined className="text-pink-500" />
-                      <Text>Tặng mẫu thử cho mỗi đơn hàng</Text>
-                    </Space>
-                    <Space>
-                      <SafetyCertificateOutlined className="text-pink-500" />
-                      <Text>Cam kết 100% chính hãng</Text>
-                    </Space>
-                  </Space>
+                    {loading ? (
+                      <>
+                        <span className="animate-spin">
+                          <SyncOutlined />
+                        </span>
+                        <span>Đang xử lý...</span>
+                      </>
+                    ) : (
+                      <>
+                        <SafetyCertificateOutlined className="text-xl" />
+                        <span>Tiến Hành Thanh Toán</span>
+                      </>
+                    )}
+                  </button>
                 </Card>
               </div>
             </Col>

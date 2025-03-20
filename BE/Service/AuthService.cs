@@ -66,7 +66,7 @@ namespace Service
                     FullName = model.FullName,
                     PhoneNumber = model.PhoneNumber,
                     Address = model.Address,
-                    RoleId = 2,
+                    RoleId = 3,
                     CreatedAt = DateTime.UtcNow,
                     VerificationToken = verificationToken,
                     IsVerification = false,

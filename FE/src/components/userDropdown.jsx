@@ -1,34 +1,94 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Dropdown } from "antd";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   UserOutlined,
-  SettingOutlined,
   LogoutOutlined,
   ShoppingOutlined,
   HeartOutlined,
+  SettingOutlined,
+  BellOutlined,
 } from "@ant-design/icons";
+import { useDispatch } from "react-redux";
+import { logout } from "../store/slices/authSlice";
+import { message } from "antd";
+import UserAvatar from "./common/UserAvatar";
 
-export const UserDropdown = ({ user }) => {
+export const UserDropdown = ({ user, onLogout }) => {
   const navigate = useNavigate();
-<<<<<<< Updated upstream
+  const dispatch = useDispatch();
   const [userInfo, setUserInfo] = useState({
-    name: localStorage.getItem("userName") || "User",
-    avatar: localStorage.getItem("userAvatar"),
+    name: user?.name || localStorage.getItem("userName") || "User",
+    avatar: user?.photoURL || localStorage.getItem("userAvatar"),
   });
+
+  // Cập nhật userInfo khi prop user thay đổi
+  useEffect(() => {
+    if (user) {
+      setUserInfo({
+        name: user.name || user.username || "User",
+        avatar: user.photoURL || localStorage.getItem("userAvatar"),
+      });
+    }
+  }, [user]);
 
   // Lắng nghe sự thay đổi của localStorage
   useEffect(() => {
-    const updateUserInfo = () => {
-      setUserInfo({
-        name: localStorage.getItem("userName") || "User",
-        avatar: localStorage.getItem("userAvatar"),
-      });
+    const handleStorageChange = (e) => {
+      if (
+        e.key === "auth_token" ||
+        e.key === "auth_user" ||
+        e.key === "auth_logout_event" ||
+        e.key?.startsWith("userAvatar_") ||
+        e.key === null
+      ) {
+        const userStr = localStorage.getItem("auth_user");
+
+        if (userStr) {
+          try {
+            const userData = JSON.parse(userStr);
+            const username = userData.username || userData.name || "User";
+
+            // Tạo key riêng cho mỗi user
+            const avatarKey = `userAvatar_${username}`;
+
+            // Thử lấy avatar từ nhiều nguồn
+            const avatarUrl =
+              userData.photoURL ||
+              localStorage.getItem(avatarKey) ||
+              sessionStorage.getItem(avatarKey);
+
+            // Nếu không có avatar, thử lấy từ IndexedDB
+            if (!avatarUrl) {
+              getAvatarFromIndexedDB(username).then((url) => {
+                if (url) {
+                  setUserInfo((prev) => ({ ...prev, avatar: url }));
+                  // Khôi phục vào localStorage với key riêng
+                  localStorage.setItem(avatarKey, url);
+                }
+              });
+            }
+
+            setUserInfo({
+              name: username,
+              avatar: avatarUrl || null,
+            });
+          } catch (error) {
+            console.error("Error parsing user data from localStorage:", error);
+          }
+        }
+      }
     };
 
-    window.addEventListener("storage", updateUserInfo);
-    return () => window.removeEventListener("storage", updateUserInfo);
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
+
+  // Thêm hàm lấy avatar từ IndexedDB (giống như trong ProfilePage)
+  const getAvatarFromIndexedDB = (username) => {
+    // ... code giống như trong ProfilePage
+  };
 
   // Tách tên thành các phần
   const nameParts = userInfo.name.split(" ");
@@ -53,151 +113,92 @@ export const UserDropdown = ({ user }) => {
     },
   ];
 
+  // Định nghĩa hàm handleLogout
+  const handleLogout = () => {
+    try {
+      // Xóa giỏ hàng và danh sách yêu thích trong localStorage
+      localStorage.removeItem("allCarts");
+      localStorage.removeItem("allWishlists");
+
+      // Xóa thông tin đăng nhập từ localStorage ngay lập tức
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("auth_user");
+      localStorage.removeItem("auth_sessionId");
+      localStorage.removeItem("auth_isAdmin");
+
+      // Hiển thị thông báo
+      message.success("Đăng xuất thành công!");
+
+      // Kích hoạt sự kiện storage để các tab khác biết về việc đăng xuất
+      const logoutEvent = new Date().getTime();
+      localStorage.setItem("auth_logout_event", logoutEvent);
+
+      // Chuyển hướng đến trang login thay vì tải lại trang hiện tại
+      navigate("/login");
+    } catch (error) {
+      console.error("Lỗi khi đăng xuất:", error);
+      message.error("Có lỗi xảy ra khi đăng xuất");
+    }
+  };
+
   const userMenu = (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl py-3 min-w-[240px] w-auto border border-gray-100"
+      transition={{ duration: 0.2 }}
+      className="bg-white rounded-xl shadow-xl p-2 min-w-[250px] border border-gray-100"
     >
-      <div className="px-4 py-3 border-b border-gray-100">
-        <div className="flex items-center space-x-3">
-          <motion.div whileHover={{ scale: 1.05 }}>
-            {userInfo.avatar ? (
-              <img
-                src={userInfo.avatar}
-                alt="avatar"
-                className="w-12 h-12 rounded-xl object-cover ring-2 ring-purple-500/20"
-              />
-            ) : (
-              <div
-                className="w-12 h-12 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 
-                flex items-center justify-center shadow-lg"
+      <div className="p-3">
+        {/* Menu Items */}
+        <div className="space-y-1">
+          {menuItems.map((item, index) => (
+            <motion.div
+              key={item.path}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 + index * 0.1 }}
+            >
+              <Link
+                to={item.path}
+                className="flex items-center px-3 py-2.5 rounded-xl text-sm text-gray-700 
+                  hover:bg-gray-50 transition-all duration-300 group"
               >
-                <span className="text-white text-lg font-semibold">
-                  {firstName.charAt(0) || "U"}
+                <span
+                  className="w-8 h-8 flex items-center justify-center rounded-lg 
+                  bg-gray-100 group-hover:bg-pink-100 transition-colors duration-300"
+                >
+                  <span className="text-gray-500 group-hover:text-pink-600">
+                    {item.icon}
+                  </span>
                 </span>
-              </div>
-            )}
-          </motion.div>
-          <div>
-            <h3 className="text-base font-semibold text-gray-800">
-              {userInfo.name}
-            </h3>
-            <p className="text-sm text-gray-500">Thành viên</p>
-          </div>
-        </div>
-      </div>
+                <span className="ml-3">{item.label}</span>
+              </Link>
+            </motion.div>
+          ))}
 
-      <div className="py-2 px-2">
-        {menuItems.map((item, index) => (
+          {/* Logout Button */}
           <motion.div
-            key={item.path}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1 }}
+            transition={{ delay: menuItems.length * 0.1 }}
           >
-            <Link
-              to={item.path}
-              className="flex items-center px-3 py-2.5 rounded-xl text-sm text-gray-700 
-                hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 
-                hover:text-purple-600 transition-all duration-300 group"
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center px-3 py-2.5 rounded-xl text-sm text-red-600 
+                hover:bg-red-50 transition-all duration-300 group mt-2"
             >
               <span
                 className="w-8 h-8 flex items-center justify-center rounded-lg 
-                bg-gradient-to-r from-pink-500/10 to-purple-500/10 group-hover:from-pink-500 
-                group-hover:to-purple-500 transition-colors duration-300"
+                bg-red-500/10 group-hover:bg-red-500 transition-colors duration-300"
               >
-                <span className="text-lg text-purple-600 group-hover:text-white">
-                  {item.icon}
-                </span>
+                <LogoutOutlined className="text-lg text-red-600 group-hover:text-white" />
               </span>
-              <span className="ml-3">{item.label}</span>
-            </Link>
+              <span className="ml-3">Đăng xuất</span>
+            </button>
           </motion.div>
-        ))}
-
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: menuItems.length * 0.1 }}
-        >
-          <button
-            onClick={() => {
-              localStorage.clear();
-              navigate("/");
-            }}
-            className="w-full flex items-center px-3 py-2.5 rounded-xl text-sm text-red-600 
-              hover:bg-red-50 transition-all duration-300 group mt-2"
-          >
-            <span
-              className="w-8 h-8 flex items-center justify-center rounded-lg 
-              bg-red-500/10 group-hover:bg-red-500 transition-colors duration-300"
-            >
-              <LogoutOutlined className="text-lg text-red-600 group-hover:text-white" />
-            </span>
-            <span className="ml-3">Đăng xuất</span>
-          </button>
-        </motion.div>
-=======
-
-  const userMenu = (
-    <div className="bg-white rounded-xl shadow-lg py-2 w-52 border border-gray-100">
-      {/* Thông tin người dùng */}
-      <div className="px-4 py-3 border-b border-gray-100 bg-gradient-to-r from-pink-50 to-purple-50">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center">
-            <span className="text-white font-medium">
-              {user?.name?.charAt(0) || "U"}
-            </span>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-gray-800">
-              {user?.name || "Người dùng"}
-            </h3>
-            <p className="text-xs text-gray-500">{user?.email}</p>
-          </div>
         </div>
->>>>>>> Stashed changes
       </div>
-
-      {/* Mục menu */}
-      <div className="py-2">
-        <Link
-          to="/profile"
-          className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors"
-        >
-          <UserOutlined className="mr-3 text-lg" />
-          <span>Hồ sơ của tôi</span>
-        </Link>
-
-        <Link
-          to="/orders"
-          className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors"
-        >
-          <ShoppingOutlined className="mr-3 text-lg" />
-          <span>Đơn hàng của tôi</span>
-        </Link>
-
-        <Link
-          to="/wishlist"
-          className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors"
-        >
-          <HeartOutlined className="mr-3 text-lg" />
-          <span>Danh sách yêu thích</span>
-        </Link>
-
-        <button
-          onClick={() => {
-            localStorage.removeItem("token");
-            navigate("/");
-          }}
-          className="w-full flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
-        >
-          <LogoutOutlined className="mr-3 text-lg" />
-          <span>Đăng xuất</span>
-        </button>
-      </div>
-    </div>
+    </motion.div>
   );
 
   return (
@@ -207,59 +208,12 @@ export const UserDropdown = ({ user }) => {
       placement="bottomRight"
       overlayClassName="user-dropdown-menu"
     >
-<<<<<<< Updated upstream
-      <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        className="flex items-center gap-3 hover:bg-white/80 rounded-xl transition-all 
-          duration-300 p-2 backdrop-blur-lg shadow-sm hover:shadow-md"
-      >
-        {userInfo.avatar ? (
-          <img
-            src={userInfo.avatar}
-            alt="avatar"
-            className="w-9 h-9 rounded-lg object-cover ring-2 ring-purple-500/20 flex-shrink-0"
-          />
-        ) : (
-          <div
-            className="w-9 h-9 rounded-lg bg-gradient-to-r from-pink-500 to-purple-500 
-            flex items-center justify-center shadow-lg flex-shrink-0"
-          >
-            <span className="text-white font-semibold">
-              {firstName.charAt(0) || "U"}
-            </span>
-          </div>
-        )}
-
-        <div className="hidden md:flex flex-col items-start overflow-hidden">
-          <p className="text-sm font-medium text-gray-700 truncate max-w-[150px]">
-            {userInfo.name}
-          </p>
-          <p className="text-xs text-gray-500">Thành viên</p>
-        </div>
-
-        {/* Mobile View - Chỉ hiện chữ cái đầu */}
-        <div className="md:hidden flex flex-col items-center">
-          <p className="text-sm font-medium text-gray-700">
-            {firstName.charAt(0)}
-          </p>
-        </div>
-      </motion.button>
-=======
-      <button className="flex items-center space-x-3 hover:bg-gray-100 rounded-xl transition-colors p-2">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center">
-          <span className="text-white font-medium">
-            {user?.name?.charAt(0) || "U"}
-          </span>
-        </div>
-        <div className="hidden md:block text-left">
-          <p className="text-sm font-medium text-gray-700">
-            {user?.name || "User"}
-          </p>
-          <p className="text-xs text-gray-500">{user?.email}</p>
-        </div>
-      </button>
->>>>>>> Stashed changes
+      <div className="flex items-center space-x-2 cursor-pointer">
+        <UserAvatar size={40} className="cursor-pointer" />
+        <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
+          {userInfo.name}
+        </span>
+      </div>
     </Dropdown>
   );
 };

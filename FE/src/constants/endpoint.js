@@ -1,37 +1,31 @@
 const endpoints = {
   // Auth
-<<<<<<< Updated upstream
   LOGIN: "/Auth/login",
   REGISTER: "/Auth/register",
   GET_USER: "/Auth/users",
   LOGOUT: "/Auth/logout",
   REFRESH_TOKEN: "/Auth/refresh-token",
   VERIFY_EMAIL: "/Auth/verify-email",
-=======
-  LOGIN: "/login",
-  REGISTER: "/register",
-  GET_USER: "/users",
-  LOGOUT: "/auth/logout",
-  REFRESH_TOKEN: "/auth/refresh-token",
->>>>>>> Stashed changes
-
+  FORGOT_PASSWORD: "/Auth/forgot-password",
+  RESET_PASSWORD: "/Auth/reset-password",
+  
   // User
   GET_PROFILE: "/user/profile",
   UPDATE_PROFILE: "/user/profile",
   CHANGE_PASSWORD: "/user/change-password",
 
   // Products
-  GET_PRODUCTS: "/products",
-  GET_PRODUCT_DETAIL: "/products/:id",
-  CREATE_PRODUCT: "/products",
-  UPDATE_PRODUCT: "/products/:id",
-  DELETE_PRODUCT: "/products/:id",
+  GET_PRODUCTS: "/Product",
+  GET_PRODUCT_DETAIL: "/Product/:id",
+  CREATE_PRODUCT: "/Product",
+  UPDATE_PRODUCT: "/Product/:id",
+  DELETE_PRODUCT: "/Product/:id",
 
   // Categories
-  GET_CATEGORIES: "/categories",
-  CREATE_CATEGORY: "/categories",
-  UPDATE_CATEGORY: "/categories/:id",
-  DELETE_CATEGORY: "/categories/:id",
+  GET_CATEGORIES: "/Category",
+  CREATE_CATEGORY: "/Category",
+  UPDATE_CATEGORY: "/Category/:id",
+  DELETE_CATEGORY: "/Category/:id",
 
   // Orders
   GET_ORDERS: "/orders",
@@ -44,6 +38,12 @@ const endpoints = {
 
   // Dashboard
   GET_DASHBOARD_STATS: "/dashboard/stats",
+
+  // Brands
+  GET_BRANDS: "/Brand",
+  CREATE_BRAND: "/Brand",
+  UPDATE_BRAND: "/Brand/:id",
+  DELETE_BRAND: "/Brand/:id",
 };
 
 export default endpoints;

@@ -4,37 +4,36 @@ import {
   UserOutlined,
   ShoppingOutlined,
   ContactsOutlined,
-  LoginOutlined,
   FileDoneOutlined,
   ShoppingCartOutlined,
-  SearchOutlined,
-  BellOutlined,
   HeartOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
 import blackWhiteLogo from "../assets/pictures/black_white_on_trans.png";
 import { Link } from "react-router-dom";
-import { Dropdown } from "antd";
+import { Dropdown, message } from "antd";
 import { UserDropdown } from "./userDropdown";
-import { useGetUserProfileQuery } from "../services/api/beautyShopApi";
-<<<<<<< Updated upstream
-import { useSelector } from "react-redux";
-=======
->>>>>>> Stashed changes
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setCredentials,
+  logout,
+  checkSession,
+} from "../store/slices/authSlice";
+import UserAvatar from "./common/UserAvatar";
 
 export function SiteHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const { data: user, isLoading } = useGetUserProfileQuery();
-  const isAuthenticated = !!localStorage.getItem("token");
 
-<<<<<<< Updated upstream
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
+  const { user, isAuthenticated } = auth;
+
   // Lấy số lượng sản phẩm từ Redux store
   const cartQuantity = useSelector((state) => state.cart.quantity);
   const wishlistTotal = useSelector((state) => state.wishlist.total);
 
-=======
->>>>>>> Stashed changes
+  // Xử lý scroll
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -43,12 +42,70 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Kiểm tra trạng thái đăng nhập khi component mount
+  useEffect(() => {
+    dispatch(checkSession());
+  }, [dispatch]);
+
+  // Lắng nghe sự kiện localStorage để đồng bộ trạng thái đăng nhập giữa các tab
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      // Nếu có thay đổi liên quan đến auth
+      if (e.key === "auth_token" || e.key === "auth_user" || e.key === null) {
+        // Kiểm tra lại phiên đăng nhập
+        dispatch(checkSession());
+      }
+    };
+
+    // Thêm event listener
+    window.addEventListener("storage", handleStorageChange);
+
+    // Kiểm tra phiên đăng nhập mỗi 30 giây
+    const intervalId = setInterval(() => {
+      dispatch(checkSession());
+    }, 30000);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(intervalId);
+    };
+  }, [dispatch]);
+
+  // Hàm đăng xuất
+  const handleLogout = () => {
+    try {
+      // Xóa giỏ hàng và danh sách yêu thích trong localStorage
+      localStorage.removeItem("allCarts");
+      localStorage.removeItem("allWishlists");
+
+      // Xóa thông tin đăng nhập từ localStorage ngay lập tức
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("auth_user");
+      localStorage.removeItem("auth_sessionId");
+      localStorage.removeItem("auth_isAdmin");
+
+      // Hiển thị thông báo
+      message.success("Đăng xuất thành công!");
+
+      // Kích hoạt sự kiện storage để các tab khác biết về việc đăng xuất
+      const logoutEvent = new Date().getTime();
+      localStorage.setItem("auth_logout_event", logoutEvent);
+
+      // Sử dụng window.location.reload() để tải lại trang hiện tại
+      navigate("/");
+    } catch (error) {
+      console.error("Lỗi khi đăng xuất:", error);
+      message.error("Có lỗi xảy ra khi đăng xuất");
+    }
+  };
+
   return (
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-500 ${
         isScrolled
           ? "bg-white/70 backdrop-blur-lg border-b border-gray-100/50 shadow-sm h-[80px]"
-          : "bg-white h-[150px]"
+          : "bg-white h-[100px]"
       }`}
     >
       <div className="max-w-7xl mx-auto px-8 h-full">
@@ -76,25 +133,25 @@ export function SiteHeader() {
                 icon={<HomeOutlined className="text-xl" />}
                 text="Trang chủ"
               />
-              <NavLink
+              {/* <NavLink
                 to="/about"
                 icon={<UserOutlined className="text-xl" />}
                 text="Giới thiệu"
-              />
+              /> */}
               <NavLink
                 to="/product"
                 icon={<ShoppingOutlined className="text-xl" />}
                 text="Sản phẩm"
               />
-              <NavLink
+              {/* <NavLink
                 to="/contact"
                 icon={<ContactsOutlined className="text-xl" />}
                 text="Liên hệ"
-              />
+              /> */}
               <NavLink
                 to="/quiz-landing"
                 icon={<FileDoneOutlined className="text-xl" />}
-                text="Kiểm tra"
+                text="Trắc nghiệm"
               />
             </div>
 
@@ -104,17 +161,16 @@ export function SiteHeader() {
               <Link
                 to="/cart"
                 className="flex items-center space-x-3 px-4 py-2.5 text-gray-700 border border-gray-200 
-                          rounded-lg hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 group"
+                rounded-lg hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 group relative"
               >
-                <ShoppingCartOutlined className="text-xl text-gray-500 group-hover:text-pink-700 transition-colors" />
+                <ShoppingCartOutlined className="text-xl" />
                 <span className="font-medium text-base whitespace-nowrap">
                   Giỏ hàng
                 </span>
-<<<<<<< Updated upstream
-                {cartQuantity > 0 && (
+                {cartQuantity > 0 && isAuthenticated && (
                   <span
-                    className="flex items-center justify-center w-6 h-6 bg-pink-100 text-pink-700 
-                              text-sm font-semibold rounded-full group-hover:bg-pink-200 transition-colors"
+                    className="ml-1 w-5 h-5 bg-pink-500 text-white 
+                               text-xs rounded-full flex items-center justify-center"
                   >
                     {cartQuantity}
                   </span>
@@ -123,12 +179,12 @@ export function SiteHeader() {
 
               {/* Phần xác thực */}
               <div className="flex items-center space-x-4">
-                {isAuthenticated ? (
+                {isAuthenticated && user ? (
                   <>
                     {/* Wishlist Icon với số lượng */}
                     <Link
                       to="/wishlist"
-                      className="relative p-2 text-gray-600 hover:text-pink-600 transition-colors"
+                      className="relative p-2 text-gray-700 hover:text-gray-900 transition-colors"
                     >
                       <HeartOutlined className="text-xl" />
                       {wishlistTotal > 0 && (
@@ -140,22 +196,8 @@ export function SiteHeader() {
                         </span>
                       )}
                     </Link>
-                    <UserDropdown user={user} />
+                    <UserDropdown user={user} onLogout={handleLogout} />
                   </>
-=======
-                <span
-                  className="flex items-center justify-center w-6 h-6 bg-gray-100 text-gray-700 
-                               text-sm font-semibold rounded-full group-hover:bg-gray-200 transition-colors"
-                >
-                  3
-                </span>
-              </Link>
-
-              {/* Phần xác thực */}
-              <div className="flex items-center">
-                {isAuthenticated ? (
-                  <UserDropdown user={user} />
->>>>>>> Stashed changes
                 ) : (
                   <Link
                     to="/login"

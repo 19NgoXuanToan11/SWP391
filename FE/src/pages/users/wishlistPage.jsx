@@ -1,357 +1,24 @@
 import React from "react";
-import {
-  Card,
-  Row,
-  Col,
-  Typography,
-  Button,
-  Rate,
-  Tag,
-  Empty,
-  Image,
-  Space,
-  Divider,
-  theme,
-  notification,
-} from "antd";
+import { Card, Typography, Button, message } from "antd";
 import {
   HeartFilled,
   ShoppingCartOutlined,
   DeleteOutlined,
-  TagOutlined,
+  CheckOutlined,
 } from "@ant-design/icons";
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-<<<<<<< Updated upstream
 import { useDispatch, useSelector } from "react-redux";
 import {
   removeFromWishlist,
   selectWishlistItems,
 } from "../../store/slices/wishlistSlice";
-=======
->>>>>>> Stashed changes
+import { addToCart } from "../../store/slices/cartSlice";
 
 const { Title, Text } = Typography;
 
 const WishlistPage = () => {
-  const { token } = theme.useToken();
-<<<<<<< Updated upstream
   const dispatch = useDispatch();
   const wishlistItems = useSelector(selectWishlistItems);
-=======
-
-  const colors = {
-    primary: "#ff4d6d", // Hồng đậm
-    secondary: "#ff8fa3", // Hồng nhạt
-    accent: "#ff9a76", // Da cam
-    dark: "#1a1a1a", // Đen
-    light: "#ffffff", // Trắng
-    red: "#ff0a54", // Đỏ
-  };
-
-  const customStyles = {
-    pageContainer: {
-      padding: "32px",
-      maxWidth: 1200,
-      margin: "0 auto",
-      backgroundColor: "#fafafa",
-      minHeight: "100vh",
-    },
-    headerSection: {
-      marginBottom: 32,
-      position: "relative",
-      padding: "24px",
-      background: colors.light,
-      borderRadius: 16,
-      boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-    },
-    headerTitle: {
-      display: "flex",
-      alignItems: "center",
-      marginBottom: 8,
-      color: colors.dark,
-      fontSize: 28,
-    },
-    heartIcon: {
-      color: colors.primary,
-      marginRight: 12,
-      fontSize: 28,
-    },
-    productCard: {
-      height: "100%",
-      position: "relative",
-      overflow: "hidden",
-      borderRadius: 16,
-      border: "none",
-      transition: "all 0.3s ease",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-      "&:hover": {
-        transform: "translateY(-4px)",
-        boxShadow: "0 12px 24px rgba(0,0,0,0.1)",
-      },
-    },
-    imageContainer: {
-      position: "relative",
-      paddingTop: "100%",
-      overflow: "hidden",
-    },
-    productImage: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-      transition: "transform 0.3s ease",
-      "&:hover": {
-        transform: "scale(1.05)",
-      },
-    },
-    discountTag: {
-      position: "absolute",
-      top: 12,
-      left: 12,
-      padding: "6px 12px",
-      borderRadius: 8,
-      fontSize: "14px",
-      fontWeight: 600,
-      background: colors.red,
-      border: "none",
-    },
-    brandText: {
-      fontSize: 13,
-      color: colors.dark,
-      opacity: 0.6,
-      fontWeight: 500,
-    },
-    productName: {
-      fontSize: 16,
-      fontWeight: 600,
-      margin: "8px 0",
-      color: colors.dark,
-      lineHeight: 1.4,
-    },
-    priceContainer: {
-      display: "flex",
-      alignItems: "center",
-      gap: 8,
-      marginTop: 8,
-    },
-    currentPrice: {
-      fontSize: 18,
-      fontWeight: 600,
-      color: colors.primary,
-    },
-    originalPrice: {
-      fontSize: 14,
-      color: colors.dark,
-      opacity: 0.5,
-      textDecoration: "line-through",
-    },
-    actionButton: {
-      borderRadius: 8,
-      height: 40,
-      padding: "0 16px",
-      fontWeight: 500,
-      transition: "all 0.3s ease",
-    },
-    cartButton: {
-      background: colors.primary,
-      borderColor: colors.primary,
-      "&:hover": {
-        background: colors.red,
-        borderColor: colors.red,
-      },
-      "&:disabled": {
-        background: "#f5f5f5",
-        borderColor: "#d9d9d9",
-      },
-    },
-    deleteButton: {
-      color: colors.primary,
-      "&:hover": {
-        color: colors.red,
-        background: "rgba(255,77,109,0.1)",
-      },
-    },
-  };
-
-  // Mock data - thay thế bằng data thật từ API sau
-  const wishlistItems = [
-    {
-      id: 1,
-      name: "Kem Dưỡng Ẩm Chuyên Sâu",
-      brand: "La Roche-Posay",
-      price: 890000,
-      originalPrice: 1200000,
-      rating: 4.5,
-      image: "https://source.unsplash.com/random/400x400/?moisturizer",
-      discount: 25,
-      stock: true,
-      description: "Kem dưỡng ẩm chuyên sâu với công thức đột phá, phù hợp mọi loại da"
-    },
-    {
-      id: 2,
-      name: "Serum Vitamin C Sáng Da",
-      brand: "The Ordinary",
-      price: 750000,
-      originalPrice: 850000,
-      rating: 5,
-      image: "https://source.unsplash.com/random/400x400/?serum",
-      discount: 12,
-      stock: true,
-      description: "Serum vitamin C giúp làm sáng da, mờ thâm nám hiệu quả"
-    },
-    {
-      id: 3,
-      name: "Son Dưỡng Môi Collagen",
-      brand: "Laneige",
-      price: 450000,
-      originalPrice: 500000,
-      rating: 4,
-      image: "https://source.unsplash.com/random/400x400/?lipbalm",
-      discount: 10,
-      stock: false,
-      description: "Son dưỡng môi chứa collagen, giúp môi căng mọng, hồng hào"
-    },
-  ];
->>>>>>> Stashed changes
-
-  const colors = {
-    primary: "#ff4d6d", // Hồng đậm
-    secondary: "#ff8fa3", // Hồng nhạt
-    accent: "#ff9a76", // Da cam
-    dark: "#1a1a1a", // Đen
-    light: "#ffffff", // Trắng
-    red: "#ff0a54", // Đỏ
-  };
-
-  const customStyles = {
-    pageContainer: {
-      padding: "32px",
-      maxWidth: 1200,
-      margin: "0 auto",
-      backgroundColor: "#fafafa",
-      minHeight: "100vh",
-    },
-    headerSection: {
-      marginBottom: 32,
-      position: "relative",
-      padding: "24px",
-      background: colors.light,
-      borderRadius: 16,
-      boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-    },
-    headerTitle: {
-      display: "flex",
-      alignItems: "center",
-      marginBottom: 8,
-      color: colors.dark,
-      fontSize: 28,
-    },
-    heartIcon: {
-      color: colors.primary,
-      marginRight: 12,
-      fontSize: 28,
-    },
-    productCard: {
-      height: "100%",
-      position: "relative",
-      overflow: "hidden",
-      borderRadius: 16,
-      border: "none",
-      transition: "all 0.3s ease",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-      "&:hover": {
-        transform: "translateY(-4px)",
-        boxShadow: "0 12px 24px rgba(0,0,0,0.1)",
-      },
-    },
-    imageContainer: {
-      position: "relative",
-      paddingTop: "100%",
-      overflow: "hidden",
-    },
-    productImage: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-      transition: "transform 0.3s ease",
-      "&:hover": {
-        transform: "scale(1.05)",
-      },
-    },
-    discountTag: {
-      position: "absolute",
-      top: 12,
-      left: 12,
-      padding: "6px 12px",
-      borderRadius: 8,
-      fontSize: "14px",
-      fontWeight: 600,
-      background: colors.red,
-      border: "none",
-    },
-    brandText: {
-      fontSize: 13,
-      color: colors.dark,
-      opacity: 0.6,
-      fontWeight: 500,
-    },
-    productName: {
-      fontSize: 16,
-      fontWeight: 600,
-      margin: "8px 0",
-      color: colors.dark,
-      lineHeight: 1.4,
-    },
-    priceContainer: {
-      display: "flex",
-      alignItems: "center",
-      gap: 8,
-      marginTop: 8,
-    },
-    currentPrice: {
-      fontSize: 18,
-      fontWeight: 600,
-      color: colors.primary,
-    },
-    originalPrice: {
-      fontSize: 14,
-      color: colors.dark,
-      opacity: 0.5,
-      textDecoration: "line-through",
-    },
-    actionButton: {
-      borderRadius: 8,
-      height: 40,
-      padding: "0 16px",
-      fontWeight: 500,
-      transition: "all 0.3s ease",
-    },
-    cartButton: {
-      background: colors.primary,
-      borderColor: colors.primary,
-      "&:hover": {
-        background: colors.red,
-        borderColor: colors.red,
-      },
-      "&:disabled": {
-        background: "#f5f5f5",
-        borderColor: "#d9d9d9",
-      },
-    },
-    deleteButton: {
-      color: colors.primary,
-      "&:hover": {
-        color: colors.red,
-        background: "rgba(255,77,109,0.1)",
-      },
-    },
-  };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -360,187 +27,151 @@ const WishlistPage = () => {
     }).format(price);
   };
 
-  const handleRemoveFromWishlist = (id) => {
-<<<<<<< Updated upstream
-    dispatch(removeFromWishlist(id));
-=======
->>>>>>> Stashed changes
-    notification.success({
-      message: "Đã xóa khỏi danh sách yêu thích",
-      placement: "bottomRight",
+  const handleRemoveFromWishlist = (item) => {
+    dispatch(removeFromWishlist(item.id));
+    message.error({
+      content: `Đã xóa "${item.name}" khỏi danh sách yêu thích`,
+      duration: 3,
+      style: {
+        marginTop: "20px",
+        borderRadius: "10px",
+      },
     });
   };
 
   const handleAddToCart = (item) => {
-    if (!item.stock) return;
-    notification.success({
-      message: "Đã thêm vào giỏ hàng",
-      description: `${item.name} đã được thêm vào giỏ hàng của bạn.`,
-      placement: "bottomRight",
+    const productToAdd = {
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      brand: item.brand,
+      description: item.description,
+      stock: item.stock,
+      quantity: 1,
+      discount: item.discount,
+      originalPrice: item.originalPrice,
+    };
+
+    dispatch(addToCart(productToAdd));
+    message.success({
+      content: `Đã thêm "${item.name}" vào giỏ hàng`,
+      duration: 3,
+      style: {
+        marginTop: "20px",
+        borderRadius: "10px",
+      },
     });
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-block"
-          >
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4 flex items-center justify-center">
-              <HeartFilled className="text-pink-500 mr-4" />
-              Danh Sách Yêu Thích
-            </h1>
-            <p className="text-gray-600 text-lg">
-              {wishlistItems.length} sản phẩm trong danh sách yêu thích của bạn
-            </p>
-          </motion.div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <Title level={2} className="!mb-2">
+            Danh Sách Yêu Thích
+          </Title>
+          <Text className="text-gray-600">
+            {wishlistItems.length} sản phẩm trong danh sách yêu thích của bạn
+          </Text>
         </div>
 
         {wishlistItems.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {wishlistItems.map((item, index) => (
-              <motion.div
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {wishlistItems.map((item) => (
+              <div
                 key={item.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="group"
+                className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
               >
-                <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
-                  {/* Image Section */}
-                  <div className="relative">
-                    <div className="aspect-w-1 aspect-h-1 overflow-hidden">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        className="object-cover w-full h-full transform group-hover:scale-110 transition-transform duration-500"
-                        preview={false}
-                      />
+                <div className="relative">
+                  <img
+                    alt={item.name}
+                    src={item.image}
+                    className="h-72 w-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <button
+                    onClick={() => handleRemoveFromWishlist(item)}
+                    className="absolute top-4 right-4 p-3 bg-white/80 backdrop-blur-sm rounded-full shadow-md hover:bg-red-50 transition-colors group-hover:scale-110"
+                  >
+                    <DeleteOutlined className="text-red-500 text-lg" />
+                  </button>
+                  {item.discount > 0 && (
+                    <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                      -{item.discount}%
                     </div>
-                    {item.discount > 0 && (
-                      <div className="absolute top-4 left-4">
-<<<<<<< Updated upstream
-                        <Tag
-                          color="red"
-                          className="px-3 py-1 text-sm font-semibold rounded-full"
-                        >
-=======
-                        <Tag color="red" className="px-3 py-1 text-sm font-semibold rounded-full">
->>>>>>> Stashed changes
-                          -{item.discount}% GIẢM
-                        </Tag>
+                  )}
+                </div>
+
+                <div className="p-6 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Text className="text-gray-600 font-medium">
+                      {item.brand}
+                    </Text>
+                    {item.rating && (
+                      <div className="flex items-center gap-1">
+                        <span className="text-yellow-400">★</span>
+                        <span className="text-gray-600">{item.rating}</span>
                       </div>
                     )}
-                    <button
-                      onClick={() => handleRemoveFromWishlist(item.id)}
-                      className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-full 
-                                hover:bg-red-50 transition-colors duration-300"
-                    >
-                      <DeleteOutlined className="text-red-500 text-lg" />
-                    </button>
                   </div>
 
-                  {/* Content Section */}
-                  <div className="p-6">
-                    <div className="mb-4">
-                      <p className="text-gray-500 text-sm mb-2">{item.brand}</p>
-<<<<<<< Updated upstream
-                      <h3 className="text-xl font-bold text-gray-800 mb-2">
-                        {item.name}
-                      </h3>
-                      <p className="text-gray-600 text-sm line-clamp-2">
-                        {item.description}
-                      </p>
-                    </div>
+                  <Title
+                    level={5}
+                    className="!m-0 !text-xl font-bold line-clamp-1 group-hover:text-pink-600 transition-colors"
+                  >
+                    {item.name}
+                  </Title>
 
-                    <div className="mb-4">
-                      <Rate
-                        disabled
-                        defaultValue={item.rating}
-                        className="text-sm"
-                      />
-=======
-                      <h3 className="text-xl font-bold text-gray-800 mb-2">{item.name}</h3>
-                      <p className="text-gray-600 text-sm line-clamp-2">{item.description}</p>
-                    </div>
+                  <Text className="text-gray-600 line-clamp-2 text-sm">
+                    {item.description}
+                  </Text>
 
-                    <div className="mb-4">
-                      <Rate disabled defaultValue={item.rating} className="text-sm" />
->>>>>>> Stashed changes
+                  <div className="flex justify-between items-end pt-2">
+                    <div className="space-y-1">
+                      <Text className="text-2xl font-bold text-pink-600">
+                        {formatPrice(item.price)}
+                      </Text>
+                      {item.originalPrice && (
+                        <Text className="block text-sm text-gray-400 line-through">
+                          {formatPrice(item.originalPrice)}
+                        </Text>
+                      )}
                     </div>
-
-                    <div className="flex items-center justify-between mb-6">
-                      <div>
-                        <p className="text-2xl font-bold text-pink-600">
-                          {formatPrice(item.price)}
-                        </p>
-                        {item.originalPrice > item.price && (
-                          <p className="text-sm text-gray-400 line-through">
-                            {formatPrice(item.originalPrice)}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
                     <button
                       onClick={() => handleAddToCart(item)}
+                      className="flex items-center gap-2 px-6 py-2.5 text-white font-medium bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500 hover:bg-gradient-to-br hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600 border-0 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:scale-105 transition-all duration-300 active:scale-95"
                       disabled={!item.stock}
-                      className={`w-full py-3 px-4 rounded-xl flex items-center justify-center space-x-2 
-                                font-semibold transition-all duration-300
-                                ${
-                                  item.stock
-                                    ? "bg-pink-600 hover:bg-pink-700 text-white"
-                                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                }`}
                     >
-                      <ShoppingCartOutlined className="text-xl" />
-<<<<<<< Updated upstream
-                      <span>
-                        {item.stock ? "Thêm vào giỏ hàng" : "Hết hàng"}
-                      </span>
-=======
-                      <span>{item.stock ? "Thêm vào giỏ hàng" : "Hết hàng"}</span>
->>>>>>> Stashed changes
+                      <ShoppingCartOutlined className="text-lg" />
+                      <span>{item.stock ? "Thêm vào giỏ" : "Hết hàng"}</span>
                     </button>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-3xl shadow-lg p-12 text-center"
-          >
-            <Empty
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-              description={
-                <div className="space-y-4">
-                  <p className="text-gray-600 text-lg">
-                    Danh sách yêu thích của bạn đang trống
-                  </p>
-                  <Link to="/product">
-<<<<<<< Updated upstream
-                    <button
-                      className="bg-pink-600 text-white px-8 py-3 mt-10 rounded-xl font-semibold
-                                     hover:bg-pink-700 transition-colors duration-300"
-                    >
-=======
-                    <button className="bg-pink-600 text-white px-8 py-3 rounded-xl font-semibold
-                                     hover:bg-pink-700 transition-colors duration-300">
->>>>>>> Stashed changes
-                      Khám phá sản phẩm
-                    </button>
-                  </Link>
-                </div>
-              }
-            />
-          </motion.div>
+          <div className="flex flex-col items-center justify-center py-16 px-6 bg-white rounded-2xl shadow-xl transition-all duration-300 hover:shadow-2xl">
+            <Title level={4} className="!text-2xl font-bold text-gray-800 mb-3">
+              Danh sách yêu thích của bạn đang trống
+            </Title>
+            <Text className="text-gray-500 text-center max-w-md mb-8">
+              Khám phá và thêm những sản phẩm bạn yêu thích để xem chúng ở đây
+            </Text>
+            <Link to="/product">
+              <button
+                type="primary"
+                size="large"
+                className="bg-gradient-to-r from-pink-500 via-fuchsia-500 to-purple-600 border-0 rounded-full px-8 py-4 h-auto flex items-center gap-2 shadow-lg hover:shadow-2xl transform hover:-translate-y-1.5 hover:scale-105 transition-all duration-300 text-white font-medium backdrop-blur-sm"
+              >
+                <ShoppingCartOutlined className="text-lg animate-bounce" />
+                <span className="relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-white after:transition-all hover:after:w-full">
+                  Khám phá sản phẩm
+                </span>
+              </button>
+            </Link>
+          </div>
         )}
       </div>
     </div>

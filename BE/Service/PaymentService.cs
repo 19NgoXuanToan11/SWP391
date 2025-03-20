@@ -1,4 +1,5 @@
 using Data.Models;
+using Microsoft.EntityFrameworkCore;
 using Repo;
 
 namespace Service
@@ -11,6 +12,10 @@ namespace Service
         {
             _paymentRepository = paymentRepository;
         }
+        public async Task<Payment?> GetPaymentByOrderCodeAsync(int orderCode)
+        {
+            return await _paymentRepository.GetPaymentByOrderCodeAsync(orderCode);
+        }
 
         public async Task<IEnumerable<Payment>> GetAllPaymentsAsync()
         {
@@ -20,6 +25,11 @@ namespace Service
         public async Task<Payment?> GetPaymentByIdAsync(int id)
         {
             return await _paymentRepository.GetByIdAsync(id);
+        }
+
+        public async Task<Payment?> GetPaymentByOrderIdAsync(int orderId)
+        {
+            return await _paymentRepository.GetByOrderIdAsync(orderId);
         }
 
         public async Task AddPaymentAsync(Payment payment)
@@ -36,13 +46,15 @@ namespace Service
         {
             await _paymentRepository.DeleteAsync(id);
         }
-<<<<<<< Updated upstream
 
         public async Task AddPaymentHistoryAsync(PaymentHistory history)
         {
             await _paymentRepository.AddPaymentHistoryAsync(history);
         }
-=======
->>>>>>> Stashed changes
+
+        public async Task<IEnumerable<Payment>> GetPaidPaymentsByUserIdAsync(int userId)
+        {
+             return await _paymentRepository.GetPaidPaymentsByUserIdAsync(userId);
+        }
     }
 }

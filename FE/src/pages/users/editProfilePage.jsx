@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Form,
@@ -9,21 +9,25 @@ import {
   Space,
   message,
   Image,
+  Avatar,
+  Divider,
 } from "antd";
 import {
   UserOutlined,
   MailOutlined,
   EnvironmentOutlined,
   PlusOutlined,
-<<<<<<< Updated upstream
   CameraOutlined,
   SaveOutlined,
   RollbackOutlined,
-=======
->>>>>>> Stashed changes
+  LoadingOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import uploadFile from "../../utils/upload";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { updateUserProfile } from "../../store/slices/profileSlice";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -32,19 +36,44 @@ export default function EditProfilePage() {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [fileList, setFileList] = useState([
-    {
-      uid: "-1",
-      name: "avatar.png",
-      status: "done",
-      url:
-        localStorage.getItem("userAvatar") ||
-        "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-  ]);
+  const [fileList, setFileList] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
-<<<<<<< Updated upstream
+  const dispatch = useDispatch();
+  const [initialValues, setInitialValues] = useState({
+    username: "",
+    email: "",
+  });
+  const [userInfo, setUserInfo] = useState({
+    username: "",
+    email: "",
+    avatar: null,
+  });
+
+  useEffect(() => {
+    // Lấy thông tin từ auth_user trong localStorage
+    const authUserStr = localStorage.getItem("auth_user");
+    if (authUserStr) {
+      try {
+        const authUser = JSON.parse(authUserStr);
+        setInitialValues({
+          username: authUser.username || "",
+          email: authUser.email || "",
+        });
+        setUserInfo({
+          username: authUser.username || "",
+          email: authUser.email || "",
+          avatar: authUser.photoURL || null,
+        });
+        form.setFieldsValue({
+          username: authUser.username || "",
+          email: authUser.email || "",
+        });
+      } catch (error) {
+        console.error("Error parsing auth_user:", error);
+      }
+    }
+  }, [form]);
 
   const colors = {
     primary: "#ff4d6d",
@@ -170,8 +199,6 @@ export default function EditProfilePage() {
       },
     },
   };
-=======
->>>>>>> Stashed changes
 
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -182,44 +209,101 @@ export default function EditProfilePage() {
     });
 
   const handleSubmit = async (values) => {
-<<<<<<< Updated upstream
     try {
       setLoading(true);
+      let avatarUrl = userInfo.avatar;
 
-      if (fileList[0]?.originFileObj) {
-        message.loading({ content: "Đang tải ảnh lên...", key: "upload" });
-        const url = await uploadFile(fileList[0].originFileObj);
-        localStorage.setItem("userAvatar", url);
-        message.success({
-          content: "Cập nhật ảnh đại diện thành công!",
-          key: "upload",
-        });
+      // Upload avatar mới nếu có
+      if (fileList.length > 0 && fileList[0].originFileObj) {
+        avatarUrl = await uploadFile(fileList[0].originFileObj);
       }
 
-      // Lưu thông tin vào localStorage
-      localStorage.setItem("userName", values.name);
-      localStorage.setItem("userEmail", values.email);
-      localStorage.setItem("userLocation", values.location);
-      localStorage.setItem("userBio", values.bio);
+      // Lấy thông tin hiện tại từ auth_user
+      const authUserStr = localStorage.getItem("auth_user");
+      if (authUserStr) {
+        const authUser = JSON.parse(authUserStr);
 
-      // Trigger storage event manually để UserDropdown cập nhật
-      window.dispatchEvent(new Event("storage"));
+        // So sánh dữ liệu mới với dữ liệu cũ
+        const isDataChanged =
+          values.username !== authUser.username ||
+          values.email !== authUser.email ||
+          avatarUrl !== authUser.photoURL;
 
-      message.success("Cập nhật thông tin thành công!");
-      navigate("/profile");
+        // Chỉ cập nhật nếu có thay đổi
+        if (isDataChanged) {
+          // Cập nhật thông tin mới bao gồm avatar
+          const updatedUser = {
+            ...authUser,
+            username: values.username,
+            email: values.email,
+            photoURL: avatarUrl,
+          };
+
+          // Lưu vào localStorage
+          localStorage.setItem("auth_user", JSON.stringify(updatedUser));
+
+          // Lưu riêng avatar URL với key theo username để phân biệt giữa các user
+          if (avatarUrl) {
+            const avatarKey = `userAvatar_${values.username}`;
+            localStorage.setItem(avatarKey, avatarUrl);
+            sessionStorage.setItem(avatarKey, avatarUrl);
+
+            // Lưu vào IndexedDB để duy trì lâu dài
+            saveAvatarToIndexedDB(values.username, avatarUrl);
+          }
+
+          // Kích hoạt sự kiện storage để các components khác cập nhật
+          window.dispatchEvent(new Event("storage"));
+
+          message.success("Cập nhật thông tin thành công!");
+        }
+
+        navigate("/profile");
+      }
     } catch (error) {
-      console.error("Save error:", error);
-      message.error("Có lỗi xảy ra khi lưu thông tin!");
+      message.error("Có lỗi xảy ra khi cập nhật thông tin");
+      console.error(error);
     } finally {
       setLoading(false);
-=======
-    console.log(values);
-
-    if (values.avatar) {
-      const url = await uploadFile(values.avatar.file.originFileObj);
-      values.avatar = url;
->>>>>>> Stashed changes
     }
+  };
+
+  // Hàm lưu avatar vào IndexedDB
+  const saveAvatarToIndexedDB = (username, avatarUrl) => {
+    // Kiểm tra hỗ trợ IndexedDB
+    if (!window.indexedDB) {
+      console.log("Trình duyệt không hỗ trợ IndexedDB");
+      return;
+    }
+
+    const request = window.indexedDB.open("UserAvatarDB", 1);
+
+    request.onerror = (event) => {
+      console.error("Lỗi khi mở IndexedDB:", event.target.error);
+    };
+
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains("avatars")) {
+        db.createObjectStore("avatars", { keyPath: "username" });
+      }
+    };
+
+    request.onsuccess = (event) => {
+      const db = event.target.result;
+      const transaction = db.transaction(["avatars"], "readwrite");
+      const store = transaction.objectStore("avatars");
+
+      store.put({ username, avatarUrl, timestamp: Date.now() });
+
+      transaction.oncomplete = () => {
+        console.log("Avatar đã được lưu vào IndexedDB");
+      };
+
+      transaction.onerror = (event) => {
+        console.error("Lỗi khi lưu avatar vào IndexedDB:", event.target.error);
+      };
+    };
   };
 
   const handlePreview = async (file) => {
@@ -230,302 +314,177 @@ export default function EditProfilePage() {
     setPreviewOpen(true);
   };
 
-  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
-<<<<<<< Updated upstream
+  const handleChange = async ({ fileList: newFileList }) => {
+    // Giới hạn chỉ 1 file
+    if (newFileList.length > 1) {
+      newFileList = [newFileList[newFileList.length - 1]];
+    }
+    setFileList(newFileList);
 
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      style={styles.pageContainer}
-    >
-      <Card style={styles.mainCard}>
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          style={styles.header}
-        >
-          <Title level={2} style={styles.title}>
-            Chỉnh sửa hồ sơ
-          </Title>
-          <Text style={styles.subtitle}>
-            Cập nhật thông tin cá nhân của bạn
-          </Text>
-        </motion.div>
-
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          style={styles.uploadSection}
-        >
-          <Upload
-            listType="picture-circle"
-=======
-
-  const handleSave = async () => {
-    try {
-      if (fileList[0]?.originFileObj) {
-        message.loading({ content: "Đang tải ảnh lên...", key: "upload" });
-        const url = await uploadFile(fileList[0].originFileObj);
-        localStorage.setItem("userAvatar", url);
-        message.success({
-          content: "Cập nhật ảnh đại diện thành công!",
-          key: "upload",
-        });
-        navigate("/profile");
+    // Preview image
+    if (newFileList.length > 0) {
+      const file = newFileList[0];
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj);
       }
-    } catch (error) {
-      console.error("Upload error:", error);
-      message.error({
-        content: "Có lỗi xảy ra khi upload ảnh! " + error.message,
-        key: "upload",
-      });
     }
   };
 
-  const uploadButton = (
-    <button
-      style={{
-        border: 0,
-        background: "none",
-      }}
-      type="button"
-    >
-      <PlusOutlined />
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </button>
-  );
+  const handleGoBack = () => {
+    navigate("/profile");
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white p-6">
-      <div className="max-w-2xl mx-auto">
-        <Card className="shadow-xl rounded-2xl">
-          <Title level={2} className="text-center mb-8">
-            Chỉnh sửa hồ sơ
-          </Title>
-
-          <Upload
-            listType="picture-card"
->>>>>>> Stashed changes
-            fileList={fileList}
-            onPreview={handlePreview}
-            onChange={handleChange}
-            maxCount={1}
-            beforeUpload={() => false}
-<<<<<<< Updated upstream
-            showUploadList={false}
-          >
-            {fileList.length >= 1 ? (
-              <div
-                style={{
-                  width: 150,
-                  height: 150,
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  position: "relative",
-                }}
-              >
-                <img
-                  src={fileList[0].url}
-                  alt="avatar"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                />
-              </div>
-            ) : (
-              <div style={styles.uploadButton}>
-                <div style={{ textAlign: "center" }}>
-                  <CameraOutlined
-                    style={{ fontSize: 24, color: colors.primary }}
-                  />
-                  <p style={styles.uploadText}>Thay đổi ảnh đại diện</p>
-                </div>
-              </div>
-            )}
-          </Upload>
-        </motion.div>
-
-        <Divider style={{ borderColor: "rgba(0,0,0,0.06)" }} />
-
+    <div className="min-h-screen py-12 px-4">
+      <div className="max-w-3xl mx-auto">
         <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
-          <Form
-            form={form}
-            layout="vertical"
-            initialValues={{
-              name: localStorage.getItem("userName") || "",
-              email: localStorage.getItem("userEmail") || "",
-              location: localStorage.getItem("userLocation") || "",
-              bio: localStorage.getItem("userBio") || "",
-            }}
-            onFinish={handleSubmit}
-          >
-            <Form.Item
-              name="name"
-              label={<Text style={styles.formLabel}>Họ và tên</Text>}
-              rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}
-            >
-              <Input
-                prefix={<UserOutlined style={{ color: colors.primary }} />}
-                placeholder="Nhập họ và tên của bạn"
-                style={styles.input}
-=======
-          >
-            {fileList.length >= 1 ? null : uploadButton}
-          </Upload>
-
-          {previewImage && (
-            <Image
-              wrapperStyle={{
-                display: "none",
-              }}
-              preview={{
-                visible: previewOpen,
-                onVisibleChange: (visible) => setPreviewOpen(visible),
-                afterOpenChange: (visible) => !visible && setPreviewImage(""),
-              }}
-              src={previewImage}
-            />
-          )}
-
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={handleSubmit}
-            initialValues={{
-              name: "Nguyễn Văn A",
-              email: "nguyenvana@example.com",
-              location: "Hà Nội, Việt Nam",
-              bio: "Tôi là chuyên gia tư vấn làm đẹp với hơn 3 năm kinh nghiệm trong ngành mỹ phẩm cao cấp.",
-            }}
-          >
-            <Form.Item
-              name="name"
-              label="Họ và tên"
-              rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}
-            >
-              <Input
-                prefix={<UserOutlined className="text-gray-400" />}
-                placeholder="Nhập họ và tên"
-                size="large"
->>>>>>> Stashed changes
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="email"
-<<<<<<< Updated upstream
-              label={<Text style={styles.formLabel}>Email</Text>}
-=======
-              label="Email"
->>>>>>> Stashed changes
-              rules={[
-                { required: true, message: "Vui lòng nhập email" },
-                { type: "email", message: "Email không hợp lệ" },
-              ]}
-            >
-              <Input
-<<<<<<< Updated upstream
-                prefix={<MailOutlined style={{ color: colors.primary }} />}
-                placeholder="Nhập địa chỉ email"
-                style={styles.input}
-=======
-                prefix={<MailOutlined className="text-gray-400" />}
-                placeholder="Nhập email"
-                size="large"
->>>>>>> Stashed changes
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="location"
-<<<<<<< Updated upstream
-              label={<Text style={styles.formLabel}>Địa chỉ</Text>}
-              rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}
-            >
-              <Input
-                prefix={
-                  <EnvironmentOutlined style={{ color: colors.primary }} />
-                }
-                placeholder="Nhập địa chỉ của bạn"
-                style={styles.input}
-=======
-              label="Địa chỉ"
-              rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}
-            >
-              <Input
-                prefix={<EnvironmentOutlined className="text-gray-400" />}
-                placeholder="Nhập địa chỉ"
-                size="large"
->>>>>>> Stashed changes
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="bio"
-<<<<<<< Updated upstream
-              label={<Text style={styles.formLabel}>Giới thiệu</Text>}
-              rules={[{ required: true, message: "Vui lòng nhập giới thiệu" }]}
-            >
-              <TextArea
-                placeholder="Viết một vài dòng giới thiệu về bản thân"
-                rows={4}
-                style={styles.textarea}
-=======
-              label="Giới thiệu"
-              rules={[{ required: true, message: "Vui lòng nhập giới thiệu" }]}
-            >
-              <TextArea
-                placeholder="Nhập giới thiệu về bản thân"
-                rows={4}
->>>>>>> Stashed changes
-                showCount
-                maxLength={500}
-              />
-            </Form.Item>
-
-<<<<<<< Updated upstream
-            <div style={styles.buttonGroup}>
-              <Button
-                icon={<RollbackOutlined />}
-                style={styles.cancelButton}
-                onClick={() => navigate("/profile")}
-              >
-                Hủy
-              </Button>
-              <Button
-                type="primary"
-                icon={<SaveOutlined />}
-                loading={loading}
-                style={styles.saveButton}
-                onClick={() => form.submit()}
-              >
-                Lưu thay đổi
-              </Button>
+          <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
+            {/* Header Section */}
+            <div className="px-6 py-8 bg-white border-b border-gray-100 shadow-sm">
+              <h1 className="text-2xl font-semibold text-center text-gray-800">
+                Chỉnh sửa hồ sơ
+              </h1>
+              <p className="text-gray-500 text-center mt-2 text-sm">
+                Cập nhật thông tin cá nhân của bạn
+              </p>
             </div>
-          </Form>
-        </motion.div>
-      </Card>
 
+            {/* Avatar Upload Section */}
+            <div className="relative mt-20 text-center">
+              <div className="inline-block">
+                <Upload
+                  listType="picture-circle"
+                  fileList={fileList}
+                  onPreview={handlePreview}
+                  onChange={handleChange}
+                  beforeUpload={() => false}
+                  maxCount={1}
+                  className="avatar-uploader"
+                >
+                  {fileList.length >= 1 ? null : (
+                    <div
+                      className="w-40 h-40 rounded-full border-4 border-white bg-white shadow-lg 
+                      flex items-center justify-center overflow-hidden hover:opacity-90 transition-all
+                      cursor-pointer group relative"
+                    >
+                      {userInfo.avatar ? (
+                        <>
+                          <img
+                            src={userInfo.avatar}
+                            alt="avatar"
+                            className="w-full h-full object-cover"
+                          />
+                          <div
+                            className="absolute inset-0 bg-black bg-opacity-40 flex items-center 
+                            justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <CameraOutlined className="text-white text-2xl" />
+                          </div>
+                        </>
+                      ) : (
+                        <div className="text-center">
+                          <CameraOutlined className="text-3xl text-pink-500 mb-2" />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </Upload>
+              </div>
+            </div>
+
+            {/* Form Section */}
+            <div className="p-8">
+              <Form
+                form={form}
+                layout="vertical"
+                initialValues={initialValues}
+                onFinish={handleSubmit}
+                className="space-y-6"
+              >
+                <Form.Item
+                  name="username"
+                  label={
+                    <span className="text-gray-700 font-medium">Username</span>
+                  }
+                  rules={[
+                    { required: true, message: "Vui lòng nhập username" },
+                  ]}
+                >
+                  <Input
+                    prefix={<UserOutlined className="text-pink-500" />}
+                    placeholder="Nhập username của bạn"
+                    className="h-12 rounded-xl border-gray-200 hover:border-pink-500 
+                      focus:border-pink-500 transition-colors"
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  name="email"
+                  label={
+                    <span className="text-gray-700 font-medium">Email</span>
+                  }
+                  rules={[
+                    { required: true, message: "Vui lòng nhập email" },
+                    { type: "email", message: "Email không hợp lệ" },
+                  ]}
+                >
+                  <Input
+                    prefix={<MailOutlined className="text-pink-500" />}
+                    placeholder="Nhập địa chỉ email"
+                    className="h-12 rounded-xl border-gray-200 hover:border-pink-500 
+                      focus:border-pink-500 transition-colors"
+                  />
+                </Form.Item>
+
+                {/* Buttons */}
+                <div className="flex justify-end space-x-4 pt-6">
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={handleGoBack}
+                    className="h-12 px-8 rounded-xl border border-gray-200 hover:border-pink-500 
+                      hover:text-pink-500 transition-all flex items-center justify-center gap-2
+                      backdrop-blur-sm bg-white/70 shadow-sm"
+                  >
+                    <RollbackOutlined />
+                    Quay lại
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    type="primary"
+                    disabled={loading}
+                    onClick={() => form.submit()}
+                    className="h-12 px-8 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 
+                      border-0 hover:opacity-90 transition-all text-white font-medium
+                      hover:shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <span className="animate-spin">
+                          <LoadingOutlined />
+                        </span>
+                        Đang lưu...
+                      </>
+                    ) : (
+                      <>
+                        <SaveOutlined />
+                        Lưu thay đổi
+                      </>
+                    )}
+                  </motion.button>
+                </div>
+              </Form>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Preview Modal */}
       <Image
         style={{ display: "none" }}
         preview={{
@@ -534,23 +493,6 @@ export default function EditProfilePage() {
         }}
         src={previewImage}
       />
-    </motion.div>
-=======
-            <Space className="w-full justify-end">
-              <Button onClick={() => navigate("/profile")}>Hủy</Button>
-              <Button
-                type="primary"
-                onClick={handleSave}
-                loading={loading}
-                className="bg-gradient-to-r from-pink-500 to-purple-500"
-              >
-                Lưu thay đổi
-              </Button>
-            </Space>
-          </Form>
-        </Card>
-      </div>
     </div>
->>>>>>> Stashed changes
   );
 }

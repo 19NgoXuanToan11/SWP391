@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repo
 {
-    public class PaymentRepository
+    public class PaymentRepository : IPaymentRepository
     {
         private readonly SkinCareManagementDbContext _context;
 
@@ -43,12 +43,11 @@ namespace Repo
                 await _context.SaveChangesAsync();
             }
         }
-<<<<<<< Updated upstream
 
         public async Task<Payment?> GetByOrderIdAsync(int orderId)
         {
             return await _context.Payments
-                .FirstOrDefaultAsync(p => p.OrderId == orderId);
+                .FirstOrDefaultAsync(p => p.OrderId == orderId && p.Status == "PENDING");
         }
 
         public async Task AddPaymentHistoryAsync(PaymentHistory history)
@@ -56,7 +55,21 @@ namespace Repo
             await _context.PaymentHistories.AddAsync(history);
             await _context.SaveChangesAsync();
         }
-=======
->>>>>>> Stashed changes
+
+        public async Task<Payment?> GetPaymentByOrderCodeAsync(int orderCode)
+        {
+            return await _context.Payments.FirstOrDefaultAsync(p => p.OrderCode == orderCode);
+        }
+
+        public async Task<IEnumerable<Payment>> GetPaidPaymentsByUserIdAsync(int userId)
+        {
+            return await _context.Payments
+                .Include(p => p.Order)
+                    .ThenInclude(o => o.OrderDetails)
+                        .ThenInclude(od => od.Product)
+                            .ThenInclude(p => p.Images)
+                .Where(p => p.Order.UserId == userId && p.Status == "PAID")
+                .ToListAsync();
+        }
     }
 }

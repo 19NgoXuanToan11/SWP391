@@ -5,39 +5,36 @@ import { LoginPage } from "../pages/login/loginPage";
 import { RegisterPage } from "../pages/login/registerPage";
 import { AboutPage } from "../pages/users/aboutPage";
 import { ContactPage } from "../pages/users/contactPage";
-import { ProductsPage } from "../pages/users/productPage";
-import { QuizPage } from "../pages/users/quizPage";
+import ProductsPage from "../pages/users/productPage";
+import QuizPage from "../pages/users/quizPage";
 import { QuizLandingPage } from "../pages/users/quizlandingPage";
-import { ForgotPasswordPage } from "../pages/login/resetPage";
+import { ForgotPasswordPage } from "../pages/login/forgotPasswordPage";
 import DashboardPage from "../pages/admin/dashboardPage";
 import AccountsPage from "../pages/admin/accountsPage";
 import OrdersPage from "../pages/admin/ordersPage";
 import CategoryPage from "../pages/admin/categoryPage";
 import BrandsPage from "../pages/admin/brandsPage";
-import VouchersPage from "../pages/admin/vouchersPage";
-import SettingPage from "../pages/admin/settingPage";
 import CartPage from "../pages/users/cartPage";
 import PaymentPage from "../pages/users/paymentPage";
-import OrderhistoryPage from "../pages/users/orderhistoryPage";
 import CustomerOrderPage from "../pages/admin/customerorderPage";
 import ProfilePage from "../pages/users/profilePage";
 import WishlistPage from "../pages/users/wishlistPage";
-import QRPaymentPage from "../pages/users/qrPaymentPage";
 import EditProfilePage from "../pages/users/editProfilePage";
 import { SkinCareRoutinePage } from "../pages/users/skinCareRoutine";
 import { ProductRecommendationPage } from "../pages/users/productRecommendation";
-import { ProtectedRoute } from "../components/ProtectedRoute";
-<<<<<<< Updated upstream
+import { ProtectedRoute } from "../components/auth/ProtectedRoute";
 import ProductDetailPage from "../pages/users/productdetailPage";
 import { NewsDetailPage } from "../pages/users/newsDetailPage";
 import { NewsPage } from "../components/newsPage";
 import { VerifyEmailPage } from "../pages/login/verifyEmailPage";
 import OrderSuccessPage from "../pages/users/orderSuccessPage";
 import OrdersHistoryPage from "../pages/users/ordersHistoryPage";
-=======
-import OrderHistoryPage from "../pages/users/orderhistoryPage";
-import ProductDetailPage from "../pages/users/productDetailPage";
->>>>>>> Stashed changes
+import { AdminProtectedRoute } from "../components/auth/AdminProtectedRoute";
+import { AdminLoginPage } from "../pages/admin/adminLoginPage";
+import ResetPasswordPage from "../pages/login/resetPasswordPage";
+import QuizResultsPage from "../pages/users/quizResultsPage";
+import StaffLoginPage from "../pages/staff/staffLoginPage";
+import StaffOrdersPage from "../pages/staff/staffOrdersPage";
 
 export const router = createBrowserRouter([
   {
@@ -65,6 +62,10 @@ export const router = createBrowserRouter([
         element: <QuizPage />,
       },
       {
+        path: "quiz-results",
+        element: <QuizResultsPage />,
+      },
+      {
         path: "product",
         element: <ProductsPage />,
       },
@@ -81,32 +82,44 @@ export const router = createBrowserRouter([
         element: <RegisterPage />,
       },
       {
-        path: "reset",
+        path: "forgot-password",
         element: <ForgotPasswordPage />,
+      },
+      {
+        path: "reset-password",
+        element: <ResetPasswordPage />,
       },
       {
         path: "cart",
         element: <CartPage />,
       },
       {
-        path: "payment",
-        element: <PaymentPage />,
-      },
-      {
-        path: "qr-payment",
+        path: "payment/:orderId",
         element: (
           <ProtectedRoute>
-            <QRPaymentPage />
+            <PaymentPage />
           </ProtectedRoute>
         ),
       },
       {
-        path: "history",
-        element: <OrderhistoryPage />,
+        path: "dashboard",
+        element: (
+          <AdminProtectedRoute>
+            <DashboardPage />
+          </AdminProtectedRoute>
+        ),
       },
       {
-        path: "dashboard",
-        element: <DashboardPage />,
+        path: "admin/login",
+        element: <AdminLoginPage />,
+      },
+      {
+        path: "staff/login",
+        element: <StaffLoginPage />,
+      },
+      {
+        path: "staff/orders",
+        element: <StaffOrdersPage />,
       },
       {
         path: "account",
@@ -118,7 +131,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "orders",
-        element: <OrderHistoryPage />,
+        element: <OrdersHistoryPage />,
       },
       {
         path: "category",
@@ -127,14 +140,6 @@ export const router = createBrowserRouter([
       {
         path: "brand",
         element: <BrandsPage />,
-      },
-      {
-        path: "voucher",
-        element: <VouchersPage />,
-      },
-      {
-        path: "setting",
-        element: <SettingPage />,
       },
       {
         path: "abouts",
@@ -157,16 +162,28 @@ export const router = createBrowserRouter([
         element: <WishlistPage />,
       },
       {
-<<<<<<< Updated upstream
-        path: "skin-care-routine",
-=======
-        path: "/skin-care-routine",
->>>>>>> Stashed changes
+        path: "skincare-routine",
         element: <SkinCareRoutinePage />,
       },
       {
-        path: "/product-recommendations",
+        path: "product-recommendations",
         element: <ProductRecommendationPage />,
+      },
+      {
+        path: "news",
+        element: <NewsPage />,
+      },
+      {
+        path: "news/:id",
+        element: <NewsDetailPage />,
+      },
+      {
+        path: "verify-email",
+        element: <VerifyEmailPage />,
+      },
+      {
+        path: "order-success",
+        element: <OrderSuccessPage />,
       },
     ],
   },

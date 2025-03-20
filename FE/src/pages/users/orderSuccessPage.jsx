@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Typography, Button, Result, Space, Tag } from "antd";
 import {
   ShoppingOutlined,
@@ -8,16 +8,44 @@ import {
   EnvironmentOutlined,
   PhoneOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { PaymentSteps } from "../../components/PaymentStep";
-
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { clearCart } from "../../store/slices/cartSlice";
 const { Title, Text, Paragraph } = Typography;
 
 function OrderSuccessPage() {
+  const query = new URLSearchParams(useLocation().search);
+  console.log(query);
   const navigate = useNavigate();
   const orderNumber = "ORD-" + Date.now();
+  const orderCode = query.get("orderCode") || "ORD-DEFAULT";
 
+  const [payment, setPayment] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (orderCode) {
+      axios
+        .get(`https://localhost:7285/Payment/orderCode/${orderCode}`)
+        .then((res) => {
+          if (res.data.error === 0) {
+            setPayment(res.data.data);
+          }
+        })
+        .catch((err) => console.error("Lỗi khi gọi API:", err))
+        .finally(() => setLoading(false));
+    }
+  }, [orderCode]);
+
+  useEffect(() => {
+    dispatch(clearCart());
+  }, [dispatch]);
+
+  console.log(payment);
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 via-purple-50 to-white py-12 px-4">
       <div className="max-w-4xl mx-auto">
@@ -65,7 +93,7 @@ function OrderSuccessPage() {
                   <div className="flex justify-between items-center">
                     <Text className="text-gray-500">Mã đơn hàng:</Text>
                     <Tag color="blue" className="text-base px-4 py-1">
-                      {orderNumber}
+                      {payment?.orderId}
                     </Tag>
                   </div>
 
@@ -93,7 +121,6 @@ function OrderSuccessPage() {
               </Card>
 
               <Space className="w-full justify-center" size="large">
-          
                 <button
                   onClick={() => navigate("/product")}
                   className="h-12 px-8 bg-white border-2 border-gray-200 rounded-full

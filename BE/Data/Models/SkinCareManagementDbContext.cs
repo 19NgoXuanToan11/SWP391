@@ -42,6 +42,7 @@ public partial class SkinCareManagementDbContext : DbContext
 
 <<<<<<< Updated upstream
     public virtual DbSet<Volume> Volume { get; set; }
+    public DbSet<History> History { get; set; }
 
 =======
 >>>>>>> Stashed changes
@@ -147,7 +148,7 @@ public partial class SkinCareManagementDbContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.PaymentStatus)
                 .HasMaxLength(50)
-                .HasDefaultValue("Pending");
+                .HasDefaultValue("PENDING");
 
             entity.HasOne(d => d.Order).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.OrderId)

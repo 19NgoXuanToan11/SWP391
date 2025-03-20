@@ -6,16 +6,13 @@ namespace Service
     {
         Task<IEnumerable<Payment>> GetAllPaymentsAsync();
         Task<Payment?> GetPaymentByIdAsync(int id);
-<<<<<<< Updated upstream
         Task<Payment?> GetPaymentByOrderIdAsync(int orderId);
+        Task<Payment?> GetPaymentByOrderCodeAsync(int orderCode);
+
         Task AddPaymentAsync(Payment payment);
         Task UpdatePaymentAsync(Payment payment);
         Task DeletePaymentAsync(int id);
         Task AddPaymentHistoryAsync(PaymentHistory history);
-=======
-        Task AddPaymentAsync(Payment payment);
-        Task UpdatePaymentAsync(Payment payment);
-        Task DeletePaymentAsync(int id);
->>>>>>> Stashed changes
+        Task<IEnumerable<Payment>> GetPaidPaymentsByUserIdAsync(int userId);
     }
 }

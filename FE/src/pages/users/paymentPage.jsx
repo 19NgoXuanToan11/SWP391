@@ -1,8 +1,5 @@
-import React, { useState } from "react";
-<<<<<<< Updated upstream
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-=======
->>>>>>> Stashed changes
 import {
   Card,
   Steps,
@@ -17,6 +14,10 @@ import {
   Radio,
   Tooltip,
   Spin,
+  Divider,
+  Form,
+  Input,
+  Modal,
 } from "antd";
 import {
   QrcodeOutlined,
@@ -27,121 +28,174 @@ import {
   BankOutlined,
   WalletOutlined,
   SafetyOutlined,
-<<<<<<< Updated upstream
   ArrowLeftOutlined,
-=======
->>>>>>> Stashed changes
+  UserOutlined,
+  HomeOutlined,
+  PhoneOutlined,
+  MailOutlined,
 } from "@ant-design/icons";
 import { QRCode } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-<<<<<<< Updated upstream
 import { PaymentSteps } from "../../components/PaymentStep";
-=======
->>>>>>> Stashed changes
+import axios from "axios";
 
 const { Title, Text, Paragraph } = Typography;
 
 export function PaymentPage() {
+  const { orderId } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedPayment, setSelectedPayment] = useState("qr");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
-<<<<<<< Updated upstream
-  // Lấy thông tin giỏ hàng từ Redux store
-  const cartItems = useSelector((state) => state.cart.items);
-  const cartTotal = useSelector((state) => state.cart.total);
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [paymentUrl, setPaymentUrl] = useState("");
+  const [form] = Form.useForm();
 
-  // Thay thế dữ liệu mẫu bằng dữ liệu từ Redux
-  const orderDetails = {
-    orderId: `ORD-${Date.now()}`,
-    totalAmount: cartTotal,
-    items: cartItems.map((item) => ({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      quantity: item.quantity,
-      image: item.image,
-    })),
-  };
+  useEffect(() => {
+    // Nếu không có orderId, điều hướng về trang cart
+    if (!orderId) {
+      navigate("/cart");
+      return;
+    }
 
-=======
-  // Dữ liệu mẫu
-  const orderDetails = {
-    orderId: "ORD-2024-001",
-    totalAmount: 1200000, // Changed to VND
-    items: [
-      {
-        id: 1,
-        name: "Kem Nền Hoàn Hảo",
-        price: 850000, // Changed to VND
-        quantity: 1,
-        image: "https://source.unsplash.com/random/100x100/?cosmetics",
-      },
-      {
-        id: 2,
-        name: "Serum Dưỡng Ẩm",
-        price: 350000, // Changed to VND
-        quantity: 1,
-        image: "https://source.unsplash.com/random/100x100/?serum",
-      },
-    ],
-  };
+    const fetchOrder = async () => {
+      try {
+        const res = await axios.get(
+          `https://localhost:7285/api/order/${orderId}`
+        );
+        console.log("Order data:", res.data);
 
->>>>>>> Stashed changes
+        // If order details don't have images, you might need to fetch them separately
+        const orderData = res.data;
+
+        // Check if we need to fetch product images separately
+        if (
+          orderData.orderDetails &&
+          orderData.orderDetails.length > 0 &&
+          !orderData.orderDetails[0].image
+        ) {
+          console.log("Fetching product images for order details");
+
+          // Fetch product details for each item in the order to get images
+          const updatedOrderDetails = await Promise.all(
+            orderData.orderDetails.map(async (item) => {
+              try {
+                // Fetch product details to get the image
+                const productRes = await axios.get(
+                  `https://localhost:7285/api/product/${item.productId}`
+                );
+
+                // Add image URL and product name to the order detail item
+                return {
+                  ...item,
+                  productName:
+                    productRes.data.productName || "Sản phẩm không xác định",
+                  image:
+                    productRes.data.image ||
+                    productRes.data.imageUrls ||
+                    `https://localhost:7285/api/product/image/${item.productId}`,
+                };
+              } catch (error) {
+                console.error(
+                  `Error fetching product ${item.productId}:`,
+                  error
+                );
+                // Return the original item if fetch fails
+                return item;
+              }
+            })
+          );
+
+          // Update the order data with the product images
+          orderData.orderDetails = updatedOrderDetails;
+        }
+
+        setOrder(orderData);
+      } catch (err) {
+        console.error("Error fetching order:", err);
+        message.error("Không thể tải thông tin đơn hàng");
+        navigate("/cart");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrder();
+  }, [orderId, navigate]);
+
+  // const payOSConfig = {
+  //   RETURN_URL: "", // required
+  //   ELEMENT_ID: "", // required
+  //   CHECKOUT_URL: "", // required
+  //   embedded: true, // Nếu dùng giao diện nhúng
+  //   onSuccess: (event) => {
+  //     //TODO: Hành động sau khi người dùng thanh toán đơn hàng thành công
+  //   },
+  //   onCancel: (event) => {
+  //     //TODO: Hành động sau khi người dùng Hủy đơn hàng
+  //   },
+  //   onExit: (event) => {
+  //     //TODO: Hành động sau khi người dùng tắt Pop up
+  //   },
+  // };
   const paymentMethods = [
     {
       value: "qr",
       label: "Thanh Toán Qua Mã QR",
       icon: <QrcodeOutlined />,
       description: "Thanh toán nhanh chóng qua ứng dụng ngân hàng",
+      image: "https://cdn-icons-png.flaticon.com/512/6963/6963703.png",
     },
   ];
 
   const handlePayment = async () => {
-<<<<<<< Updated upstream
     if (!isAuthenticated) {
       message.warning("Vui lòng đăng nhập để tiếp tục thanh toán");
       navigate("/login", { state: { from: "/payment" } });
       return;
     }
 
-    if (cartItems.length === 0) {
-      message.warning("Giỏ hàng của bạn đang trống");
-      navigate("/cart");
-      return;
-    }
-
     setIsProcessing(true);
     try {
-      // Tạo object đơn hàng
+      // Validate form first
+      await form.validateFields();
+      const buyerInfo = form.getFieldsValue();
+
+      setLoading(true);
+
       const orderData = {
-        items: cartItems,
-        totalAmount: cartTotal,
-        paymentMethod: selectedPayment,
-        orderDate: new Date().toISOString(),
-        status: "pending",
+        buyerName: buyerInfo.name,
+        buyerEmail: buyerInfo.email,
+        buyerPhone: buyerInfo.phone,
+        buyerAddress: buyerInfo.address,
+        orderId: orderId,
+        UserId: Number(user.id),
+        paymentMethod: paymentMethod,
       };
 
-      // TODO: Gọi API tạo đơn hàng thực tế ở đây
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await axios.post(
+        "https://localhost:7285/Payment/create",
+        orderData
+      );
 
-      // Chuyển hướng đến trang QR thay vì set paymentSuccess
-      navigate("/qr-payment");
-=======
-    setIsProcessing(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setPaymentSuccess(true);
-      message.success("Thanh toán thành công!");
->>>>>>> Stashed changes
+      console.log(response.data);
+      if (response.data && response.data.data) {
+        window.location.href = response.data.data.paymentUrl;
+      } else {
+        message.error("Không thể tạo liên kết thanh toán. Vui lòng thử lại!");
+      }
     } catch (error) {
       message.error("Đã xảy ra lỗi. Vui lòng thử lại!");
     } finally {
       setIsProcessing(false);
+      setLoading(false);
     }
   };
 
@@ -161,8 +215,21 @@ export function PaymentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white py-12 px-4">
+    <div className="min-h-screen py-12 px-4">
       <div className="max-w-5xl mx-auto">
+        <PaymentSteps current={1} />
+
+        <button
+          type="button"
+          className="flex items-center gap-2 mb-8 px-4 py-2 rounded-full bg-white hover:bg-pink-50 
+              text-gray-600 hover:text-pink-500 font-medium transition-all duration-300
+              shadow-sm hover:shadow-md transform hover:scale-105 border border-gray-200"
+          onClick={() => navigate("/cart")}
+        >
+          <ArrowLeftOutlined className="text-lg" />
+          <span>Quay lại giỏ hàng</span>
+        </button>
+
         <Card className="shadow-xl rounded-3xl overflow-hidden">
           <div className="text-center mb-8">
             <Title
@@ -191,23 +258,27 @@ export function PaymentPage() {
                 bodyStyle={{ padding: "1.5rem" }}
               >
                 <div className="space-y-4">
-                  {orderDetails.items.map((item) => (
+                  {order?.orderDetails.map((item) => (
                     <div
-                      key={item.id}
+                      key={item.orderDetailId || item.id}
                       className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl"
                     >
                       <div className="flex items-center gap-4">
                         <Image
                           src={item.image}
-                          alt={item.name}
+                          alt={item.productName || "Sản phẩm"}
                           width={80}
                           height={80}
                           className="rounded-xl object-cover"
                           preview={false}
+                          fallback="https://placehold.co/80x80/pink/white?text=BeautyCare"
                         />
-                        <div>
-                          <Text strong className="text-lg">
-                            {item.name}
+                        <div className="max-w-[70%]">
+                          <Text
+                            strong
+                            className="text-lg line-clamp-2 break-words"
+                          >
+                            {item.productName || "Sản phẩm"}
                           </Text>
                           <div>
                             <Text type="secondary">
@@ -216,7 +287,10 @@ export function PaymentPage() {
                           </div>
                         </div>
                       </div>
-                      <Text strong className="text-lg text-pink-500">
+                      <Text
+                        strong
+                        className="text-lg text-pink-500 whitespace-nowrap min-w-[100px] text-right"
+                      >
                         {formatPrice(item.price)}
                       </Text>
                     </div>
@@ -232,7 +306,7 @@ export function PaymentPage() {
                       level={3}
                       className="!mb-0 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500"
                     >
-                      {formatPrice(orderDetails.totalAmount)}
+                      {formatPrice(order?.totalAmount)}
                     </Title>
                   </div>
                 </div>
@@ -251,34 +325,77 @@ export function PaymentPage() {
                 bordered={false}
                 bodyStyle={{ padding: "1.5rem" }}
               >
-<<<<<<< Updated upstream
-                <Radio.Group
-                  onChange={(e) => setSelectedPayment(e.target.value)}
-                  value={selectedPayment}
-                  className="w-full"
+                <Form
+                  form={form}
+                  layout="vertical"
+                  initialValues={{
+                    name: "",
+                    address: "",
+                    phone: "",
+                    email: "",
+                  }}
                 >
-                  <Space direction="vertical" className="w-full">
-                    {paymentMethods.map((method) => (
-                      <Radio
-                        key={method.value}
-                        value={method.value}
-                        className="w-full p-4 border rounded-xl hover:border-pink-200 transition-all"
-                      >
-                        <Space>
-                          <div className="w-8 h-8 bg-pink-50 rounded-lg flex items-center justify-center text-pink-500">
-                            {method.icon}
-                          </div>
-                          <div>
-                            <div className="font-medium">{method.label}</div>
-                            <Text type="secondary" className="text-sm">
-                              {method.description}
-                            </Text>
-                          </div>
-                        </Space>
-                      </Radio>
-                    ))}
-                  </Space>
-                </Radio.Group>
+                  <Form.Item
+                    name="name"
+                    label="Họ và tên"
+                    rules={[
+                      { required: true, message: "Vui lòng nhập họ và tên" },
+                    ]}
+                  >
+                    <Input
+                      prefix={<UserOutlined className="site-form-item-icon" />}
+                      placeholder="Nhập họ và tên người nhận"
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="address"
+                    label="Địa chỉ"
+                    rules={[
+                      { required: true, message: "Vui lòng nhập địa chỉ" },
+                    ]}
+                  >
+                    <Input.TextArea
+                      prefix={<HomeOutlined className="site-form-item-icon" />}
+                      placeholder="Nhập địa chỉ giao hàng chi tiết"
+                      rows={3}
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="phone"
+                    label="Số điện thoại"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập số điện thoại",
+                      },
+                      {
+                        pattern: /^[0-9]{10}$/,
+                        message: "Số điện thoại không hợp lệ",
+                      },
+                    ]}
+                  >
+                    <Input
+                      prefix={<PhoneOutlined className="site-form-item-icon" />}
+                      placeholder="Nhập số điện thoại"
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="email"
+                    label="Email"
+                    rules={[
+                      { required: true, message: "Vui lòng nhập email" },
+                      { type: "email", message: "Email không hợp lệ" },
+                    ]}
+                  >
+                    <Input
+                      prefix={<MailOutlined className="site-form-item-icon" />}
+                      placeholder="Nhập email"
+                    />
+                  </Form.Item>
+                </Form>
 
                 <div className="mt-6">
                   <Button
@@ -296,89 +413,6 @@ export function PaymentPage() {
                     {isProcessing ? "Đang Xử Lý..." : "Thanh Toán Ngay"}
                   </Button>
                 </div>
-=======
-                {paymentSuccess ? (
-                  <div className="text-center py-8">
-                    <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-green-50 flex items-center justify-center">
-                      <CheckCircleOutlined className="text-4xl text-green-500" />
-                    </div>
-                    <Title level={4} className="!mb-2">
-                      Thanh Toán Thành Công!
-                    </Title>
-                    <Paragraph type="secondary">
-                      Cảm ơn bạn đã mua hàng. Đơn hàng của bạn sẽ được xử lý
-                      ngay lập tức.
-                    </Paragraph>
-                    <Button
-                      type="primary"
-                      icon={<ShoppingOutlined />}
-                      size="large"
-                      className="mt-4 bg-gradient-to-r from-pink-500 to-purple-500"
-                      onClick={() => (window.location.href = "/orders")}
-                    >
-                      Xem Đơn Hàng
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                    <Radio.Group
-                      onChange={(e) => setSelectedPayment(e.target.value)}
-                      value={selectedPayment}
-                      className="w-full"
-                    >
-                      <Space direction="vertical" className="w-full">
-                        {paymentMethods.map((method) => (
-                          <Radio
-                            key={method.value}
-                            value={method.value}
-                            className="w-full p-4 border rounded-xl hover:border-pink-200 transition-all"
-                          >
-                            <Space>
-                              <div className="w-8 h-8 bg-pink-50 rounded-lg flex items-center justify-center text-pink-500">
-                                {method.icon}
-                              </div>
-                              <div>
-                                <div className="font-medium">
-                                  {method.label}
-                                </div>
-                                <Text type="secondary" className="text-sm">
-                                  {method.description}
-                                </Text>
-                              </div>
-                            </Space>
-                          </Radio>
-                        ))}
-                      </Space>
-                    </Radio.Group>
-
-                    <div className="mt-6">
-                      <Button
-                        type="primary"
-                        size="large"
-                        block
-                        loading={isProcessing}
-                        onClick={handlePayNow}
-                        className="bg-gradient-to-r from-pink-500 to-purple-500 h-12 text-lg"
-                        style={{
-                          background:
-                            "linear-gradient(to right, #ec4899, #a855f7)",
-                          borderColor: "transparent",
-                        }}
-                      >
-                        {isProcessing ? "Đang Xử Lý..." : "Thanh Toán Ngay"}
-                      </Button>
-
-                      <Button
-                        type="link"
-                        block
-                        className="mt-2 text-gray-500 hover:text-pink-500"
-                      >
-                        Hủy Thanh Toán
-                      </Button>
-                    </div>
-                  </>
-                )}
->>>>>>> Stashed changes
               </Card>
 
               <Card
@@ -388,17 +422,11 @@ export function PaymentPage() {
                 <Space direction="vertical" className="w-full">
                   <div className="flex justify-between items-center">
                     <Text>Mã Đơn Hàng:</Text>
-                    <Tag color="pink">{orderDetails.orderId}</Tag>
+                    <Tag color="pink">{order?.orderId}</Tag>
                   </div>
                   <div className="flex justify-between items-center">
                     <Text>Trạng Thái:</Text>
-<<<<<<< Updated upstream
-                    <Tag color="processing">Đang Chờ</Tag>
-=======
-                    <Tag color={paymentSuccess ? "success" : "processing"}>
-                      {paymentSuccess ? "Đã Thanh Toán" : "Đang Chờ"}
-                    </Tag>
->>>>>>> Stashed changes
+                    <Tag color="processing">{order?.status}</Tag>
                   </div>
                 </Space>
               </Card>
@@ -406,6 +434,19 @@ export function PaymentPage() {
           </Row>
         </Card>
       </div>
+
+      <Modal
+        title="Chuyển đến trang thanh toán"
+        open={isModalOpen}
+        onOk={handlePayNow}
+        onCancel={() => setIsModalOpen(false)}
+        okText="Thanh toán ngay"
+        cancelText="Hủy"
+      >
+        <p>
+          Bạn sẽ được chuyển đến trang thanh toán VNPay để hoàn tất giao dịch.
+        </p>
+      </Modal>
     </div>
   );
 }
