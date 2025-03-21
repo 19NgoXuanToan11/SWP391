@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\CN5\\SWP391\\SWP_BE\\Data\\Data.csproj": {}
+    "D:\\SWP391\\BE\\Data\\Data.csproj": {}
   },
   "projects": {
-    "D:\\CN5\\SWP391\\SWP_BE\\Data\\Data.csproj": {
+    "D:\\SWP391\\BE\\Data\\Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\CN5\\SWP391\\SWP_BE\\Data\\Data.csproj",
+        "projectUniqueName": "D:\\SWP391\\BE\\Data\\Data.csproj",
         "projectName": "Data",
-        "projectPath": "D:\\CN5\\SWP391\\SWP_BE\\Data\\Data.csproj",
-        "packagesPath": "C:\\Users\\ACER\\.nuget\\packages\\",
-        "outputPath": "D:\\CN5\\SWP391\\SWP_BE\\Data\\obj\\",
+        "projectPath": "D:\\SWP391\\BE\\Data\\Data.csproj",
+        "packagesPath": "C:\\Users\\lequa\\.nuget\\packages\\",
+        "outputPath": "D:\\SWP391\\BE\\Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ACER\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\lequa\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -44,7 +43,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -64,23 +64,23 @@
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.12, )"
+              "version": "[9.0.2, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.12, )"
+              "version": "[9.0.2, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[8.0.12, )"
+              "version": "[9.0.2, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.12, )"
+              "version": "[9.0.2, )"
             },
             "Microsoft.Extensions.Configuration.Json": {
               "target": "Package",
@@ -89,6 +89,10 @@
             "MimeKit": {
               "target": "Package",
               "version": "[4.10.0, )"
+            },
+            "payOS": {
+              "target": "Package",
+              "version": "[1.0.9, )"
             }
           },
           "imports": [
@@ -107,7 +111,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.405/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

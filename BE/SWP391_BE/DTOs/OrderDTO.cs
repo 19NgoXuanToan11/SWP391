@@ -33,4 +33,9 @@ namespace SWP391_BE.DTOs
         public string? Status { get; set; }
         public string? PaymentMethod { get; set; }
     }
+    
+    public class OrderStatusDTO
+    {
+        public string Status { get; set; }
+    }
 } 

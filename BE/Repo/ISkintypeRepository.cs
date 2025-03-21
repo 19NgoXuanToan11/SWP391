@@ -2,12 +2,12 @@ using Data.Models;
 
 namespace Repo
 {
-    public interface ISkintypeRepository
+    public interface ISkinTypeRepository
     {
         Task<IEnumerable<Skintype>> GetAllAsync();
         Task<Skintype?> GetByIdAsync(int id);
-        Task AddAsync(Skintype skintype);
-        Task UpdateAsync(Skintype skintype);
+        Task AddAsync(Skintype skinType);
+        Task UpdateAsync(Skintype skinType);
         Task DeleteAsync(int id);
     }
 }
