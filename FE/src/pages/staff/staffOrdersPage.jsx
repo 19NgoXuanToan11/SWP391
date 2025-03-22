@@ -107,11 +107,35 @@ const OrdersPage = () => {
       const response = await axios.get("https://localhost:7285/api/order");
       console.log("Orders response:", response.data);
 
+      // Khôi phục trạng thái từ localStorage
+      const orderStatusUpdates = JSON.parse(
+        localStorage.getItem("orderStatusUpdates") || "{}"
+      );
+
+      // Áp dụng trạng thái đã lưu cho các đơn hàng được tải về
+      const ordersWithSavedStatus = response.data.map((order) => {
+        // Kiểm tra nếu có trạng thái lưu cho đơn hàng này
+        if (orderStatusUpdates[order.orderId]) {
+          return {
+            ...order,
+            status: orderStatusUpdates[order.orderId], // Ưu tiên sử dụng trạng thái đã lưu
+          };
+        }
+        // Kiểm tra nếu có trackingCode và có trạng thái lưu theo trackingCode
+        if (order.trackingCode && orderStatusUpdates[order.trackingCode]) {
+          return {
+            ...order,
+            status: orderStatusUpdates[order.trackingCode],
+          };
+        }
+        return order;
+      });
+
       // Nếu API đã trả về đầy đủ thông tin, không cần gọi thêm API chi tiết
-      setOrders(response.data);
+      setOrders(ordersWithSavedStatus);
 
       // Tính toán thống kê
-      const totalRevenue = response.data
+      const totalRevenue = ordersWithSavedStatus
         .filter(
           (o) =>
             o.status.toLowerCase() === "delivered" ||
@@ -120,20 +144,20 @@ const OrdersPage = () => {
         .reduce((sum, order) => sum + order.totalAmount, 0);
 
       setOrderStats({
-        total: response.data.length,
-        pending: response.data.filter(
+        total: ordersWithSavedStatus.length,
+        pending: ordersWithSavedStatus.filter(
           (o) => o.status.toLowerCase() === "pending"
         ).length,
-        processing: response.data.filter(
+        processing: ordersWithSavedStatus.filter(
           (o) => o.status.toLowerCase() === "processing"
         ).length,
-        shipped: response.data.filter(
+        shipped: ordersWithSavedStatus.filter(
           (o) => o.status.toLowerCase() === "shipped"
         ).length,
-        delivered: response.data.filter(
+        delivered: ordersWithSavedStatus.filter(
           (o) => o.status.toLowerCase() === "delivered"
         ).length,
-        cancelled: response.data.filter(
+        cancelled: ordersWithSavedStatus.filter(
           (o) => o.status.toLowerCase() === "cancelled"
         ).length,
         revenue: totalRevenue,
@@ -154,8 +178,25 @@ const OrdersPage = () => {
       console.log("Payments response:", response.data);
 
       if (response.data.data) {
-        setPayments(response.data.data);
-        calculateStats(response.data.data);
+        // Khôi phục trạng thái từ localStorage
+        const orderStatusUpdates = JSON.parse(
+          localStorage.getItem("orderStatusUpdates") || "{}"
+        );
+
+        // Áp dụng trạng thái đã lưu cho payments
+        const paymentsWithOrderStatus = response.data.data.map((payment) => {
+          // Thêm trạng thái đơn hàng từ localStorage nếu có
+          if (payment.orderId && orderStatusUpdates[payment.orderId]) {
+            return {
+              ...payment,
+              orderStatus: orderStatusUpdates[payment.orderId],
+            };
+          }
+          return payment;
+        });
+
+        setPayments(paymentsWithOrderStatus);
+        calculateStats(paymentsWithOrderStatus);
       }
     } catch (error) {
       console.error("Error fetching payments:", error);
@@ -328,32 +369,87 @@ const OrdersPage = () => {
   };
 
   // Update order status
-  const updateOrderStatus = (orderId, newStatus) => {
+  const updateOrderStatus = async (orderId, newStatus) => {
     try {
       setLoading(true);
-      // Update local state
-      const updatedOrders = orders.map((order) => {
-        if (order.orderId === orderId) {
-          return {
-            ...order,
-            status: newStatus,
-          };
-        }
-        return order;
+
+      // Chuyển đổi trạng thái hiển thị sang trạng thái API chấp nhận
+      let apiStatus;
+      switch (newStatus) {
+        case "shipping":
+          apiStatus = "delivering"; // API chấp nhận "delivering" thay vì "shipping"
+          break;
+        case "delivered":
+          apiStatus = "complete"; // API chấp nhận "complete" thay vì "delivered"
+          break;
+        case "cancelled":
+          apiStatus = "failed"; // API chấp nhận "failed" thay vì "cancelled"
+          break;
+        default:
+          apiStatus = newStatus; // Trường hợp "pending" giữ nguyên
+      }
+
+      // Gọi API để cập nhật trạng thái đơn hàng
+      await axios.patch(`https://localhost:7285/api/Order/${orderId}/status`, {
+        status: apiStatus,
       });
 
-      setOrders(updatedOrders);
       message.success("Cập nhật trạng thái đơn hàng thành công");
 
-      // Update localStorage to sync with user view
-      const orderStatusUpdates = JSON.parse(
-        localStorage.getItem("orderStatusUpdates") || "{}"
-      );
-      orderStatusUpdates[orderId] = newStatus;
-      localStorage.setItem(
-        "orderStatusUpdates",
-        JSON.stringify(orderStatusUpdates)
-      );
+      // Tìm đơn hàng trong danh sách để lấy trackingCode
+      const orderToUpdate = orders.find((order) => order.orderId === orderId);
+
+      if (orderToUpdate) {
+        // Cập nhật UI cho orders
+        const updatedOrders = orders.map((order) => {
+          if (order.orderId === orderId) {
+            return {
+              ...order,
+              status: newStatus, // Vẫn lưu trạng thái giao diện trong state local
+            };
+          }
+          return order;
+        });
+        setOrders(updatedOrders);
+
+        // Cập nhật UI cho payments nếu order có trong danh sách payments
+        const updatedPayments = payments.map((payment) => {
+          if (payment.orderId === orderId) {
+            return {
+              ...payment,
+              status: payment.status, // Giữ nguyên trạng thái thanh toán
+              orderStatus: newStatus, // Cập nhật trạng thái đơn hàng
+            };
+          }
+          return payment;
+        });
+        setPayments(updatedPayments);
+
+        // Lưu vào localStorage với TRACKING CODE để phía người dùng có thể sử dụng
+        const orderStatusUpdates = JSON.parse(
+          localStorage.getItem("orderStatusUpdates") || "{}"
+        );
+
+        // Lưu trạng thái theo orderId để đảm bảo lưu được ngay cả khi không có trackingCode
+        orderStatusUpdates[orderId] = newStatus;
+
+        // Nếu có trackingCode thì lưu thêm theo trackingCode
+        if (orderToUpdate.trackingCode) {
+          orderStatusUpdates[orderToUpdate.trackingCode] = newStatus;
+          console.log(
+            `Đã cập nhật trạng thái cho đơn hàng có mã theo dõi: ${orderToUpdate.trackingCode}`
+          );
+        } else {
+          console.warn(
+            "Không tìm thấy mã theo dõi (trackingCode) cho đơn hàng, nhưng đã lưu theo orderId"
+          );
+        }
+
+        localStorage.setItem(
+          "orderStatusUpdates",
+          JSON.stringify(orderStatusUpdates)
+        );
+      }
     } catch (error) {
       console.error("Error updating order status:", error);
       message.error("Không thể cập nhật trạng thái đơn hàng");
@@ -461,10 +557,8 @@ const OrdersPage = () => {
         return "Đã xác nhận";
       case "processing":
         return "Đang chuẩn bị";
-      case "shipping":
+      case "delivering":
         return "Đang giao hàng";
-      case "delivered":
-        return "Đã giao hàng";
       case "completed":
         return "Hoàn thành";
       case "cancelled":
@@ -595,99 +689,115 @@ const OrdersPage = () => {
     {
       title: "Trạng thái đơn hàng",
       key: "orderStatus",
-      render: (_, record) => (
-        <Select
-          ref={statusSelectRef}
-          defaultValue={record.orderStatus || "pending"}
-          value={statusFilter}
-          style={{
-            width: 180,
-            fontSize: 14,
-          }}
-          onChange={(value) => {
-            if (record.orderId) {
-              updateOrderStatus(record.orderId, value);
-            } else {
-              message.error({
-                content: "Không tìm thấy mã đơn hàng",
-                duration: 2,
-              });
-            }
-          }}
-          className="custom-order-select"
-          dropdownClassName="custom-select-dropdown"
-          dropdownStyle={{
-            borderRadius: "12px",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-            padding: "8px",
-          }}
-          optionLabelProp="label"
-        >
-          <Option
-            value="pending"
-            label={
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 rounded-full bg-orange-500"></div>
-                <span>Chờ xác nhận</span>
-              </div>
-            }
+      render: (_, record) => {
+        // Lấy trạng thái hiện tại từ record
+        // Hoặc từ localStorage nếu có
+        const orderStatusUpdates = JSON.parse(
+          localStorage.getItem("orderStatusUpdates") || "{}"
+        );
+
+        const currentStatus =
+          orderStatusUpdates[record.orderId] ||
+          orderStatusUpdates[record.trackingCode] ||
+          record.status ||
+          "pending";
+
+        return (
+          <Select
+            value={currentStatus} // Sử dụng value thay vì defaultValue để đảm bảo hiển thị đúng
+            style={{
+              width: 180,
+              fontSize: 14,
+            }}
+            onChange={(value) => {
+              if (record.orderId) {
+                updateOrderStatus(record.orderId, value);
+              } else {
+                message.error({
+                  content: "Không tìm thấy mã đơn hàng",
+                  duration: 2,
+                });
+              }
+            }}
+            className="custom-order-select"
+            dropdownClassName="custom-select-dropdown"
+            dropdownStyle={{
+              borderRadius: "12px",
+              boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+              padding: "8px",
+            }}
+            optionLabelProp="label"
           >
-            <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 mr-3">
-                <ClockCircleOutlined className="text-orange-500 text-sm" />
+            <Option
+              value="pending"
+              label={
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                  <span>Chờ xác nhận</span>
+                </div>
+              }
+            >
+              <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 mr-3">
+                  <ClockCircleOutlined className="text-orange-500 text-sm" />
+                </div>
+                <div>
+                  <span className="text-gray-800 font-medium">
+                    Chờ xác nhận
+                  </span>
+                  <p className="text-xs text-gray-500 mt-0.5">Đơn hàng mới</p>
+                </div>
               </div>
-              <div>
-                <span className="text-gray-800 font-medium">Chờ xác nhận</span>
-                <p className="text-xs text-gray-500 mt-0.5">Đơn hàng mới</p>
+            </Option>
+            <Option
+              value="shipping"
+              label={
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 rounded-full bg-cyan-500"></div>
+                  <span>Đang giao hàng</span>
+                </div>
+              }
+            >
+              <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-cyan-100 mr-3">
+                  <CarOutlined className="text-cyan-500 text-sm" />
+                </div>
+                <div>
+                  <span className="text-gray-800 font-medium">
+                    Đang giao hàng
+                  </span>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Đã chuyển cho đơn vị vận chuyển
+                  </p>
+                </div>
               </div>
-            </div>
-          </Option>
-          <Option
-            value="shipping"
-            label={
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 rounded-full bg-cyan-500"></div>
-                <span>Đang giao hàng</span>
+            </Option>
+            <Option
+              value="delivered"
+              label={
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                  <span>Đã giao hàng</span>
+                </div>
+              }
+            >
+              <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 mr-3">
+                  <CheckCircleOutlined className="text-green-500 text-sm" />
+                </div>
+                <div>
+                  <span className="text-gray-800 font-medium">
+                    Đã giao hàng
+                  </span>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Khách hàng đã nhận
+                  </p>
+                </div>
               </div>
-            }
-          >
-            <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-cyan-100 mr-3">
-                <CarOutlined className="text-cyan-500 text-sm" />
-              </div>
-              <div>
-                <span className="text-gray-800 font-medium">
-                  Đang giao hàng
-                </span>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  Đã chuyển cho đơn vị vận chuyển
-                </p>
-              </div>
-            </div>
-          </Option>
-          <Option
-            value="delivered"
-            label={
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                <span>Đã giao hàng</span>
-              </div>
-            }
-          >
-            <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 mr-3">
-                <CheckCircleOutlined className="text-green-500 text-sm" />
-              </div>
-              <div>
-                <span className="text-gray-800 font-medium">Đã giao hàng</span>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  Khách hàng đã nhận
-                </p>
-              </div>
-            </div>
-          </Option>
-        </Select>
-      ),
+            </Option>
+          </Select>
+        );
+      },
     },
   ];
 

@@ -60,7 +60,7 @@ const SidebarAdmin = () => {
         } border-b border-gray-700`}
       >
         <span className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
-          {collapsed ? "BS" : "Beauty & Care"}
+          {collapsed ? "BC" : "Beauty & Care"}
         </span>
       </div>
 
