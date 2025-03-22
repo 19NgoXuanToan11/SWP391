@@ -4,83 +4,174 @@ import aboutus from "../../assets/pictures/aboutus.jpg";
 import aboutus_section from "../../assets/pictures/aboutus_section.jpg";
 import aboutus_bottom from "../../assets/pictures/aboutus_bottom.jpg";
 import { Link } from "react-router-dom";
+import {
+  HeartOutlined,
+  SafetyCertificateOutlined,
+  ThunderboltOutlined,
+} from "@ant-design/icons";
 
 export function AboutPage() {
   useEffect(() => {
-    window.scrollTo(0, 0); // Cuộn lên đầu trang khi load
+    window.scrollTo(0, 0);
   }, []);
 
-  return (
-    <div className="bg-white text-black font-sans">
-      {/* Header Section */}
-      <header
-        className="relative bg-cover bg-center h-[50vh] flex items-center justify-center"
-        style={{ backgroundImage: `url(${aboutus})` }}
-      >
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-        <motion.h1
-          className="relative z-10 text-5xl font-bold text-white"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          Về Chúng Tôi
-        </motion.h1>
-      </header>
+  const features = [
+    { icon: <SafetyCertificateOutlined />, title: "Chất Lượng", description: "Sản phẩm đạt tiêu chuẩn quốc tế" },
+    { icon: <HeartOutlined />, title: "Tận Tâm", description: "Chăm sóc khách hàng 24/7" },
+    { icon: <ThunderboltOutlined />, title: "Hiệu Quả", description: "Kết quả thấy được sau 2 tuần" },
+  ];
 
-      <div className="max-w-6xl mx-auto px-6 py-16 space-y-16">
-        {/* About Us Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex items-center space-x-24" // Increased space between image and content
-        >
-          <img
-            src={aboutus_section}
-            alt="About Us Section"
-            className="w-1/2 rounded-lg shadow-lg"
+  const stats = [
+    { number: "10K+", label: "Khách Hàng" },
+    { number: "50+", label: "Chuyên Gia" },
+    { number: "95%", label: "Hài Lòng" },
+    { number: "24/7", label: "Hỗ Trợ" },
+  ];
+
+  return (
+    <div className="bg-gradient-to-b from-rose-50 via-white to-purple-50 text-gray-900 font-orbitron">
+      {/* Hero Section */}
+      <motion.header
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="relative h-[80vh] flex items-center justify-center overflow-hidden bg-grainy"
+      >
+        <div className="absolute inset-0">
+          <motion.img
+            src={aboutus}
+            alt="About Us Hero"
+            className="w-full h-full object-cover"
+            initial={{ scale: 1.2 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 1.5 }}
           />
-          <div className="text-right w-1/2 transition-transform transform hover:scale-105 ">
-            <h2 className="text-4xl font-semibold mb-4 transition-colors duration-300 hover:text-pink-500">
-              Chúng Tôi Luôn Làm{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-blue-500">
-                Tốt Nhất
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50" />
+          <motion.div
+            className="absolute top-10 left-10 w-40 h-40 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-full blur-2xl animate-pulse"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+          />
+        </div>
+
+        <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="text-6xl font-bold text-white mb-6"
+            style={{ textShadow: "0 0 20px rgba(236, 72, 153, 0.7)" }}
+          >
+            Về Chúng Tôi
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="text-xl text-gray-200 mb-8"
+          >
+            Khám phá câu chuyện của chúng tôi và sứ mệnh mang đến vẻ đẹp tự nhiên cho mọi người
+          </motion.p>
+        </div>
+      </motion.header>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 py-20">
+        {/* About Section */}
+        <motion.section
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="flex flex-col lg:flex-row items-center gap-16 mb-32"
+        >
+          <div className="lg:w-1/2 relative">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              whileHover={{ rotateY: 5 }}
+              transition={{ duration: 0.8 }}
+              className="relative z-10"
+            >
+              <img
+                src={aboutus_section}
+                alt="About Us Section"
+                className="rounded-2xl shadow-2xl border border-white/20"
+              />
+            </motion.div>
+            <div className="absolute -bottom-6 -right-6 w-72 h-72 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-full blur-3xl -z-10" />
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="lg:w-1/2 space-y-6"
+          >
+            <h2 className="text-4xl font-bold">
+              Chúng Tôi Luôn Mang Đến{" "}
+              <span
+                className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-500"
+                style={{ textShadow: "0 0 15px rgba(236, 72, 153, 0.8)" }}
+              >
+                Trải Nghiệm Tốt Nhất
               </span>
             </h2>
-            <p className="text-lg text-gray-500 mb-6 transition-opacity duration-300 hover:opacity-80">
-              Chăm sóc da là một phần quan trọng trong việc duy trì vẻ đẹp và
-              sức khỏe của làn da. Sản phẩm của chúng tôi được chiết xuất từ
-              thiên nhiên, giúp cung cấp độ ẩm, làm sáng và cải thiện kết cấu
-              da. Hãy để làn da bạn tỏa sáng với những sản phẩm chất lượng nhất.
+            <p className="text-gray-600 text-lg leading-relaxed">
+              Với hơn 10 năm kinh nghiệm trong ngành làm đẹp, chúng tôi tự hào mang đến những sản phẩm và dịch vụ chất lượng cao, được chứng nhận bởi các chuyên gia hàng đầu trong ngành.
             </p>
-            <Link to="/contact">
-              <button className="px-6 py-2 bg-pink-600 text-white font-semibold rounded-lg hover:bg-transparent hover:text-black hover:border-2 hover:border-pink-300 transition duration-300">
-                Liên Hệ Chúng Tôi
-              </button>
-            </Link>
-          </div>
+            <div className="grid grid-cols-2 gap-6">
+              {stats.map((stat, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.05 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-gray-100/20 shadow-[0_4px_30px_rgba(0,0,0,0.1)]"
+                >
+                  <div className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+                    {stat.number}
+                  </div>
+                  <div className="text-gray-600">{stat.label}</div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
         </motion.section>
 
-        {/* Call to Action Section */}
+        {/* CTA Section */}
         <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="relative bg-cover bg-center h-96 flex items-center justify-center"
-          style={{ backgroundImage: `url(${aboutus_bottom})` }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="relative rounded-3xl overflow-hidden"
         >
-          <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-
-          <div className="relative z-10 text-white text-center">
-            <h2 className="text-4xl font-bold mb-4">Về Chúng Tôi</h2>
-            <p className="mb-6">
-              Chúng tôi luôn cố gắng cung cấp sản phẩm chăm sóc da chất lượng
-              cao để tăng cường vẻ đẹp tự nhiên của bạn.
-            </p>
-            <button className="bg-red-300 text-black font-semibold py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 hover:opacity-40">
-              Bắt Đầu
-            </button>
+          <img src={aboutus_bottom} alt="CTA Background" className="w-full h-[500px] object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50 flex items-center">
+            <div className="max-w-3xl mx-auto text-center px-4">
+              <h2
+                className="text-4xl font-bold text-white mb-6"
+                style={{ textShadow: "0 0 20px rgba(236, 72, 153, 0.7)" }}
+              >
+                Bắt Đầu Hành Trình Làm Đẹp Của Bạn
+              </h2>
+              <p className="text-gray-200 text-lg mb-8">
+                Để chúng tôi đồng hành cùng bạn trên con đường kiến tạo vẻ đẹp hoàn hảo
+              </p>
+              <Link to="/contact">
+                <motion.button
+                  whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(236, 72, 153, 0.5)" }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-8 py-4 bg-gradient-to-r from-pink-500/80 to-purple-500/80 text-white rounded-xl 
+                    font-medium backdrop-blur-md border border-white/20 relative overflow-hidden"
+                >
+                  <span className="relative z-10">Liên Hệ Ngay</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </motion.button>
+              </Link>
+            </div>
           </div>
         </motion.section>
       </div>
