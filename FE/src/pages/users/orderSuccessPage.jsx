@@ -47,7 +47,7 @@ function OrderSuccessPage() {
 
   console.log(payment);
   return (
-    <div className="min-h-screen py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-b from-pink-50 via-purple-50 to-white py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <PaymentSteps current={2} />
 

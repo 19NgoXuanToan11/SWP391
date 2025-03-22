@@ -83,7 +83,7 @@ export function QuizLandingPage() {
               </motion.span>
               <br />
               <motion.span
-                className="bg-clip-text text-transparent bg-gradient-to-r from-white via-pink-500 to-purple-800"
+                className="bg-clip-text text-transparent bg-gradient-to-r from-white via-pink-500 to-purple-300"
                 animate={{
                   backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
                 }}
@@ -93,10 +93,7 @@ export function QuizLandingPage() {
                   ease: "easeInOut",
                 }}
               >
-                <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">
-                  Làn
-                </span>{" "}
-                Da Của Bạn
+                Làn Da Của Bạn
               </motion.span>
             </motion.h1>
 

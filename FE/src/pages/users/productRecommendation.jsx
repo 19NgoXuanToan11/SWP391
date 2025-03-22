@@ -381,6 +381,26 @@ export function ProductRecommendationPage() {
                       {product.brand}
                     </p>
 
+                    <div className="flex items-center gap-1 mb-3">
+                      <div className="flex">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <span
+                            key={star}
+                            className={`text-${
+                              star <= Math.floor(product.rating)
+                                ? "yellow"
+                                : "gray"
+                            }-400`}
+                          >
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                      <span className="text-sm text-gray-500">
+                        ({product.reviews})
+                      </span>
+                    </div>
+
                     <div className="flex flex-wrap gap-2 mb-4">
                       <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">
                         {product.skinType}

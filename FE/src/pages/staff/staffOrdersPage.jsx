@@ -708,6 +708,167 @@ const OrdersPage = () => {
             <div className="absolute bottom-0 left-0 w-40 h-40 bg-white opacity-10 rounded-full -ml-10 -mb-10"></div>
           </motion.div>
 
+          {/* Statistics Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 shadow-sm border border-blue-200"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-blue-500/10 p-3 rounded-xl">
+                  <BarChartOutlined className="text-2xl text-blue-600" />
+                </div>
+                <div className="bg-blue-500/10 rounded-full p-2">
+                  <RiseOutlined className="text-blue-600" />
+                </div>
+              </div>
+              <h3 className="text-gray-600 text-sm font-medium mb-2">
+                Tổng giao dịch
+              </h3>
+              <Statistic
+                value={paymentStats.total}
+                className="!text-2xl font-bold text-blue-600"
+              />
+              <Progress
+                percent={100}
+                showInfo={false}
+                strokeColor={{
+                  "0%": "#60A5FA",
+                  "100%": "#3B82F6",
+                }}
+                className="mt-4"
+              />
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 shadow-sm border border-green-200"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-green-500/10 p-3 rounded-xl">
+                  <DollarOutlined className="text-2xl text-green-600" />
+                </div>
+                <div className="bg-green-500/10 rounded-full p-2">
+                  <RiseOutlined className="text-green-600" />
+                </div>
+              </div>
+              <h3 className="text-gray-600 text-sm font-medium mb-2">
+                Tổng doanh thu
+              </h3>
+              <Statistic
+                value={formatPrice(paymentStats.totalAmount)}
+                className="!text-2xl font-bold text-green-600"
+              />
+              <Progress
+                percent={100}
+                showInfo={false}
+                strokeColor={{
+                  "0%": "#34D399",
+                  "100%": "#059669",
+                }}
+                className="mt-4"
+              />
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl p-6 shadow-sm border border-yellow-200"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-yellow-500/10 p-3 rounded-xl">
+                  <FilterOutlined className="text-2xl text-yellow-600" />
+                </div>
+                <div className="bg-yellow-500/10 rounded-full p-2">
+                  <RiseOutlined className="text-yellow-600" />
+                </div>
+              </div>
+              <h3 className="text-gray-600 text-sm font-medium mb-2">
+                Đang xử lý
+              </h3>
+              <Statistic
+                value={paymentStats.pending}
+                className="!text-2xl font-bold text-yellow-600"
+              />
+              <Progress
+                percent={(paymentStats.pending / paymentStats.total) * 100}
+                showInfo={false}
+                strokeColor="#faad14"
+                className="mt-4"
+              />
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 shadow-sm border border-purple-200"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-purple-500/10 p-3 rounded-xl">
+                  <CheckOutlined className="text-2xl text-purple-600" />
+                </div>
+                <div className="bg-purple-500/10 rounded-full p-2">
+                  <RiseOutlined className="text-purple-600" />
+                </div>
+              </div>
+              <h3 className="text-gray-600 text-sm font-medium mb-2">
+                Hoàn thành
+              </h3>
+              <Statistic
+                value={paymentStats.completed}
+                className="!text-2xl font-bold text-purple-600"
+              />
+              <Progress
+                percent={(paymentStats.completed / paymentStats.total) * 100}
+                showInfo={false}
+                strokeColor="#722ed1"
+                className="mt-4"
+              />
+            </motion.div>
+          </div>
+
+          {/* Filters */}
+          <Card className="rounded-2xl shadow-sm border-0 bg-white/80 backdrop-blur-lg">
+            <div className="flex flex-wrap gap-4">
+              <div className="flex-1 min-w-[200px]">
+                <Input
+                  placeholder="Tìm kiếm giao dịch..."
+                  prefix={<SearchOutlined className="text-gray-400" />}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full rounded-lg hover:border-blue-400 focus:border-blue-500"
+                  size="large"
+                />
+              </div>
+              <Select
+                defaultValue="all"
+                style={{ minWidth: 180 }}
+                onChange={setStatusFilter}
+                className="rounded-lg"
+                size="large"
+                suffixIcon={<FilterOutlined className="text-gray-400" />}
+              >
+                <Option value="all">Tất cả trạng thái</Option>
+                <Option value="pending">Đang xử lý</Option>
+                <Option value="completed">Hoàn thành</Option>
+              </Select>
+              <RangePicker
+                onChange={setDateRange}
+                className="rounded-lg min-w-[280px]"
+                format="DD/MM/YYYY"
+                size="large"
+              />
+              <Button
+                type="primary"
+                icon={<ReloadOutlined />}
+                onClick={fetchPayments}
+                loading={loadingPayments}
+                className="ml-auto bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 border-0 rounded-lg"
+                size="large"
+              >
+                Làm mới
+              </Button>
+            </div>
+          </Card>
+
           {/* Payments Table */}
           <Card className="rounded-2xl shadow-sm border-0">
             <div className="mb-4">
