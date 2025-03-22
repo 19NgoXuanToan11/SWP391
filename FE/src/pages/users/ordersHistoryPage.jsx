@@ -383,7 +383,7 @@ const OrdersHistoryPage = () => {
   };
 
   return (
-    <div className="min-h-screen py-12 px-4 bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen py-12 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header section with animated background */}
         <motion.div
@@ -392,87 +392,13 @@ const OrdersHistoryPage = () => {
           transition={{ duration: 0.6 }}
           className="relative mb-10 overflow-hidden rounded-3xl"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-indigo-500/10 animate-gradient-x"></div>
+          <div className="absolute inset-0 animate-gradient-x"></div>
           <div className="absolute inset-0 bg-white/40 backdrop-blur-sm"></div>
 
           <div className="relative p-8 md:p-10 z-10">
             <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-4">
               Lịch Sử Đơn Hàng
             </h1>
-
-            <div className="flex flex-col md:flex-row gap-4 items-start">
-              <div className="flex flex-wrap gap-3 text-sm">
-                <Badge
-                  count={orderStats.total}
-                  showZero
-                  color="#a855f7"
-                  overflowCount={999}
-                >
-                  <Tag
-                    color="#f9f0ff"
-                    className="px-3 py-1.5 border-2 border-purple-200 text-purple-700 cursor-pointer hover:border-purple-300 transition-all"
-                    onClick={() => setActiveTab("all")}
-                    style={{ background: activeTab === "all" ? "#f3e8ff" : "" }}
-                  >
-                    <HistoryOutlined className="mr-1" /> Tất cả
-                  </Tag>
-                </Badge>
-
-                <Badge
-                  count={orderStats.pending}
-                  showZero
-                  color="#faad14"
-                  overflowCount={999}
-                >
-                  <Tag
-                    color="#fffbe6"
-                    className="px-3 py-1.5 border-2 border-yellow-200 text-yellow-700 cursor-pointer hover:border-yellow-300 transition-all"
-                    onClick={() => setActiveTab("pending")}
-                    style={{
-                      background: activeTab === "pending" ? "#fff8db" : "",
-                    }}
-                  >
-                    <ClockCircleOutlined className="mr-1" /> Chờ xác nhận
-                  </Tag>
-                </Badge>
-
-                <Badge
-                  count={orderStats.shipping}
-                  showZero
-                  color="#1890ff"
-                  overflowCount={999}
-                >
-                  <Tag
-                    color="#e6f7ff"
-                    className="px-3 py-1.5 border-2 border-blue-200 text-blue-700 cursor-pointer hover:border-blue-300 transition-all"
-                    onClick={() => setActiveTab("shipping")}
-                    style={{
-                      background: activeTab === "shipping" ? "#dbedff" : "",
-                    }}
-                  >
-                    <CarOutlined className="mr-1" /> Đang giao
-                  </Tag>
-                </Badge>
-
-                <Badge
-                  count={orderStats.completed}
-                  showZero
-                  color="#52c41a"
-                  overflowCount={999}
-                >
-                  <Tag
-                    color="#f6ffed"
-                    className="px-3 py-1.5 border-2 border-green-200 text-green-700 cursor-pointer hover:border-green-300 transition-all"
-                    onClick={() => setActiveTab("completed")}
-                    style={{
-                      background: activeTab === "completed" ? "#e8ffe3" : "",
-                    }}
-                  >
-                    <CheckCircleOutlined className="mr-1" /> Đã thanh toán
-                  </Tag>
-                </Badge>
-              </div>
-            </div>
           </div>
         </motion.div>
 
@@ -980,28 +906,6 @@ const OrdersHistoryPage = () => {
                   </button>
                 </Link>
               </Empty>
-            </div>
-
-            <div className="mt-6 bg-purple-50 p-6 rounded-xl">
-              <h3 className="text-xl font-semibold text-purple-700 mb-4">
-                Bạn có biết?
-              </h3>
-              <p className="text-gray-600">
-                Tại Beauty & Care, chúng tôi cam kết mang đến những sản phẩm
-                chất lượng cao với giá cả hợp lý. Khám phá ngay các ưu đãi độc
-                quyền và sản phẩm mới nhất của chúng tôi!
-              </p>
-              <div className="mt-4 flex flex-wrap gap-3 justify-center">
-                <Tag color="pink" className="px-3 py-1.5 text-base">
-                  Miễn phí vận chuyển
-                </Tag>
-                <Tag color="purple" className="px-3 py-1.5 text-base">
-                  Quà tặng hấp dẫn
-                </Tag>
-                <Tag color="blue" className="px-3 py-1.5 text-base">
-                  Đổi trả trong 30 ngày
-                </Tag>
-              </div>
             </div>
           </motion.div>
         )}
