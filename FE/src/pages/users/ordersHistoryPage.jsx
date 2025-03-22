@@ -593,35 +593,58 @@ const OrdersHistoryPage = () => {
                               {getStatusText(order.status)}
                             </span>
 
-                            {/* Tag trạng thái mới từ staff */}
+                            {/* Tag trạng thái mới từ staff/admin */}
                             {orderStatusUpdates[order.trackingCode] && (
                               <span
-                                className={`px-3 py-1 rounded-full text-white ${
-                                  orderStatusUpdates[order.trackingCode] ===
-                                  "shipping"
-                                    ? "bg-blue-500 shadow-sm shadow-blue-300"
-                                    : orderStatusUpdates[order.trackingCode] ===
-                                      "delivered"
-                                    ? "bg-green-500 shadow-sm shadow-green-300"
-                                    : "bg-gray-500"
-                                }`}
-                              >
-                                <div className="flex items-center gap-2">
-                                  {orderStatusUpdates[order.trackingCode] ===
-                                    "shipping" && <CarOutlined />}
-                                  {orderStatusUpdates[order.trackingCode] ===
-                                    "delivered" && <CheckCircleOutlined />}
-                                  <span>
-                                    {orderStatusUpdates[order.trackingCode] ===
+                                className={`px-3 py-1 rounded-full text-white flex items-center gap-2
+                                  ${
+                                    orderStatusUpdates[order.trackingCode] ===
                                     "shipping"
-                                      ? "Đang giao hàng"
+                                      ? "bg-blue-500 shadow-sm shadow-blue-300"
                                       : orderStatusUpdates[
                                           order.trackingCode
                                         ] === "delivered"
-                                      ? "Đã giao hàng"
-                                      : orderStatusUpdates[order.trackingCode]}
+                                      ? "bg-green-500 shadow-sm shadow-green-300"
+                                      : orderStatusUpdates[
+                                          order.trackingCode
+                                        ] === "pending"
+                                      ? "bg-yellow-500 shadow-sm shadow-yellow-300"
+                                      : orderStatusUpdates[
+                                          order.trackingCode
+                                        ] === "cancelled"
+                                      ? "bg-red-500 shadow-sm shadow-red-300"
+                                      : "bg-gray-500"
+                                  }`}
+                              >
+                                {orderStatusUpdates[order.trackingCode] ===
+                                "shipping" ? (
+                                  <>
+                                    <CarOutlined />
+                                    <span>Đang giao hàng</span>
+                                  </>
+                                ) : orderStatusUpdates[order.trackingCode] ===
+                                  "delivered" ? (
+                                  <>
+                                    <CheckCircleOutlined />
+                                    <span>Đã giao hàng</span>
+                                  </>
+                                ) : orderStatusUpdates[order.trackingCode] ===
+                                  "pending" ? (
+                                  <>
+                                    <ClockCircleOutlined />
+                                    <span>Chờ xác nhận</span>
+                                  </>
+                                ) : orderStatusUpdates[order.trackingCode] ===
+                                  "cancelled" ? (
+                                  <>
+                                    <CloseCircleOutlined />
+                                    <span>Đã hủy</span>
+                                  </>
+                                ) : (
+                                  <span>
+                                    {orderStatusUpdates[order.trackingCode]}
                                   </span>
-                                </div>
+                                )}
                               </span>
                             )}
                           </div>
@@ -801,30 +824,7 @@ const OrdersHistoryPage = () => {
 
                           {/* Order Timeline */}
                           <div className="mt-6">
-                            <h4 className="font-medium text-gray-700 mb-4 flex items-center gap-2">
-                              <HistoryOutlined className="text-purple-500" />
-                              Lịch sử đơn hàng
-                            </h4>
-
                             <div className="relative pl-6 ml-2 space-y-6 before:absolute before:top-0 before:bottom-0 before:left-0 before:w-[2px] before:bg-gray-200">
-                              {/* First Status */}
-                              <div className="relative flex items-center gap-4">
-                                <div className="absolute left-[-22px] w-5 h-5 rounded-full bg-green-500 border-4 border-green-100"></div>
-                                <div className="flex-1 bg-green-50 p-3 rounded-lg shadow-sm">
-                                  <div className="flex justify-between items-center">
-                                    <span className="font-medium text-green-700">
-                                      Đã đặt hàng
-                                    </span>
-                                    <span className="text-xs text-gray-500">
-                                      {formatDate(order.date)}
-                                    </span>
-                                  </div>
-                                  <p className="text-sm text-gray-600 mt-1">
-                                    Đơn hàng của bạn đã được xác nhận
-                                  </p>
-                                </div>
-                              </div>
-
                               {/* Shipping Status - show only if relevant */}
                               {(order.status === "shipping" ||
                                 orderStatusUpdates[order.trackingCode] ===
@@ -848,8 +848,9 @@ const OrdersHistoryPage = () => {
                               )}
 
                               {/* Delivered Status - show only if relevant */}
-                              {orderStatusUpdates[order.trackingCode] ===
-                                "delivered" && (
+                              {(order.status === "delivered" ||
+                                orderStatusUpdates[order.trackingCode] ===
+                                  "delivered") && (
                                 <div className="relative flex items-center gap-4">
                                   <div className="absolute left-[-22px] w-5 h-5 rounded-full bg-purple-500 border-4 border-purple-100"></div>
                                   <div className="flex-1 bg-purple-50 p-3 rounded-lg shadow-sm">
@@ -863,6 +864,28 @@ const OrdersHistoryPage = () => {
                                     </div>
                                     <p className="text-sm text-gray-600 mt-1">
                                       Đơn hàng đã được giao thành công
+                                    </p>
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Cancelled Status - show only if relevant */}
+                              {(order.status === "cancelled" ||
+                                orderStatusUpdates[order.trackingCode] ===
+                                  "cancelled") && (
+                                <div className="relative flex items-center gap-4">
+                                  <div className="absolute left-[-22px] w-5 h-5 rounded-full bg-red-500 border-4 border-red-100"></div>
+                                  <div className="flex-1 bg-red-50 p-3 rounded-lg shadow-sm">
+                                    <div className="flex justify-between items-center">
+                                      <span className="font-medium text-red-700">
+                                        Đã hủy
+                                      </span>
+                                      <span className="text-xs text-gray-500">
+                                        {formatDate(new Date())}
+                                      </span>
+                                    </div>
+                                    <p className="text-sm text-gray-600 mt-1">
+                                      Đơn hàng đã bị hủy
                                     </p>
                                   </div>
                                 </div>
