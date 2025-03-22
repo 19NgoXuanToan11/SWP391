@@ -43,7 +43,7 @@ namespace SWP391_BE.Controllers
             });
         }
         [HttpGet("user/{userId}")]
-        [Authorize(Roles = "Admin,Staff")]
+        
         public async Task<IActionResult> GetHistoriesByUserId(int userId)
         {
             var histories = await _historyService.GetHistoriesByUserIdAsync(userId);
