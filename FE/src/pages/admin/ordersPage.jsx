@@ -94,6 +94,10 @@ const OrdersPage = () => {
     totalAmount: 0,
   });
 
+  // Thêm state để lưu tham chiếu đến RangePicker và Select component
+  const datePickerRef = React.useRef(null);
+  const statusSelectRef = React.useRef(null);
+
   // Fetch orders from API
   const fetchOrders = async () => {
     try {
@@ -346,6 +350,30 @@ const OrdersPage = () => {
     }
   };
 
+  // Thêm hàm resetFilters để làm mới tất cả các bộ lọc
+  const resetFilters = () => {
+    // Reset tất cả các bộ lọc và tìm kiếm
+    setSearchTerm("");
+    setStatusFilter("all");
+    setDateRange(null);
+
+    // Xóa giá trị trong RangePicker bằng cách đặt giá trị là null
+    if (datePickerRef.current) {
+      datePickerRef.current.setValue(null);
+    }
+
+    // Đặt lại giá trị Select về "all"
+    if (statusSelectRef.current) {
+      statusSelectRef.current.setValue("all");
+    }
+
+    // Fetch lại dữ liệu ban đầu
+    fetchOrders();
+    fetchPayments();
+
+    message.success("Đã làm mới dữ liệu");
+  };
+
   // Filter orders by status and date range
   const filteredOrders = orders.filter((order) => {
     // Filter by status
@@ -378,11 +406,15 @@ const OrdersPage = () => {
   // Filter payments
   const filteredPayments = payments.filter((payment) => {
     // Filter by status
-    if (
-      statusFilter !== "all" &&
-      payment.status.toLowerCase() !== statusFilter.toLowerCase()
-    ) {
-      return false;
+    if (statusFilter !== "all") {
+      if (statusFilter === "paid") {
+        const isPaid =
+          payment.status.toLowerCase() === "paid" ||
+          payment.status.toLowerCase() === "completed";
+        if (!isPaid) return false;
+      } else if (payment.status.toLowerCase() !== statusFilter.toLowerCase()) {
+        return false;
+      }
     }
 
     // Filter by date range
@@ -817,45 +849,91 @@ const OrdersPage = () => {
 
           {/* Filters */}
           <Card className="rounded-2xl shadow-sm border-0 bg-white/80 backdrop-blur-lg">
-            <div className="flex flex-wrap gap-4">
-              <div className="flex-1 min-w-[200px]">
+            <div className="flex flex-col md:flex-row flex-wrap gap-5">
+              <div className="flex-1 min-w-[240px]">
+                <label className="text-sm text-gray-500 font-medium mb-2 block">
+                  Tìm kiếm
+                </label>
                 <Input
                   placeholder="Tìm kiếm giao dịch..."
-                  prefix={<SearchOutlined className="text-gray-400" />}
+                  prefix={<SearchOutlined className="text-blue-500" />}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full rounded-lg hover:border-blue-400 focus:border-blue-500"
+                  className="w-full rounded-xl border-2 hover:border-blue-400 focus:border-blue-500 transition-all duration-300 shadow-sm hover:shadow-md py-2.5"
                   size="large"
+                  allowClear
                 />
               </div>
-              <Select
-                defaultValue="all"
-                style={{ minWidth: 180 }}
-                onChange={setStatusFilter}
-                className="rounded-lg"
-                size="large"
-                suffixIcon={<FilterOutlined className="text-gray-400" />}
-              >
-                <Option value="all">Tất cả trạng thái</Option>
-                <Option value="pending">Đang xử lý</Option>
-                <Option value="completed">Hoàn thành</Option>
-              </Select>
-              <RangePicker
-                onChange={setDateRange}
-                className="rounded-lg min-w-[280px]"
-                format="DD/MM/YYYY"
-                size="large"
-              />
-              <Button
-                type="primary"
-                icon={<ReloadOutlined />}
-                onClick={fetchPayments}
-                loading={loadingPayments}
-                className="ml-auto bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 border-0 rounded-lg"
-                size="large"
-              >
-                Làm mới
-              </Button>
+
+              <div className="min-w-[180px]">
+                <label className="text-sm text-gray-500 font-medium mb-2 block">
+                  Trạng thái
+                </label>
+                <Select
+                  ref={statusSelectRef}
+                  defaultValue="all"
+                  value={statusFilter}
+                  style={{ width: "100%" }}
+                  onChange={setStatusFilter}
+                  className="rounded-xl border-2 hover:border-blue-400 focus:border-blue-500 transition-all duration-300 shadow-sm hover:shadow-md"
+                  size="large"
+                  suffixIcon={<FilterOutlined className="text-blue-500" />}
+                  dropdownStyle={{
+                    borderRadius: "12px",
+                    boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  <Option value="all">
+                    <div className="flex items-center gap-2">
+                      <span className="w-3 h-3 rounded-full bg-gray-400" />
+                      <span>Tất cả trạng thái</span>
+                    </div>
+                  </Option>
+                  <Option value="pending">
+                    <div className="flex items-center gap-2">
+                      <span className="w-3 h-3 rounded-full bg-orange-500" />
+                      <span>Đang xử lý</span>
+                    </div>
+                  </Option>
+                  <Option value="paid">
+                    <div className="flex items-center gap-2">
+                      <span className="w-3 h-3 rounded-full bg-green-500" />
+                      <span>Đã thanh toán</span>
+                    </div>
+                  </Option>
+                </Select>
+              </div>
+
+              <div className="min-w-[240px]">
+                <label className="text-sm text-gray-500 font-medium mb-2 block">
+                  Khoảng thời gian
+                </label>
+                <RangePicker
+                  ref={datePickerRef}
+                  onChange={setDateRange}
+                  className="w-full rounded-xl border-2 hover:border-blue-400 focus:border-blue-500 transition-all duration-300 shadow-sm hover:shadow-md"
+                  format="DD/MM/YYYY"
+                  size="large"
+                  allowClear={true}
+                  value={dateRange}
+                  placeholder={["Từ ngày", "Đến ngày"]}
+                  suffixIcon={<CalendarOutlined className="text-blue-500" />}
+                  dropdownClassName="rounded-xl shadow-xl"
+                />
+              </div>
+
+              <div className="flex flex-col justify-end">
+                <button
+                  type="primary"
+                  icon={<ReloadOutlined />}
+                  onClick={resetFilters}
+                  loading={loading || loadingPayments}
+                  className="h-[52px] px-6 bg-gradient-to-r text-white from-pink-400 to-indigo-400 hover:from-pink-400 hover:to-white border-0 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+                  size="large"
+                >
+                  <span className="font-medium">Làm mới</span>
+                </button>
+              </div>
             </div>
           </Card>
 
