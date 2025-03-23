@@ -458,67 +458,6 @@ const ProfilePage = () => {
                   </motion.div>
                 </motion.div>
               </div>
-
-              <Divider style={{ borderColor: "rgba(255,77,109,0.1)" }} />
-
-              <Row gutter={[24, 24]}>
-                <Col xs={24} md={8}>
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.6, duration: 0.5 }}
-                    whileHover={{ y: -5 }}
-                    style={customStyles.statCard}
-                  >
-                    <div style={{ textAlign: "center" }}>
-                      <div style={customStyles.statIcon}>
-                        <SafetyCertificateOutlined />
-                      </div>
-                      <div style={customStyles.statTitle}>Vai trò</div>
-                      <div style={customStyles.statValue}>Khách hàng</div>
-                    </div>
-                  </motion.div>
-                </Col>
-                <Col xs={24} md={8}>
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.7, duration: 0.5 }}
-                    whileHover={{ y: -5 }}
-                    style={customStyles.statCard}
-                  >
-                    <div style={{ textAlign: "center" }}>
-                      <div style={customStyles.statIcon}>
-                        <LineChartOutlined />
-                      </div>
-                      <div style={customStyles.statTitle}>Đơn hàng</div>
-                      <div style={customStyles.statValue}>0</div>
-                    </div>
-                  </motion.div>
-                </Col>
-                <Col xs={24} md={8}>
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.8, duration: 0.5 }}
-                    whileHover={{ y: -5 }}
-                    style={customStyles.statCard}
-                  >
-                    <div style={{ textAlign: "center" }}>
-                      <div style={customStyles.statIcon}>
-                        <UserOutlined />
-                      </div>
-                      <div style={customStyles.statTitle}>Thành viên từ</div>
-                      <div style={customStyles.statValue}>
-                        {new Date().toLocaleDateString("vi-VN", {
-                          year: "numeric",
-                          month: "long",
-                        })}
-                      </div>
-                    </div>
-                  </motion.div>
-                </Col>
-              </Row>
             </>
           )}
         </motion.div>
