@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "D:\\SWP391\\BE\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\swp391\\be\\data\\models\\history.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\history.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\swp391\\be\\swp391_be\\mappings\\ordermappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\mappings\\ordermappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -39,19 +43,32 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "History.cs",
+              "DocumentMoniker": "D:\\SWP391\\BE\\Data\\Models\\History.cs",
+              "RelativeDocumentMoniker": "Data\\Models\\History.cs",
+              "ToolTip": "D:\\SWP391\\BE\\Data\\Models\\History.cs",
+              "RelativeToolTip": "Data\\Models\\History.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-24T14:54:43.451Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "OrderMappingProfile.cs",
               "DocumentMoniker": "D:\\SWP391\\BE\\SWP391_BE\\Mappings\\OrderMappingProfile.cs",
               "RelativeDocumentMoniker": "SWP391_BE\\Mappings\\OrderMappingProfile.cs",
               "ToolTip": "D:\\SWP391\\BE\\SWP391_BE\\Mappings\\OrderMappingProfile.cs",
               "RelativeToolTip": "SWP391_BE\\Mappings\\OrderMappingProfile.cs",
-              "ViewState": "AgIAAAQAAAAAAAAAAAAQwBMAAAAYAAAAAAAAAA==",
+              "ViewState": "AgIAABYAAAAAAAAAAAAQwBMAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-21T17:43:07.039Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "OrderController.cs",
               "DocumentMoniker": "D:\\SWP391\\BE\\SWP391_BE\\Controllers\\OrderController.cs",
               "RelativeDocumentMoniker": "SWP391_BE\\Controllers\\OrderController.cs",

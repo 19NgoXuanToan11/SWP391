@@ -67,7 +67,10 @@ namespace Repo
                 .Select(o => new Order
                 {
                     OrderId = o.OrderId,
-                    Status = o.Status
+                    Status = o.Status,
+                    OrderDate = o.OrderDate,
+                    TotalAmount = o.TotalAmount,
+                    PaymentMethod = o.PaymentMethod
                 })
                 .ToListAsync();
         }

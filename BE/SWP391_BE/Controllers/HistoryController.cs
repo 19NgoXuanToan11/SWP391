@@ -125,6 +125,7 @@ namespace SWP391_BE.Controllers
 
         // Get all orders with their IDs and statuses for a specific user
         [HttpGet("orders/user/{userId}")]
+       
         public async Task<IActionResult> GetOrderStatusByUserId(int userId)
         {
             try
@@ -135,12 +136,58 @@ namespace SWP391_BE.Controllers
                     return NotFound(new { message = "No orders found for this user" });
                 }
 
-                var orderStatusList = _mapper.Map<IEnumerable<OrderStatusInfoDTO>>(orders);
-                return Ok(orderStatusList);
+                var result = new List<OrderHistoryStatusDTO>();
+
+                foreach (var order in orders)
+                {
+                    try
+                    {
+                        var history = await _historyService.GetOrderHistoryByOrderIdAsync(order.OrderId);
+                        var orderHistoryStatus = new OrderHistoryStatusDTO
+                        {
+                            OrderId = order.OrderId,
+                            OrderStatus = order.Status,
+                            TrackingCode = history?.TrackingCode ?? "Not Available",
+                            Shipper = history?.Shipper ?? "Not Available",
+                            HistoryStatus = history?.Status ?? "Not Available",
+                            Products = new List<OrderDetailHistoryDTO>()
+                        };
+
+                        if (history?.OrderDetails != null)
+                        {
+                            orderHistoryStatus.Products = history.OrderDetails
+                                .Where(od => od.Product != null) // Filter out null products
+                                .Select(od => new OrderDetailHistoryDTO
+                                {
+                                    ProductName = od.Product?.ProductName ?? "Unknown Product",
+                                    ProductImages = od.Product?.Images?.Select(img => img.ImageUrl).ToList() ?? new List<string>(),
+                                    Quantity = od.Quantity,
+                                    Price = od.Price
+                                }).ToList();
+                        }
+
+                        result.Add(orderHistoryStatus);
+                    }
+                    catch (Exception)
+                    {
+                        // If there's an error getting history, still return the order with default values
+                        result.Add(new OrderHistoryStatusDTO
+                        {
+                            OrderId = order.OrderId,
+                            OrderStatus = order.Status,
+                            TrackingCode = "Not Available",
+                            Shipper = "Not Available",
+                            HistoryStatus = "Not Available",
+                            Products = new List<OrderDetailHistoryDTO>()
+                        });
+                    }
+                }
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving order status information", error = ex.Message });
+                return StatusCode(500, new { message = "An error occurred while retrieving order information", error = ex.Message });
             }
         }
     }
