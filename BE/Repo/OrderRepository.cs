@@ -59,5 +59,17 @@ namespace Repo
         {
             return await _context.Orders.AnyAsync(o => o.OrderId == id);
         }
+
+        public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId)
+        {
+            return await _context.Orders
+                .Where(o => o.UserId == userId)
+                .Select(o => new Order
+                {
+                    OrderId = o.OrderId,
+                    Status = o.Status
+                })
+                .ToListAsync();
+        }
     }
 }

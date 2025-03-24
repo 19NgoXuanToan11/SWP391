@@ -46,5 +46,10 @@ namespace Service
         {
             return await _orderRepository.OrderExistsAsync(id);
         }
+
+        public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId)
+        {
+            return await _orderRepository.GetOrdersByUserIdAsync(userId);
+        }
     }
 }

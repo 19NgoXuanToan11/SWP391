@@ -38,4 +38,10 @@ namespace SWP391_BE.DTOs
     {
         public string Status { get; set; }
     }
+    
+    public class OrderStatusInfoDTO
+    {
+        public int OrderId { get; set; }
+        public string Status { get; set; }
+    }
 } 

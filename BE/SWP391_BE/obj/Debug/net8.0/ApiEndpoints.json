@@ -1,21 +1,5 @@
 [
   {
-    "ContainingType": "SWP391_BE.Controllers.HistoryController",
-    "Method": "AddHistory",
-    "RelativePath": "AddHistory",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "history",
-        "Type": "Data.Models.History",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "SWP391_BE.Controllers.AuthController",
     "Method": "ForgotPassword",
     "RelativePath": "api/Auth/forgot-password",
@@ -808,6 +792,117 @@
     "Parameters": [
       {
         "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391_BE.Controllers.HistoryController",
+    "Method": "AddHistory",
+    "RelativePath": "api/History/AddHistory",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "history",
+        "Type": "Data.Models.History",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391_BE.Controllers.HistoryController",
+    "Method": "GetAllHistories",
+    "RelativePath": "api/History/GetAllHistory",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391_BE.Controllers.HistoryController",
+    "Method": "GetHistoryByOrderId",
+    "RelativePath": "api/History/order/{orderId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391_BE.Controllers.HistoryController",
+    "Method": "GetOrderStatusByUserId",
+    "RelativePath": "api/History/orders/user/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391_BE.Controllers.HistoryController",
+    "Method": "GetHistoryByTrackingCode",
+    "RelativePath": "api/History/SearchHistory",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "trackingCode",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391_BE.Controllers.HistoryController",
+    "Method": "UpdateStatus",
+    "RelativePath": "api/History/update-status",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "trackingCode",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SWP391_BE.Controllers.HistoryController",
+    "Method": "GetHistoriesByUserId",
+    "RelativePath": "api/History/user/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
         "Type": "System.Int32",
         "IsRequired": true
       }
@@ -2108,32 +2203,6 @@
     ]
   },
   {
-    "ContainingType": "SWP391_BE.Controllers.HistoryController",
-    "Method": "GetAllHistories",
-    "RelativePath": "GetAllHistory",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "SWP391_BE.Controllers.HistoryController",
-    "Method": "GetHistoryByOrderId",
-    "RelativePath": "order/{orderId}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "orderId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "SWP391_BE.Controllers.PaymentController",
     "Method": "GetAllPayments",
     "RelativePath": "Payment/all",
@@ -2195,59 +2264,6 @@
     "ContainingType": "SWP391_BE.Controllers.PaymentController",
     "Method": "GetPaidPaymentsByUserId",
     "RelativePath": "Payment/user/{userId}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "userId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "SWP391_BE.Controllers.HistoryController",
-    "Method": "GetHistoryByTrackingCode",
-    "RelativePath": "SearchHistory",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "trackingCode",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "SWP391_BE.Controllers.HistoryController",
-    "Method": "UpdateStatus",
-    "RelativePath": "update-status",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "trackingCode",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "status",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "SWP391_BE.Controllers.HistoryController",
-    "Method": "GetHistoriesByUserId",
-    "RelativePath": "user/{userId}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

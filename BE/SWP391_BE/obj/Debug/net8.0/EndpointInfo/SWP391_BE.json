@@ -1366,7 +1366,7 @@
         }
       }
     },
-    "/GetAllHistory": {
+    "/api/History/GetAllHistory": {
       "get": {
         "tags": [
           "History"
@@ -1378,7 +1378,7 @@
         }
       }
     },
-    "/order/{orderId}": {
+    "/api/History/order/{orderId}": {
       "get": {
         "tags": [
           "History"
@@ -1401,7 +1401,7 @@
         }
       }
     },
-    "/user/{userId}": {
+    "/api/History/user/{userId}": {
       "get": {
         "tags": [
           "History"
@@ -1424,7 +1424,7 @@
         }
       }
     },
-    "/SearchHistory": {
+    "/api/History/SearchHistory": {
       "get": {
         "tags": [
           "History"
@@ -1445,7 +1445,7 @@
         }
       }
     },
-    "/AddHistory": {
+    "/api/History/AddHistory": {
       "post": {
         "tags": [
           "History"
@@ -1476,7 +1476,7 @@
         }
       }
     },
-    "/update-status": {
+    "/api/History/update-status": {
       "put": {
         "tags": [
           "History"
@@ -1494,6 +1494,29 @@
             "in": "query",
             "schema": {
               "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/History/orders/user/{userId}": {
+      "get": {
+        "tags": [
+          "History"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],

@@ -29,6 +29,9 @@ namespace SWP391_BE.Mappings
             CreateMap<OrderStatusDTO, Order>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
                 
+            CreateMap<Order, OrderStatusInfoDTO>()
+                .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
         }
     }
 } 

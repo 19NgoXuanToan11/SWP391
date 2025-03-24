@@ -11,5 +11,6 @@ namespace Service
         Task DeleteOrderAsync(int id);
         Task UpdateOrderStatusAsync(int id, string status);
         Task<bool> OrderExistsAsync(int id);
+        Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId);
     }
 }

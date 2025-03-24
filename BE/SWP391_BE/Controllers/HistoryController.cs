@@ -1,18 +1,29 @@
-﻿using Data.Models;
+﻿using AutoMapper;
+using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repo;
 using Service;
+using SWP391_BE.DTOs;
 
 namespace SWP391_BE.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class HistoryController : ControllerBase
     {
         private readonly IHistoryService _historyService;
+        private readonly IOrderService _orderService;
+        private readonly IMapper _mapper;
 
-        public HistoryController(IHistoryService historyService)
+        public HistoryController(
+            IHistoryService historyService,
+            IOrderService orderService,
+            IMapper mapper)
         {
             _historyService = historyService;
+            _orderService = orderService;
+            _mapper = mapper;
         }
         [HttpGet("GetAllHistory")]
         [Authorize(Roles = "Admin,Staff")]
@@ -110,6 +121,27 @@ namespace SWP391_BE.Controllers
 
             await _historyService.UpdateHistoryStatusAsync(trackingCode, status);
             return Ok("Cập nhật trạng thái đơn hàng thành công.");
+        }
+
+        // Get all orders with their IDs and statuses for a specific user
+        [HttpGet("orders/user/{userId}")]
+        public async Task<IActionResult> GetOrderStatusByUserId(int userId)
+        {
+            try
+            {
+                var orders = await _orderService.GetOrdersByUserIdAsync(userId);
+                if (!orders.Any())
+                {
+                    return NotFound(new { message = "No orders found for this user" });
+                }
+
+                var orderStatusList = _mapper.Map<IEnumerable<OrderStatusInfoDTO>>(orders);
+                return Ok(orderStatusList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while retrieving order status information", error = ex.Message });
+            }
         }
     }
 }
