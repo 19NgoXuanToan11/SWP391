@@ -112,14 +112,22 @@ const OrdersHistoryPage = () => {
     try {
       console.log(`Fetching orders for user ID: ${userId}`);
 
-      // Sử dụng endpoint /user/{userId} như yêu cầu
-      const response = await axios.get(`${API_BASE_URL}/user/${userId}`, {
-        headers: {
-          accept: "*/*",
-        },
-      });
+      // Sử dụng endpoint mới như hiển thị trong hình
+      const response = await axios.get(
+        `${API_BASE_URL}/api/History/orders/user/${userId}`,
+        {
+          headers: {
+            accept: "*/*",
+          },
+        }
+      );
 
       console.log("API response:", response.data);
+
+      // Khôi phục trạng thái từ localStorage
+      const orderStatusUpdates = JSON.parse(
+        localStorage.getItem("orderStatusUpdates") || "{}"
+      );
 
       // Process the response based on the API structure
       if (response.data && Array.isArray(response.data)) {
@@ -133,37 +141,71 @@ const OrdersHistoryPage = () => {
           }
 
           // Chuyển đổi trạng thái từ API sang trạng thái trong ứng dụng
-          let status = (order.status || "").toLowerCase();
+          let status = (order.orderStatus || "").toLowerCase();
 
-          // Đảm bảo trạng thái khớp với các giá trị trong dropdown
-          switch (status) {
-            case "completed":
-              status = "completed";
-              break;
-            case "shipping":
-              status = "shipping";
-              break;
-            case "pending":
-              status = "pending";
-              break;
-            case "cancelled":
-              status = "cancelled";
-              break;
-            default:
-              status = "pending"; // Trạng thái mặc định nếu không xác định
+          // Kiểm tra xem status có phải là "PAID" không
+          const isPaid =
+            status === "paid" ||
+            order.status === "PAID" ||
+            (order.paymentStatus &&
+              order.paymentStatus.toUpperCase() === "PAID");
+
+          // Kiểm tra nếu có cập nhật trạng thái từ staff trong localStorage
+          const hasStatusUpdate =
+            orderStatusUpdates[order.orderId] ||
+            (order.trackingCode && orderStatusUpdates[order.trackingCode]);
+
+          // Ưu tiên sử dụng trạng thái từ localStorage (nếu có)
+          if (hasStatusUpdate) {
+            status =
+              orderStatusUpdates[order.orderId] ||
+              orderStatusUpdates[order.trackingCode];
+          } else {
+            // Nếu không có trong localStorage, xử lý trạng thái từ API
+            // Đảm bảo trạng thái khớp với các giá trị trong dropdown
+            switch (status) {
+              case "completed":
+              case "complete":
+                status = "completed";
+                break;
+              case "shipping":
+              case "delivering":
+                status = "shipping";
+                break;
+              case "pending":
+                status = "pending";
+                break;
+              case "cancelled":
+              case "failed":
+                status = "cancelled";
+                break;
+              case "delivered":
+              case "complete":
+                status = "delivered";
+                break;
+              default:
+                // Nếu đã thanh toán và không có trạng thái cụ thể, hiển thị là completed
+                if (isPaid) {
+                  status = "completed";
+                } else {
+                  status = "pending"; // Trạng thái mặc định nếu không xác định
+                }
+            }
           }
 
           return {
-            id: order.trackingCode || "N/A",
+            id: order.orderId || order.id || "N/A",
+            orderId: order.orderId || order.id || "N/A",
             trackingCode: order.trackingCode || "N/A",
             shipper: order.shipper || "Chưa xác định",
             status: status,
-            date: new Date().toISOString(), // Sử dụng ngày hiện tại nếu không có
-            total: totalAmount,
+            date: order.orderDate || new Date().toISOString(),
+            total: order.totalAmount || totalAmount,
             products: order.products || [],
             estimatedDelivery: new Date(
               Date.now() + 3 * 24 * 60 * 60 * 1000
             ).toISOString(),
+            isPaid: isPaid,
           };
         });
 
@@ -240,7 +282,7 @@ const OrdersHistoryPage = () => {
   const getStatusText = (status) => {
     switch (status) {
       case "completed":
-        return "Đã thanh toán";
+        return "Đã giao hàng";
       case "pending":
         return "Chờ xác nhận";
       case "shipping":
@@ -345,6 +387,10 @@ const OrdersHistoryPage = () => {
     // Search by order ID or tracking code
     if (
       order.id.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.orderId
+        .toString()
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       order.trackingCode
         .toString()
         .toLowerCase()
@@ -585,13 +631,18 @@ const OrdersHistoryPage = () => {
 
                         <div className="flex flex-col items-end">
                           <div className="flex items-center gap-3">
-                            <span
-                              className={`px-3 py-1 rounded-full text-white ${getStatusColor(
-                                order.status
-                              )} shadow-sm ${getStatusGlow(order.status)}`}
-                            >
-                              {getStatusText(order.status)}
-                            </span>
+                            {/* Show main status badge only if there's no status update or if the update is different */}
+                            {!orderStatusUpdates[order.trackingCode] ||
+                            orderStatusUpdates[order.trackingCode] !==
+                              order.status ? (
+                              <span
+                                className={`px-3 py-1 rounded-full text-white ${getStatusColor(
+                                  order.status
+                                )} shadow-sm ${getStatusGlow(order.status)}`}
+                              >
+                                {getStatusText(order.status)}
+                              </span>
+                            ) : null}
 
                             {/* Tag trạng thái mới từ staff/admin */}
                             {orderStatusUpdates[order.trackingCode] && (
@@ -619,7 +670,6 @@ const OrdersHistoryPage = () => {
                                 {orderStatusUpdates[order.trackingCode] ===
                                 "shipping" ? (
                                   <>
-                                    <CarOutlined />
                                     <span>Đang giao hàng</span>
                                   </>
                                 ) : orderStatusUpdates[order.trackingCode] ===
@@ -648,20 +698,6 @@ const OrdersHistoryPage = () => {
                               </span>
                             )}
                           </div>
-
-                          <span className="text-gray-500 text-sm mt-1">
-                            {order.status === "shipping" && (
-                              <div className="flex items-center gap-1 text-blue-600">
-                                <CarOutlined />
-                                <span>
-                                  Dự kiến:{" "}
-                                  {calculateTimeRemaining(
-                                    order.estimatedDelivery
-                                  )}
-                                </span>
-                              </div>
-                            )}
-                          </span>
                         </div>
                       </div>
                     </div>
