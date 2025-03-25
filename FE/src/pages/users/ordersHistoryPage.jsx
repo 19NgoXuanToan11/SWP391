@@ -131,83 +131,90 @@ const OrdersHistoryPage = () => {
 
       // Process the response based on the API structure
       if (response.data && Array.isArray(response.data)) {
-        const formattedOrders = response.data.map((order) => {
-          // Tính tổng tiền từ các sản phẩm
-          let totalAmount = 0;
-          if (order.products && Array.isArray(order.products)) {
-            totalAmount = order.products.reduce((sum, product) => {
-              return sum + (product.price || 0) * (product.quantity || 1);
-            }, 0);
-          }
-
-          // Chuyển đổi trạng thái từ API sang trạng thái trong ứng dụng
-          let status = (order.orderStatus || "").toLowerCase();
-
-          // Kiểm tra xem status có phải là "PAID" không
-          const isPaid =
-            status === "paid" ||
-            order.status === "PAID" ||
-            (order.paymentStatus &&
-              order.paymentStatus.toUpperCase() === "PAID");
-
-          // Kiểm tra nếu có cập nhật trạng thái từ staff trong localStorage
-          const hasStatusUpdate =
-            orderStatusUpdates[order.orderId] ||
-            (order.trackingCode && orderStatusUpdates[order.trackingCode]);
-
-          // Ưu tiên sử dụng trạng thái từ localStorage (nếu có)
-          if (hasStatusUpdate) {
-            status =
-              orderStatusUpdates[order.orderId] ||
-              orderStatusUpdates[order.trackingCode];
-          } else {
-            // Nếu không có trong localStorage, xử lý trạng thái từ API
-            // Đảm bảo trạng thái khớp với các giá trị trong dropdown
-            switch (status) {
-              case "completed":
-              case "complete":
-                status = "completed";
-                break;
-              case "shipping":
-              case "delivering":
-                status = "shipping";
-                break;
-              case "pending":
-                status = "pending";
-                break;
-              case "cancelled":
-              case "failed":
-                status = "cancelled";
-                break;
-              case "delivered":
-              case "complete":
-                status = "delivered";
-                break;
-              default:
-                // Nếu đã thanh toán và không có trạng thái cụ thể, hiển thị là completed
-                if (isPaid) {
-                  status = "completed";
-                } else {
-                  status = "pending"; // Trạng thái mặc định nếu không xác định
-                }
+        // Lọc đơn hàng - chỉ lấy những đơn có historyStatus là "COMPLETED"
+        const formattedOrders = response.data
+          .filter((order) => {
+            // Chỉ giữ đơn hàng đã thanh toán (historyStatus: "COMPLETED")
+            return order.historyStatus === "COMPLETED";
+          })
+          .map((order) => {
+            // Tính tổng tiền từ các sản phẩm
+            let totalAmount = 0;
+            if (order.products && Array.isArray(order.products)) {
+              totalAmount = order.products.reduce((sum, product) => {
+                return sum + (product.price || 0) * (product.quantity || 1);
+              }, 0);
             }
-          }
 
-          return {
-            id: order.orderId || order.id || "N/A",
-            orderId: order.orderId || order.id || "N/A",
-            trackingCode: order.trackingCode || "N/A",
-            shipper: order.shipper || "Chưa xác định",
-            status: status,
-            date: order.orderDate || new Date().toISOString(),
-            total: order.totalAmount || totalAmount,
-            products: order.products || [],
-            estimatedDelivery: new Date(
-              Date.now() + 3 * 24 * 60 * 60 * 1000
-            ).toISOString(),
-            isPaid: isPaid,
-          };
-        });
+            // Chuyển đổi trạng thái từ API sang trạng thái trong ứng dụng
+            let status = (order.orderStatus || "").toLowerCase();
+
+            // Kiểm tra xem status có phải là "PAID" không
+            const isPaid =
+              status === "paid" ||
+              order.status === "PAID" ||
+              (order.paymentStatus &&
+                order.paymentStatus.toUpperCase() === "PAID") ||
+              order.historyStatus === "COMPLETED";
+
+            // Kiểm tra nếu có cập nhật trạng thái từ staff trong localStorage
+            const hasStatusUpdate =
+              orderStatusUpdates[order.orderId] ||
+              (order.trackingCode && orderStatusUpdates[order.trackingCode]);
+
+            // Ưu tiên sử dụng trạng thái từ localStorage (nếu có)
+            if (hasStatusUpdate) {
+              status =
+                orderStatusUpdates[order.orderId] ||
+                orderStatusUpdates[order.trackingCode];
+            } else {
+              // Nếu không có trong localStorage, xử lý trạng thái từ API
+              // Đảm bảo trạng thái khớp với các giá trị trong dropdown
+              switch (status) {
+                case "completed":
+                case "complete":
+                  status = "completed";
+                  break;
+                case "shipping":
+                case "delivering":
+                  status = "shipping";
+                  break;
+                case "pending":
+                  status = "pending";
+                  break;
+                case "cancelled":
+                case "failed":
+                  status = "cancelled";
+                  break;
+                case "delivered":
+                case "complete":
+                  status = "delivered";
+                  break;
+                default:
+                  // Nếu đã thanh toán và không có trạng thái cụ thể, hiển thị là completed
+                  if (isPaid) {
+                    status = "completed";
+                  } else {
+                    status = "pending"; // Trạng thái mặc định nếu không xác định
+                  }
+              }
+            }
+
+            return {
+              id: order.orderId || order.id || "N/A",
+              orderId: order.orderId || order.id || "N/A",
+              trackingCode: order.trackingCode || "N/A",
+              shipper: order.shipper || "Chưa xác định",
+              status: status,
+              date: order.orderDate || new Date().toISOString(),
+              total: order.totalAmount || totalAmount,
+              products: order.products || [],
+              estimatedDelivery: new Date(
+                Date.now() + 3 * 24 * 60 * 60 * 1000
+              ).toISOString(),
+              isPaid: isPaid,
+            };
+          });
 
         setOrders(formattedOrders);
       } else {
