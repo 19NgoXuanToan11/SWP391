@@ -387,7 +387,7 @@ const OrdersPage = () => {
           apiStatus = newStatus; // Trường hợp "pending" giữ nguyên
       }
 
-      // Thay đổi PUT thành PATCH để phù hợp với API và trùng với staffOrdersPage.jsx
+      // Gọi API để cập nhật
       await axios.patch(`https://localhost:7285/api/Order/${orderId}/status`, {
         status: apiStatus,
       });
@@ -584,7 +584,7 @@ const OrdersPage = () => {
       case "delivered":
         return "Đã giao hàng";
       case "completed":
-        return "Hoàn thành";
+        return "Đã giao hàng";
       case "cancelled":
         return "Đã hủy";
       default:
@@ -686,7 +686,7 @@ const OrdersPage = () => {
       ),
     },
     {
-      title: "Trạng thái",
+      title: "Trạng thái thanh toán",
       dataIndex: "status",
       key: "status",
       render: (status) => {

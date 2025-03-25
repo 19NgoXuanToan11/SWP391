@@ -106,11 +106,6 @@ export const UserDropdown = ({ user, onLogout }) => {
       label: "Đơn hàng của tôi",
       path: "/orders",
     },
-    {
-      icon: <HeartOutlined />,
-      label: "Danh sách yêu thích",
-      path: "/wishlist",
-    },
   ];
 
   // Định nghĩa hàm handleLogout
