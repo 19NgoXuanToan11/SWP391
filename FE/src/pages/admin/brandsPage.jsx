@@ -140,9 +140,10 @@ const BrandsPage = () => {
 
   // Calculate stats
   const totalBrands = brands?.length || 0;
-  // Tạm thời hiển thị 0 cho active và inactive vì API chưa có trường status
-  const activeBrands = 0;
-  const inactiveBrands = totalBrands;
+  // Sửa lại logic tính toán thương hiệu đang hoạt động
+  // Tạm thời hiển thị tất cả là đang hoạt động vì trong UI hiện tại, tất cả đều được đánh dấu là "Hoạt động"
+  const activeBrands = totalBrands; // Tất cả thương hiệu đều đang hoạt động
+  const inactiveBrands = 0; // Không có thương hiệu nào không hoạt động
 
   if (isError) {
     message.error(
@@ -181,7 +182,7 @@ const BrandsPage = () => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
         >
           <motion.div
             whileHover={{
@@ -196,10 +197,19 @@ const BrandsPage = () => {
                 <p className="text-3xl font-bold text-gray-800">
                   {totalBrands}
                 </p>
+                <p className="text-xs text-gray-400 mt-1">
+                  Tất cả thương hiệu đã đăng ký
+                </p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <ShopOutlined className="text-xl text-blue-500" />
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-md">
+                <ShopOutlined className="text-xl text-white" />
               </div>
+            </div>
+            <div className="mt-4 h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-blue-500 rounded-full"
+                style={{ width: "100%" }}
+              ></div>
             </div>
           </motion.div>
 
@@ -218,32 +228,24 @@ const BrandsPage = () => {
                 <p className="text-3xl font-bold text-gray-800">
                   {activeBrands}
                 </p>
+                <p className="text-xs text-gray-400 mt-1">
+                  {Math.round((activeBrands / totalBrands) * 100) || 0}% trong
+                  tổng số thương hiệu
+                </p>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <CheckCircleOutlined className="text-xl text-green-500" />
+              <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-md">
+                <CheckCircleOutlined className="text-xl text-white" />
               </div>
             </div>
-          </motion.div>
-
-          <motion.div
-            whileHover={{
-              y: -5,
-              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
-            }}
-            className="bg-white p-6 rounded-2xl shadow-sm transition-all"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">
-                  Thương hiệu không hoạt động
-                </p>
-                <p className="text-3xl font-bold text-gray-800">
-                  {inactiveBrands}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <TagOutlined className="text-xl text-purple-500" />
-              </div>
+            <div className="mt-4 h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-green-500 rounded-full"
+                style={{
+                  width: `${
+                    Math.round((activeBrands / totalBrands) * 100) || 0
+                  }%`,
+                }}
+              ></div>
             </div>
           </motion.div>
         </motion.div>

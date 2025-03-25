@@ -134,11 +134,22 @@ const OrdersPage = () => {
 
       // Tính toán thống kê
       const totalRevenue = ordersWithSavedStatus
-        .filter(
-          (o) =>
-            o.status.toLowerCase() === "delivered" ||
-            (o.paymentMethod !== null && o.paymentMethod !== "null")
-        )
+        .filter((o) => {
+          // Chỉ tính doanh thu cho đơn hàng đã thanh toán
+          const isPaid =
+            o.paymentMethod &&
+            o.paymentMethod !== "null" &&
+            o.paymentMethod.toLowerCase() !== "pending" &&
+            o.status.toLowerCase() === "delivered";
+
+          // Kiểm tra trạng thái thanh toán
+          const paymentStatus =
+            o.paymentStatus &&
+            o.paymentStatus.toLowerCase() !== "pending" &&
+            o.paymentStatus.toLowerCase() !== "chưa thanh toán";
+
+          return isPaid || paymentStatus;
+        })
         .reduce((sum, order) => sum + order.totalAmount, 0);
 
       setOrderStats({
@@ -214,15 +225,24 @@ const OrdersPage = () => {
     const stats = data.reduce(
       (acc, payment) => {
         acc.total += 1;
-        acc.totalAmount += payment.amount;
-        if (payment.status.toLowerCase() === "pending") {
-          acc.pending += 1;
-        } else if (
-          payment.status.toLowerCase() === "paid" ||
-          payment.status.toLowerCase() === "completed"
-        ) {
+
+        const isPaid =
+          payment.status &&
+          (payment.status.toLowerCase() === "paid" ||
+            payment.status.toLowerCase() === "completed" ||
+            payment.status.toLowerCase() === "đã thanh toán");
+
+        // Only add amount to totalAmount if payment is paid
+        if (isPaid) {
+          acc.totalAmount += payment.amount;
           acc.completed += 1;
+        } else if (
+          payment.status &&
+          payment.status.toLowerCase() === "pending"
+        ) {
+          acc.pending += 1;
         }
+
         return acc;
       },
       { total: 0, pending: 0, completed: 0, totalAmount: 0 }
@@ -703,7 +723,7 @@ const OrdersPage = () => {
             ) : (
               <>
                 <ClockCircleOutlined />
-                <span>Đang xử lý</span>
+                <span>Chưa thanh toán</span>
               </>
             )}
           </Tag>
@@ -854,7 +874,7 @@ const OrdersPage = () => {
           </motion.div>
 
           {/* Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <motion.div
               whileHover={{ scale: 1.02 }}
               className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 shadow-sm border border-blue-200"
@@ -914,60 +934,6 @@ const OrdersPage = () => {
                 className="mt-4"
               />
             </motion.div>
-
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl p-6 shadow-sm border border-yellow-200"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="bg-yellow-500/10 p-3 rounded-xl">
-                  <FilterOutlined className="text-2xl text-yellow-600" />
-                </div>
-                <div className="bg-yellow-500/10 rounded-full p-2">
-                  <RiseOutlined className="text-yellow-600" />
-                </div>
-              </div>
-              <h3 className="text-gray-600 text-sm font-medium mb-2">
-                Đang xử lý
-              </h3>
-              <Statistic
-                value={paymentStats.pending}
-                className="!text-2xl font-bold text-yellow-600"
-              />
-              <Progress
-                percent={(paymentStats.pending / paymentStats.total) * 100}
-                showInfo={false}
-                strokeColor="#faad14"
-                className="mt-4"
-              />
-            </motion.div>
-
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 shadow-sm border border-purple-200"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="bg-purple-500/10 p-3 rounded-xl">
-                  <CheckOutlined className="text-2xl text-purple-600" />
-                </div>
-                <div className="bg-purple-500/10 rounded-full p-2">
-                  <RiseOutlined className="text-purple-600" />
-                </div>
-              </div>
-              <h3 className="text-gray-600 text-sm font-medium mb-2">
-                Hoàn thành
-              </h3>
-              <Statistic
-                value={paymentStats.completed}
-                className="!text-2xl font-bold text-purple-600"
-              />
-              <Progress
-                percent={(paymentStats.completed / paymentStats.total) * 100}
-                showInfo={false}
-                strokeColor="#722ed1"
-                className="mt-4"
-              />
-            </motion.div>
           </div>
 
           {/* Filters */}
@@ -1015,7 +981,7 @@ const OrdersPage = () => {
                   <Option value="pending">
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full bg-orange-500" />
-                      <span>Đang xử lý</span>
+                      <span>Chờ xác nhận</span>
                     </div>
                   </Option>
                   <Option value="paid">
