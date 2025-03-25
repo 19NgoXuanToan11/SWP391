@@ -106,10 +106,34 @@ const Dashboard = () => {
       const response = await axios.get("https://localhost:7285/api/order");
       console.log("Orders response:", response.data);
 
-      setOrders(response.data);
+      // Khôi phục trạng thái từ localStorage
+      const orderStatusUpdates = JSON.parse(
+        localStorage.getItem("orderStatusUpdates") || "{}"
+      );
 
-      // Tính toán thống kê
-      let totalRevenue = response.data
+      // Áp dụng trạng thái đã lưu cho các đơn hàng được tải về
+      const ordersWithSavedStatus = response.data.map((order) => {
+        // Kiểm tra nếu có trạng thái lưu cho đơn hàng này
+        if (orderStatusUpdates[order.orderId]) {
+          return {
+            ...order,
+            status: orderStatusUpdates[order.orderId], // Ưu tiên sử dụng trạng thái đã lưu
+          };
+        }
+        // Kiểm tra nếu có trackingCode và có trạng thái lưu theo trackingCode
+        if (order.trackingCode && orderStatusUpdates[order.trackingCode]) {
+          return {
+            ...order,
+            status: orderStatusUpdates[order.trackingCode],
+          };
+        }
+        return order;
+      });
+
+      setOrders(ordersWithSavedStatus);
+
+      // Tính toán thống kê với các trạng thái đã cập nhật
+      let totalRevenue = ordersWithSavedStatus
         .filter(
           (o) =>
             o.status.toLowerCase() === "delivered" ||
@@ -117,31 +141,30 @@ const Dashboard = () => {
         )
         .reduce((sum, order) => sum + order.totalAmount, 0);
 
-      // Làm tròn tổng doanh thu đến hàng nghìn
-      totalRevenue = Math.round(totalRevenue / 1000) * 1000;
-
       setOrderStats({
-        total: response.data.length,
-        pending: response.data.filter(
+        total: ordersWithSavedStatus.length,
+        pending: ordersWithSavedStatus.filter(
           (o) => o.status.toLowerCase() === "pending"
         ).length,
-        processing: response.data.filter(
+        processing: ordersWithSavedStatus.filter(
           (o) => o.status.toLowerCase() === "processing"
         ).length,
-        shipped: response.data.filter(
-          (o) => o.status.toLowerCase() === "shipped"
+        shipped: ordersWithSavedStatus.filter(
+          (o) =>
+            o.status.toLowerCase() === "shipped" ||
+            o.status.toLowerCase() === "shipping" // Thêm cả shipping để đảm bảo đơn "đang giao" được tính đúng
         ).length,
-        delivered: response.data.filter(
+        delivered: ordersWithSavedStatus.filter(
           (o) => o.status.toLowerCase() === "delivered"
         ).length,
-        cancelled: response.data.filter(
+        cancelled: ordersWithSavedStatus.filter(
           (o) => o.status.toLowerCase() === "cancelled"
         ).length,
         revenue: totalRevenue,
       });
 
-      // Tạo dữ liệu biểu đồ doanh thu
-      generateRevenueChartData(response.data);
+      // Tạo dữ liệu biểu đồ doanh thu với dữ liệu đã cập nhật
+      generateRevenueChartData(ordersWithSavedStatus);
     } catch (error) {
       console.error("Error fetching orders:", error);
       message.error("Không thể tải danh sách đơn hàng");
@@ -347,26 +370,10 @@ const Dashboard = () => {
                     <p className="text-3xl font-bold text-gray-800 mt-2">
                       {formatPrice(orderStats.revenue)} đ
                     </p>
-                    <div className="flex items-center mt-4 space-x-2">
-                      <span className="flex items-center text-red-500 text-sm bg-red-50 px-2 py-1 rounded-lg">
-                        <ArrowDownOutlined className="mr-1" />
-                        3,6%
-                      </span>
-                      <span className="text-gray-400 text-sm">
-                        so với tháng trước
-                      </span>
-                    </div>
                   </div>
                   <div className="bg-pink-500 bg-opacity-10 p-4 rounded-2xl">
                     <DollarOutlined className="text-3xl text-pink-500" />
                   </div>
-                </div>
-                {/* Thêm thanh tiến trình */}
-                <div className="mt-4 h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-pink-500 rounded-full"
-                    style={{ width: "76%" }}
-                  ></div>
                 </div>
               </div>
 
@@ -380,26 +387,10 @@ const Dashboard = () => {
                     <p className="text-3xl font-bold text-gray-800 mt-2">
                       {orderStats.total}
                     </p>
-                    <div className="flex items-center mt-4 space-x-2">
-                      <span className="flex items-center text-green-500 text-sm bg-green-50 px-2 py-1 rounded-lg">
-                        <ArrowUpOutlined className="mr-1" />
-                        2,8%
-                      </span>
-                      <span className="text-gray-400 text-sm">
-                        so với tháng trước
-                      </span>
-                    </div>
                   </div>
                   <div className="bg-blue-500 bg-opacity-10 p-4 rounded-2xl">
                     <ShoppingOutlined className="text-3xl text-blue-500" />
                   </div>
-                </div>
-                {/* Thêm thanh tiến trình */}
-                <div className="mt-4 h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-blue-500 rounded-full"
-                    style={{ width: "82%" }}
-                  ></div>
                 </div>
               </div>
 
@@ -413,32 +404,16 @@ const Dashboard = () => {
                     <p className="text-3xl font-bold text-gray-800 mt-2">
                       {userStats.total}
                     </p>
-                    <div className="flex items-center mt-4 space-x-2">
-                      <span className="flex items-center text-green-500 text-sm bg-green-50 px-2 py-1 rounded-lg">
-                        <ArrowUpOutlined className="mr-1" />
-                        1,36%
-                      </span>
-                      <span className="text-gray-400 text-sm">
-                        so với tháng trước
-                      </span>
-                    </div>
                   </div>
                   <div className="bg-green-500 bg-opacity-10 p-4 rounded-2xl">
                     <UserOutlined className="text-3xl text-green-500" />
                   </div>
                 </div>
-                {/* Thêm thanh tiến trình */}
-                <div className="mt-4 h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-green-500 rounded-full"
-                    style={{ width: "60%" }}
-                  ></div>
-                </div>
               </div>
             </div>
 
             {/* Thêm thống kê trạng thái đơn hàng */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
               <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium text-gray-500">
@@ -450,20 +425,6 @@ const Dashboard = () => {
                 </div>
                 <div className="bg-yellow-100 p-2 rounded-lg">
                   <span className="text-yellow-500 text-lg">⏳</span>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium text-gray-500">
-                    Đang xử lý
-                  </p>
-                  <p className="text-lg font-bold text-gray-800">
-                    {orderStats.processing}
-                  </p>
-                </div>
-                <div className="bg-blue-100 p-2 rounded-lg">
-                  <span className="text-blue-500 text-lg">🔄</span>
                 </div>
               </div>
 
@@ -488,18 +449,6 @@ const Dashboard = () => {
                 </div>
                 <div className="bg-green-100 p-2 rounded-lg">
                   <span className="text-green-500 text-lg">✅</span>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium text-gray-500">Đã hủy</p>
-                  <p className="text-lg font-bold text-gray-800">
-                    {orderStats.cancelled}
-                  </p>
-                </div>
-                <div className="bg-red-100 p-2 rounded-lg">
-                  <span className="text-red-500 text-lg">❌</span>
                 </div>
               </div>
             </div>
@@ -571,17 +520,47 @@ const Dashboard = () => {
                     <PieChart>
                       <Pie
                         data={[
-                          {
-                            name: "Chờ xác nhận",
-                            value: orderStats.pending || 1,
-                          },
-                          {
-                            name: "Đang xử lý",
-                            value: orderStats.processing || 1,
-                          },
-                          { name: "Đang giao", value: orderStats.shipped || 1 },
-                          { name: "Đã giao", value: orderStats.delivered || 1 },
-                          { name: "Đã hủy", value: orderStats.cancelled || 1 },
+                          // Chỉ hiển thị các trạng thái có đơn hàng (count > 0)
+                          ...(orderStats.pending > 0
+                            ? [
+                                {
+                                  name: "Chờ xác nhận",
+                                  value: orderStats.pending,
+                                },
+                              ]
+                            : []),
+                          ...(orderStats.processing > 0
+                            ? [
+                                {
+                                  name: "Đang xử lý",
+                                  value: orderStats.processing,
+                                },
+                              ]
+                            : []),
+                          ...(orderStats.shipped > 0
+                            ? [
+                                {
+                                  name: "Đang giao",
+                                  value: orderStats.shipped,
+                                },
+                              ]
+                            : []),
+                          ...(orderStats.delivered > 0
+                            ? [
+                                {
+                                  name: "Đã giao",
+                                  value: orderStats.delivered,
+                                },
+                              ]
+                            : []),
+                          ...(orderStats.cancelled > 0
+                            ? [
+                                {
+                                  name: "Đã hủy",
+                                  value: orderStats.cancelled,
+                                },
+                              ]
+                            : []),
                         ]}
                         cx="50%"
                         cy="50%"
@@ -595,11 +574,16 @@ const Dashboard = () => {
                         }
                         labelLine={false}
                       >
-                        <Cell fill="#eab308" />
-                        <Cell fill="#3b82f6" />
-                        <Cell fill="#6366f1" />
-                        <Cell fill="#10b981" />
-                        <Cell fill="#ef4444" />
+                        {/* Dynamically generate cells based on data count */}
+                        {[
+                          "#eab308", // Chờ xác nhận
+                          "#3b82f6", // Đang xử lý
+                          "#6366f1", // Đang giao
+                          "#10b981", // Đã giao
+                          "#ef4444", // Đã hủy
+                        ].map((color, index) => (
+                          <Cell key={`cell-${index}`} fill={color} />
+                        ))}
                       </Pie>
                       <Tooltip formatter={(value) => value} />
                       <Legend

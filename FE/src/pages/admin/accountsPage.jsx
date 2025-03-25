@@ -105,7 +105,9 @@ const AccountsPage = () => {
         }
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu người dùng:", error);
-        message.error("Không thể tải dữ liệu người dùng. Vui lòng thử lại sau.");
+        message.error(
+          "Không thể tải dữ liệu người dùng. Vui lòng thử lại sau."
+        );
       } finally {
         setLoading(false);
       }
@@ -287,7 +289,10 @@ const AccountsPage = () => {
           setSelectedRows([]);
           message.success(success);
         } catch (err) {
-          console.error(`Lỗi khi thực hiện hành động hàng loạt ${actionType}:`, err);
+          console.error(
+            `Lỗi khi thực hiện hành động hàng loạt ${actionType}:`,
+            err
+          );
           message.error(error);
         }
       },
@@ -399,9 +404,12 @@ const AccountsPage = () => {
           className="mb-8 relative overflow-hidden rounded-3xl p-8 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
         >
           <div className="relative z-10">
-            <h1 className="text-3xl font-bold text-white">Quản Lý Người Dùng</h1>
+            <h1 className="text-3xl font-bold text-white">
+              Quản Lý Người Dùng
+            </h1>
             <p className="text-white text-opacity-80 mt-2 max-w-2xl">
-              Quản lý tài khoản người dùng, quyền hạn và quyền truy cập vào ứng dụng của bạn
+              Quản lý tài khoản người dùng, quyền hạn và quyền truy cập vào ứng
+              dụng của bạn
             </p>
           </div>
           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-20 -mt-20"></div>
@@ -413,7 +421,7 @@ const AccountsPage = () => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
         >
           <motion.div
             whileHover={{
@@ -451,12 +459,15 @@ const AccountsPage = () => {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Người dùng đang hoạt động</p>
+                <p className="text-sm text-gray-500">
+                  Người dùng đang hoạt động
+                </p>
                 <p className="text-3xl font-bold text-gray-800">
                   {activeUsers}
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
-                  {Math.round((activeUsers / totalUsers) * 100) || 0}% trong tổng số người dùng
+                  {Math.round((activeUsers / totalUsers) * 100) || 0}% trong
+                  tổng số người dùng
                 </p>
               </div>
               <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-md">
@@ -469,39 +480,6 @@ const AccountsPage = () => {
                 style={{
                   width: `${
                     Math.round((activeUsers / totalUsers) * 100) || 0
-                  }%`,
-                }}
-              ></div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            whileHover={{
-              y: -5,
-              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
-            }}
-            className="bg-white p-6 rounded-2xl shadow-sm transition-all"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Người dùng không hoạt động</p>
-                <p className="text-3xl font-bold text-gray-800">
-                  {inactiveUsers}
-                </p>
-                <p className="text-xs text-gray-400 mt-1">
-                  {Math.round((inactiveUsers / totalUsers) * 100) || 0}% trong tổng số người dùng
-                </p>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-red-400 to-red-600 rounded-2xl flex items-center justify-center shadow-md">
-                <CloseCircleOutlined className="text-xl text-white" />
-              </div>
-            </div>
-            <div className="mt-4 h-1 w-full bg-gray-100 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-red-500 rounded-full"
-                style={{
-                  width: `${
-                    Math.round((inactiveUsers / totalUsers) * 100) || 0
                   }%`,
                 }}
               ></div>
@@ -658,7 +636,8 @@ const AccountsPage = () => {
               <Empty
                 description={
                   <span className="text-gray-500">
-                    Không tìm thấy người dùng nào. Hãy điều chỉnh tìm kiếm hoặc tạo người dùng mới.
+                    Không tìm thấy người dùng nào. Hãy điều chỉnh tìm kiếm hoặc
+                    tạo người dùng mới.
                   </span>
                 }
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -765,7 +744,9 @@ const AccountsPage = () => {
                             color={user.role === "Admin" ? "purple" : "blue"}
                             className="px-3 py-1 rounded-full text-xs font-medium"
                           >
-                            {user.role === "Admin" ? "Quản trị viên" : "Người dùng"}
+                            {user.role === "Admin"
+                              ? "Quản trị viên"
+                              : "Người dùng"}
                           </Tag>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -775,7 +756,9 @@ const AccountsPage = () => {
                             }
                             text={
                               <span className="text-sm font-medium">
-                                {user.status === "Active" ? "Hoạt động" : "Không hoạt động"}
+                                {user.status === "Active"
+                                  ? "Hoạt động"
+                                  : "Không hoạt động"}
                               </span>
                             }
                           />
@@ -824,7 +807,8 @@ const AccountsPage = () => {
               {/* Phân trang */}
               <div className="flex justify-between items-center px-6 py-4 bg-gray-50">
                 <div className="text-sm text-gray-500">
-                  Hiển thị {filteredUsers.length} trong tổng số {totalUsers} người dùng
+                  Hiển thị {filteredUsers.length} trong tổng số {totalUsers}{" "}
+                  người dùng
                 </div>
                 <div className="flex items-center space-x-2">
                   <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors">
@@ -967,7 +951,9 @@ const AccountsPage = () => {
               <Form.Item
                 name="username"
                 label="Tên người dùng"
-                rules={[{ required: true, message: "Vui lòng nhập tên người dùng" }]}
+                rules={[
+                  { required: true, message: "Vui lòng nhập tên người dùng" },
+                ]}
               >
                 <Input
                   prefix={<UserOutlined className="text-gray-400" />}
@@ -1025,9 +1011,7 @@ const AccountsPage = () => {
                         if (!value || getFieldValue("password") === value) {
                           return Promise.resolve();
                         }
-                        return Promise.reject(
-                          new Error("Mật khẩu không khớp")
-                        );
+                        return Promise.reject(new Error("Mật khẩu không khớp"));
                       },
                     }),
                   ]}
