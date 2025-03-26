@@ -101,7 +101,6 @@ namespace Service
                     .Include(p => p.Category)
                     .Where(p => p.BrandId == brandId)
                     .Include(p => p.Images)
-
                     .AsNoTracking()
                     .ToListAsync();
 
@@ -126,7 +125,6 @@ namespace Service
                     .Include(p => p.Category)
                     .Where(p => p.CategoryId == categoryId)
                     .Include(p => p.Images)
-
                     .AsNoTracking()
                     .ToListAsync();
             }
@@ -148,7 +146,6 @@ namespace Service
                     .Include(p => p.Category)
                     .Where(p => p.SkinTypeId == skinTypeId)
                     .Include(p => p.Images)
-
                     .AsNoTracking()
                     .ToListAsync();
             }
@@ -189,21 +186,18 @@ namespace Service
                     throw new Exception($"Category với ID {product.CategoryId} không tồn tại");
                 }
 
-                // **Thêm sản phẩm vào database**
                 await _productRepository.AddAsync(product);
-                await _context.SaveChangesAsync(); // Lưu lại để có ProductId
+                await _context.SaveChangesAsync();
 
-                // **Thêm danh sách hình ảnh vào ProductImages**
                 if (imageUrls != null && imageUrls.Any())
                 {
                     var productImages = imageUrls.Select(url => new ProductImage
                     {
-                        ProductId = product.ProductId, // Lấy ID của sản phẩm vừa tạo
+                        ProductId = product.ProductId,
                         ImageUrl = url,
                         IsMainImage = false
                     }).ToList();
 
-                    // Đặt ảnh đầu tiên làm ảnh chính (nếu có ảnh)
                     if (productImages.Count() > 0)
                     {
                         productImages[0].IsMainImage = true;
@@ -221,7 +215,6 @@ namespace Service
                 throw;
             }
         }
-
 
         public async Task UpdateProductAsync(Product product)
         {
@@ -241,30 +234,61 @@ namespace Service
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                // Xóa theo đúng tên bảng và cột
-                var deleteProductImages = "DELETE FROM ProductImages WHERE ProductId = @id";
-                var deleteOrderDetails = "DELETE FROM OrderDetails WHERE ProductID = @id";  // Chú ý chữ ID viết hoa
-                var deleteFeedbacks = "DELETE FROM Feedbacks WHERE ProductID = @id";  // Chú ý tên bảng số nhiều và ID viết hoa
-                var deleteProduct = "DELETE FROM Products WHERE ProductID = @id";  // Chú ý ID viết hoa
+                _logger.LogInformation("Deleting product with ID: {Id}", id);
 
-                // Thực hiện xóa theo thứ tự từ con đến cha
-                await _context.Database.ExecuteSqlRawAsync(deleteProductImages, new Microsoft.Data.SqlClient.SqlParameter("@id", id));
-                await _context.Database.ExecuteSqlRawAsync(deleteOrderDetails, new Microsoft.Data.SqlClient.SqlParameter("@id", id));
-                await _context.Database.ExecuteSqlRawAsync(deleteFeedbacks, new Microsoft.Data.SqlClient.SqlParameter("@id", id));
-                var result = await _context.Database.ExecuteSqlRawAsync(deleteProduct, new Microsoft.Data.SqlClient.SqlParameter("@id", id));
+                // Kiểm tra xem Product có tồn tại không
+                var productExists = await _context.Products.AnyAsync(p => p.ProductId == id);
+                if (!productExists)
+                {
+                    _logger.LogWarning("Product with ID {Id} not found", id);
+                    throw new KeyNotFoundException($"Product with ID {id} not found");
+                }
+
+                // Xóa các bản ghi liên quan
+                // Sửa tên bảng từ ProductImages thành ProductImage
+                await _context.Database.ExecuteSqlRawAsync(
+                    "DELETE FROM ProductImage WHERE ProductId = @id",
+                    new Microsoft.Data.SqlClient.SqlParameter("@id", id));
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "DELETE FROM OrderDetails WHERE ProductID = @id",
+                    new Microsoft.Data.SqlClient.SqlParameter("@id", id));
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "DELETE FROM Feedbacks WHERE ProductID = @id",
+                    new Microsoft.Data.SqlClient.SqlParameter("@id", id));
+
+                // Nếu có các bảng khác tham chiếu đến ProductId, thêm lệnh xóa tại đây
+                // Ví dụ:
+                // await _context.Database.ExecuteSqlRawAsync(
+                //     "DELETE FROM CartItems WHERE ProductID = @id",
+                //     new Microsoft.Data.SqlClient.SqlParameter("@id", id));
+
+                // Xóa Product
+                var result = await _context.Database.ExecuteSqlRawAsync(
+                    "DELETE FROM Products WHERE ProductID = @id",
+                    new Microsoft.Data.SqlClient.SqlParameter("@id", id));
 
                 if (result == 0)
                 {
-                    throw new Exception($"Product with ID {id} not found");
+                    _logger.LogWarning("Product with ID {Id} not found after deleting related records", id);
+                    throw new KeyNotFoundException($"Product with ID {id} not found after deleting related records");
                 }
 
                 await transaction.CommitAsync();
+                _logger.LogInformation("Product with ID {Id} deleted successfully.", id);
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(sqlEx, "SQL error deleting product {Id}: {Message}", id, sqlEx.Message);
+                throw new Exception($"Database error while deleting product: {sqlEx.Message}", sqlEx);
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
                 _logger.LogError(ex, "Error deleting product {Id}: {Message}", id, ex.Message);
-                throw;
+                throw new Exception($"Error deleting product: {ex.Message}", ex);
             }
         }
 
