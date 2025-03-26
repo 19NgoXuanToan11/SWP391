@@ -30,6 +30,8 @@ import SidebarAdmin from "../../components/SidebarAdmin.jsx";
 import {
   useGetCategoriesQuery,
   useDeleteCategoryMutation,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
 } from "../../services/api/beautyShopApi";
 import { motion } from "framer-motion";
 
@@ -55,6 +57,10 @@ const CategoryPage = () => {
   } = useGetCategoriesQuery();
   const [deleteCategory, { isLoading: isDeleting }] =
     useDeleteCategoryMutation();
+  const [createCategory, { isLoading: isCreating }] =
+    useCreateCategoryMutation();
+  const [updateCategory, { isLoading: isUpdating }] =
+    useUpdateCategoryMutation();
 
   // Lọc danh mục dựa trên từ khóa tìm kiếm và trạng thái
   useEffect(() => {
@@ -146,6 +152,39 @@ const CategoryPage = () => {
       ? categoryName.charAt(0).toUpperCase()
       : "C";
     return firstLetter;
+  };
+
+  // Cập nhật lại hàm xử lý form submit
+  const handleFormSubmit = async (values) => {
+    try {
+      const categoryData = {
+        categoryName: values.categoryName,
+        description: values.description,
+      };
+
+      if (editingCategory) {
+        // Cập nhật category hiện có
+        await updateCategory({
+          id: editingCategory.categoryId,
+          categoryData: categoryData,
+        }).unwrap();
+        message.success("Cập nhật danh mục thành công");
+      } else {
+        // Tạo mới category
+        await createCategory(categoryData).unwrap();
+        message.success("Tạo danh mục mới thành công");
+      }
+      setIsModalVisible(false);
+      form.resetFields();
+      setEditingCategory(null);
+      refetch(); // Refresh danh sách
+    } catch (error) {
+      console.error("Lỗi khi lưu danh mục:", error);
+      message.error(
+        "Không thể lưu danh mục: " +
+          (error.data?.message || "Lỗi không xác định")
+      );
+    }
   };
 
   if (isError) {
@@ -409,10 +448,6 @@ const CategoryPage = () => {
                         }
                       />
                     </div>
-                    <span className="text-sm text-gray-500 flex items-center">
-                      <TagOutlined className="mr-1" />
-                      {category.productCount || 0} sản phẩm
-                    </span>
                   </div>
                 </motion.div>
               ))}
@@ -430,9 +465,6 @@ const CategoryPage = () => {
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                       Trạng thái
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Sản phẩm
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                       Thao tác
@@ -479,11 +511,6 @@ const CategoryPage = () => {
                           }
                         />
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">
-                          {category.productCount || 0}
-                        </div>
-                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <div className="flex items-center space-x-3">
                           <Tooltip title="Chỉnh sửa">
@@ -502,11 +529,6 @@ const CategoryPage = () => {
                               <DeleteOutlined />
                             </button>
                           </Tooltip>
-                          <Tooltip title="Xem chi tiết">
-                            <button className="p-2 text-green-500 hover:text-green-700 hover:bg-green-50 rounded-full transition-colors">
-                              <EyeOutlined />
-                            </button>
-                          </Tooltip>
                         </div>
                       </td>
                     </motion.tr>
@@ -521,7 +543,11 @@ const CategoryPage = () => {
         <Modal
           title={editingCategory ? "Chỉnh sửa danh mục" : "Thêm danh mục mới"}
           open={isModalVisible}
-          onCancel={() => setIsModalVisible(false)}
+          onCancel={() => {
+            setIsModalVisible(false);
+            form.resetFields();
+            setEditingCategory(null);
+          }}
           footer={null}
           width={600}
           className="category-modal"
@@ -530,11 +556,7 @@ const CategoryPage = () => {
           <Form
             form={form}
             layout="vertical"
-            onFinish={(values) => {
-              console.log("Giá trị form:", values);
-              // Xử lý gửi form
-              setIsModalVisible(false);
-            }}
+            onFinish={handleFormSubmit}
             initialValues={{
               status: "active",
             }}
@@ -561,26 +583,33 @@ const CategoryPage = () => {
               />
             </Form.Item>
 
-            <Form.Item name="status" label="Trạng thái">
-              <Select className="rounded-xl">
-                <Option value="active">Hoạt động</Option>
-                <Option value="inactive">Không hoạt động</Option>
-              </Select>
-            </Form.Item>
-
             <div className="flex justify-end space-x-3 mt-6">
               <button
                 type="button"
                 className="px-6 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
-                onClick={() => setIsModalVisible(false)}
+                onClick={() => {
+                  setIsModalVisible(false);
+                  form.resetFields();
+                  setEditingCategory(null);
+                }}
               >
                 Hủy
               </button>
               <button
                 type="submit"
                 className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-xl hover:opacity-90 transition-all"
+                disabled={isCreating || isUpdating}
               >
-                {editingCategory ? "Cập nhật danh mục" : "Tạo danh mục"}
+                {isCreating || isUpdating ? (
+                  <>
+                    <LoadingOutlined className="mr-2" />
+                    Đang xử lý...
+                  </>
+                ) : editingCategory ? (
+                  "Cập nhật danh mục"
+                ) : (
+                  "Tạo danh mục"
+                )}
               </button>
             </div>
           </Form>

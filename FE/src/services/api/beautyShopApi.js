@@ -109,7 +109,7 @@ const beautyShopApi = createApi({
     }),
 
     updateCategory: builder.mutation({
-      query: ({ id, ...categoryData }) => ({
+      query: ({ id, categoryData }) => ({
         url: endpoints.UPDATE_CATEGORY.replace(":id", id),
         method: "PUT",
         body: categoryData,

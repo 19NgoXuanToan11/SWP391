@@ -13,7 +13,10 @@ import {
   UpOutlined,
   DownOutlined,
 } from "@ant-design/icons";
-import { useGetBrandsQuery } from "../services/api/beautyShopApi";
+import {
+  useGetBrandsQuery,
+  useGetCategoriesQuery,
+} from "../services/api/beautyShopApi";
 import { Spin } from "antd";
 
 export function Sidebar({ onFilterChange }) {
@@ -29,18 +32,19 @@ export function Sidebar({ onFilterChange }) {
   // Thêm hook để fetch brands từ API
   const { data: brands, isLoading: isBrandsLoading } = useGetBrandsQuery();
 
+  // Thêm hook để fetch categories từ API
+  const { data: categories, isLoading: isCategoriesLoading } =
+    useGetCategoriesQuery();
+
   // Cập nhật brandOptions để sử dụng dữ liệu từ API
   const brandOptions = brands?.map((brand) => brand.brandName) || [];
 
+  // Cập nhật categoryOptions để sử dụng dữ liệu từ API
+  const categoryOptions =
+    categories?.map((category) => category.categoryName) || [];
+
   // Danh sách các option cố định
   const volumeOptions = ["30ml", "50ml", "100ml", "150ml", "200ml"];
-  const categoryOptions = [
-    "Toner",
-    "Serum",
-    "Sữa rửa mặt",
-    "Kem chống nắng",
-    "Kem dưỡng",
-  ];
   const skinTypeOptions = ["Da dầu", "Da khô", "Da hỗn hợp", "Da nhạy cảm"];
 
   // Xử lý thay đổi tìm kiếm
@@ -187,6 +191,7 @@ export function Sidebar({ onFilterChange }) {
       options: categoryOptions,
       type: "categories",
       selected: selectedCategories,
+      isLoading: isCategoriesLoading,
     },
     {
       id: "skinTypes",
