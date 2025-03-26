@@ -35,7 +35,7 @@ import ProductRecommendationPage from "../../pages/users/quiz/product-recommenda
 
 // products
 import ProductsPage from "../../pages/users/product/productPage";
-import ProductDetailPage from "../../pages/users/product/product-detail/productDetailPage";
+import ProductDetailPage from "../../../src/pages/users/product/product-detail/productdetailPage";
 
 // cart
 import CartPage from "../../pages/users/payment/cart/cartPage";
@@ -44,9 +44,6 @@ import CartPage from "../../pages/users/payment/cart/cartPage";
 import OrderSuccessPage from "../../pages/users/payment/order-success/orderSuccessPage";
 
 import PaymentPage from "../../pages/users/payment/paymentPage";
-
-// customer
-// import CustomerOrderPage from "../../pages/admin/customer/customer-order/customerOrderPage";
 
 // profile
 import ProfilePage from "../../pages/users/profile/profilePage";
@@ -209,12 +206,6 @@ export const router = createBrowserRouter([
         path: "order-success",
         element: <OrderSuccessPage />,
       },
-
-      // customer
-      // {
-      //   path: "customerorder",
-      //   element: <CustomerOrderPage />,
-      // },
 
       // profile
       {
