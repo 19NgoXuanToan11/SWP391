@@ -74,6 +74,11 @@ export function AdminLoginPage() {
             })
           );
 
+          // Thêm flag để đánh dấu đang ở chế độ admin
+          localStorage.setItem("isAdmin", "true");
+          localStorage.setItem("token", token);
+          localStorage.setItem("auth_mode", "admin");
+
           message.success("Đăng nhập quản trị thành công!");
           const redirectPath = location.state?.from || "/dashboard";
           navigate(redirectPath, { replace: true });

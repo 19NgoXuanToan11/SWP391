@@ -36,6 +36,14 @@ const SidebarAdmin = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+    localStorage.removeItem("isAdmin");
+    localStorage.removeItem("token");
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("auth_user");
+    localStorage.removeItem("auth_sessionId");
+    localStorage.removeItem("auth_isAdmin");
+    localStorage.removeItem("auth_mode");
+    sessionStorage.removeItem("previousPage");
     navigate("/admin/login");
   };
 

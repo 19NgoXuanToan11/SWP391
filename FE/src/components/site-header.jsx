@@ -100,6 +100,36 @@ export function SiteHeader() {
     }
   };
 
+  // Thêm vào phần useEffect
+  useEffect(() => {
+    // Kiểm tra trạng thái đăng nhập
+    const checkLoginStatus = () => {
+      const isAdminRoute =
+        location.pathname.includes("/dashboard") ||
+        location.pathname.includes("/admin");
+
+      const isAdminLoggedIn = localStorage.getItem("isAdmin") === "true";
+      const authMode = localStorage.getItem("auth_mode");
+
+      // Nếu đang ở trang người dùng thông thường nhưng vẫn có thông tin đăng nhập admin
+      if (!isAdminRoute && isAdminLoggedIn && authMode === "admin") {
+        // Xóa thông tin đăng nhập admin
+        localStorage.removeItem("isAdmin");
+        localStorage.removeItem("token");
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("auth_user");
+        localStorage.removeItem("auth_sessionId");
+        localStorage.removeItem("auth_isAdmin");
+        localStorage.removeItem("auth_mode");
+
+        // Tải lại trang để cập nhật UI
+        window.location.reload();
+      }
+    };
+
+    checkLoginStatus();
+  }, [location.pathname]);
+
   return (
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-500 ${

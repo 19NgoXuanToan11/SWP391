@@ -135,16 +135,6 @@ const Dashboard = () => {
       // Tính toán thống kê với các trạng thái đã cập nhật
       let totalRevenue = ordersWithSavedStatus
         .filter((o) => {
-          // In ra để debug
-          console.log(
-            "Checking order:",
-            o.orderId,
-            "status:",
-            o.status,
-            "paymentStatus:",
-            o.paymentStatus
-          );
-
           // Kiểm tra trạng thái "PAID" hoặc tương đương
           const isPaid =
             (o.paymentStatus && o.paymentStatus.toUpperCase() === "PAID") ||
