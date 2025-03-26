@@ -99,93 +99,104 @@ export function ProductRecommendationPage() {
 
   // Lọc sản phẩm theo loại da
   useEffect(() => {
-    const loadRecommendations = () => {
-      if (!quizResults || !allProducts.length) return;
+    // Tránh fetch dữ liệu lặp lại khi đã có recommendations
+    if (recommendations.length > 0 || !quizResults) return;
 
-      const userSkinType = quizResults?.skinType;
-      const userConcerns = quizResults?.concerns || [];
-      console.log("User skin type:", userSkinType);
-      console.log("User concerns:", userConcerns);
+    const loadRecommendations = async () => {
+      try {
+        const userSkinType = quizResults?.skinType;
+        const userConcerns = quizResults?.concerns || [];
+        console.log("User skin type:", userSkinType);
+        console.log("User concerns:", userConcerns);
 
-      // Lọc sản phẩm phù hợp với loại da
-      const matchingProducts = allProducts
-        .filter((product) => {
-          // Kiểm tra nếu sản phẩm phù hợp với loại da
-          if (
-            userSkinType === "Da dầu" &&
-            (product.skinTypeName === "Da dầu" ||
-              product.skinTypeName === "Mọi loại da")
-          ) {
-            return true;
-          }
-          if (
-            userSkinType === "Da khô" &&
-            (product.skinTypeName === "Da khô" ||
-              product.skinTypeName === "Mọi loại da")
-          ) {
-            return true;
-          }
-          if (
-            userSkinType === "Da hỗn hợp" &&
-            (product.skinTypeName === "Da hỗn hợp" ||
-              product.skinTypeName === "Mọi loại da")
-          ) {
-            return true;
-          }
-          if (
-            userSkinType === "Da nhạy cảm" &&
-            (product.skinTypeName === "Da nhạy cảm" ||
-              product.skinTypeName === "Mọi loại da")
-          ) {
-            return true;
-          }
+        // Lọc sản phẩm phù hợp với loại da
+        const matchingProducts = allProducts
+          .filter((product) => {
+            // Kiểm tra nếu sản phẩm phù hợp với loại da
+            if (
+              userSkinType === "Da dầu" &&
+              (product.skinTypeName === "Da dầu" ||
+                product.skinTypeName === "Mọi loại da")
+            ) {
+              return true;
+            }
+            if (
+              userSkinType === "Da khô" &&
+              (product.skinTypeName === "Da khô" ||
+                product.skinTypeName === "Mọi loại da")
+            ) {
+              return true;
+            }
+            if (
+              userSkinType === "Da hỗn hợp" &&
+              (product.skinTypeName === "Da hỗn hợp" ||
+                product.skinTypeName === "Mọi loại da")
+            ) {
+              return true;
+            }
+            if (
+              userSkinType === "Da nhạy cảm" &&
+              (product.skinTypeName === "Da nhạy cảm" ||
+                product.skinTypeName === "Mọi loại da")
+            ) {
+              return true;
+            }
 
-          return false;
-        })
-        .map((product) => {
-          // Tính điểm phù hợp dựa trên loại da và vấn đề da
-          let matchScore = 70; // Điểm cơ bản
+            return false;
+          })
+          .map((product) => {
+            // Tính điểm phù hợp dựa trên loại da và vấn đề da
+            let matchScore = 70; // Điểm cơ bản
 
-          // Nếu sản phẩm phù hợp chính xác với loại da
-          if (product.skinTypeName === userSkinType) {
-            matchScore += 20;
-          } else if (product.skinTypeName === "Mọi loại da") {
-            matchScore += 10;
-          }
+            // Nếu sản phẩm phù hợp chính xác với loại da
+            if (product.skinTypeName === userSkinType) {
+              matchScore += 20;
+            } else if (product.skinTypeName === "Mọi loại da") {
+              matchScore += 10;
+            }
 
-          // Nếu sản phẩm giải quyết các vấn đề da của người dùng
-          const productConcerns = product.skinConcerns || [];
-          const matchingConcerns = userConcerns.filter((concern) =>
-            productConcerns.includes(concern)
-          );
+            // Nếu sản phẩm giải quyết các vấn đề da của người dùng
+            const productConcerns = product.skinConcerns || [];
+            const matchingConcerns = userConcerns.filter((concern) =>
+              productConcerns.includes(concern)
+            );
 
-          if (matchingConcerns.length > 0) {
-            matchScore += matchingConcerns.length * 5;
-          }
+            if (matchingConcerns.length > 0) {
+              matchScore += matchingConcerns.length * 5;
+            }
 
-          return {
-            id: product.productId,
-            name: product.productName,
-            brand: product.brandName,
-            price: product.price,
-            rating: product.rating || 4.5,
-            reviews: product.reviewCount || 0,
-            image: product.imageUrls,
-            matchScore: Math.min(matchScore, 100), // Giới hạn điểm tối đa là 100
-            description: product.description,
-            benefits: [product.mainIngredients], // Chuyển thành array nếu cần
-            stockStatus: product.stock > 0 ? "Còn hàng" : "Hết hàng",
-            isNew: product.isNew || false,
-            skinType: product.skinTypeName,
-            concerns: product.skinConcerns || [],
-          };
-        })
-        .sort((a, b) => b.matchScore - a.matchScore); // Sắp xếp theo điểm phù hợp
+            return {
+              id: product.productId,
+              name: product.productName,
+              brand: product.brandName,
+              price: product.price,
+              rating: product.rating || 4.5,
+              reviews: product.reviewCount || 0,
+              image: product.imageUrls,
+              matchScore: Math.min(matchScore, 100), // Giới hạn điểm tối đa là 100
+              description: product.description,
+              benefits: [product.mainIngredients], // Chuyển thành array nếu cần
+              stockStatus: product.stock > 0 ? "Còn hàng" : "Hết hàng",
+              isNew: product.isNew || false,
+              skinType: product.skinTypeName,
+              concerns: product.skinConcerns || [],
+            };
+          })
+          .sort((a, b) => b.matchScore - a.matchScore); // Sắp xếp theo điểm phù hợp
 
-      setRecommendations(matchingProducts);
+        setRecommendations(matchingProducts);
+      } catch (error) {
+        console.error("Error fetching product recommendations:", error);
+      }
     };
 
     loadRecommendations();
+
+    return () => {
+      // Your cleanup code
+      // Ví dụ: xóa các event listener được thêm vào window/document
+      // window.removeEventListener('someEvent', someHandler);
+    };
   }, [quizResults, allProducts]);
 
   const formatPrice = (price) => {
@@ -235,18 +246,8 @@ export function ProductRecommendationPage() {
     }
   };
 
-  // Thêm hàm xử lý click vào sản phẩm
-  const handleProductClick = (productId) => {
-    window.location.href = `/product/${productId}`;
-  };
-
-  // Tương tự với các navigation khác
-  const handleQuizRetake = () => {
-    window.location.href = "/quiz";
-  };
-
   return (
-    <div className="min-h-screen py-12 px-4">
+    <div className="min-h-screen py-10">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -320,7 +321,9 @@ export function ProductRecommendationPage() {
           {/* Nút làm lại bài kiểm tra */}
           <div className="flex justify-center mt-4">
             <button
-              onClick={handleQuizRetake}
+              onClick={() => {
+                navigate("/quiz");
+              }}
               className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full text-sm font-medium shadow-sm hover:shadow-md transform hover:scale-105 transition-all duration-300"
             >
               <span className="text-xs">↺</span>
@@ -396,7 +399,7 @@ export function ProductRecommendationPage() {
                     </div>
 
                     <button
-                      onClick={() => handleProductClick(product.id)}
+                      onClick={() => navigate(`/product/${product.id}`)}
                       className="w-full py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-medium hover:shadow-md transition-all duration-300"
                     >
                       Xem chi tiết
