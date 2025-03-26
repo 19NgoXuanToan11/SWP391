@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { restoreAuth } from "../../store/slices/authSlice";
+import { restoreAuth } from "../../store/slices/auth/authSlice";
 
 export function AuthProvider({ children }) {
   const dispatch = useDispatch();

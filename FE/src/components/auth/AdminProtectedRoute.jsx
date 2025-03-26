@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-export const AdminProtectedRoute = ({ children }) => {
+export default function AdminProtectedRoute({ children }) {
   const location = useLocation();
   const auth = useSelector((state) => state.auth);
   const navigate = useNavigate();
@@ -49,4 +49,4 @@ export const AdminProtectedRoute = ({ children }) => {
   }
 
   return children;
-};
+}

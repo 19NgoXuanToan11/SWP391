@@ -5,9 +5,9 @@ import storage from "redux-persist/lib/storage"; // defaults to localStorage for
 import { setupListeners } from "@reduxjs/toolkit/query";
 
 // Import các reducers
-import authReducer from "./slices/authSlice";
-import cartReducer from "./slices/cartSlice";
-import wishlistReducer from "./slices/wishlistSlice";
+import authReducer from "./slices/auth/authSlice";
+import cartReducer from "./slices/cart/cartSlice";
+import wishlistReducer from "./slices/wishlist/wishlistSlice";
 
 // Import API service
 import beautyShopApi from "../services/api/beautyShopApi";

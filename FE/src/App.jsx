@@ -1,6 +1,6 @@
 import "./global.css";
-import { SiteHeader } from "./components/site-header";
-import { SiteFooter } from "./components/site-footer";
+import { SiteHeader } from "../src/pages/users/header/site-header";
+import { SiteFooter } from "../src/pages/users/footer/site-footer";
 import {
   Outlet,
   ScrollRestoration,
