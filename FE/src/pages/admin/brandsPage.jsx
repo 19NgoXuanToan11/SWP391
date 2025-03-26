@@ -367,7 +367,7 @@ const BrandsPage = () => {
           )}
 
           {/* Pagination */}
-          <div className="flex items-center justify-between px-6 py-4 bg-gray-50">
+          {/* <div className="flex items-center justify-between px-6 py-4 bg-gray-50">
             <div className="flex items-center text-sm text-gray-500">
               Hiển thị 1 đến {filteredBrands?.length || 0} trong tổng số{" "}
               {totalBrands} thương hiệu
@@ -383,7 +383,7 @@ const BrandsPage = () => {
                 Tiếp
               </button>
             </div>
-          </div>
+          </div> */}
         </motion.div>
       </div>
 

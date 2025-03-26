@@ -324,48 +324,6 @@ const AccountsPage = () => {
       label: (
         <div
           className="flex items-center space-x-2 px-3 py-2"
-          onClick={() => handleEdit(user)}
-        >
-          <EditOutlined className="text-blue-500" />
-          <span>Chỉnh sửa người dùng</span>
-        </div>
-      ),
-    },
-    {
-      key: "2",
-      label: (
-        <div
-          className="flex items-center space-x-2 px-3 py-2"
-          onClick={() => {
-            // Thực hiện xem chi tiết người dùng
-            message.info(`Xem chi tiết cho ${user.username}`);
-          }}
-        >
-          <EyeOutlined className="text-green-500" />
-          <span>Xem chi tiết</span>
-        </div>
-      ),
-    },
-    {
-      key: "3",
-      label: (
-        <div
-          className="flex items-center space-x-2 px-3 py-2"
-          onClick={() => {
-            // Thực hiện đặt lại mật khẩu
-            message.info(`Đặt lại mật khẩu cho ${user.username}`);
-          }}
-        >
-          <LockOutlined className="text-orange-500" />
-          <span>Đặt lại mật khẩu</span>
-        </div>
-      ),
-    },
-    {
-      key: "4",
-      label: (
-        <div
-          className="flex items-center space-x-2 px-3 py-2"
           onClick={() => handleDelete(user.id)}
         >
           <DeleteOutlined className="text-red-500" />
@@ -544,29 +502,6 @@ const AccountsPage = () => {
             </div>
 
             <div className="flex items-center space-x-4">
-              <div className="flex bg-gray-100 p-1 rounded-xl">
-                <button
-                  className={`p-2 rounded-lg ${
-                    viewMode === "table"
-                      ? "bg-white shadow-sm"
-                      : "text-gray-500 hover:bg-gray-200"
-                  }`}
-                  onClick={() => setViewMode("table")}
-                >
-                  <BarsOutlined />
-                </button>
-                <button
-                  className={`p-2 rounded-lg ${
-                    viewMode === "grid"
-                      ? "bg-white shadow-sm"
-                      : "text-gray-500 hover:bg-gray-200"
-                  }`}
-                  onClick={() => setViewMode("grid")}
-                >
-                  <AppstoreOutlined />
-                </button>
-              </div>
-
               {selectedRows.length > 0 ? (
                 <div className="flex items-center space-x-2">
                   <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">
@@ -597,15 +532,7 @@ const AccountsPage = () => {
                     </button>
                   </Tooltip>
                 </div>
-              ) : (
-                <button
-                  className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-xl hover:opacity-90 transition-all shadow-md"
-                  onClick={handleAddUser}
-                >
-                  <UserAddOutlined />
-                  <span>Thêm người dùng</span>
-                </button>
-              )}
+              ) : null}
             </div>
           </div>
         </motion.div>
@@ -797,7 +724,7 @@ const AccountsPage = () => {
               </div>
 
               {/* Phân trang */}
-              <div className="flex justify-between items-center px-6 py-4 bg-gray-50">
+              {/* <div className="flex justify-between items-center px-6 py-4 bg-gray-50">
                 <div className="text-sm text-gray-500">
                   Hiển thị {filteredUsers.length} trong tổng số {totalUsers}{" "}
                   người dùng
@@ -819,7 +746,7 @@ const AccountsPage = () => {
                     Tiếp
                   </button>
                 </div>
-              </div>
+              </div> */}
             </div>
           ) : (
             // Chế độ xem lưới
@@ -919,145 +846,6 @@ const AccountsPage = () => {
             </div>
           )}
         </motion.div>
-
-        {/* Modal biểu mẫu người dùng */}
-        <Modal
-          title={editingUser ? "Chỉnh sửa người dùng" : "Thêm người dùng mới"}
-          open={isModalVisible}
-          onCancel={() => setIsModalVisible(false)}
-          footer={null}
-          width={600}
-          className="user-modal"
-          destroyOnClose
-        >
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={handleFormSubmit}
-            initialValues={{
-              role: "User",
-              status: "Active",
-            }}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Form.Item
-                name="username"
-                label="Tên người dùng"
-                rules={[
-                  { required: true, message: "Vui lòng nhập tên người dùng" },
-                ]}
-              >
-                <Input
-                  prefix={<UserOutlined className="text-gray-400" />}
-                  placeholder="Nhập tên người dùng"
-                  className="rounded-xl"
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="email"
-                label="Email"
-                rules={[
-                  { required: true, message: "Vui lòng nhập email" },
-                  { type: "email", message: "Vui lòng nhập email hợp lệ" },
-                ]}
-              >
-                <Input
-                  prefix={<MailOutlined className="text-gray-400" />}
-                  placeholder="Nhập email"
-                  className="rounded-xl"
-                />
-              </Form.Item>
-            </div>
-
-            {!editingUser && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Form.Item
-                  name="password"
-                  label="Mật khẩu"
-                  rules={[
-                    {
-                      required: !editingUser,
-                      message: "Vui lòng nhập mật khẩu",
-                    },
-                  ]}
-                >
-                  <Password
-                    prefix={<LockOutlined className="text-gray-400" />}
-                    placeholder="Nhập mật khẩu"
-                    className="rounded-xl"
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  name="confirmPassword"
-                  label="Xác nhận mật khẩu"
-                  dependencies={["password"]}
-                  rules={[
-                    {
-                      required: !editingUser,
-                      message: "Vui lòng xác nhận mật khẩu",
-                    },
-                    ({ getFieldValue }) => ({
-                      validator(_, value) {
-                        if (!value || getFieldValue("password") === value) {
-                          return Promise.resolve();
-                        }
-                        return Promise.reject(new Error("Mật khẩu không khớp"));
-                      },
-                    }),
-                  ]}
-                >
-                  <Password
-                    prefix={<LockOutlined className="text-gray-400" />}
-                    placeholder="Xác nhận mật khẩu"
-                    className="rounded-xl"
-                  />
-                </Form.Item>
-              </div>
-            )}
-
-            <Form.Item name="address" label="Địa chỉ">
-              <Input
-                prefix={<HomeOutlined className="text-gray-400" />}
-                placeholder="Nhập địa chỉ"
-                className="rounded-xl"
-              />
-            </Form.Item>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Form.Item name="role" label="Vai trò">
-                <Select className="rounded-xl">
-                  <Option value="User">Người dùng</Option>
-                  <Option value="Admin">Quản trị viên</Option>
-                </Select>
-              </Form.Item>
-
-              <Form.Item name="status" label="Trạng thái">
-                <Select className="rounded-xl">
-                  <Option value="Active">Hoạt động</Option>
-                  <Option value="Inactive">Không hoạt động</Option>
-                </Select>
-              </Form.Item>
-            </div>
-
-            <div className="flex justify-end space-x-3 mt-6">
-              <button
-                type="button"
-                className="px-6 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
-                onClick={() => setIsModalVisible(false)}
-              >
-                Hủy
-              </button>
-              <button
-                type="submit"
-                className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-xl hover:opacity-90 transition-all"
-              >
-                {editingUser ? "Cập nhật người dùng" : "Tạo người dùng"}
-              </button>
-            </div>
-          </Form>
-        </Modal>
       </div>
     </div>
   );

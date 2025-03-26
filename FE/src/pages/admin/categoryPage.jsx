@@ -44,8 +44,7 @@ const CategoryPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [editingCategory, setEditingCategory] = useState(null);
-  const [viewMode, setViewMode] = useState("grid"); // grid or list
-  const [filterStatus, setFilterStatus] = useState("all"); // all, active, inactive
+  const [filterStatus, setFilterStatus] = useState("all");
 
   // Lấy danh mục sử dụng RTK Query
   const {
@@ -309,29 +308,6 @@ const CategoryPage = () => {
             </div>
 
             <div className="flex items-center space-x-4">
-              <div className="flex bg-gray-100 p-1 rounded-xl">
-                <button
-                  className={`p-2 rounded-lg ${
-                    viewMode === "grid"
-                      ? "bg-white shadow-sm"
-                      : "text-gray-500 hover:bg-gray-200"
-                  }`}
-                  onClick={() => setViewMode("grid")}
-                >
-                  <AppstoreOutlined />
-                </button>
-                <button
-                  className={`p-2 rounded-lg ${
-                    viewMode === "list"
-                      ? "bg-white shadow-sm"
-                      : "text-gray-500 hover:bg-gray-200"
-                  }`}
-                  onClick={() => setViewMode("list")}
-                >
-                  <BarChartOutlined />
-                </button>
-              </div>
-
               <button
                 className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-xl hover:opacity-90 transition-all shadow-md"
                 onClick={() => {
@@ -347,7 +323,7 @@ const CategoryPage = () => {
           </div>
         </motion.div>
 
-        {/* Nội dung danh mục */}
+        {/* Nội dung danh mục - Chỉ hiển thị dạng bảng */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -382,75 +358,6 @@ const CategoryPage = () => {
                 <PlusOutlined className="mr-2" />
                 Tạo danh mục mới
               </button>
-            </div>
-          ) : viewMode === "grid" ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCategories.map((category, index) => (
-                <motion.div
-                  key={category.categoryId}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                  whileHover={{
-                    y: -5,
-                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
-                  }}
-                  className="bg-white rounded-2xl shadow-sm p-6 transition-all"
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <div
-                        className={`w-12 h-12 ${getCategoryColor(
-                          category.categoryId
-                        )} rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md`}
-                      >
-                        {getCategoryIcon(category.categoryName)}
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-800">
-                          {category.categoryName}
-                        </h3>
-                        <p className="text-sm text-gray-500 line-clamp-2">
-                          {category.description}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex space-x-1">
-                      <Tooltip title="Chỉnh sửa">
-                        <button
-                          className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
-                          onClick={() => handleEdit(category)}
-                        >
-                          <EditOutlined />
-                        </button>
-                      </Tooltip>
-                      <Tooltip title="Xóa">
-                        <button
-                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                          onClick={() => handleDelete(category.categoryId)}
-                        >
-                          <DeleteOutlined />
-                        </button>
-                      </Tooltip>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-                    <div className="flex items-center space-x-2">
-                      <Badge
-                        status={!category.isDeleted ? "success" : "error"}
-                        text={
-                          <span className="text-sm font-medium">
-                            {!category.isDeleted
-                              ? "Hoạt động"
-                              : "Không hoạt động"}
-                          </span>
-                        }
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
             </div>
           ) : (
             <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
@@ -489,7 +396,7 @@ const CategoryPage = () => {
                           >
                             {getCategoryIcon(category.categoryName)}
                           </div>
-                          <div className="font-medium text-gray-900">
+                          <div className="font-medium text-gray-800">
                             {category.categoryName}
                           </div>
                         </div>
