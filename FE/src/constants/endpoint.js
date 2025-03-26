@@ -8,7 +8,7 @@ const endpoints = {
   VERIFY_EMAIL: "/Auth/verify-email",
   FORGOT_PASSWORD: "/Auth/forgot-password",
   RESET_PASSWORD: "/Auth/reset-password",
-  
+
   // User
   GET_PROFILE: "/user/profile",
   UPDATE_PROFILE: "/user/profile",

@@ -180,7 +180,7 @@ const beautyShopApi = createApi({
     }),
 
     updateBrand: builder.mutation({
-      query: ({ id, ...brandData }) => ({
+      query: ({ id, brandData }) => ({
         url: endpoints.UPDATE_BRAND.replace(":id", id),
         method: "PUT",
         body: brandData,

@@ -13,6 +13,8 @@ import {
   UpOutlined,
   DownOutlined,
 } from "@ant-design/icons";
+import { useGetBrandsQuery } from "../services/api/beautyShopApi";
+import { Spin } from "antd";
 
 export function Sidebar({ onFilterChange }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,16 +26,14 @@ export function Sidebar({ onFilterChange }) {
   const [activeSection, setActiveSection] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
 
+  // Thêm hook để fetch brands từ API
+  const { data: brands, isLoading: isBrandsLoading } = useGetBrandsQuery();
+
+  // Cập nhật brandOptions để sử dụng dữ liệu từ API
+  const brandOptions = brands?.map((brand) => brand.brandName) || [];
+
   // Danh sách các option cố định
   const volumeOptions = ["30ml", "50ml", "100ml", "150ml", "200ml"];
-  const brandOptions = [
-    "Bioderma",
-    "La Roche-Posay",
-    "Some By Mi",
-    "The Ordinary",
-    "Cerave",
-    "Klairs",
-  ];
   const categoryOptions = [
     "Toner",
     "Serum",
@@ -178,6 +178,7 @@ export function Sidebar({ onFilterChange }) {
       options: brandOptions,
       type: "brands",
       selected: selectedBrands,
+      isLoading: isBrandsLoading,
     },
     {
       id: "categories",
@@ -382,33 +383,45 @@ export function Sidebar({ onFilterChange }) {
                   className="px-4 pb-4"
                 >
                   <div className="space-y-2">
-                    {section.options.map((option) => (
-                      <motion.div
-                        key={option}
-                        whileHover={{ x: 4 }}
-                        onClick={() => handleOptionClick(section.type, option)}
-                        className="flex items-center gap-3 cursor-pointer p-2 hover:bg-white 
-                          rounded-xl transition-all duration-200"
-                      >
+                    {section.isLoading ? (
+                      <div className="flex items-center justify-center py-4">
+                        <Spin size="small" />
+                      </div>
+                    ) : section.options.length > 0 ? (
+                      section.options.map((option) => (
                         <motion.div
-                          initial={false}
-                          animate={{
-                            backgroundColor: section.selected.includes(option)
-                              ? "#EC4899"
-                              : "white",
-                            borderColor: section.selected.includes(option)
-                              ? "#EC4899"
-                              : "#D1D5DB",
-                          }}
-                          className="w-5 h-5 rounded-lg border-2 flex items-center justify-center"
+                          key={option}
+                          whileHover={{ x: 4 }}
+                          onClick={() =>
+                            handleOptionClick(section.type, option)
+                          }
+                          className="flex items-center gap-3 cursor-pointer p-2 hover:bg-white 
+                            rounded-xl transition-all duration-200"
                         >
-                          {section.selected.includes(option) && (
-                            <CheckOutlined className="text-white text-xs" />
-                          )}
+                          <motion.div
+                            initial={false}
+                            animate={{
+                              backgroundColor: section.selected.includes(option)
+                                ? "#EC4899"
+                                : "white",
+                              borderColor: section.selected.includes(option)
+                                ? "#EC4899"
+                                : "#D1D5DB",
+                            }}
+                            className="w-5 h-5 rounded-lg border-2 flex items-center justify-center"
+                          >
+                            {section.selected.includes(option) && (
+                              <CheckOutlined className="text-white text-xs" />
+                            )}
+                          </motion.div>
+                          <span className="text-gray-700">{option}</span>
                         </motion.div>
-                        <span className="text-gray-700">{option}</span>
-                      </motion.div>
-                    ))}
+                      ))
+                    ) : (
+                      <div className="text-center text-gray-500 py-4">
+                        Không có dữ liệu
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               )}

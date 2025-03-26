@@ -117,10 +117,10 @@ const BrandsPage = () => {
       };
 
       if (editingBrand) {
-        // Update existing brand
+        // Update existing brand - Sửa lại cách truyền tham số
         await updateBrand({
-          brandId: editingBrand.brandId,
-          ...brandData,
+          id: editingBrand.brandId, // Đảm bảo truyền đúng id
+          brandData: brandData, // Truyền data trong object riêng
         }).unwrap();
         message.success("Cập nhật thương hiệu thành công");
       } else {
