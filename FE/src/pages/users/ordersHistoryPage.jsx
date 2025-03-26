@@ -136,6 +136,7 @@ const OrdersHistoryPage = () => {
           .filter((order) => {
             // Chỉ giữ đơn hàng đã thanh toán (historyStatus: "COMPLETED")
             return order.historyStatus === "COMPLETED";
+
           })
           .map((order) => {
             // Tính tổng tiền từ các sản phẩm

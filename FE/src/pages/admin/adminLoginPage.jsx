@@ -80,7 +80,17 @@ export function AdminLoginPage() {
           localStorage.setItem("auth_mode", "admin");
 
           message.success("Đăng nhập quản trị thành công!");
-          const redirectPath = location.state?.from || "/dashboard";
+
+          // Kiểm tra xem có đường dẫn chuyển hướng từ state hay không
+          let redirectPath;
+          if (location.state?.from) {
+            // Đảm bảo đường dẫn chuyển hướng không bắt đầu bằng "/admin/login"
+            redirectPath = location.state.from;
+          } else {
+            // Nếu không có đường dẫn từ state, chuyển đến dashboard
+            redirectPath = "/admin/dashboard";
+          }
+
           navigate(redirectPath, { replace: true });
         } else {
           message.error("Tài khoản không có quyền quản trị!");

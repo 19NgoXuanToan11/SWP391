@@ -35,6 +35,7 @@ import ResetPasswordPage from "../pages/login/resetPasswordPage";
 import QuizResultsPage from "../pages/users/quizResultsPage";
 import StaffLoginPage from "../pages/staff/staffLoginPage";
 import StaffOrdersPage from "../pages/staff/staffOrdersPage";
+import ProductPage from "../pages/admin/productPage";
 
 export const router = createBrowserRouter([
   {
@@ -102,7 +103,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "dashboard",
+        path: "/admin/dashboard",
         element: (
           <AdminProtectedRoute>
             <DashboardPage />
@@ -122,24 +123,48 @@ export const router = createBrowserRouter([
         element: <StaffOrdersPage />,
       },
       {
-        path: "account",
-        element: <AccountsPage />,
+        path: "/admin/account",
+        element: (
+          <AdminProtectedRoute>
+            <AccountsPage />,
+          </AdminProtectedRoute>
+        ),
       },
       {
-        path: "order",
-        element: <OrdersPage />,
+        path: "/admin/order",
+        element: (
+          <AdminProtectedRoute>
+            <OrdersPage />
+          </AdminProtectedRoute>
+        ),
       },
       {
         path: "orders",
         element: <OrdersHistoryPage />,
       },
       {
-        path: "category",
-        element: <CategoryPage />,
+        path: "/admin/category",
+        element: (
+          <AdminProtectedRoute>
+            <CategoryPage />
+          </AdminProtectedRoute>
+        ),
       },
       {
-        path: "brand",
-        element: <BrandsPage />,
+        path: "/admin/products",
+        element: (
+          <AdminProtectedRoute>
+            <ProductPage />
+          </AdminProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/brand",
+        element: (
+          <AdminProtectedRoute>
+            <BrandsPage />
+          </AdminProtectedRoute>
+        ),
       },
       {
         path: "abouts",

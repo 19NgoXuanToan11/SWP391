@@ -401,12 +401,10 @@ const AccountsPage = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-8 relative overflow-hidden rounded-3xl p-8 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+          className="mb-8 relative overflow-hidden rounded-3xl p-8 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500"
         >
           <div className="relative z-10">
-            <h1 className="text-3xl font-bold text-white">
-              Quản Lý Người Dùng
-            </h1>
+            <h1 className="text-3xl font-bold text-white">Quản Lý Tài Khoản</h1>
             <p className="text-white text-opacity-80 mt-2 max-w-2xl">
               Quản lý tài khoản người dùng, quyền hạn và quyền truy cập vào ứng
               dụng của bạn
@@ -538,12 +536,6 @@ const AccountsPage = () => {
                       <div className="flex items-center gap-2">
                         <CloseCircleOutlined className="text-red-500" />
                         <span>Người dùng không hoạt động</span>
-                      </div>
-                    </Option>
-                    <Option value="admin">
-                      <div className="flex items-center gap-2">
-                        <SettingOutlined className="text-purple-500" />
-                        <span>Quản trị viên</span>
                       </div>
                     </Option>
                   </Select>

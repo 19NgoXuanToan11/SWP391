@@ -534,18 +534,6 @@ export default function ProductsPage() {
                   />
                 </motion.button>
               </div>
-
-              {/* Badge hiển thị trạng thái sản phẩm */}
-              {product.stock <= 0 && (
-                <div className="absolute bottom-4 left-4 bg-gray-800 bg-opacity-80 text-white px-3 py-1 rounded-lg text-sm">
-                  Hết hàng
-                </div>
-              )}
-              {product.stock > 0 && product.stock <= 5 && (
-                <div className="absolute bottom-4 left-4 bg-orange-500 bg-opacity-80 text-white px-3 py-1 rounded-lg text-sm">
-                  Sắp hết hàng
-                </div>
-              )}
             </div>
 
             <div className="p-6 flex flex-col flex-grow">

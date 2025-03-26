@@ -53,16 +53,12 @@ const beautyShopApi = createApi({
 
     // Product endpoints
     getProducts: builder.query({
-      query: (params) => ({
-        url: endpoints.GET_PRODUCTS,
-        method: "GET",
-        params,
-      }),
+      query: () => endpoints.GET_PRODUCTS,
       providesTags: ["Products"],
     }),
 
     getProductById: builder.query({
-      query: (id) => `/Product/${id}`,
+      query: (id) => endpoints.GET_PRODUCT_DETAIL.replace(":id", id),
       transformResponse: (response) => {
         console.log("API Response:", response);
         return response;
@@ -77,7 +73,34 @@ const beautyShopApi = createApi({
       query: (productData) => ({
         url: endpoints.CREATE_PRODUCT,
         method: "POST",
-        data: productData,
+        body: {
+          productName: productData.productName,
+          description: productData.description,
+          price: productData.price,
+          mainIngredients: productData.mainIngredients,
+          brandId: productData.brandId,
+          volumeId: productData.volumeId,
+          skinTypeId: productData.skinTypeId,
+          categoryId: productData.categoryId,
+          imageUrls: productData.imageUrls,
+        },
+      }),
+      invalidatesTags: ["Products"],
+    }),
+
+    updateProduct: builder.mutation({
+      query: ({ id, productData }) => ({
+        url: endpoints.UPDATE_PRODUCT.replace(":id", id),
+        method: "PUT",
+        body: productData,
+      }),
+      invalidatesTags: ["Products"],
+    }),
+
+    deleteProduct: builder.mutation({
+      query: (id) => ({
+        url: endpoints.DELETE_PRODUCT.replace(":id", id),
+        method: "DELETE",
       }),
       invalidatesTags: ["Products"],
     }),
@@ -236,6 +259,8 @@ export const {
   useDeleteBrandMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
 } = beautyShopApi;
 
 export default beautyShopApi;

@@ -72,16 +72,8 @@ function App() {
   const noHeaderFooterPaths = [
     "/login",
     "/register",
-    "/dashboard",
-    "/account",
-    "/order",
-    "/category",
-    "/brand",
-    "/voucher",
-    "/setting",
-    "/abouts",
+    "/admin",
     "/verify-email",
-    "/admin/login",
     "/forgot-password",
     "/reset-password",
     "/staff/login",
@@ -91,18 +83,7 @@ function App() {
 
   // Thêm kiểm tra role khi chuyển giữa các trang
   const isAdminRoute = (path) => {
-    return (
-      path === "/dashboard" ||
-      path.startsWith("/dashboard/") ||
-      path === "/account" ||
-      path.startsWith("/account/") ||
-      path === "/order" ||
-      path.startsWith("/order/") ||
-      path === "/category" ||
-      path.startsWith("/category/") ||
-      path === "/brand" ||
-      path.startsWith("/brand/")
-    );
+    return path.startsWith("/admin/");
   };
 
   // Kiểm tra với pathname đã được chuẩn hóa

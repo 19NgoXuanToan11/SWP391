@@ -24,14 +24,15 @@ const SidebarAdmin = () => {
 
   const menuItems = [
     {
-      path: "/dashboard",
+      path: "/admin/dashboard",
       icon: <DashboardOutlined />,
       label: "Bảng điều khiển",
     },
-    { path: "/account", icon: <UserOutlined />, label: "Tài khoản" },
-    { path: "/order", icon: <ShoppingCartOutlined />, label: "Đơn hàng" },
-    { path: "/category", icon: <AppstoreOutlined />, label: "Danh mục" },
-    { path: "/brand", icon: <TagOutlined />, label: "Thương hiệu" },
+    { path: "/admin/account", icon: <UserOutlined />, label: "Tài khoản" },
+    { path: "/admin/order", icon: <ShoppingCartOutlined />, label: "Đơn hàng" },
+    { path: "/admin/products", icon: <GiftOutlined />, label: "Sản phẩm" },
+    { path: "/admin/category", icon: <AppstoreOutlined />, label: "Danh mục" },
+    { path: "/admin/brand", icon: <TagOutlined />, label: "Thương hiệu" },
   ];
 
   const handleLogout = () => {

@@ -12,6 +12,7 @@ export const AdminProtectedRoute = ({ children }) => {
     auth?.isAuthenticated || !!localStorage.getItem("token");
   const isAdmin =
     auth?.user?.roleId === 1 ||
+    auth?.user?.role === "Admin" ||
     auth?.user?.isAdmin ||
     localStorage.getItem("isAdmin") === "true";
 
@@ -27,9 +28,8 @@ export const AdminProtectedRoute = ({ children }) => {
     // Nếu trước đó đang ở trang người dùng và hiện tại là trang admin
     if (
       previousPage &&
-      !previousPage.includes("/dashboard") &&
       !previousPage.includes("/admin") &&
-      currentPage.includes("/dashboard")
+      currentPage.includes("/admin")
     ) {
       // Đảm bảo đã thiết lập chế độ admin
       if (isAdmin) {
