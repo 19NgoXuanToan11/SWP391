@@ -4,27 +4,31 @@
 # Bỏ qua file chỉ mục của Copilot
 CopilotIndices/
 
-# Bỏ qua file build của .NET
+# Bỏ qua thư mục build của .NET
 bin/
 obj/
 
-# Bỏ qua file tạm thời
+# Bỏ qua file tạm thời của Visual Studio và .NET
 *.suo
 *.user
 *.cache
 *.db
 *.db-shm
 *.db-wal
+*.csproj.user
+*.log
 
-# Bỏ qua thư mục build
-bin/
-obj/
+# Bỏ qua file tự động tạo bởi MSBuild
+**/[Aa]ssembly[Ii]nfo.cs
+**/[Aa]ssembly[Ii]nfo[Ii]nputs.cache
+**/[Gg]eneratedMS[Bb]uild[Ee]ditor[Cc]onfig.editorconfig
 
-# Bỏ qua file DLL, PDB, EXE
+# Bỏ qua file DLL, PDB, EXE (trừ khi cần commit thư viện cụ thể)
 *.dll
 *.pdb
 *.exe
-/BE/SWP391_BE/obj/Debug/net8.0
-/BE/SWP391_BE/obj/Debug/net8.0
-/BE/SWP391_BE/obj/Debug/net8.0
-/BE/SWP391_BE/obj/Debug
+
+# Bỏ qua các file và thư mục tạm thời khác
+*.tmp
+*.bak
+*.swp
