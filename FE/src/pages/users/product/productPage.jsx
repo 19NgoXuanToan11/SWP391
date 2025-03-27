@@ -51,6 +51,26 @@ export default function ProductsPage() {
     return wishlistItems.some((item) => item.id === productId);
   };
 
+  // Thêm hàm chuyển đổi chuỗi tiếng Việt sang không dấu
+  const removeAccents = (str) => {
+    if (!str) return "";
+    return str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  };
+
+  // Thêm hàm fuzzy search
+  const fuzzySearch = (query, text) => {
+    if (!query) return true;
+
+    // Chuyển đổi cả query và text về chữ thường không dấu
+    const normalizedQuery = removeAccents(query);
+    const normalizedText = removeAccents(text);
+
+    return normalizedText.includes(normalizedQuery);
+  };
+
   const fetchProducts = async () => {
     try {
       setLoading(true);
@@ -75,15 +95,19 @@ export default function ProductsPage() {
       // Nếu không có từ khóa tìm kiếm, hiển thị tất cả sản phẩm
       setFilteredProducts(products);
     } else {
-      // Lọc sản phẩm theo từ khóa tìm kiếm
-      const searchLower = quickSearchTerm.toLowerCase();
-      const filtered = products.filter(
-        (product) =>
-          product.productName.toLowerCase().includes(searchLower) ||
-          product.description.toLowerCase().includes(searchLower) ||
-          product.mainIngredients?.toLowerCase().includes(searchLower) ||
-          product.brandName?.toLowerCase().includes(searchLower)
-      );
+      // Lọc sản phẩm theo từ khóa tìm kiếm với fuzzy search
+      const filtered = products.filter((product) => {
+        const searchableText =
+          (product.productName || "") +
+          " " +
+          (product.description || "") +
+          " " +
+          (product.mainIngredients || "") +
+          " " +
+          (product.brandName || "");
+
+        return fuzzySearch(quickSearchTerm, searchableText);
+      });
       setFilteredProducts(filtered);
     }
     setCurrentPage(1);
@@ -117,16 +141,22 @@ export default function ProductsPage() {
   const handleFilterChange = (filters) => {
     let filtered = [...products];
 
-    // Filter by search term
+    // Filter by search term với fuzzy search
     if (filters.searchTerm) {
-      const searchLower = filters.searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        (product) =>
-          product.productName.toLowerCase().includes(searchLower) ||
-          product.description.toLowerCase().includes(searchLower) ||
-          product.mainIngredients?.toLowerCase().includes(searchLower) ||
-          product.brandName?.toLowerCase().includes(searchLower)
-      );
+      filtered = filtered.filter((product) => {
+        // Tạo chuỗi tìm kiếm từ các thông tin sản phẩm
+        const searchableText =
+          (product.productName || "") +
+          " " +
+          (product.description || "") +
+          " " +
+          (product.mainIngredients || "") +
+          " " +
+          (product.brandName || "");
+
+        // Áp dụng fuzzy search
+        return fuzzySearch(filters.searchTerm, searchableText);
+      });
     }
 
     // Filter by price range

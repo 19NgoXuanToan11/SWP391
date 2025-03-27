@@ -349,7 +349,7 @@ export default function ProductRecommendationPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
-                  className="bg-white/90 backdrop-blur-sm rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-white/50"
+                  className="bg-white/90 backdrop-blur-sm rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-white/50 flex flex-col"
                 >
                   <div className="relative">
                     <img
@@ -360,9 +360,6 @@ export default function ProductRecommendationPage() {
                       alt={product.name}
                       className="w-full h-64 object-cover"
                     />
-                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-sm font-medium text-pink-600 border border-pink-100">
-                      Phù hợp {product.matchScore}%
-                    </div>
                     {product.isNew && (
                       <div className="absolute top-3 left-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full px-3 py-1 text-xs font-medium">
                         Mới
@@ -370,7 +367,7 @@ export default function ProductRecommendationPage() {
                     )}
                   </div>
 
-                  <div className="p-5">
+                  <div className="p-5 flex flex-col flex-grow">
                     <div className="flex justify-between items-start mb-2">
                       <h3 className="text-lg font-bold text-gray-800 line-clamp-2">
                         {product.name}
@@ -384,7 +381,7 @@ export default function ProductRecommendationPage() {
                       {product.brand}
                     </p>
 
-                    <div className="flex flex-wrap gap-2 mb-4">
+                    <div className="flex flex-wrap gap-2 mb-auto">
                       <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">
                         {product.skinType}
                       </span>
@@ -400,7 +397,7 @@ export default function ProductRecommendationPage() {
 
                     <button
                       onClick={() => navigate(`/product/${product.id}`)}
-                      className="w-full py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-medium hover:shadow-md transition-all duration-300"
+                      className="w-full py-2 mt-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-medium hover:shadow-md transition-all duration-300"
                     >
                       Xem chi tiết
                     </button>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FilterOutlined,
@@ -18,6 +18,25 @@ import {
   useGetCategoriesQuery,
 } from "../../services/api/beautyShopApi";
 import { Spin } from "antd";
+
+// Hàm chuyển đổi chuỗi tiếng Việt sang không dấu
+const removeAccents = (str) => {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+};
+
+// Hàm fuzzy search
+const fuzzySearch = (query, text) => {
+  if (!query) return true;
+
+  // Chuyển đổi cả query và text về chữ thường không dấu
+  const normalizedQuery = removeAccents(query);
+  const normalizedText = removeAccents(text);
+
+  return normalizedText.includes(normalizedQuery);
+};
 
 export function Sidebar({ onFilterChange }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -119,9 +138,9 @@ export function Sidebar({ onFilterChange }) {
     });
   };
 
-  // Áp dụng tất cả các bộ lọc
+  // Áp dụng tất cả các bộ lọc với fuzzy search
   const applyFilters = (changedFilter) => {
-    onFilterChange({
+    const currentFilters = {
       searchTerm,
       priceRange,
       brands: selectedBrands,
@@ -130,7 +149,10 @@ export function Sidebar({ onFilterChange }) {
       volumes: selectedVolumes,
       sortOrder,
       ...changedFilter,
-    });
+      fuzzySearch: true, // Thêm cờ để biết rằng cần áp dụng fuzzy search
+    };
+
+    onFilterChange(currentFilters);
   };
 
   const handleSortChange = (order) => {
@@ -223,29 +245,30 @@ export function Sidebar({ onFilterChange }) {
           className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 
           group-hover:text-pink-500 transition-colors duration-300"
         />
-        <input
-          type="text"
-          placeholder="Tìm kiếm sản phẩm..."
-          value={searchTerm}
-          onChange={handleSearchChange}
-          className="w-full pl-12 pr-4 py-4 bg-gray-50/50 rounded-2xl border border-gray-200 
-            focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20 transition-all duration-300
-            placeholder:text-gray-400 text-gray-700"
-        />
-        {searchTerm && (
-          <motion.button
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            onClick={() => {
-              setSearchTerm("");
-              applyFilters({ searchTerm: "" });
-            }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 
-              hover:text-pink-500 transition-colors duration-300"
-          >
-            <CloseOutlined />
-          </motion.button>
-        )}
+        <div className="flex items-center relative">
+          <input
+            type="text"
+            placeholder="Tìm kiếm sản phẩm..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="w-full pl-12 pr-10 py-4 bg-gray-50/50 rounded-2xl border border-gray-200 
+              focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20 transition-all duration-300
+              placeholder:text-gray-400 text-gray-700"
+          />
+          {searchTerm && (
+            <motion.button
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              onClick={() => {
+                setSearchTerm("");
+                applyFilters({ searchTerm: "" });
+              }}
+              className="absolute right-4 text-gray-400 hover:text-pink-500 transition-colors duration-300"
+            >
+              <CloseOutlined />
+            </motion.button>
+          )}
+        </div>
       </div>
 
       {/* Sort Order */}

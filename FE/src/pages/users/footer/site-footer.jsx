@@ -82,7 +82,6 @@ export function SiteFooter() {
             </h4>
             <ul className="space-y-4 flex-grow">
               {[
-                { name: "Về chúng tôi", path: "/about" },
                 { name: "Blog", path: "/news" },
               ].map((item) => (
                 <li key={item.name}>

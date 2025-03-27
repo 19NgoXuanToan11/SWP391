@@ -25,7 +25,7 @@ import {
   InputNumber,
   Upload,
 } from "antd";
-import sidebarAdmin from "../../../components/sidebar/admin/SidebarAdmin.jsx"
+import SidebarAdmin from "../../../components/sidebar/admin/SidebarAdmin.jsx";
 import {
   useGetProductsQuery,
   useDeleteProductMutation,

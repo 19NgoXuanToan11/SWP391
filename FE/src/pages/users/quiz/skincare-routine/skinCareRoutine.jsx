@@ -25,6 +25,7 @@ import {
   WarningOutlined,
   BulbOutlined,
   ShoppingOutlined,
+  SkinFilled,
 } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -62,6 +63,11 @@ export default function SkinCareRoutinePage() {
       warnings: "Nếu có kích ứng, giảm tần suất sử dụng",
       price: "250.000đ - 400.000đ",
       recommendedBrands: ["Cerave", "La Roche-Posay", "Simple"],
+      icon: <SkinFilled />,
+      color: "amber",
+      timeOfDay: "Ngay sau khi thức dậy",
+      timeBefore: "60 giây",
+      applyMethod: "Vỗ nhẹ bằng tay hoặc bông tẩy trang",
     },
     "Nước cân bằng dưỡng ẩm": {
       purpose: "Cân bằng pH và cung cấp lớp hydrat hóa đầu tiên",
@@ -76,8 +82,201 @@ export default function SkinCareRoutinePage() {
       warnings: "Tránh toner có cồn nếu bạn có làn da nhạy cảm",
       price: "200.000đ - 350.000đ",
       recommendedBrands: ["Hada Labo", "Klairs", "Paula's Choice"],
+      icon: <ExperimentOutlined />,
+      color: "blue",
+      timeOfDay: "Ngay sau khi thức dậy",
+      timeBefore: "30 giây",
+      applyMethod: "Vỗ nhẹ, không chà xát. Để từng lớp thẩm thấu.",
     },
-    // ... Thêm chi tiết cho các sản phẩm khác
+    "Nước tẩy trang Micellar": {
+      purpose: "Làm sạch nhẹ nhàng, loại bỏ trang điểm và bụi bẩn",
+      howToUse: "Thấm bông tẩy trang và lau nhẹ nhàng trên mặt",
+      tips: "Phù hợp cho da nhạy cảm và khi cần làm sạch nhanh chóng",
+      ingredients: ["Surfactants nhẹ", "Glycerin", "Nước tinh khiết"],
+      benefits: [
+        "Làm sạch nhẹ nhàng không cần rửa lại",
+        "Không gây khô da",
+        "An toàn cho da nhạy cảm",
+        "Loại bỏ trang điểm hiệu quả",
+      ],
+      warnings: "Tránh để dung dịch dư thừa trên da quá lâu nếu da nhạy cảm",
+      price: "180.000đ - 350.000đ",
+      recommendedBrands: ["Bioderma", "Garnier", "Simple"],
+      icon: <ExperimentOutlined />,
+      color: "blue",
+      timeOfDay: "Trước khi rửa mặt",
+      timeBefore: "30 giây",
+      applyMethod: "Thấm bông, lau nhẹ nhàng theo hướng từ trong ra ngoài",
+    },
+    "Sữa rửa mặt kiểm soát dầu": {
+      purpose: "Loại bỏ dầu thừa, bụi bẩn và tạp chất trên da dầu",
+      howToUse: "Tạo bọt với nước ấm, mát xa nhẹ nhàng và rửa sạch",
+      tips: "Sử dụng không quá 2 lần/ngày để tránh kích thích sản sinh dầu",
+      ingredients: ["Salicylic Acid", "Tea Tree Oil", "Zinc PCA"],
+      benefits: [
+        "Kiểm soát dầu nhờn hiệu quả",
+        "Làm sạch sâu lỗ chân lông",
+        "Ngăn ngừa mụn",
+        "Không làm khô da quá mức",
+      ],
+      warnings: "Có thể hơi khô da, nên kết hợp với kem dưỡng ẩm phù hợp",
+      price: "180.000đ - 400.000đ",
+      recommendedBrands: ["La Roche-Posay", "Neutrogena", "COSRX"],
+      icon: <SkinFilled />,
+      color: "blue",
+      timeOfDay: "Ngay sau khi thức dậy",
+      timeBefore: "60 giây",
+      applyMethod: "Massage nhẹ nhàng, chú ý vùng chữ T",
+    },
+    "Sữa rửa mặt có BHA": {
+      purpose: "Làm sạch sâu, loại bỏ tế bào chết và thông thoáng lỗ chân lông",
+      howToUse: "Mát xa lên mặt ẩm trong 30-60 giây, tránh vùng mắt",
+      tips: "Sử dụng 2-3 lần/tuần nếu da nhạy cảm, có thể hàng ngày với da dầu",
+      ingredients: ["Salicylic Acid (BHA)", "Allantoin", "Panthenol"],
+      benefits: [
+        "Loại bỏ tế bào chết nhẹ nhàng",
+        "Làm sạch sâu lỗ chân lông",
+        "Ngăn ngừa và điều trị mụn",
+        "Cải thiện kết cấu da",
+      ],
+      warnings: "Có thể gây khô, bắt đầu với tần suất thấp và tăng dần",
+      price: "250.000đ - 450.000đ",
+      recommendedBrands: ["Paula's Choice", "COSRX", "CeraVe"],
+      icon: <SkinFilled />,
+      color: "green",
+      timeOfDay: "Trước khi rửa mặt",
+      timeBefore: "60 giây",
+      applyMethod: "Mát xa nhẹ nhàng tập trung vào vùng chữ T và chỗ có mụn",
+    },
+    "Sữa rửa mặt cân bằng": {
+      purpose: "Làm sạch da hỗn hợp mà không làm mất cân bằng độ ẩm",
+      howToUse: "Massage lên mặt ẩm trong 30-60 giây, rửa sạch với nước ấm",
+      tips: "Sử dụng hai lần mỗi ngày, tập trung vào vùng chữ T",
+      ingredients: ["Amino Acids", "Glycerin", "Hyaluronic Acid"],
+      benefits: [
+        "Làm sạch mà không làm khô da",
+        "Cân bằng vùng da dầu và khô",
+        "Duy trì pH tự nhiên của da",
+        "Hỗ trợ hàng rào bảo vệ da",
+      ],
+      warnings: "Tránh rửa mặt bằng nước quá nóng hoặc quá lạnh",
+      price: "220.000đ - 400.000đ",
+      recommendedBrands: ["Cetaphil", "CeraVe", "Klairs"],
+      icon: <SkinFilled />,
+      color: "blue",
+      timeOfDay: "Ngay sau khi thức dậy",
+      timeBefore: "60 giây",
+      applyMethod: "Massage nhẹ nhàng, tập trung vào vùng chữ T",
+    },
+    "Nước cân bằng không cồn": {
+      purpose: "Cân bằng pH da và chuẩn bị da cho các bước dưỡng tiếp theo",
+      howToUse: "Thấm miếng bông hoặc vỗ nhẹ lên da sau khi rửa mặt",
+      tips: "Sử dụng trên da còn hơi ẩm để thẩm thấu tốt hơn",
+      ingredients: ["Hyaluronic Acid", "Niacinamide", "Amino Acids"],
+      benefits: [
+        "Cân bằng độ pH",
+        "Không gây khô da",
+        "Làm sạch dư lượng sữa rửa mặt",
+        "Chuẩn bị da hấp thu các sản phẩm tiếp theo",
+      ],
+      warnings: "Tránh sử dụng toner chứa cồn có thể gây khô và kích ứng da",
+      price: "200.000đ - 400.000đ",
+      recommendedBrands: ["Thayers", "Klairs", "Pyunkang Yul"],
+      icon: <ExperimentOutlined />,
+      color: "blue",
+      timeOfDay: "Ngay sau khi thức dậy",
+      timeBefore: "30 giây",
+      applyMethod: "Vỗ nhẹ lên da, không chà xát",
+    },
+    "Nước cân bằng làm dịu": {
+      purpose:
+        "Làm dịu da kích ứng, cân bằng pH và chuẩn bị da cho các bước tiếp theo",
+      howToUse: "Thấm miếng bông hoặc vỗ nhẹ lên da sau khi rửa mặt",
+      tips: "Có thể để tủ lạnh để tăng tác dụng làm dịu",
+      ingredients: ["Centella Asiatica", "Panthenol", "Allantoin"],
+      benefits: [
+        "Làm dịu da kích ứng",
+        "Giảm đỏ và ngứa",
+        "Tăng cường hàng rào bảo vệ da",
+        "Cân bằng pH",
+      ],
+      warnings:
+        "Kiểm tra phản ứng trước khi sử dụng toàn mặt nếu da rất nhạy cảm",
+      price: "220.000đ - 450.000đ",
+      recommendedBrands: ["Etude House", "Klairs", "I'm From"],
+      icon: <ExperimentOutlined />,
+      color: "green",
+      timeOfDay: "Ngay sau khi thức dậy",
+      timeBefore: "30 giây",
+      applyMethod: "Vỗ nhẹ nhàng, tránh chà xát mạnh",
+    },
+    "Serum chống oxy hóa": {
+      purpose: "Bảo vệ da khỏi tác hại của gốc tự do và ngăn ngừa lão hóa sớm",
+      howToUse: "Thoa 3-4 giọt lên da sau bước toner vào buổi sáng",
+      tips: "Sử dụng vào buổi sáng để bảo vệ tối ưu khỏi tác nhân môi trường",
+      ingredients: ["Vitamin C", "Vitamin E", "Ferulic Acid", "Resveratrol"],
+      benefits: [
+        "Trung hòa gốc tự do",
+        "Ngăn ngừa lão hóa sớm",
+        "Cải thiện tông màu da",
+        "Tăng cường hiệu quả chống nắng",
+      ],
+      warnings:
+        "Một số thành phần có thể không ổn định dưới ánh sáng, bảo quản đúng cách",
+      price: "350.000đ - 850.000đ",
+      recommendedBrands: ["SkinCeuticals", "Paula's Choice", "The Ordinary"],
+      icon: <ExperimentOutlined />,
+      color: "orange",
+      timeOfDay: "Sau 2-3 phút",
+      timeBefore: "30 giây",
+      applyMethod: "Thoa đều và vỗ nhẹ để thẩm thấu",
+    },
+    "Serum điều trị": {
+      purpose: "Điều trị các vấn đề cụ thể về da như mụn, nếp nhăn, hoặc thâm",
+      howToUse: "Thoa lên vùng da cần điều trị hoặc toàn mặt tùy vấn đề",
+      tips: "Sử dụng buổi tối để tăng hiệu quả phục hồi qua đêm",
+      ingredients: ["Retinol", "Azelaic Acid", "Peptides", "AHA/BHA"],
+      benefits: [
+        "Điều trị vấn đề da cụ thể",
+        "Tăng tốc tái tạo tế bào",
+        "Cải thiện kết cấu và màu sắc da",
+        "Kích thích sản sinh collagen",
+      ],
+      warnings: "Có thể gây kích ứng ban đầu, nên bắt đầu với tần suất thấp",
+      price: "300.000đ - 900.000đ",
+      recommendedBrands: ["Paula's Choice", "The Ordinary", "La Roche-Posay"],
+      icon: <ExperimentOutlined />,
+      color: "blue",
+      timeOfDay: "Sau 2-3 phút",
+      timeBefore: "30 giây",
+      applyMethod: "Thoa đều theo chuyển động hướng lên trên và ra ngoài",
+    },
+    "Kem chống nắng nhẹ": {
+      purpose:
+        "Bảo vệ da khỏi tác hại của tia UVA/UVB với kết cấu nhẹ, không nhờn",
+      howToUse: "Thoa lượng đủ (1/4 thìa cà phê) lên mặt và cổ",
+      tips: "Bôi lại sau mỗi 2 giờ tiếp xúc với ánh nắng",
+      ingredients: [
+        "Chemical Filters",
+        "Zinc Oxide",
+        "Titanium Dioxide",
+        "Niacinamide",
+      ],
+      benefits: [
+        "Bảo vệ da khỏi tia UVA/UVB",
+        "Kết cấu nhẹ, dễ thấm",
+        "Không gây bít tắc lỗ chân lông",
+        "Phù hợp cho da hỗn hợp",
+      ],
+      warnings: "Vẫn cần bôi lại thường xuyên dù là kết cấu nhẹ",
+      price: "250.000đ - 550.000đ",
+      recommendedBrands: ["La Roche-Posay", "ISNTREE", "Skin Aqua"],
+      icon: <ExperimentOutlined />,
+      color: "yellow",
+      timeOfDay: "Trước khi ra ngoài",
+      timeBefore: "15-20 phút trước khi tiếp xúc với nắng",
+      applyMethod: "Thoa đều và vỗ nhẹ để không tạo vệt",
+    },
   };
 
   const skinTypes = [
@@ -237,67 +436,100 @@ export default function SkinCareRoutinePage() {
             </Paragraph>
           </div>
 
-          {/* Cách sử dụng */}
+          {/* Cách sử dụng với thêm minh họa */}
           <div className="bg-blue-50 p-4 rounded-lg">
             <Text strong className="text-lg text-blue-700 flex items-center">
               <InfoCircleOutlined className="mr-2" />
               Cách Sử Dụng
             </Text>
-            <Paragraph className="mt-2 text-blue-600">
-              {selectedProduct.howToUse}
-            </Paragraph>
+            <div className="mt-2 flex items-start gap-4">
+              <div className="bg-blue-100 rounded-lg p-3 flex-shrink-0">
+                <ClockCircleOutlined className="text-blue-700 text-xl" />
+              </div>
+              <div>
+                <Paragraph className="text-blue-600">
+                  {selectedProduct.howToUse}
+                </Paragraph>
+                <div className="mt-2 flex items-center text-sm text-blue-500">
+                  <InfoCircleOutlined className="mr-1" />
+                  <span>Thời gian thực hiện: 1-2 phút</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Thành phần chính */}
+          {/* Thành phần chính với tooltip giải thích */}
           <div className="bg-pink-50 p-4 rounded-lg">
             <Text strong className="text-lg text-pink-700 flex items-center">
               <ExperimentOutlined className="mr-2" />
               Thành Phần Chính
             </Text>
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="flex flex-wrap gap-2 mt-3">
               {selectedProduct.ingredients.map((ingredient) => (
-                <Tag color="pink" key={ingredient}>
-                  {ingredient}
-                </Tag>
+                <Tooltip
+                  key={ingredient}
+                  title={getIngredientDescription(ingredient)}
+                  placement="top"
+                >
+                  <Tag
+                    color="pink"
+                    className="rounded-full py-1 px-3 cursor-help"
+                  >
+                    {ingredient}
+                  </Tag>
+                </Tooltip>
               ))}
             </div>
+            <Paragraph className="mt-3 text-sm text-pink-500 italic">
+              * Di chuột lên thành phần để xem chi tiết công dụng
+            </Paragraph>
           </div>
 
-          {/* Lợi ích */}
+          {/* Lợi ích với icon cho từng điểm */}
           <div className="bg-green-50 p-4 rounded-lg">
             <Text strong className="text-lg text-green-700 flex items-center">
               <CheckCircleOutlined className="mr-2" />
               Lợi Ích
             </Text>
-            <ul className="list-disc pl-5 mt-2 space-y-1">
-              {selectedProduct.benefits.map((benefit) => (
-                <li key={benefit} className="text-green-600">
-                  {benefit}
+            <ul className="mt-3 space-y-3">
+              {selectedProduct.benefits.map((benefit, index) => (
+                <li key={benefit} className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                    <CheckCircleOutlined className="text-green-600 text-sm" />
+                  </div>
+                  <Paragraph className="text-green-600 m-0">
+                    {benefit}
+                  </Paragraph>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Thương hiệu gợi ý */}
+          {/* Thương hiệu gợi ý với logo */}
           <div className="bg-indigo-50 p-4 rounded-lg">
             <Text strong className="text-lg text-indigo-700 flex items-center">
               <ShoppingOutlined className="mr-2" />
               Thương Hiệu Gợi Ý
             </Text>
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="mt-3 grid grid-cols-3 gap-3">
               {selectedProduct.recommendedBrands?.map((brand) => (
-                <Tag color="indigo" key={brand}>
-                  {brand}
-                </Tag>
+                <div
+                  key={brand}
+                  className="bg-white rounded-lg p-3 text-center shadow-sm hover:shadow transition"
+                >
+                  <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-indigo-100 flex items-center justify-center">
+                    {brand.charAt(0)}
+                  </div>
+                  <Text strong className="text-indigo-700 block">
+                    {brand}
+                  </Text>
+                </div>
               ))}
             </div>
-            <Paragraph className="mt-2 text-indigo-600">
-              Tầm giá tham khảo: {selectedProduct.price}
-            </Paragraph>
           </div>
 
-          {/* Lưu ý quan trọng */}
-          <div className="bg-yellow-50 p-4 rounded-lg">
+          {/* Lưu ý quan trọng với thiết kế nổi bật */}
+          <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400">
             <Text strong className="text-lg text-yellow-700 flex items-center">
               <WarningOutlined className="mr-2" />
               Lưu Ý Quan Trọng
@@ -307,52 +539,210 @@ export default function SkinCareRoutinePage() {
             </Paragraph>
           </div>
 
-          {/* Tips */}
+          {/* Tips với các điểm hữu ích */}
           <div className="bg-orange-50 p-4 rounded-lg">
             <Text strong className="text-lg text-orange-700 flex items-center">
               <BulbOutlined className="mr-2" />
               Tips Sử Dụng
             </Text>
-            <Paragraph className="mt-2 text-orange-600">
-              {selectedProduct.tips}
-            </Paragraph>
+            <div className="mt-3 flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+                <BulbOutlined className="text-orange-500" />
+              </div>
+              <Paragraph className="text-orange-600 m-0">
+                {selectedProduct.tips}
+              </Paragraph>
+            </div>
+          </div>
+
+          {/* Footer với cta */}
+          <div className="mt-6 flex justify-center">
+            <button
+              type="primary"
+              className="bg-gradient-to-r from-pink-500 to-purple-500 border-none h-auto py-3 px-8 rounded-full text-base text-white font-medium shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/40 transform hover:scale-105 transition-all duration-300"
+              onClick={() => navigate("/product")}
+            >
+              <span className="flex items-center gap-2">
+                <ShoppingOutlined />
+                Mua Sắm Sản Phẩm
+              </span>
+            </button>
           </div>
         </div>
       )}
     </Modal>
   );
 
-  const renderRoutineStep = (step, index, isLast, timing) => (
-    <div className="relative pb-8">
-      {!isLast && (
-        <div className="absolute left-4 top-8 -ml-px h-full w-0.5 bg-gradient-to-b from-purple-400 to-pink-400"></div>
-      )}
-      <div className="relative flex items-center space-x-4">
-        <div className="h-8 w-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">
-          {index + 1}
-        </div>
-        <div
-          className="flex-1 bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
-          onClick={() => handleProductClick(step)}
-        >
-          <div className="flex justify-between items-center">
-            <Text className="text-lg font-medium">{step}</Text>
-            <Tooltip title="Click for detailed information">
-              <InfoCircleOutlined className="text-purple-500" />
-            </Tooltip>
+  // Hàm trả về mô tả cho từng thành phần
+  const getIngredientDescription = (ingredient) => {
+    const descriptions = {
+      Ceramides:
+        "Giúp khôi phục hàng rào bảo vệ da, giữ ẩm và bảo vệ da khỏi tác nhân gây hại",
+      Glycerin:
+        "Chất giữ ẩm tự nhiên, thu hút nước từ không khí và giữ nước trong da",
+      "Hyaluronic Acid":
+        "Giữ ẩm mạnh mẽ, có thể giữ lượng nước gấp 1000 lần trọng lượng của nó",
+      Niacinamide:
+        "Vitamin B3, giúp làm sáng da, giảm dầu, thu nhỏ lỗ chân lông và cải thiện đốm nâu",
+      Panthenol: "Vitamin B5, làm dịu, giữ ẩm và hỗ trợ quá trình làm lành da",
+      "Salicylic Acid":
+        "BHA giúp loại bỏ tế bào chết, thông thoáng lỗ chân lông và điều trị mụn",
+      "Tea Tree Oil":
+        "Tinh dầu tự nhiên có đặc tính kháng khuẩn, giúp giảm mụn và kiểm soát dầu",
+      "Zinc PCA": "Kiểm soát dầu và giảm viêm, hỗ trợ điều trị mụn",
+      "Vitamin C":
+        "Chống oxy hóa mạnh, làm sáng da, kích thích sản sinh collagen và ngăn ngừa lão hóa",
+      "Vitamin E":
+        "Chống oxy hóa, bảo vệ da khỏi tác hại môi trường và giúp dưỡng ẩm",
+      "Ferulic Acid": "Chống oxy hóa, tăng cường hiệu quả của Vitamin C và E",
+      Retinol:
+        "Dẫn xuất vitamin A, kích thích tái tạo tế bào và sản sinh collagen, chống lão hóa",
+      Peptides:
+        "Chuỗi amino acid giúp tái tạo và sửa chữa da, kích thích sản sinh collagen",
+      "Centella Asiatica":
+        "Chiết xuất thực vật có tác dụng làm dịu, phục hồi và chống viêm",
+      Allantoin: "Làm dịu, phục hồi và kích thích tái tạo tế bào da",
+      "Shea Butter": "Dưỡng ẩm sâu, làm mềm và phục hồi da khô, chống oxy hóa",
+      Squalane:
+        "Dầu tự nhiên giống với dầu tự nhiên của da, dưỡng ẩm mà không gây bít tắc lỗ chân lông",
+      "Aloe Vera":
+        "Làm dịu, cấp ẩm và giảm viêm, phù hợp cho da bị cháy nắng hoặc kích ứng",
+      Madecassoside:
+        "Chiết xuất từ rau má, có tác dụng làm dịu, phục hồi và chống viêm mạnh",
+      "Sodium Hyaluronate":
+        "Dạng phân tử nhỏ hơn của hyaluronic acid, thấm sâu vào da để cấp ẩm",
+      "Zinc Oxide": "Chất chống nắng vật lý, bảo vệ da khỏi tia UVA và UVB",
+      "Titanium Dioxide":
+        "Chất chống nắng vật lý, bảo vệ da khỏi tia UVA và UVB",
+      Avobenzone: "Chất chống nắng hóa học, bảo vệ da khỏi tia UVA dài",
+      "Surfactants nhẹ":
+        "Chất làm sạch nhẹ nhàng không gây kích ứng, an toàn cho da nhạy cảm",
+      "AHA/BHA":
+        "Axit alpha và beta hydroxy, giúp tẩy tế bào chết, thông thoáng lỗ chân lông và làm đều màu da",
+    };
+
+    return (
+      descriptions[ingredient] ||
+      "Thành phần hoạt tính trong sản phẩm chăm sóc da"
+    );
+  };
+
+  const renderEnhancedRoutineStep = (step, index, isLast, timing) => {
+    const details = productDetails[step] || {
+      purpose: "Chăm sóc da chuyên sâu",
+      howToUse: "Theo hướng dẫn của sản phẩm",
+      tips: "Tham khảo hướng dẫn cụ thể trên bao bì",
+      ingredients: ["Thành phần chuyên biệt"],
+      price: "Tùy theo thương hiệu",
+    };
+
+    const colorScheme =
+      timing === "morning"
+        ? {
+            bgGradient: "from-amber-50 to-orange-50",
+            borderColor: "border-amber-100/50",
+            iconBg: "from-amber-400 to-orange-400",
+            textColor: "text-amber-900",
+            iconColor: "text-amber-500",
+            timeBgColor: "bg-amber-100/40",
+            timeTextColor: "text-amber-700",
+          }
+        : {
+            bgGradient: "from-indigo-50 to-purple-50",
+            borderColor: "border-indigo-100/50",
+            iconBg: "from-indigo-400 to-purple-400",
+            textColor: "text-indigo-900",
+            iconColor: "text-indigo-500",
+            timeBgColor: "bg-indigo-100/40",
+            timeTextColor: "text-indigo-700",
+          };
+
+    const getTimeOfUse = () => {
+      if (timing === "morning") {
+        return index < 2
+          ? "Ngay sau khi thức dậy"
+          : index < 4
+          ? "Sau 2-3 phút"
+          : "Trước khi ra ngoài";
+      } else {
+        return index < 2
+          ? "Trước khi rửa mặt"
+          : index < 4
+          ? "Sau 2-3 phút"
+          : "Trước khi đi ngủ";
+      }
+    };
+
+    return (
+      <motion.div
+        key={index}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.1 * index }}
+        className={`bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm ${colorScheme.borderColor} hover:shadow-md transition-all duration-300 cursor-pointer`}
+        onClick={() => handleProductClick(step)}
+      >
+        <div className="flex items-start space-x-3">
+          <div
+            className={`w-8 h-8 rounded-full bg-gradient-to-r ${colorScheme.iconBg} flex items-center justify-center text-white font-medium shrink-0`}
+          >
+            {index + 1}
           </div>
-          <div className="mt-2 flex items-center text-sm text-gray-500">
-            <ClockCircleOutlined className="mr-1" />
-            <Text type="secondary">
-              {timing === "morning"
-                ? "Sử dụng sau khi thức dậy"
-                : "Sử dụng trước khi đi ngủ"}
-            </Text>
+          <div className="flex-1">
+            <div className="flex justify-between items-center">
+              <Text strong className={`text-lg ${colorScheme.textColor}`}>
+                {step}
+              </Text>
+              <Tooltip title="Xem chi tiết sản phẩm">
+                <InfoCircleOutlined className={colorScheme.iconColor} />
+              </Tooltip>
+            </div>
+
+            <div className="mt-2">
+              <div
+                className={`inline-flex items-center px-2 py-1 rounded-full ${colorScheme.timeBgColor} ${colorScheme.timeTextColor} text-xs mb-2`}
+              >
+                <ClockCircleOutlined className="mr-1" />
+                <Text className={`${colorScheme.timeTextColor} text-xs`}>
+                  {getTimeOfUse()}
+                </Text>
+              </div>
+
+              <Paragraph
+                className={`text-sm mt-1 ${colorScheme.textColor} opacity-80 line-clamp-2`}
+              >
+                {details.purpose}
+              </Paragraph>
+
+              {details.ingredients && details.ingredients.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {details.ingredients.slice(0, 2).map((ingredient, idx) => (
+                    <Tag
+                      key={idx}
+                      className={`rounded-full text-xs font-medium px-2 py-0.5 border-0 bg-${
+                        timing === "morning" ? "amber" : "indigo"
+                      }-100/60`}
+                    >
+                      {ingredient}
+                    </Tag>
+                  ))}
+                  {details.ingredients.length > 2 && (
+                    <Tag
+                      className={`rounded-full text-xs font-medium px-2 py-0.5 border-0 bg-${
+                        timing === "morning" ? "amber" : "indigo"
+                      }-100/60`}
+                    >
+                      +{details.ingredients.length - 2}
+                    </Tag>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  );
+      </motion.div>
+    );
+  };
 
   // Hàm chuyển đổi từ tiếng Anh sang tiếng Việt
   const translateSkinType = (englishType) => {
@@ -431,9 +821,29 @@ export default function SkinCareRoutinePage() {
       form.setFieldsValue(formValues);
       setAutoFilled(true);
 
-      // Không hiển thị message để tránh gây rối cho người dùng
+      // Thêm đoạn này: Tự động submit form sau khi điền
+      // Sử dụng setTimeout để đảm bảo form được cập nhật trước khi submit
+      setTimeout(() => {
+        // Kiểm tra lại xem formValues đã có đủ dữ liệu chưa
+        if (formValues.skinType) {
+          const selectedRoutine = routines[formValues.skinType];
+          if (selectedRoutine) {
+            setRecommendations(selectedRoutine);
+
+            // Lưu vào localStorage với giá trị tiếng Việt
+            localStorage.setItem(
+              "currentRoutine",
+              JSON.stringify({
+                skinType: formValues.skinType,
+                concerns: formValues.concerns || [],
+                routine: selectedRoutine,
+              })
+            );
+          }
+        }
+      }, 300);
     }
-  }, [quizResults, form, autoFilled]);
+  }, [quizResults, form, autoFilled, routines]);
 
   const handleSubmit = (values) => {
     console.log("Form values in handleSubmit:", values);
@@ -497,189 +907,19 @@ export default function SkinCareRoutinePage() {
                 </span>
               </Title>
               <Paragraph className="text-gray-600 max-w-xl mx-auto">
-                Thiết kế một quy trình chăm sóc da hoàn hảo, tùy chỉnh riêng cho
-                nhu cầu và loại da của bạn
+                Hệ thống tự động cung cấp quy trình chăm sóc da phù hợp với loại
+                da của bạn
               </Paragraph>
             </motion.div>
           </div>
 
           <div className="p-8">
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={handleSubmit}
-              className="mb-8"
-            >
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="grid grid-cols-1 md:grid-cols-2 gap-8"
-              >
-                <Form.Item
-                  name="skinType"
-                  label={
-                    <div className="flex items-center space-x-2 mb-2">
-                      <span className="text-lg font-medium bg-gradient-to-r from-purple-600 to-pink-600 text-transparent bg-clip-text">
-                        Loại Da Của Bạn
-                      </span>
-                    </div>
-                  }
-                  rules={[
-                    {
-                      required: true,
-                      message: "Vui lòng chọn loại da của bạn",
-                    },
-                  ]}
-                >
-                  <div className="relative group">
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                    <Select
-                      placeholder="Chọn loại da của bạn"
-                      className="relative bg-white rounded-2xl border-0 shadow-sm group-hover:shadow-md transition-all duration-300"
-                      size="large"
-                      dropdownClassName="rounded-2xl overflow-hidden shadow-xl backdrop-blur-sm border border-white/70"
-                      suffixIcon={
-                        <div className="text-pink-400">
-                          <SkinOutlined />
-                        </div>
-                      }
-                    >
-                      {skinTypes.map((type) => (
-                        <Option key={type} value={type}>
-                          <motion.div
-                            whileHover={{ x: 5 }}
-                            transition={{ type: "spring", stiffness: 300 }}
-                            className="py-2.5 px-2 flex items-center gap-3"
-                          >
-                            <div className="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-pink-400 to-purple-400"></div>
-                            <span className="text-gray-700 font-medium">
-                              {type}
-                            </span>
-                          </motion.div>
-                        </Option>
-                      ))}
-                    </Select>
-                  </div>
-                </Form.Item>
-
-                <Form.Item
-                  name="concerns"
-                  label={
-                    <div className="flex items-center space-x-2 mb-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-pink-400 to-purple-400"></div>
-                      <span className="text-lg font-medium bg-gradient-to-r from-purple-600 to-pink-600 text-transparent bg-clip-text">
-                        Vấn Đề Về Da
-                      </span>
-                    </div>
-                  }
-                  help={
-                    <span className="text-gray-500 italic text-xs mt-1.5 inline-block">
-                      ✨ Chọn tất cả các vấn đề bạn đang gặp phải
-                    </span>
-                  }
-                >
-                  <div className="relative group">
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                    <Select
-                      mode="multiple"
-                      placeholder="Chọn vấn đề về da của bạn"
-                      className="relative bg-white rounded-2xl border-0 shadow-sm group-hover:shadow-md transition-all duration-300"
-                      size="large"
-                      maxTagCount={3}
-                      maxTagTextLength={20}
-                      showArrow
-                      showSearch
-                      suffixIcon={
-                        <div className="text-pink-400">
-                          <WarningOutlined />
-                        </div>
-                      }
-                      tagRender={(props) => (
-                        <Tag
-                          {...props}
-                          className="rounded-full px-3 py-1.5 bg-gradient-to-r from-purple-100 to-pink-100 border-0 text-purple-800 shadow-sm"
-                        >
-                          <motion.span
-                            whileHover={{ scale: 1.05 }}
-                            className="text-xs md:text-sm flex items-center gap-1"
-                          >
-                            <span className="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
-                            {props.label}
-                          </motion.span>
-                        </Tag>
-                      )}
-                      dropdownRender={(menu) => (
-                        <div className="bg-white/90 backdrop-blur-md rounded-2xl p-1 shadow-lg">
-                          <div className="p-2 border-b border-gray-100 mb-1">
-                            <span className="text-sm text-gray-500 italic">
-                              Chọn các vấn đề bạn muốn cải thiện
-                            </span>
-                          </div>
-                          {menu}
-                        </div>
-                      )}
-                    >
-                      {skinConcerns.map((concern) => (
-                        <Option key={concern} value={concern}>
-                          <motion.div
-                            whileHover={{ x: 5 }}
-                            transition={{ type: "spring", stiffness: 300 }}
-                            className="py-2.5 px-2 flex items-center gap-3 rounded-xl hover:bg-purple-50 transition-colors duration-300"
-                          >
-                            <div className="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-pink-400 to-purple-400"></div>
-                            <span className="text-gray-700 font-medium">
-                              {concern}
-                            </span>
-                          </motion.div>
-                        </Option>
-                      ))}
-                    </Select>
-                  </div>
-                </Form.Item>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.6 }}
-                className="mt-8 flex justify-center gap-4"
-              >
-                <button
-                  type="primary"
-                  htmlType="submit"
-                  size="large"
-                  className="bg-gradient-to-r from-pink-500 to-purple-500 border-none h-auto py-3 px-8 rounded-full text-base text-white font-medium shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/40 transform hover:scale-105 transition-all duration-300"
-                >
-                  <span className="flex items-center gap-2">
-                    <ExperimentOutlined />
-                    Tạo Quy Trình Chăm Sóc Da
-                  </span>
-                </button>
-
-                <button
-                  type="default"
-                  onClick={() => {
-                    form.resetFields();
-                    localStorage.removeItem("currentRoutine");
-                    localStorage.removeItem("quizResults");
-                    setRecommendations(null);
-                    setAutoFilled(false);
-                    message.success("Đã làm mới form");
-                  }}
-                  className="border-gray-300 text-gray-600 h-auto py-3 px-6 rounded-full text-base font-medium hover:border-pink-300 hover:text-pink-600 transition-all duration-300"
-                >
-                  Làm Mới
-                </button>
-              </motion.div>
-            </Form>
-
             {recommendations && (
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
-                className="space-y-8 mt-10"
+                className="space-y-8 mt-0"
               >
                 <Divider>
                   <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full">
@@ -710,41 +950,14 @@ export default function SkinCareRoutinePage() {
 
                     <div className="p-6">
                       <div className="space-y-4">
-                        {recommendations.morning.map((step, index) => (
-                          <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, delay: 0.1 * index }}
-                            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-amber-100/50 hover:shadow-md transition-all duration-300 cursor-pointer"
-                            onClick={() => handleProductClick(step)}
-                          >
-                            <div className="flex items-start space-x-3">
-                              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 flex items-center justify-center text-white font-medium shrink-0">
-                                {index + 1}
-                              </div>
-                              <div className="flex-1">
-                                <div className="flex justify-between items-center">
-                                  <Text strong className="text-amber-900">
-                                    {step}
-                                  </Text>
-                                  <InfoCircleOutlined className="text-amber-500" />
-                                </div>
-                                <Text
-                                  type="secondary"
-                                  className="text-sm block mt-1"
-                                >
-                                  <ClockCircleOutlined className="mr-1" />
-                                  {index < 2
-                                    ? "Ngay sau khi thức dậy"
-                                    : index < 4
-                                    ? "Sau 2-3 phút"
-                                    : "Trước khi ra ngoài"}
-                                </Text>
-                              </div>
-                            </div>
-                          </motion.div>
-                        ))}
+                        {recommendations.morning.map((step, index) =>
+                          renderEnhancedRoutineStep(
+                            step,
+                            index,
+                            index === recommendations.morning.length - 1,
+                            "morning"
+                          )
+                        )}
                       </div>
                     </div>
                   </motion.div>
@@ -769,41 +982,14 @@ export default function SkinCareRoutinePage() {
 
                     <div className="p-6">
                       <div className="space-y-4">
-                        {recommendations.evening.map((step, index) => (
-                          <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, delay: 0.1 * index }}
-                            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-indigo-100/50 hover:shadow-md transition-all duration-300 cursor-pointer"
-                            onClick={() => handleProductClick(step)}
-                          >
-                            <div className="flex items-start space-x-3">
-                              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-400 to-purple-400 flex items-center justify-center text-white font-medium shrink-0">
-                                {index + 1}
-                              </div>
-                              <div className="flex-1">
-                                <div className="flex justify-between items-center">
-                                  <Text strong className="text-indigo-900">
-                                    {step}
-                                  </Text>
-                                  <InfoCircleOutlined className="text-indigo-500" />
-                                </div>
-                                <Text
-                                  type="secondary"
-                                  className="text-sm block mt-1"
-                                >
-                                  <ClockCircleOutlined className="mr-1" />
-                                  {index < 2
-                                    ? "Trước khi rửa mặt"
-                                    : index < 4
-                                    ? "Sau 2-3 phút"
-                                    : "Trước khi đi ngủ"}
-                                </Text>
-                              </div>
-                            </div>
-                          </motion.div>
-                        ))}
+                        {recommendations.evening.map((step, index) =>
+                          renderEnhancedRoutineStep(
+                            step,
+                            index,
+                            index === recommendations.evening.length - 1,
+                            "evening"
+                          )
+                        )}
                       </div>
                     </div>
                   </motion.div>
