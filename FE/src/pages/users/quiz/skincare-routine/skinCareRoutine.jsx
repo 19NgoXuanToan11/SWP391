@@ -32,7 +32,7 @@ import { motion } from "framer-motion";
 import {
   translateSkinConcern,
   getSkinTypeInfo,
-} from "../../../../utils/skinCare/skinCareUtils";
+} from "@/utils/skincare/skinCareUtils";
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
