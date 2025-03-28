@@ -71,6 +71,45 @@ export default function ProductsPage() {
     return normalizedText.includes(normalizedQuery);
   };
 
+  // Thêm hàm getSearchSuggestions giống như trong sidebar
+  const getSearchSuggestions = (term) => {
+    // Các từ khóa phổ biến trong ngành mỹ phẩm
+    const commonKeywords = [
+      {
+        keyword: "kem chống nắng",
+        aliases: ["chong nang", "kem chong nang", "sun screen", "sunscreen"],
+      },
+      {
+        keyword: "sữa rửa mặt",
+        aliases: ["sua rua mat", "srm", "cleanser", "face wash"],
+      },
+      {
+        keyword: "dưỡng ẩm",
+        aliases: ["duong am", "moisturizer", "hydrating", "kem duong"],
+      },
+      { keyword: "serum", aliases: ["tinh chat", "essence", "tinh chất"] },
+      { keyword: "mặt nạ", aliases: ["mat na", "mask", "sheet mask"] },
+      {
+        keyword: "tẩy trang",
+        aliases: ["tay trang", "makeup remover", "cleansing oil"],
+      },
+      { keyword: "toner", aliases: ["nuoc hoa hong", "nước hoa hồng"] },
+    ];
+
+    if (!term || term.trim() === "") return [];
+
+    const normalizedTerm = removeAccents(term.toLowerCase());
+
+    // Tìm các từ khóa phù hợp
+    return commonKeywords
+      .filter(
+        (item) =>
+          item.aliases.some((alias) => alias.includes(normalizedTerm)) ||
+          removeAccents(item.keyword).includes(normalizedTerm)
+      )
+      .map((item) => item.keyword);
+  };
+
   const fetchProducts = async () => {
     try {
       setLoading(true);
@@ -866,6 +905,34 @@ export default function ProductsPage() {
                     </div>
                   }
                 />
+
+                {/* Phần đề xuất tìm kiếm khi không tìm thấy kết quả */}
+                {quickSearchTerm &&
+                  getSearchSuggestions(quickSearchTerm).length > 0 && (
+                    <div className="mt-6 mb-4">
+                      <p className="text-gray-700 font-medium mb-3">
+                        Bạn có thể đang tìm:
+                      </p>
+                      <div className="flex flex-wrap justify-center gap-2">
+                        {getSearchSuggestions(quickSearchTerm).map(
+                          (suggestion, index) => (
+                            <motion.button
+                              key={index}
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={() => {
+                                setQuickSearchTerm(suggestion);
+                              }}
+                              className="px-4 py-2 bg-pink-50 text-pink-600 rounded-full hover:bg-pink-100 transition-colors"
+                            >
+                              {suggestion}
+                            </motion.button>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
+
                 <Button
                   type="primary"
                   onClick={() => {

@@ -73,6 +73,45 @@ export function Sidebar({ onFilterChange }) {
     applyFilters({ searchTerm: value });
   };
 
+  // Thêm hàm để lấy các từ khóa phổ biến có thể liên quan đến từ khóa tìm kiếm
+  const getSearchSuggestions = (term) => {
+    // Các từ khóa phổ biến trong ngành mỹ phẩm
+    const commonKeywords = [
+      {
+        keyword: "kem chống nắng",
+        aliases: ["chong nang", "kem chong nang", "sun screen", "sunscreen"],
+      },
+      {
+        keyword: "sữa rửa mặt",
+        aliases: ["sua rua mat", "srm", "cleanser", "face wash"],
+      },
+      {
+        keyword: "dưỡng ẩm",
+        aliases: ["duong am", "moisturizer", "hydrating", "kem duong"],
+      },
+      { keyword: "serum", aliases: ["tinh chat", "essence", "tinh chất"] },
+      { keyword: "mặt nạ", aliases: ["mat na", "mask", "sheet mask"] },
+      {
+        keyword: "tẩy trang",
+        aliases: ["tay trang", "makeup remover", "cleansing oil"],
+      },
+      { keyword: "toner", aliases: ["nuoc hoa hong", "nước hoa hồng"] },
+    ];
+
+    if (!term || term.trim() === "") return [];
+
+    const normalizedTerm = removeAccents(term.toLowerCase());
+
+    // Tìm các từ khóa phù hợp
+    return commonKeywords
+      .filter(
+        (item) =>
+          item.aliases.some((alias) => alias.includes(normalizedTerm)) ||
+          removeAccents(item.keyword).includes(normalizedTerm)
+      )
+      .map((item) => item.keyword);
+  };
+
   // Xử lý thay đổi khoảng giá
   const handlePriceChange = (type, value) => {
     const numericValue = value === "" ? "" : parseFloat(value);
@@ -269,6 +308,42 @@ export function Sidebar({ onFilterChange }) {
             </motion.button>
           )}
         </div>
+
+        {/* Phần đề xuất tìm kiếm */}
+        {searchTerm && (
+          <AnimatePresence>
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="absolute left-0 right-0 mt-2 bg-white rounded-xl shadow-md z-50 border border-gray-100 overflow-hidden"
+            >
+              {getSearchSuggestions(searchTerm).length > 0 ? (
+                <div className="py-2">
+                  <p className="px-4 py-2 text-sm text-gray-500">
+                    Bạn có thể đang tìm:
+                  </p>
+                  {getSearchSuggestions(searchTerm).map((suggestion, index) => (
+                    <motion.div
+                      key={index}
+                      whileHover={{ backgroundColor: "#F9FAFB" }}
+                      className="px-4 py-2 cursor-pointer hover:bg-gray-50 transition-colors"
+                      onClick={() => {
+                        setSearchTerm(suggestion);
+                        applyFilters({ searchTerm: suggestion });
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <SearchOutlined className="text-pink-500" />
+                        <span className="text-gray-800">{suggestion}</span>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : null}
+            </motion.div>
+          </AnimatePresence>
+        )}
       </div>
 
       {/* Sort Order */}
