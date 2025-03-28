@@ -393,7 +393,7 @@ namespace Service
                         FullName = payload.Name,
                         Password = randomPassword,
                         PasswordHash = passwordHash,
-                        RoleId = 2, // User Role
+                        RoleId = 3, // User Role
                         CreatedAt = DateTime.UtcNow,
                         IsVerification = true
                     };
