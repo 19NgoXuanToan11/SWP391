@@ -239,6 +239,47 @@ const QuizPage = () => {
 
     setShowResults(true);
 
+    // Lưu vào lịch sử trắc nghiệm
+    const saveQuizHistory = () => {
+      // Lấy câu trả lời đã lưu
+      const selectedAnswers = JSON.parse(
+        localStorage.getItem("selectedAnswers") || "{}"
+      );
+
+      // Lưu đầy đủ thông tin câu hỏi của bài trắc nghiệm này
+      const questionsData = questions.map((q) => ({
+        text: q.question,
+        options: q.options,
+        concerns: q.concerns,
+      }));
+
+      // Tạo đối tượng lịch sử trắc nghiệm
+      const quizHistoryItem = {
+        id: Date.now().toString(),
+        timestamp: Date.now(),
+        skinType: dominantSkinType,
+        concerns: concernsArray,
+        // Sao chép đối tượng selectedAnswers
+        answers: { ...selectedAnswers },
+        // Thêm thông tin câu hỏi cho bài trắc nghiệm này
+        questions: questionsData,
+      };
+
+      // Lấy lịch sử hiện tại
+      const currentHistory = JSON.parse(
+        localStorage.getItem("quizHistory") || "[]"
+      );
+
+      // Thêm vào đầu mảng
+      const updatedHistory = [quizHistoryItem, ...currentHistory];
+
+      // Lưu lại
+      localStorage.setItem("quizHistory", JSON.stringify(updatedHistory));
+    };
+
+    // Gọi hàm này sau khi tính toán kết quả
+    saveQuizHistory();
+
     // Chuyển hướng đến trang kết quả
     navigate("/quiz-results", { state: { results } });
   };
@@ -364,6 +405,17 @@ const QuizPage = () => {
       border-color: #ec4899 !important;
     }
   `;
+
+  useEffect(() => {
+    // Lưu danh sách câu hỏi với đầy đủ thông tin
+    const questionsToSave = questions.map((q) => ({
+      text: q.question, // Nội dung câu hỏi
+      options: q.options, // Các tùy chọn
+      // Có thể thêm các thông tin khác nếu cần
+    }));
+
+    localStorage.setItem("quizQuestions", JSON.stringify(questionsToSave));
+  }, []);
 
   return (
     <div className="min-h-screen py-12 px-4 relative overflow-hidden bg-white">

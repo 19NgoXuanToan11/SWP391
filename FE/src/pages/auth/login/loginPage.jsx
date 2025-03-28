@@ -139,7 +139,7 @@ export default function LoginPage() {
 
         const redirectPath = location.state?.from;
         if (redirectPath && redirectPath === "/payment") {
-          navigate("/qr-payment", { replace: true });
+          navigate("/payment", { replace: true });
         } else {
           navigate("/", { replace: true });
         }

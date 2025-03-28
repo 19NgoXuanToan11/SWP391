@@ -32,6 +32,7 @@ import SkinCareRoutinePage from "../../pages/users/quiz/skincare-routine/skinCar
 import QuizResultsPage from "../../pages/users/quiz/quiz-result/quizResultsPage";
 import QuizLandingPage from "../../pages/users/quiz/quiz-landing/quizlandingPage";
 import ProductRecommendationPage from "../../pages/users/quiz/product-recommendation/productRecommendation";
+import QuizHistoryPage from "../../pages/users/quiz/quiz-history/quizHistoryPage";
 
 // products
 import ProductsPage from "../../pages/users/product/productPage";
@@ -175,6 +176,10 @@ export const router = createBrowserRouter([
       {
         path: "product-recommendations",
         element: <ProductRecommendationPage />,
+      },
+      {
+        path: "/quiz-history",
+        element: <QuizHistoryPage />,
       },
 
       // products

@@ -729,7 +729,7 @@ const OrdersHistoryPage = () => {
                           <TeamOutlined className="mr-2 text-green-500" />
                         </Tooltip>
                         <span className="font-medium mr-1">
-                          Đơn vị vận chuyển:
+                          Người giao hàng:
                         </span>
                         <span>{order.shipper}</span>
                       </div>

@@ -9,6 +9,7 @@ import {
   HeartOutlined,
   SettingOutlined,
   BellOutlined,
+  FileTextOutlined,
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { logout } from "../../store/slices/auth/authSlice";
@@ -105,6 +106,11 @@ export const UserDropdown = ({ user, onLogout }) => {
       icon: <ShoppingOutlined />,
       label: "Đơn hàng của tôi",
       path: "/orders",
+    },
+    {
+      icon: <FileTextOutlined />,
+      label: "Lịch sử trắc nghiệm",
+      path: "/quiz-history",
     },
   ];
 
