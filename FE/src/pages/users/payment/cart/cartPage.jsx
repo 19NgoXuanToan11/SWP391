@@ -134,7 +134,7 @@ function CartPage() {
 
     if (!isAuthenticated) {
       message.warning("Vui lòng đăng nhập để tiếp tục thanh toán");
-      navigate("/login", { state: { from: "/payment" } });
+      navigate("/login", { state: { from: "/cart" } });
       return;
     }
 

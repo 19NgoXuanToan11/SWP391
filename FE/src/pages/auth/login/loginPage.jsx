@@ -138,8 +138,8 @@ export default function LoginPage() {
         message.success("Đăng nhập thành công!");
 
         const redirectPath = location.state?.from;
-        if (redirectPath && redirectPath === "/payment") {
-          navigate("/payment", { replace: true });
+        if (redirectPath && redirectPath === "/cart") {
+          navigate("/cart", { replace: true });
         } else {
           navigate("/", { replace: true });
         }
