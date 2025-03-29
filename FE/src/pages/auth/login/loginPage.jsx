@@ -16,6 +16,7 @@ import {
   KeyOutlined,
   MailOutlined,
 } from "@ant-design/icons";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function LoginPage() {
   const dispatch = useDispatch();
@@ -156,64 +157,58 @@ export default function LoginPage() {
     }
   };
 
-  const handleLoginByGoogle = async () => {
-    const provider = new GoogleAuthProvider();
+  const handleGoogleLoginSuccess = async (credentialResponse) => {
     setLoading(true);
 
     try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
+      // credentialResponse.credential chứa JWT ID token
+      const idToken = credentialResponse.credential;
 
-      // Get the Google access token
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential.accessToken;
-
-      // Create user data object from Google profile
-      const userData = {
-        username: user.displayName,
-        name: user.displayName,
-        role: "User", // Default role for Google sign-in users
-        email: user.email,
-        id: user.uid,
-        isAdmin: false,
-        photoURL: user.photoURL,
-      };
-
-      // Store user data in Redux and localStorage
-      dispatch(
-        setCredentials({
-          user: userData,
-          token: user.accessToken, // Use Firebase token
-        })
+      // Gọi API backend
+      const response = await fetch(
+        "https://localhost:7285/api/Auth/google-login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "text/plain",
+          },
+          body: JSON.stringify(idToken),
+        }
       );
 
-      // Lưu thông tin người dùng vào localStorage
-      localStorage.setItem("auth_user", JSON.stringify(userData));
+      const result = await response.json();
 
-      // Kích hoạt sự kiện userLoggedIn để cập nhật avatar ngay lập tức
-      window.dispatchEvent(new Event("userLoggedIn"));
+      if (result.success) {
+        // Xử lý đăng nhập thành công
+        const userData = result.data;
 
-      message.success("Đăng nhập Google thành công!");
+        dispatch(
+          setCredentials({
+            user: userData,
+            token: userData.token || idToken,
+          })
+        );
 
-      // Navigate to home page
-      const redirectPath = location.state?.from;
-      if (redirectPath && redirectPath === "/payment") {
-        navigate("/qr-payment", { replace: true });
+        localStorage.setItem("auth_user", JSON.stringify(userData));
+        localStorage.setItem("auth_token", userData.token || idToken);
+
+        window.dispatchEvent(new Event("userLoggedIn"));
+
+        message.success("Đăng nhập Google thành công!");
+
+        const redirectPath = location.state?.from;
+        if (redirectPath) {
+          navigate(redirectPath, { replace: true });
+        } else {
+          navigate("/", { replace: true });
+        }
       } else {
-        navigate("/", { replace: true });
+        message.error(result.message || "Đăng nhập Google thất bại");
       }
     } catch (error) {
       console.error("Google login error:", error);
-
-      // Handle specific error cases
-      if (error.code === "auth/popup-closed-by-user") {
-        message.info("Đăng nhập đã bị hủy.");
-      } else if (error.code === "auth/cancelled-popup-request") {
-        // This is a common error that happens when multiple popups are triggered
-        // We can safely ignore this
-      } else {
-        message.error("Đăng nhập Google thất bại. Vui lòng thử lại!");
-      }
+      message.error("Đăng nhập Google thất bại. Vui lòng thử lại!");
     } finally {
       setLoading(false);
     }
@@ -485,14 +480,13 @@ export default function LoginPage() {
 
               {/* Google Login Button */}
               <motion.div variants={itemVariants}>
-                <button
-                  type="button"
-                  onClick={handleLoginByGoogle}
-                  className="w-full py-3 px-4 bg-white text-gray-700 font-medium rounded-xl border border-gray-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all shadow-sm flex items-center justify-center gap-2"
-                >
-                  <FaGoogle className="text-red-500" />
-                  <span>Đăng nhập với Google</span>
-                </button>
+                <GoogleLogin
+                  onSuccess={handleGoogleLoginSuccess}
+                  onError={() => {
+                    message.error("Đăng nhập Google thất bại");
+                  }}
+                  useOneTap
+                />
               </motion.div>
             </form>
 

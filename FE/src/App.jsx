@@ -11,6 +11,7 @@ import { AuthProvider } from "./components/auth/AuthProvider";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { store } from "./store/rootReducer";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function App() {
   const { pathname } = useLocation();
@@ -138,16 +139,18 @@ function App() {
   }, []);
 
   return (
-    <AuthProvider>
-      <div className="App">
-        {shouldShowHeaderFooter && <SiteHeader />}
-        <main>
-          <ScrollRestoration />
-          <Outlet />
-        </main>
-        {shouldShowHeaderFooter && <SiteFooter />}
-      </div>
-    </AuthProvider>
+    <GoogleOAuthProvider clientId="463920300061-6bepsjbm7fv2pfb816h4qv1sh5m9p1ec.apps.googleusercontent.com">
+      <AuthProvider>
+        <div className="App">
+          {shouldShowHeaderFooter && <SiteHeader />}
+          <main>
+            <ScrollRestoration />
+            <Outlet />
+          </main>
+          {shouldShowHeaderFooter && <SiteFooter />}
+        </div>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   );
 }
 
