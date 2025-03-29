@@ -60,6 +60,9 @@ import WishlistPage from "../../pages/users/wishlist/wishlistPage";
 // orders history
 import OrdersHistoryPage from "../../pages/users/history/ordersHistoryPage";
 
+// google callback
+import { GoogleCallback } from "../../pages/auth/google/callback";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -90,6 +93,10 @@ export const router = createBrowserRouter([
       {
         path: "verify-email",
         element: <VerifyEmailPage />,
+      },
+      {
+        path: "google-callback",
+        element: <GoogleCallback />,
       },
 
       // admin
