@@ -1,12 +1,11 @@
 {
   "Version": 1,
-  "Hash": "2CbAYFbbFZ50TXmotpjmeIBtEp1ztFlF5RHOqWO/OBs=",
+  "Hash": "hxH7UVjvOY3GBuB9VYhDMD4UhFMg6J3co3hK3qUyayc=",
   "Source": "SWP391_BE",
   "BasePath": "_content/SWP391_BE",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
+  "Assets": []
 }

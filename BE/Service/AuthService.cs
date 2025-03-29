@@ -366,7 +366,7 @@ namespace Service
                 {
                     Audience = new List<string> { _configuration["Authentication:Google:ClientId"] }
                 };
-                var payload = await GoogleJsonWebSignature.ValidateAsync(token, settings);
+                var payload = await GoogleJsonWebSignature.ValidateAsync(token);
 
                 if (payload == null)
                 {
