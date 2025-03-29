@@ -7,6 +7,10 @@
       "RelativeMoniker": "D:0:0:{DBF9CD29-97AA-4E4B-B9B2-61C3C329B470}|Service\\Service.csproj|solutionrelative:service\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\cn5\\swp391\\newbefe\\swp391\\be\\data\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|d:\\cn5\\swp391\\newbefe\\swp391\\be\\data\\models\\history.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7E318D82-7DB7-435D-BD3E-9D937A003905}|Data\\Data.csproj|solutionrelative:data\\models\\history.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -26,8 +30,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "User.cs",
+              "DocumentMoniker": "D:\\CN5\\SWP391\\NEWBEFE\\SWP391\\BE\\Data\\Models\\User.cs",
+              "RelativeDocumentMoniker": "Data\\Models\\User.cs",
+              "ToolTip": "D:\\CN5\\SWP391\\NEWBEFE\\SWP391\\BE\\Data\\Models\\User.cs",
+              "RelativeToolTip": "Data\\Models\\User.cs",
+              "ViewState": "AQIAABAAAAAAAAAAAAAkwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-29T03:51:59.157Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -36,14 +53,14 @@
               "RelativeDocumentMoniker": "Service\\AuthService.cs",
               "ToolTip": "D:\\CN5\\SWP391\\NEWBEFE\\SWP391\\BE\\Service\\AuthService.cs",
               "RelativeToolTip": "Service\\AuthService.cs",
-              "ViewState": "AQIAAGIBAAAAAAAAAAAIwHgBAAAAAAAA",
+              "ViewState": "AQIAACoAAAAAAAAAAAAYwEkAAAA6AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-28T08:25:17.208Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "History.cs",
               "DocumentMoniker": "D:\\CN5\\SWP391\\NEWBEFE\\SWP391\\BE\\Data\\Models\\History.cs",
               "RelativeDocumentMoniker": "Data\\Models\\History.cs",
@@ -55,7 +72,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "OrderMappingProfile.cs",
               "DocumentMoniker": "D:\\CN5\\SWP391\\NEWBEFE\\SWP391\\BE\\SWP391_BE\\Mappings\\OrderMappingProfile.cs",
               "RelativeDocumentMoniker": "SWP391_BE\\Mappings\\OrderMappingProfile.cs",
@@ -67,7 +84,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "OrderController.cs",
               "DocumentMoniker": "D:\\CN5\\SWP391\\NEWBEFE\\SWP391\\BE\\SWP391_BE\\Controllers\\OrderController.cs",
               "RelativeDocumentMoniker": "SWP391_BE\\Controllers\\OrderController.cs",

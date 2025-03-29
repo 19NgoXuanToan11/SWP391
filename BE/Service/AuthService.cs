@@ -58,6 +58,7 @@ namespace Service
 
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
                 string verificationToken = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
+                string expirationToken = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
 
                 var user = new User
                 {
@@ -72,7 +73,7 @@ namespace Service
                     CreatedAt = DateTime.UtcNow,
                     VerificationToken = verificationToken,
                     IsVerification = false,
-                    ExpirationToken = DateTime.UtcNow.AddHours(24).ToString()
+                    ExpirationToken = expirationToken,
                 };
 
                 _context.Users.Add(user);
