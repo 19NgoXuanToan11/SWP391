@@ -10,15 +10,21 @@ const loadCartState = () => {
     // Lấy tất cả giỏ hàng từ localStorage
     const allCarts = JSON.parse(localStorage.getItem("allCarts")) || {};
 
-    // Trả về giỏ hàng của người dùng hiện tại hoặc giỏ hàng trống nếu chưa có
-    return (
-      allCarts[userId] || {
+    // Kiểm tra nếu không có giỏ hàng của người dùng hiện tại, tạo mới
+    if (!allCarts[userId]) {
+      allCarts[userId] = {
         items: [],
         total: 0,
         quantity: 0,
-      }
-    );
+      };
+      // Lưu lại vào localStorage
+      localStorage.setItem("allCarts", JSON.stringify(allCarts));
+    }
+
+    // Trả về giỏ hàng của người dùng hiện tại
+    return allCarts[userId];
   } catch (err) {
+    console.error("Error loading cart state:", err);
     return {
       items: [],
       total: 0,
@@ -106,13 +112,46 @@ const cartSlice = createSlice({
       state.items = [];
       state.total = 0;
       state.quantity = 0;
-      saveCartState(state);
+
+      // Lưu vào localStorage - lưu ý chỉ xóa dữ liệu của người dùng hiện tại
+      const userStr = localStorage.getItem("auth_user");
+      const currentUser = userStr ? JSON.parse(userStr) : null;
+      const userId = currentUser ? currentUser.id : "guest";
+
+      try {
+        const allCarts = JSON.parse(localStorage.getItem("allCarts")) || {};
+        if (allCarts[userId]) {
+          allCarts[userId] = { items: [], total: 0, quantity: 0 };
+          localStorage.setItem("allCarts", JSON.stringify(allCarts));
+        }
+      } catch (err) {
+        console.error("Error clearing cart state:", err);
+      }
+    },
+
+    loadCart: (state) => {
+      const newCartState = loadCartState();
+      state.items = newCartState.items;
+      state.total = newCartState.total;
+      state.quantity = newCartState.quantity;
+    },
+
+    setCart: (state, action) => {
+      state.items = action.payload.items || [];
+      state.total = action.payload.total || 0;
+      state.quantity = action.payload.quantity || 0;
     },
   },
 });
 
-export const { addToCart, removeFromCart, updateQuantity, clearCart } =
-  cartSlice.actions;
+export const {
+  addToCart,
+  removeFromCart,
+  updateQuantity,
+  clearCart,
+  loadCart,
+  setCart,
+} = cartSlice.actions;
 
 // Selectors
 export const selectCartItems = (state) => state.cart.items;

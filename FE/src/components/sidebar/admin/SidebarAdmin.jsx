@@ -36,7 +36,11 @@ const SidebarAdmin = () => {
   ];
 
   const handleLogout = () => {
-    dispatch(logout());
+    // Lưu lại allCarts và allWishlists
+    const allCarts = localStorage.getItem("allCarts");
+    const allWishlists = localStorage.getItem("allWishlists");
+
+    // Xóa các thông tin xác thực
     localStorage.removeItem("isAdmin");
     localStorage.removeItem("token");
     localStorage.removeItem("auth_token");
@@ -45,6 +49,12 @@ const SidebarAdmin = () => {
     localStorage.removeItem("auth_isAdmin");
     localStorage.removeItem("auth_mode");
     sessionStorage.removeItem("previousPage");
+
+    // Khôi phục giỏ hàng và danh sách yêu thích
+    if (allCarts) localStorage.setItem("allCarts", allCarts);
+    if (allWishlists) localStorage.setItem("allWishlists", allWishlists);
+
+    dispatch(logout());
     navigate("/admin/login");
   };
 

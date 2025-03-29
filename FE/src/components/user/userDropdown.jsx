@@ -15,6 +15,8 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../store/slices/auth/authSlice";
 import { message } from "antd";
 import UserAvatar from "./UserAvatar";
+import { clearCart } from "../../store/slices/cart/cartSlice";
+import { clearWishlist } from "../../store/slices/wishlist/wishlistSlice";
 
 export const UserDropdown = ({ user, onLogout }) => {
   const navigate = useNavigate();
@@ -117,24 +119,48 @@ export const UserDropdown = ({ user, onLogout }) => {
   // Định nghĩa hàm handleLogout
   const handleLogout = () => {
     try {
-      // Xóa giỏ hàng và danh sách yêu thích trong localStorage
-      localStorage.removeItem("allCarts");
-      localStorage.removeItem("allWishlists");
+      // Lưu avatar trước khi xóa dữ liệu
+      const userStr = localStorage.getItem("auth_user");
+      const currentUser = userStr ? JSON.parse(userStr) : null;
+      const username = currentUser?.username;
+      const userAvatar = username
+        ? localStorage.getItem(`userAvatar_${username}`)
+        : null;
 
-      // Xóa thông tin đăng nhập từ localStorage ngay lập tức
+      // Lưu lại allCarts và allWishlists
+      const allCarts = localStorage.getItem("allCarts");
+      const allWishlists = localStorage.getItem("allWishlists");
+
+      // Ghi nhận sự kiện đăng xuất
+      const logoutEvent = new Date().getTime();
+      localStorage.setItem("auth_logout_event", logoutEvent);
+
+      // Xóa các thông tin xác thực người dùng
       localStorage.removeItem("auth_token");
       localStorage.removeItem("auth_user");
       localStorage.removeItem("auth_sessionId");
       localStorage.removeItem("auth_isAdmin");
+      localStorage.removeItem("isAdmin");
+      localStorage.removeItem("token");
+      localStorage.removeItem("auth_mode");
+
+      // Khôi phục dữ liệu giỏ hàng và danh sách yêu thích
+      if (allCarts) localStorage.setItem("allCarts", allCarts);
+      if (allWishlists) localStorage.setItem("allWishlists", allWishlists);
+
+      // Khôi phục avatar nếu có
+      if (username && userAvatar) {
+        localStorage.setItem(`userAvatar_${username}`, userAvatar);
+      }
+
+      // Dispatch action để xóa giỏ hàng và danh sách yêu thích trong Redux store
+      dispatch(clearCart());
+      dispatch(clearWishlist());
 
       // Hiển thị thông báo
       message.success("Đăng xuất thành công!");
 
-      // Kích hoạt sự kiện storage để các tab khác biết về việc đăng xuất
-      const logoutEvent = new Date().getTime();
-      localStorage.setItem("auth_logout_event", logoutEvent);
-
-      // Chuyển hướng đến trang login thay vì tải lại trang hiện tại
+      // Chuyển hướng đến trang login
       navigate("/login");
     } catch (error) {
       console.error("Lỗi khi đăng xuất:", error);

@@ -9,10 +9,13 @@ import {
 } from "react-router-dom";
 import { AuthProvider } from "./components/auth/AuthProvider";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { store } from "./store/rootReducer";
 
 function App() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // Theo dõi sự thay đổi trang và kiểm tra quyền
   useEffect(() => {
@@ -91,6 +94,48 @@ function App() {
     (path) =>
       normalizedPathname === path || normalizedPathname.startsWith(`${path}/`)
   );
+
+  // Thêm vào component App
+  useEffect(() => {
+    // Đồng bộ giỏ hàng khi người dùng đăng nhập
+    const handleUserLogin = () => {
+      const userStr = localStorage.getItem("auth_user");
+      if (userStr) {
+        try {
+          const currentUser = JSON.parse(userStr);
+          const userId = currentUser.id;
+          const allCarts = JSON.parse(localStorage.getItem("allCarts")) || {};
+
+          if (allCarts[userId]) {
+            // Dispatch action để cập nhật giỏ hàng
+            store.dispatch({
+              type: "cart/setCart",
+              payload: allCarts[userId],
+            });
+          }
+
+          // Tương tự cho wishlist
+          const allWishlists =
+            JSON.parse(localStorage.getItem("allWishlists")) || {};
+          if (allWishlists[userId]) {
+            store.dispatch({
+              type: "wishlist/setWishlist",
+              payload: allWishlists[userId],
+            });
+          }
+        } catch (error) {
+          console.error("Error syncing cart on login:", error);
+        }
+      }
+    };
+
+    // Lắng nghe sự kiện đăng nhập
+    window.addEventListener("userLoggedIn", handleUserLogin);
+
+    return () => {
+      window.removeEventListener("userLoggedIn", handleUserLogin);
+    };
+  }, []);
 
   return (
     <AuthProvider>

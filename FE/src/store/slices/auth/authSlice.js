@@ -134,35 +134,67 @@ const authSlice = createSlice({
       localStorage.setItem("auth_sessionId", sessionId);
       localStorage.setItem("auth_isAdmin", (user.role === "Admin").toString());
 
-      // Chuyển giỏ hàng và danh sách yêu thích từ guest sang user
-      transferGuestCartToUser(user.id);
-      transferGuestWishlistToUser(user.id);
+      // Đảm bảo giỏ hàng và danh sách yêu thích của người dùng được tạo mới nếu chưa tồn tại
+      const userId = user.id;
+
+      // Xử lý giỏ hàng
+      const allCarts = JSON.parse(localStorage.getItem("allCarts")) || {};
+      if (!allCarts[userId]) {
+        allCarts[userId] = { items: [], total: 0, quantity: 0 };
+        localStorage.setItem("allCarts", JSON.stringify(allCarts));
+      }
+
+      // Xử lý danh sách yêu thích
+      const allWishlists =
+        JSON.parse(localStorage.getItem("allWishlists")) || {};
+      if (!allWishlists[userId]) {
+        allWishlists[userId] = { items: [], total: 0 };
+        localStorage.setItem("allWishlists", JSON.stringify(allWishlists));
+      }
+
+      // Chuyển giỏ hàng và danh sách yêu thích từ guest sang user nếu cần
+      transferGuestCartToUser(userId);
+      transferGuestWishlistToUser(userId);
     },
     logout: (state, action) => {
       // Lưu username trước khi xóa state
       const username = state.user?.username;
+      const userAvatar = username
+        ? localStorage.getItem(`userAvatar_${username}`)
+        : null;
 
+      // Lưu lại allCarts và allWishlists
+      const allCarts = localStorage.getItem("allCarts");
+      const allWishlists = localStorage.getItem("allWishlists");
+
+      // Reset state
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
       state.isAdmin = false;
       state.sessionId = null;
 
-      // Xóa thông tin khỏi localStorage
+      // Ghi nhận sự kiện đăng xuất
+      const logoutEvent = new Date().getTime();
+      localStorage.setItem("auth_logout_event", logoutEvent);
+
+      // Xóa các thông tin xác thực người dùng
       localStorage.removeItem("auth_token");
       localStorage.removeItem("auth_user");
       localStorage.removeItem("auth_sessionId");
       localStorage.removeItem("auth_isAdmin");
+      localStorage.removeItem("isAdmin");
+      localStorage.removeItem("token");
+      localStorage.removeItem("auth_mode");
 
-      // Xóa giỏ hàng và danh sách yêu thích trong localStorage
-      localStorage.removeItem("allCarts");
-      localStorage.removeItem("allWishlists");
+      // Khôi phục dữ liệu giỏ hàng và danh sách yêu thích
+      if (allCarts) localStorage.setItem("allCarts", allCarts);
+      if (allWishlists) localStorage.setItem("allWishlists", allWishlists);
 
-      // Không xóa avatar để duy trì giữa các phiên đăng nhập của cùng một user
-      // Nhưng không giữ lại giữa các user khác nhau
-      // if (username) {
-      //   localStorage.removeItem(`userAvatar_${username}`);
-      // }
+      // Khôi phục avatar nếu có
+      if (username && userAvatar) {
+        localStorage.setItem(`userAvatar_${username}`, userAvatar);
+      }
 
       // Dispatch action để xóa giỏ hàng và danh sách yêu thích trong Redux store
       if (action.payload && action.payload.dispatch) {

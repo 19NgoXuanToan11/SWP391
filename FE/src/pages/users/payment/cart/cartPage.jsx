@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -175,6 +175,29 @@ function CartPage() {
     dispatch(clearCart());
     message.success("Đã xóa tất cả sản phẩm khỏi giỏ hàng");
   };
+
+  useEffect(() => {
+    // Khi component mount hoặc khi thông tin người dùng thay đổi
+    if (isAuthenticated && user) {
+      // Tải giỏ hàng từ localStorage
+      try {
+        const allCarts = JSON.parse(localStorage.getItem("allCarts")) || {};
+        const userId = user.id;
+
+        // Nếu có giỏ hàng của người dùng này trong localStorage
+        if (allCarts[userId]) {
+          // Cập nhật Redux store với giỏ hàng từ localStorage
+          // Đây là việc đồng bộ thủ công, thay vì dispatch loadCart
+          dispatch({
+            type: "cart/setCart",
+            payload: allCarts[userId],
+          });
+        }
+      } catch (error) {
+        console.error("Error loading cart on page load:", error);
+      }
+    }
+  }, [dispatch, isAuthenticated, user]);
 
   if (!cartItems) {
     return (

@@ -11,13 +11,18 @@ const loadWishlistState = () => {
     // Lấy tất cả danh sách yêu thích từ localStorage
     const allWishlists = JSON.parse(localStorage.getItem("allWishlists")) || {};
 
-    // Trả về danh sách yêu thích của người dùng hiện tại hoặc danh sách trống nếu chưa có
-    return (
-      allWishlists[userId] || {
+    // Kiểm tra nếu không có danh sách yêu thích của người dùng hiện tại, tạo mới
+    if (!allWishlists[userId]) {
+      allWishlists[userId] = {
         items: [],
         total: 0,
-      }
-    );
+      };
+      // Lưu lại vào localStorage
+      localStorage.setItem("allWishlists", JSON.stringify(allWishlists));
+    }
+
+    // Trả về danh sách yêu thích của người dùng hiện tại
+    return allWishlists[userId];
   } catch (err) {
     console.error("Error loading wishlist state:", err);
     return {
@@ -86,7 +91,22 @@ const wishlistSlice = createSlice({
     clearWishlist: (state) => {
       state.items = [];
       state.total = 0;
-      saveWishlistState(state);
+
+      // Lưu vào localStorage - lưu ý chỉ xóa dữ liệu của người dùng hiện tại
+      const userStr = localStorage.getItem("auth_user");
+      const currentUser = userStr ? JSON.parse(userStr) : null;
+      const userId = currentUser ? currentUser.id : "guest";
+
+      try {
+        const allWishlists =
+          JSON.parse(localStorage.getItem("allWishlists")) || {};
+        if (allWishlists[userId]) {
+          allWishlists[userId] = { items: [], total: 0 };
+          localStorage.setItem("allWishlists", JSON.stringify(allWishlists));
+        }
+      } catch (err) {
+        console.error("Error clearing wishlist state:", err);
+      }
     },
 
     // Kiểm tra sản phẩm có trong wishlist
@@ -104,6 +124,19 @@ const wishlistSlice = createSlice({
       state.total = state.items.length;
       saveWishlistState(state);
     },
+
+    // Thêm reducer mới
+    loadWishlist: (state) => {
+      const newWishlistState = loadWishlistState();
+      state.items = newWishlistState.items;
+      state.total = newWishlistState.total;
+    },
+
+    // Thêm reducer mới
+    setWishlist: (state, action) => {
+      state.items = action.payload.items || [];
+      state.total = action.payload.total || 0;
+    },
   },
 });
 
@@ -113,6 +146,8 @@ export const {
   removeFromWishlist,
   clearWishlist,
   toggleWishlist,
+  loadWishlist,
+  setWishlist,
 } = wishlistSlice.actions;
 
 // Export selectors

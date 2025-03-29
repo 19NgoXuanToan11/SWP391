@@ -72,27 +72,63 @@ export function SiteHeader() {
     };
   }, [dispatch]);
 
+  // Thêm vào useEffect kiểm tra session
+  useEffect(() => {
+    dispatch(checkSession());
+
+    // Tải lại dữ liệu giỏ hàng và danh sách yêu thích
+    if (isAuthenticated) {
+      // Dispatch action để tải lại giỏ hàng và danh sách yêu thích
+      dispatch({ type: "cart/loadCart" });
+      dispatch({ type: "wishlist/loadWishlist" });
+    }
+  }, [dispatch, isAuthenticated]);
+
   // Hàm đăng xuất
   const handleLogout = () => {
     try {
-      // Xóa giỏ hàng và danh sách yêu thích trong localStorage
-      localStorage.removeItem("allCarts");
-      localStorage.removeItem("allWishlists");
+      // Lưu avatar trước khi xóa dữ liệu
+      const userStr = localStorage.getItem("auth_user");
+      const currentUser = userStr ? JSON.parse(userStr) : null;
+      const username = currentUser?.username;
+      const userAvatar = username
+        ? localStorage.getItem(`userAvatar_${username}`)
+        : null;
 
-      // Xóa thông tin đăng nhập từ localStorage ngay lập tức
+      // Lưu lại allCarts và allWishlists
+      const allCarts = localStorage.getItem("allCarts");
+      const allWishlists = localStorage.getItem("allWishlists");
+
+      // Ghi nhận sự kiện đăng xuất
+      const logoutEvent = new Date().getTime();
+      localStorage.setItem("auth_logout_event", logoutEvent);
+
+      // Xóa các thông tin xác thực người dùng
       localStorage.removeItem("auth_token");
       localStorage.removeItem("auth_user");
       localStorage.removeItem("auth_sessionId");
       localStorage.removeItem("auth_isAdmin");
+      localStorage.removeItem("isAdmin");
+      localStorage.removeItem("token");
+      localStorage.removeItem("auth_mode");
+
+      // Khôi phục dữ liệu giỏ hàng và danh sách yêu thích
+      if (allCarts) localStorage.setItem("allCarts", allCarts);
+      if (allWishlists) localStorage.setItem("allWishlists", allWishlists);
+
+      // Khôi phục avatar nếu có
+      if (username && userAvatar) {
+        localStorage.setItem(`userAvatar_${username}`, userAvatar);
+      }
+
+      // Dispatch action để xóa giỏ hàng và danh sách yêu thích trong Redux store
+      dispatch(clearCart());
+      dispatch(clearWishlist());
 
       // Hiển thị thông báo
       message.success("Đăng xuất thành công!");
 
-      // Kích hoạt sự kiện storage để các tab khác biết về việc đăng xuất
-      const logoutEvent = new Date().getTime();
-      localStorage.setItem("auth_logout_event", logoutEvent);
-
-      // Sử dụng window.location.reload() để tải lại trang hiện tại
+      // Chuyển hướng đến trang login
       navigate("/");
     } catch (error) {
       console.error("Lỗi khi đăng xuất:", error);
