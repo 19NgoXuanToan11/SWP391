@@ -394,6 +394,7 @@ namespace Service
                         FullName = payload.Name,
                         Password = randomPassword,
                         PasswordHash = passwordHash,
+                        PhotoUrl = payload.Picture,
                         RoleId = 3, // User Role
                         CreatedAt = DateTime.UtcNow,
                         IsVerification = true

@@ -22,6 +22,7 @@ public partial class User
     public string? Email { get; set; }
 
     public string? PhoneNumber { get; set; }
+    public string? PhotoUrl { get; set; }
 
     public string? Address { get; set; }
     public bool IsVerification { get; set; } // Thêm trạng thái xác thực
