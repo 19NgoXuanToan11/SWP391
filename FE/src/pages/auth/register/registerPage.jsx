@@ -149,6 +149,24 @@ export default function RegisterPage() {
 
         // Kiểm tra response từ API
         if (response.success) {
+          const userData = {
+            username: formData.userName,
+            fullName: formData.fullName,
+            email: formData.email,
+            phoneNumber: formData.phoneNumber,
+            address: formData.address,
+          };
+
+          localStorage.setItem("auth_user", JSON.stringify(userData));
+
+          // Kích hoạt sự kiện
+          window.dispatchEvent(new Event("userLoggedIn"));
+          window.dispatchEvent(
+            new CustomEvent("fullNameUpdated", {
+              detail: { fullName: userData.fullName },
+            })
+          );
+
           message.success({
             content:
               "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",

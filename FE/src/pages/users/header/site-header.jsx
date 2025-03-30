@@ -20,10 +20,12 @@ import {
   checkSession,
 } from "../../../store/slices/auth/authSlice";
 import UserAvatar from "../../../components/user/UserAvatar";
+import UserService from "../../../utils/user/userService";
 
 export function SiteHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [userData, setUserData] = useState(null);
 
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
@@ -165,6 +167,38 @@ export function SiteHeader() {
 
     checkLoginStatus();
   }, [location.pathname]);
+
+  useEffect(() => {
+    const handleFullNameUpdated = (event) => {
+      if (event.detail && event.detail.fullName) {
+        // Cập nhật state hiển thị tên người dùng nếu có
+        setUserData(event.detail.fullName);
+      }
+    };
+
+    window.addEventListener("fullNameUpdated", handleFullNameUpdated);
+
+    return () => {
+      window.removeEventListener("fullNameUpdated", handleFullNameUpdated);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Lấy thông tin người dùng từ service
+    const user = UserService.getCurrentUser();
+    setUserData(user);
+
+    // Đăng ký listener với service
+    const unsubscribe = UserService.subscribe((user) => {
+      setUserData(user);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Nếu bạn có hiển thị tên người dùng trong header
+  const userDisplayName =
+    userData?.fullName || userData?.name || userData?.username || "User";
 
   return (
     <header

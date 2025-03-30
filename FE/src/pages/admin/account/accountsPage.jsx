@@ -37,6 +37,7 @@ import {
   Tabs,
   Empty,
   Switch,
+  Button,
 } from "antd";
 import SidebarAdmin from "../../../components/sidebar/admin/SidebarAdmin.jsx";
 import axios from "axios";
@@ -169,8 +170,7 @@ const AccountsPage = () => {
       cancelText: "Hủy",
       onOk: async () => {
         try {
-          // Thực hiện gọi API để xóa người dùng
-          // await axios.delete(`https://localhost:7285/api/User/${userId}`);
+          await axios.delete(`https://localhost:7285/api/User/${userId}`);
 
           // Tạm thời, chỉ cập nhật giao diện
           const updatedUsers = users.filter((user) => user.id !== userId);
@@ -188,13 +188,33 @@ const AccountsPage = () => {
   const handleFormSubmit = async (values) => {
     try {
       if (editingUser) {
-        // Thực hiện gọi API để cập nhật người dùng
-        // await axios.put(`https://localhost:7285/api/User/${editingUser.id}`, values);
+        // Tạo đối tượng request body cho API
+        const updatedUserData = {
+          fullName: values.username,
+          email: values.email,
+          phoneNumber: values.phoneNumber || editingUser.phoneNumber || "",
+          address: values.address || "",
+          isVerification: values.status === "Active",
+          isBanned: false,
+        };
 
-        // Tạm thời, chỉ cập nhật giao diện
+        // Gọi API để cập nhật thông tin người dùng
+        await axios.put(
+          `https://localhost:7285/api/User/${editingUser.id}`,
+          updatedUserData
+        );
+
+        // Cập nhật state UI sau khi cập nhật thành công
         const updatedUsers = users.map((user) => {
           if (user.id === editingUser.id) {
-            return { ...user, ...values };
+            return {
+              ...user,
+              username: values.username,
+              email: values.email,
+              address: values.address || "N/A",
+              status: values.status,
+              role: values.role,
+            };
           }
           return user;
         });
@@ -220,7 +240,10 @@ const AccountsPage = () => {
       setEditingUser(null);
     } catch (error) {
       console.error("Lỗi khi lưu người dùng:", error);
-      message.error("Không thể lưu người dùng");
+      message.error(
+        "Không thể lưu người dùng: " +
+          (error.response?.data?.message || error.message)
+      );
     }
   };
 
@@ -706,15 +729,6 @@ const AccountsPage = () => {
                                 <DeleteOutlined />
                               </button>
                             </Tooltip>
-                            <Dropdown
-                              menu={{ items: moreActionsMenu(user) }}
-                              placement="bottomRight"
-                              trigger={["click"]}
-                            >
-                              <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-full transition-colors">
-                                <MoreOutlined />
-                              </button>
-                            </Dropdown>
                           </div>
                         </td>
                       </motion.tr>
@@ -846,6 +860,110 @@ const AccountsPage = () => {
             </div>
           )}
         </motion.div>
+
+        {/* Modal Thêm/Chỉnh sửa Người dùng */}
+        <Modal
+          title={editingUser ? "Chỉnh sửa người dùng" : "Thêm người dùng mới"}
+          visible={isModalVisible}
+          onCancel={() => {
+            setIsModalVisible(false);
+            form.resetFields();
+            setEditingUser(null);
+          }}
+          footer={null}
+          width={600}
+          centered
+          destroyOnClose
+        >
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleFormSubmit}
+            initialValues={
+              editingUser
+                ? {
+                    username: editingUser.username,
+                    email: editingUser.email,
+                    role: editingUser.role,
+                    status: editingUser.status,
+                    address:
+                      editingUser.address !== "N/A" ? editingUser.address : "",
+                    phoneNumber: editingUser.phoneNumber || "",
+                  }
+                : { role: "User", status: "Active" }
+            }
+          >
+            <Form.Item
+              name="username"
+              label="Họ tên"
+              rules={[
+                { required: true, message: "Vui lòng nhập họ tên người dùng" },
+              ]}
+            >
+              <Input
+                prefix={<UserOutlined />}
+                placeholder="Nhập họ tên người dùng"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="email"
+              label="Email"
+              rules={[
+                { required: true, message: "Vui lòng nhập email" },
+                { type: "email", message: "Email không hợp lệ" },
+              ]}
+            >
+              <Input
+                prefix={<MailOutlined />}
+                placeholder="Nhập địa chỉ email"
+              />
+            </Form.Item>
+
+            <Form.Item name="phoneNumber" label="Số điện thoại">
+              <Input
+                prefix={<PhoneOutlined />}
+                placeholder="Nhập số điện thoại"
+              />
+            </Form.Item>
+
+            <Form.Item name="address" label="Địa chỉ">
+              <Input prefix={<HomeOutlined />} placeholder="Nhập địa chỉ" />
+            </Form.Item>
+
+            <Form.Item name="role" label="Vai trò">
+              <Select placeholder="Chọn vai trò">
+                <Option value="Admin">Quản trị viên</Option>
+                <Option value="Staff">Nhân viên</Option>
+                <Option value="User">Người dùng</Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item name="status" label="Trạng thái">
+              <Select placeholder="Chọn trạng thái">
+                <Option value="Active">Hoạt động</Option>
+                <Option value="Inactive">Không hoạt động</Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item className="mb-0">
+              <div className="flex justify-end space-x-4">
+                <Button
+                  onClick={() => {
+                    setIsModalVisible(false);
+                    form.resetFields();
+                    setEditingUser(null);
+                  }}
+                >
+                  Hủy
+                </Button>
+                <Button type="primary" htmlType="submit" loading={loading}>
+                  {editingUser ? "Cập nhật" : "Thêm mới"}
+                </Button>
+              </div>
+            </Form.Item>
+          </Form>
+        </Modal>
       </div>
     </div>
   );

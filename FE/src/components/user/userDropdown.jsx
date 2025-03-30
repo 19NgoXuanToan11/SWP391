@@ -17,75 +17,54 @@ import { message } from "antd";
 import UserAvatar from "./UserAvatar";
 import { clearCart } from "../../store/slices/cart/cartSlice";
 import { clearWishlist } from "../../store/slices/wishlist/wishlistSlice";
+import UserService from "../../utils/user/userService";
 
-export const UserDropdown = ({ user, onLogout }) => {
+export const UserDropdown = ({ onLogout }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [userInfo, setUserInfo] = useState({
-    name: user?.name || localStorage.getItem("userName") || "User",
-    avatar: user?.photoURL || localStorage.getItem("userAvatar"),
+    name: UserService.getFullName(),
+    avatar:
+      UserService.getCurrentUser()?.photoURL ||
+      localStorage.getItem("userAvatar"),
   });
 
-  // Cập nhật userInfo khi prop user thay đổi
+  // Sử dụng effect để đăng ký listener với UserService
   useEffect(() => {
-    if (user) {
-      setUserInfo({
-        name: user.name || user.username || "User",
-        avatar: user.photoURL || localStorage.getItem("userAvatar"),
-      });
-    }
-  }, [user]);
-
-  // Lắng nghe sự thay đổi của localStorage
-  useEffect(() => {
-    const handleStorageChange = (e) => {
-      if (
-        e.key === "auth_token" ||
-        e.key === "auth_user" ||
-        e.key === "auth_logout_event" ||
-        e.key?.startsWith("userAvatar_") ||
-        e.key === null
-      ) {
-        const userStr = localStorage.getItem("auth_user");
-
-        if (userStr) {
-          try {
-            const userData = JSON.parse(userStr);
-            const username = userData.username || userData.name || "User";
-
-            // Tạo key riêng cho mỗi user
-            const avatarKey = `userAvatar_${username}`;
-
-            // Thử lấy avatar từ nhiều nguồn
-            const avatarUrl =
-              userData.photoURL ||
-              localStorage.getItem(avatarKey) ||
-              sessionStorage.getItem(avatarKey);
-
-            // Nếu không có avatar, thử lấy từ IndexedDB
-            if (!avatarUrl) {
-              getAvatarFromIndexedDB(username).then((url) => {
-                if (url) {
-                  setUserInfo((prev) => ({ ...prev, avatar: url }));
-                  // Khôi phục vào localStorage với key riêng
-                  localStorage.setItem(avatarKey, url);
-                }
-              });
-            }
-
-            setUserInfo({
-              name: username,
-              avatar: avatarUrl || null,
-            });
-          } catch (error) {
-            console.error("Error parsing user data from localStorage:", error);
-          }
-        }
+    // Hàm cập nhật thông tin từ service
+    const updateFromService = (user) => {
+      if (user) {
+        setUserInfo({
+          name: user.fullName || user.name || user.username || "User",
+          avatar: user.photoURL || localStorage.getItem("userAvatar"),
+        });
+      } else {
+        setUserInfo({
+          name: "User",
+          avatar: null,
+        });
       }
     };
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+    // Đăng ký listener
+    const unsubscribe = UserService.subscribe(updateFromService);
+
+    // Lấy thông tin người dùng hiện tại
+    updateFromService(UserService.getCurrentUser());
+
+    // Lắng nghe sự kiện cập nhật user
+    const handleUserUpdated = (event) => {
+      if (event.detail && event.detail.user) {
+        updateFromService(event.detail.user);
+      }
+    };
+
+    window.addEventListener("userUpdated", handleUserUpdated);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener("userUpdated", handleUserUpdated);
+    };
   }, []);
 
   // Thêm hàm lấy avatar từ IndexedDB (giống như trong ProfilePage)
@@ -157,16 +136,78 @@ export const UserDropdown = ({ user, onLogout }) => {
       dispatch(clearCart());
       dispatch(clearWishlist());
 
+      // Sử dụng UserService cho logout
+      UserService.logout();
+
+      // Dispatch Redux action
+      dispatch(logout());
+
       // Hiển thị thông báo
       message.success("Đăng xuất thành công!");
 
       // Chuyển hướng đến trang login
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       console.error("Lỗi khi đăng xuất:", error);
       message.error("Có lỗi xảy ra khi đăng xuất");
     }
   };
+
+  // Thêm handler cho sự kiện avatar được cập nhật
+  const handleAvatarUpdated = (event) => {
+    if (event.detail && event.detail.avatarUrl) {
+      setUserInfo((prev) => ({
+        ...prev,
+        avatar: event.detail.avatarUrl,
+      }));
+    } else {
+      // Nếu không có URL trực tiếp, cập nhật lại từ localStorage
+      const authUserStr = localStorage.getItem("auth_user");
+      if (authUserStr) {
+        try {
+          const userData = JSON.parse(authUserStr);
+          const displayName =
+            userData.fullName || userData.username || userData.name || "User";
+          const username = userData.username || "";
+          const avatarKey = `userAvatar_${username}`;
+          const globalKey = "userAvatar";
+
+          // Thử lấy avatar từ nhiều nguồn
+          const avatarUrl =
+            userData.photoURL ||
+            localStorage.getItem(avatarKey) ||
+            localStorage.getItem(globalKey);
+
+          setUserInfo({
+            name: displayName,
+            avatar: avatarUrl || null,
+          });
+        } catch (error) {
+          console.error("Error parsing user data:", error);
+        }
+      }
+    }
+  };
+
+  // Lắng nghe cả avatar tạm thời (xem trước) và avatar đã lưu chính thức
+  const handleTempAvatarUpdated = (event) => {
+    if (event.detail && event.detail.avatarUrl) {
+      setUserInfo((prev) => ({
+        ...prev,
+        avatar: event.detail.avatarUrl,
+      }));
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("avatarUpdated", handleAvatarUpdated);
+    window.addEventListener("tempAvatarUpdated", handleTempAvatarUpdated);
+
+    return () => {
+      window.removeEventListener("avatarUpdated", handleAvatarUpdated);
+      window.removeEventListener("tempAvatarUpdated", handleTempAvatarUpdated);
+    };
+  }, []);
 
   const userMenu = (
     <motion.div

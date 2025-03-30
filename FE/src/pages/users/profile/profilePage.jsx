@@ -18,10 +18,13 @@ import {
   UserOutlined,
   SafetyCertificateOutlined,
   LineChartOutlined,
+  PhoneOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { useUser } from "../../../hook/user/useUser";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -29,63 +32,50 @@ const ProfilePage = () => {
   const { token } = theme.useToken();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const { user, fullName, updateUser } = useUser();
   const [userInfo, setUserInfo] = useState({
     username: "",
     email: "",
-    avatar: localStorage.getItem("userAvatar") || null, // Lấy từ localStorage
+    avatar: localStorage.getItem("userAvatar") || null,
+    phoneNumber: "",
+    address: "",
+    fullName: "",
   });
 
   useEffect(() => {
-    // Giả lập thời gian tải
-    setTimeout(() => {
-      setLoading(false);
-    }, 800);
-
-    // Lấy thông tin từ auth_user trong localStorage
     const authUserStr = localStorage.getItem("auth_user");
+    const avatarKey = "userAvatar";
+    setLoading(true);
+
     if (authUserStr) {
       try {
         const authUser = JSON.parse(authUserStr);
         const username = authUser.username || "";
+        const userId = authUser.id || "";
+        const fullName = authUser.fullName || username;
 
-        // Tạo key riêng cho mỗi user
-        const avatarKey = `userAvatar_${username}`;
-
-        // Thử lấy avatar từ nhiều nguồn
-        let avatarUrl =
-          authUser.photoURL ||
-          localStorage.getItem(avatarKey) ||
-          sessionStorage.getItem(avatarKey);
-
-        // Nếu không tìm thấy, thử lấy từ IndexedDB
-        if (!avatarUrl) {
-          getAvatarFromIndexedDB(username).then((url) => {
-            if (url) {
-              setUserInfo((prev) => ({ ...prev, avatar: url }));
-              // Khôi phục vào localStorage với key riêng
-              localStorage.setItem(avatarKey, url);
-
-              // Cập nhật auth_user
-              const updatedUser = { ...authUser, photoURL: url };
-              localStorage.setItem("auth_user", JSON.stringify(updatedUser));
-            }
-          });
-        }
-
+        // Cập nhật userInfo từ dữ liệu trong localStorage
         setUserInfo({
           username: username,
+          fullName: fullName,
           email: authUser.email || "",
-          avatar: avatarUrl,
+          avatar: authUser.photoURL || localStorage.getItem(avatarKey) || null,
+          phoneNumber: authUser.phoneNumber || "",
+          address: authUser.address || "",
         });
 
-        // Đảm bảo lưu avatar URL vào localStorage với key riêng
-        if (avatarUrl) {
-          localStorage.setItem(avatarKey, avatarUrl);
-          sessionStorage.setItem(avatarKey, avatarUrl);
+        // Lấy thông tin từ API nếu có userId
+        if (userId) {
+          fetchUserInfoFromAPI(userId);
+        } else {
+          setLoading(false);
         }
       } catch (error) {
         console.error("Error parsing auth_user:", error);
+        setLoading(false);
       }
+    } else {
+      setLoading(false);
     }
 
     // Lắng nghe sự thay đổi của localStorage
@@ -101,6 +91,10 @@ const ProfilePage = () => {
             username: authUser.username || "",
             email: authUser.email || "",
             avatar: avatarUrl,
+            phoneNumber: authUser.phoneNumber || "",
+            address: authUser.address || "",
+            fullName:
+              authUser.fullName || authUser.name || authUser.username || "",
           });
 
           // Đảm bảo lưu avatar URL vào localStorage
@@ -114,8 +108,37 @@ const ProfilePage = () => {
     };
 
     window.addEventListener("storage", handleStorageChange);
+
+    // Thêm handler cho sự kiện avatar được cập nhật
+    const handleAvatarUpdated = (event) => {
+      if (event.detail && event.detail.avatarUrl) {
+        setUserInfo((prev) => ({
+          ...prev,
+          avatar: event.detail.avatarUrl,
+        }));
+      }
+    };
+
+    window.addEventListener("avatarUpdated", handleAvatarUpdated);
+    window.addEventListener("tempAvatarUpdated", handleAvatarUpdated);
+
+    // Xử lý sự kiện fullName được cập nhật
+    const handleFullNameUpdated = (event) => {
+      if (event.detail && event.detail.fullName) {
+        setUserInfo((prev) => ({
+          ...prev,
+          fullName: event.detail.fullName,
+        }));
+      }
+    };
+
+    window.addEventListener("fullNameUpdated", handleFullNameUpdated);
+
     return () => {
       window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("avatarUpdated", handleAvatarUpdated);
+      window.removeEventListener("tempAvatarUpdated", handleAvatarUpdated);
+      window.removeEventListener("fullNameUpdated", handleFullNameUpdated);
     };
   }, []);
 
@@ -167,6 +190,51 @@ const ProfilePage = () => {
         }
       };
     });
+  };
+
+  // Thêm hàm để lấy thông tin người dùng từ API
+  const fetchUserInfoFromAPI = async (userId) => {
+    try {
+      const response = await axios.get(
+        `https://localhost:7285/api/User/${userId}`
+      );
+      if (response.data) {
+        // Cập nhật state với dữ liệu từ API
+        setUserInfo({
+          username: response.data.username || "",
+          fullName: response.data.fullName || response.data.username || "",
+          email: response.data.email || "",
+          avatar: userInfo.avatar, // Giữ nguyên avatar hiện tại
+          phoneNumber: response.data.phoneNumber || "",
+          address: response.data.address || "",
+        });
+
+        // Cập nhật localStorage
+        const authUserStr = localStorage.getItem("auth_user");
+        if (authUserStr) {
+          const authUser = JSON.parse(authUserStr);
+          const updatedUser = {
+            ...authUser,
+            fullName: response.data.fullName || authUser.fullName,
+            email: response.data.email || authUser.email,
+            phoneNumber: response.data.phoneNumber || authUser.phoneNumber,
+            address: response.data.address || authUser.address,
+          };
+          localStorage.setItem("auth_user", JSON.stringify(updatedUser));
+
+          // Kích hoạt sự kiện để components khác cập nhật
+          window.dispatchEvent(
+            new CustomEvent("fullNameUpdated", {
+              detail: { fullName: response.data.fullName || authUser.fullName },
+            })
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Không thể lấy thông tin người dùng từ API:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const colors = {
@@ -394,75 +462,137 @@ const ProfilePage = () => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-      style={customStyles.pageContainer}
-    >
-      <div style={customStyles.backgroundPattern} />
-      <div style={customStyles.decorCircle1} />
-      <div style={customStyles.decorCircle2} />
-
-      <Card bordered={false} style={customStyles.mainCard}>
+    <div className="min-h-screen py-8 px-4">
+      <div className="max-w-4xl mx-auto">
         <motion.div
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          style={customStyles.glassCard}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
-          {loading ? (
-            <div style={{ textAlign: "center", padding: "40px 0" }}>
-              <Skeleton.Avatar active size={120} style={{ marginBottom: 24 }} />
-              <Skeleton active paragraph={{ rows: 2 }} />
-              <Skeleton.Button active style={{ marginTop: 24, width: 150 }} />
-            </div>
-          ) : (
-            <>
-              <div style={customStyles.profileHeader}>
-                <motion.div style={customStyles.avatarContainer}>
-                  <div style={customStyles.avatarGlow} />
-                  <Avatar
-                    size={120}
-                    src={userInfo.avatar}
-                    icon={!userInfo.avatar && <UserOutlined />}
-                    style={customStyles.avatar}
-                  />
-                </motion.div>
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.5, duration: 0.5 }}
-                >
-                  <Title level={2} style={customStyles.nameTitle}>
-                    {userInfo.username || "Username"}
+          <Card
+            bordered={false}
+            className="shadow-lg rounded-3xl overflow-hidden"
+            style={{
+              background: token.colorBgContainer,
+            }}
+          >
+            {loading ? (
+              <Skeleton active avatar paragraph={{ rows: 4 }} />
+            ) : (
+              <>
+                <div className="text-center py-6 px-4">
+                  <div className="mb-4 relative inline-block">
+                    <Avatar
+                      size={150}
+                      src={userInfo.avatar}
+                      icon={!userInfo.avatar && <UserOutlined />}
+                    />
+                  </div>
+
+                  <Title level={2} style={{ marginBottom: 4 }}>
+                    {userInfo.fullName || userInfo.username}
                   </Title>
-                  <Text style={customStyles.emailText}>
-                    <MailOutlined style={{ color: colors.primary }} />
-                    {userInfo.email || "email@example.com"}
+
+                  <Text type="secondary" style={{ fontSize: 16 }}>
+                    @{userInfo.username}
                   </Text>
 
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  <div className="mt-3">
+                    <Tag color="pink">Khách hàng</Tag>
+                  </div>
+                </div>
+
+                <Divider style={{ margin: "0" }} />
+
+                <div className="p-6">
+                  <Title level={4} className="mb-4 text-center">
+                    Thông tin cá nhân
+                  </Title>
+
+                  <Row gutter={[24, 24]} justify="center">
+                    <Col xs={24} md={8}>
+                      <div className="flex flex-col items-center mb-4">
+                        <div className="bg-pink-50 w-12 h-12 rounded-full flex items-center justify-center mb-3">
+                          <MailOutlined className="text-xl text-pink-500" />
+                        </div>
+                        <div className="text-center">
+                          <div className="text-gray-500 text-sm mb-1">
+                            Email
+                          </div>
+                          <div className="font-medium text-gray-800 break-all">
+                            {userInfo.email || "Chưa cập nhật"}
+                          </div>
+                        </div>
+                      </div>
+                    </Col>
+
+                    <Col xs={24} md={8}>
+                      <div className="flex flex-col items-center mb-4">
+                        <div className="bg-pink-50 w-12 h-12 rounded-full flex items-center justify-center mb-3">
+                          <PhoneOutlined className="text-xl text-pink-500" />
+                        </div>
+                        <div className="text-center">
+                          <div className="text-gray-500 text-sm mb-1">
+                            Số điện thoại
+                          </div>
+                          <div className="font-medium text-gray-800">
+                            {userInfo.phoneNumber || "Chưa cập nhật"}
+                          </div>
+                        </div>
+                      </div>
+                    </Col>
+
+                    <Col xs={24} md={8}>
+                      <div className="flex flex-col items-center mb-4">
+                        <div className="bg-pink-50 w-12 h-12 rounded-full flex items-center justify-center mb-3">
+                          <HomeOutlined className="text-xl text-pink-500" />
+                        </div>
+                        <div className="text-center">
+                          <div className="text-gray-500 text-sm mb-1">
+                            Địa chỉ
+                          </div>
+                          <div className="font-medium text-gray-800">
+                            {userInfo.address || "Chưa cập nhật"}
+                          </div>
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+
+                  <div className="mt-8 flex justify-center">
                     <Button
                       type="primary"
-                      icon={<EditOutlined />}
                       size="large"
-                      style={customStyles.editButton}
+                      icon={<EditOutlined />}
                       onClick={() => navigate("/edit-profile")}
+                      className="rounded-lg"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #ff4d6d 0%, #ff8fa3 100%)",
+                        border: "none",
+                        boxShadow: "0 12px 24px rgba(255, 77, 109, 0.3)",
+                        minWidth: "200px",
+                        height: "50px",
+                        fontWeight: "bold",
+                        transition: "transform 0.3s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = "scale(1.05)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = "scale(1)";
+                      }}
                     >
                       Chỉnh sửa hồ sơ
                     </Button>
-                  </motion.div>
-                </motion.div>
-              </div>
-            </>
-          )}
+                  </div>
+                </div>
+              </>
+            )}
+          </Card>
         </motion.div>
-      </Card>
-    </motion.div>
+      </div>
+    </div>
   );
 };
 

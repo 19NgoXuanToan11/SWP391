@@ -11,6 +11,7 @@ import {
   Image,
   Avatar,
   Divider,
+  Skeleton,
 } from "antd";
 import {
   UserOutlined,
@@ -21,6 +22,9 @@ import {
   SaveOutlined,
   RollbackOutlined,
   LoadingOutlined,
+  PhoneOutlined,
+  HomeOutlined,
+  ArrowLeftOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -32,22 +36,26 @@ import { updateUserProfile } from "../../../../store/slices/profile/profileSlice
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 
-export default function EditProfilePage() {
+const EditProfilePage = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [fileList, setFileList] = useState([]);
-  const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+  const [previewVisible, setPreviewVisible] = useState(false);
   const dispatch = useDispatch();
   const [initialValues, setInitialValues] = useState({
     username: "",
     email: "",
+    phoneNumber: "",
+    address: "",
   });
   const [userInfo, setUserInfo] = useState({
     username: "",
     email: "",
     avatar: null,
+    phoneNumber: "",
+    address: "",
   });
 
   useEffect(() => {
@@ -59,16 +67,27 @@ export default function EditProfilePage() {
         setInitialValues({
           username: authUser.username || "",
           email: authUser.email || "",
+          phoneNumber: authUser.phoneNumber || "",
+          address: authUser.address || "",
         });
         setUserInfo({
           username: authUser.username || "",
           email: authUser.email || "",
           avatar: authUser.photoURL || null,
+          phoneNumber: authUser.phoneNumber || "",
+          address: authUser.address || "",
         });
         form.setFieldsValue({
           username: authUser.username || "",
           email: authUser.email || "",
+          phoneNumber: authUser.phoneNumber || "",
+          address: authUser.address || "",
         });
+
+        // Nếu có ID người dùng, lấy thông tin từ API để đảm bảo dữ liệu mới nhất
+        if (authUser.id) {
+          fetchUserInfoFromAPI(authUser.id);
+        }
       } catch (error) {
         console.error("Error parsing auth_user:", error);
       }
@@ -154,19 +173,20 @@ export default function EditProfilePage() {
       },
     },
     uploadButton: {
-      width: 150,
-      height: 150,
+      width: 128,
+      height: 128,
       borderRadius: "50%",
-      border: `2px dashed ${colors.primary}`,
-      background: "rgba(255,77,109,0.05)",
+      border: "2px dashed #ff758c",
+      background: "rgba(255,117,140,0.05)",
       cursor: "pointer",
       transition: "all 0.3s ease",
       display: "flex",
+      flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
       "&:hover": {
-        background: "rgba(255,77,109,0.1)",
-        transform: "scale(1.02)",
+        background: "rgba(255,117,140,0.1)",
+        borderColor: "#ff4d6d",
       },
     },
     buttonGroup: {
@@ -209,60 +229,84 @@ export default function EditProfilePage() {
     });
 
   const handleSubmit = async (values) => {
+    setLoading(true);
     try {
-      setLoading(true);
-      let avatarUrl = userInfo.avatar;
+      // Lấy thông tin người dùng từ localStorage
+      const authUserStr = localStorage.getItem("auth_user");
+      if (!authUserStr) {
+        message.error("Không tìm thấy thông tin người dùng");
+        setLoading(false);
+        return;
+      }
 
-      // Upload avatar mới nếu có
+      const authUser = JSON.parse(authUserStr);
+      const userId = authUser.id;
+
+      if (!userId) {
+        message.error("Không tìm thấy ID người dùng");
+        setLoading(false);
+        return;
+      }
+
+      // Nếu đã tải ảnh lên, upload file và lấy URL
+      let avatarUrl = userInfo.avatar;
       if (fileList.length > 0 && fileList[0].originFileObj) {
         avatarUrl = await uploadFile(fileList[0].originFileObj);
       }
 
-      // Lấy thông tin hiện tại từ auth_user
-      const authUserStr = localStorage.getItem("auth_user");
-      if (authUserStr) {
-        const authUser = JSON.parse(authUserStr);
+      // Tạo object data để gửi lên API - sử dụng các trường phù hợp với response
+      const updatedUserData = {
+        fullName: values.username, // Gán giá trị từ trường username form vào fullName API
+        email: values.email,
+        phoneNumber: values.phoneNumber || "",
+        address: values.address || "",
+        isVerification: true,
+        isBanned: false,
+      };
 
-        // So sánh dữ liệu mới với dữ liệu cũ
-        const isDataChanged =
-          values.username !== authUser.username ||
-          values.email !== authUser.email ||
-          avatarUrl !== authUser.photoURL;
+      console.log("Sending data to API:", updatedUserData);
+      console.log("User ID:", userId);
 
-        // Chỉ cập nhật nếu có thay đổi
-        if (isDataChanged) {
-          // Cập nhật thông tin mới bao gồm avatar
-          const updatedUser = {
-            ...authUser,
-            username: values.username,
-            email: values.email,
-            photoURL: avatarUrl,
-          };
+      // Gọi API để cập nhật thông tin
+      await axios.put(
+        `https://localhost:7285/api/User/${userId}`,
+        updatedUserData
+      );
 
-          // Lưu vào localStorage
-          localStorage.setItem("auth_user", JSON.stringify(updatedUser));
+      // Cập nhật avatar vào tất cả các storage để đồng bộ
+      const avatarKey = `userAvatar_${values.username}`;
+      const globalAvatarKey = "userAvatar";
 
-          // Lưu riêng avatar URL với key theo username để phân biệt giữa các user
-          if (avatarUrl) {
-            const avatarKey = `userAvatar_${values.username}`;
-            localStorage.setItem(avatarKey, avatarUrl);
-            sessionStorage.setItem(avatarKey, avatarUrl);
+      localStorage.setItem(avatarKey, avatarUrl);
+      localStorage.setItem(globalAvatarKey, avatarUrl);
+      localStorage.removeItem("tempUserAvatar"); // Xóa avatar tạm thời
 
-            // Lưu vào IndexedDB để duy trì lâu dài
-            saveAvatarToIndexedDB(values.username, avatarUrl);
-          }
+      // Lưu avatar vào IndexedDB
+      saveAvatarToIndexedDB(values.username, avatarUrl);
 
-          // Kích hoạt sự kiện storage để các components khác cập nhật
-          window.dispatchEvent(new Event("storage"));
+      // Cập nhật auth_user trong localStorage
+      const updatedUser = {
+        ...authUser,
+        username: authUser.username,
+        fullName: values.username,
+        email: values.email,
+        photoURL: avatarUrl, // Cập nhật URL ảnh mới
+        phoneNumber: values.phoneNumber || "",
+        address: values.address || "",
+      };
 
-          message.success("Cập nhật thông tin thành công!");
-        }
+      localStorage.setItem("auth_user", JSON.stringify(updatedUser));
 
-        navigate("/profile");
-      }
+      // Kích hoạt sự kiện avatar được cập nhật
+      window.dispatchEvent(
+        new CustomEvent("avatarUpdated", { detail: { avatarUrl } })
+      );
+
+      message.success("Cập nhật thông tin thành công");
+      navigate("/profile");
     } catch (error) {
-      message.error("Có lỗi xảy ra khi cập nhật thông tin");
-      console.error(error);
+      console.error("Lỗi khi cập nhật thông tin:", error);
+      message.error("Không thể cập nhật thông tin. Vui lòng thử lại sau.");
     } finally {
       setLoading(false);
     }
@@ -311,27 +355,71 @@ export default function EditProfilePage() {
       file.preview = await getBase64(file.originFileObj);
     }
     setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
+    setPreviewVisible(true);
   };
 
-  const handleChange = async ({ fileList: newFileList }) => {
-    // Giới hạn chỉ 1 file
-    if (newFileList.length > 1) {
-      newFileList = [newFileList[newFileList.length - 1]];
-    }
-    setFileList(newFileList);
+  const handleChange = ({ fileList: newFileList }) => {
+    // Giới hạn chỉ lấy file mới nhất
+    const latestFile =
+      newFileList.length > 0 ? [newFileList[newFileList.length - 1]] : [];
+    setFileList(latestFile);
 
-    // Preview image
-    if (newFileList.length > 0) {
-      const file = newFileList[0];
-      if (!file.url && !file.preview) {
-        file.preview = await getBase64(file.originFileObj);
-      }
+    // Nếu có file mới, hiển thị xem trước ngay lập tức
+    if (latestFile.length > 0 && latestFile[0].originFileObj) {
+      getBase64(latestFile[0].originFileObj).then((url) => {
+        setPreviewImage(url);
+
+        // Cập nhật userInfo state để hiển thị hình mới
+        setUserInfo((prev) => ({
+          ...prev,
+          avatar: url,
+        }));
+
+        // Đồng bộ ngay vào localStorage để các component khác có thể thấy
+        // Lưu ý: Đây chỉ là xem trước, chưa phải lưu chính thức
+        const tempAvatarKey = "tempUserAvatar";
+        localStorage.setItem(tempAvatarKey, url);
+
+        // Thông báo cho các component khác biết có avatar tạm thời
+        window.dispatchEvent(
+          new CustomEvent("tempAvatarUpdated", { detail: { avatarUrl: url } })
+        );
+      });
     }
   };
 
   const handleGoBack = () => {
     navigate("/profile");
+  };
+
+  // Hàm lấy thông tin người dùng từ API
+  const fetchUserInfoFromAPI = async (userId) => {
+    try {
+      const response = await axios.get(
+        `https://localhost:7285/api/User/${userId}`
+      );
+      if (response.data) {
+        // Cập nhật form với dữ liệu từ API
+        form.setFieldsValue({
+          username: response.data.fullName || "", // Hiển thị fullName trong trường username
+          email: response.data.email || "",
+          phoneNumber: response.data.phoneNumber || "",
+          address: response.data.address || "",
+        });
+
+        // Cập nhật state
+        setUserInfo((prev) => ({
+          ...prev,
+          username: response.data.username || "",
+          fullName: response.data.fullName || "",
+          email: response.data.email || "",
+          phoneNumber: response.data.phoneNumber || "",
+          address: response.data.address || "",
+        }));
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy thông tin người dùng từ API:", error);
+    }
   };
 
   return (
@@ -342,145 +430,182 @@ export default function EditProfilePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
-            {/* Header Section */}
-            <div className="px-6 py-8 bg-white border-b border-gray-100 shadow-sm">
-              <h1 className="text-2xl font-semibold text-center text-gray-800">
-                Chỉnh sửa hồ sơ
-              </h1>
-              <p className="text-gray-500 text-center mt-2 text-sm">
-                Cập nhật thông tin cá nhân của bạn
-              </p>
-            </div>
-
-            {/* Avatar Upload Section */}
-            <div className="relative mt-20 text-center">
-              <div className="inline-block">
-                <Upload
-                  listType="picture-circle"
-                  fileList={fileList}
-                  onPreview={handlePreview}
-                  onChange={handleChange}
-                  beforeUpload={() => false}
-                  maxCount={1}
-                  className="avatar-uploader"
-                >
-                  {fileList.length >= 1 ? null : (
-                    <div
-                      className="w-40 h-40 rounded-full border-4 border-white bg-white shadow-lg 
-                      flex items-center justify-center overflow-hidden hover:opacity-90 transition-all
-                      cursor-pointer group relative"
-                    >
-                      {userInfo.avatar ? (
-                        <>
-                          <img
-                            src={userInfo.avatar}
-                            alt="avatar"
-                            className="w-full h-full object-cover"
-                          />
-                          <div
-                            className="absolute inset-0 bg-black bg-opacity-40 flex items-center 
-                            justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <CameraOutlined className="text-white text-2xl" />
-                          </div>
-                        </>
-                      ) : (
-                        <div className="text-center">
-                          <CameraOutlined className="text-3xl text-pink-500 mb-2" />
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </Upload>
+          <Card
+            bordered={false}
+            className="shadow-md rounded-2xl overflow-hidden"
+            title={
+              <div className="flex items-center">
+                <Button
+                  icon={<ArrowLeftOutlined />}
+                  type="text"
+                  onClick={() => navigate("/profile")}
+                  style={{ marginRight: 16 }}
+                />
+                <Title level={4} style={{ margin: 0 }}>
+                  Chỉnh sửa hồ sơ
+                </Title>
               </div>
-            </div>
-
-            {/* Form Section */}
-            <div className="p-8">
+            }
+          >
+            {loading ? (
+              <Skeleton active paragraph={{ rows: 6 }} />
+            ) : (
               <Form
                 form={form}
                 layout="vertical"
                 initialValues={initialValues}
                 onFinish={handleSubmit}
-                className="space-y-6"
               >
+                <div className="text-center mb-8">
+                  <Upload
+                    name="avatar"
+                    listType="picture-circle"
+                    className="avatar-uploader"
+                    showUploadList={false}
+                    beforeUpload={() => false}
+                    fileList={fileList}
+                    onChange={handleChange}
+                    onPreview={handlePreview}
+                  >
+                    {previewImage || userInfo.avatar ? (
+                      <div
+                        style={{
+                          position: "relative",
+                          width: "100%",
+                          height: "100%",
+                        }}
+                      >
+                        <img
+                          src={previewImage || userInfo.avatar}
+                          alt="avatar"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                          }}
+                        />
+                        <div
+                          style={{
+                            position: "absolute",
+                            bottom: 0,
+                            right: 0,
+                            background: "#ff758c",
+                            width: 32,
+                            height: 32,
+                            borderRadius: 16,
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            color: "white",
+                            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                          }}
+                        >
+                          <CameraOutlined />
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={styles.uploadButton}>
+                        <PlusOutlined
+                          style={{ fontSize: 24, color: "#ff758c" }}
+                        />
+                        <div style={{ marginTop: 8, color: "#ff758c" }}>
+                          Tải ảnh lên
+                        </div>
+                      </div>
+                    )}
+                  </Upload>
+                  <Text
+                    type="secondary"
+                    style={{ display: "block", marginTop: 8 }}
+                  >
+                    Nhấn vào ảnh để thay đổi ảnh đại diện
+                  </Text>
+                </div>
+
+                <Divider />
+
                 <Form.Item
+                  label="Họ và tên"
                   name="username"
-                  label={
-                    <span className="text-gray-700 font-medium">Username</span>
-                  }
                   rules={[
-                    { required: true, message: "Vui lòng nhập username" },
+                    { required: true, message: "Vui lòng nhập họ và tên" },
                   ]}
                 >
                   <Input
-                    prefix={<UserOutlined className="text-pink-500" />}
-                    placeholder="Nhập username của bạn"
-                    className="h-12 rounded-xl border-gray-200 hover:border-pink-500 
-                      focus:border-pink-500 transition-colors"
+                    prefix={<UserOutlined />}
+                    placeholder="Nhập họ và tên đầy đủ của bạn"
+                    size="large"
                   />
                 </Form.Item>
 
                 <Form.Item
+                  label="Email"
                   name="email"
-                  label={
-                    <span className="text-gray-700 font-medium">Email</span>
-                  }
                   rules={[
                     { required: true, message: "Vui lòng nhập email" },
                     { type: "email", message: "Email không hợp lệ" },
                   ]}
                 >
                   <Input
-                    prefix={<MailOutlined className="text-pink-500" />}
-                    placeholder="Nhập địa chỉ email"
-                    className="h-12 rounded-xl border-gray-200 hover:border-pink-500 
-                      focus:border-pink-500 transition-colors"
+                    prefix={<MailOutlined className="text-gray-400" />}
+                    placeholder="Nhập email của bạn"
+                    size="large"
+                    className="rounded-lg"
                   />
                 </Form.Item>
 
-                {/* Buttons */}
-                <div className="flex justify-end space-x-4 pt-6">
-                  <motion.button
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={handleGoBack}
-                    className="h-12 px-8 rounded-xl border border-gray-200 hover:border-pink-500 
-                      hover:text-pink-500 transition-all flex items-center justify-center gap-2
-                      backdrop-blur-sm bg-white/70 shadow-sm"
+                <Form.Item label="Số điện thoại" name="phoneNumber">
+                  <Input
+                    prefix={<PhoneOutlined className="text-gray-400" />}
+                    placeholder="Nhập số điện thoại của bạn"
+                    size="large"
+                    className="rounded-lg"
+                  />
+                </Form.Item>
+
+                <Form.Item label="Địa chỉ" name="address">
+                  <Input
+                    prefix={<HomeOutlined className="text-gray-400" />}
+                    placeholder="Nhập địa chỉ của bạn"
+                    size="large"
+                    className="rounded-lg"
+                  />
+                </Form.Item>
+
+                <div className="flex justify-end mt-8 space-x-4">
+                  <Button
+                    onClick={() => navigate("/profile")}
+                    size="large"
+                    className="rounded-lg px-8 transition-transform transform hover:scale-105"
+                    style={{
+                      background: "#f0f0f0",
+                      border: "1px solid #d9d9d9",
+                      color: "#333",
+                    }}
                   >
-                    <RollbackOutlined />
-                    Quay lại
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
+                    Hủy bỏ
+                  </Button>
+                  <Button
                     type="primary"
-                    disabled={loading}
-                    onClick={() => form.submit()}
-                    className="h-12 px-8 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 
-                      border-0 hover:opacity-90 transition-all text-white font-medium
-                      hover:shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2"
+                    htmlType="submit"
+                    loading={loading}
+                    size="large"
+                    className="rounded-lg px-8 transition-transform transform hover:scale-105"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%)",
+                      border: "none",
+                      boxShadow: "0 4px 12px rgba(255, 117, 140, 0.3)",
+                      color: "#fff",
+                    }}
                   >
-                    {loading ? (
-                      <>
-                        <span className="animate-spin">
-                          <LoadingOutlined />
-                        </span>
-                        Đang lưu...
-                      </>
-                    ) : (
-                      <>
-                        <SaveOutlined />
-                        Lưu thay đổi
-                      </>
-                    )}
-                  </motion.button>
+                    Lưu thay đổi
+                  </Button>
                 </div>
               </Form>
-            </div>
-          </div>
+            )}
+          </Card>
         </motion.div>
       </div>
 
@@ -488,11 +613,13 @@ export default function EditProfilePage() {
       <Image
         style={{ display: "none" }}
         preview={{
-          visible: previewOpen,
-          onVisibleChange: (visible) => setPreviewOpen(visible),
+          visible: previewVisible,
+          onVisibleChange: (visible) => setPreviewVisible(visible),
         }}
         src={previewImage}
       />
     </div>
   );
-}
+};
+
+export default EditProfilePage;
