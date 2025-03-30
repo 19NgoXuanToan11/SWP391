@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGoogle } from "react-icons/fa";
-import { HiEye, HiEyeOff } from "react-icons/hi";
+import { HiEye, HiEyeOff } from "react-icons/hi"; 
 import backgroundVideo from "../../../assets/videos/beauty-background.mp4";
 import { useLoginMutation } from "../../../services/api/beautyShopApi";
 import { message } from "antd";
@@ -17,6 +17,26 @@ import {
   MailOutlined,
 } from "@ant-design/icons";
 import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+import UserService from "../../../utils/user/userService";
+
+// Thêm hàm parseJwt để giải mã JWT token
+const parseJwt = (token) => {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error("Error parsing JWT token:", error);
+    return {};
+  }
+};
 
 export default function LoginPage() {
   const dispatch = useDispatch();
@@ -85,7 +105,9 @@ export default function LoginPage() {
     return valid;
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
     if (!validateForm()) return;
 
     setLoading(true);
@@ -105,7 +127,7 @@ export default function LoginPage() {
 
       if (result.success) {
         const token = result.data;
-        const tokenPayload = JSON.parse(atob(token.split(".")[1]));
+        const tokenPayload = parseJwt(token);
 
         // Kiểm tra xem có phải admin không
         if (tokenPayload.role === "Admin") {
@@ -116,13 +138,18 @@ export default function LoginPage() {
 
         const userData = {
           username: tokenPayload.unique_name,
-          name: tokenPayload.unique_name,
+          fullName: tokenPayload.fullName || tokenPayload.unique_name,
           role: tokenPayload.role,
           email: tokenPayload.email,
           id: tokenPayload.nameid,
           isAdmin: false,
+          token: token,
         };
 
+        // Sử dụng UserService để đăng nhập
+        UserService.login(userData);
+
+        // Vẫn dispatch action cho Redux để tương thích với code hiện tại
         dispatch(
           setCredentials({
             user: userData,
@@ -130,11 +157,28 @@ export default function LoginPage() {
           })
         );
 
-        // Lưu thông tin người dùng vào localStorage
-        localStorage.setItem("auth_user", JSON.stringify(userData));
+        // Gọi API lấy thông tin đầy đủ của người dùng
+        if (userData.id) {
+          try {
+            const userResponse = await axios.get(
+              `https://localhost:7285/api/User/${userData.id}`
+            );
+            if (userResponse.data) {
+              // Cập nhật thông tin người dùng với dữ liệu đầy đủ từ API
+              const fullUserData = {
+                ...userData,
+                fullName: userResponse.data.fullName || userData.fullName,
+                phoneNumber: userResponse.data.phoneNumber || "",
+                address: userResponse.data.address || "",
+              };
 
-        // Kích hoạt sự kiện userLoggedIn để cập nhật avatar ngay lập tức
-        window.dispatchEvent(new Event("userLoggedIn"));
+              // Cập nhật vào UserService
+              UserService.updateUserInfo(fullUserData);
+            }
+          } catch (error) {
+            console.error("Không thể lấy thông tin người dùng từ API:", error);
+          }
+        }
 
         message.success("Đăng nhập thành công!");
 
@@ -180,8 +224,12 @@ export default function LoginPage() {
       const result = await response.json();
 
       if (result.success) {
-        // Xử lý đăng nhập thành công
-        const userData = result.data;
+        // Đảm bảo userData có fullName
+        const userData = {
+          ...result.data,
+          fullName:
+            result.data.fullName || result.data.name || result.data.username,
+        };
 
         dispatch(
           setCredentials({
@@ -194,6 +242,11 @@ export default function LoginPage() {
         localStorage.setItem("auth_token", userData.token || idToken);
 
         window.dispatchEvent(new Event("userLoggedIn"));
+        window.dispatchEvent(
+          new CustomEvent("fullNameUpdated", {
+            detail: { fullName: userData.fullName },
+          })
+        );
 
         message.success("Đăng nhập Google thành công!");
 
@@ -312,7 +365,7 @@ export default function LoginPage() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                handleLogin();
+                handleLogin(e);
               }}
               className="space-y-5"
             >
@@ -476,17 +529,6 @@ export default function LoginPage() {
                     "Đăng Ký"
                   )}
                 </button>
-              </motion.div>
-
-              {/* Google Login Button */}
-              <motion.div variants={itemVariants}>
-                <GoogleLogin
-                  onSuccess={handleGoogleLoginSuccess}
-                  onError={() => {
-                    message.error("Đăng nhập Google thất bại");
-                  }}
-                  useOneTap
-                />
               </motion.div>
             </form>
 
