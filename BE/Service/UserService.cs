@@ -151,5 +151,33 @@ namespace Service
                 throw;
             }
         }
+
+        public async Task UpdateUserRoleAsync(int userId, int roleId)
+        {
+            try
+            {
+                var user = await _userRepository.GetByIdAsync(userId);
+                if (user == null)
+                {
+                    throw new InvalidOperationException($"User with ID {userId} not found");
+                }
+
+                // Validate role exists
+                var role = await _context.Roles.FindAsync(roleId);
+                if (role == null)
+                {
+                    throw new InvalidOperationException($"Role with ID {roleId} does not exist");
+                }
+
+                user.RoleId = roleId;
+                await _userRepository.UpdateAsync(user);
+                _logger.LogInformation("User role updated successfully: UserId {UserId}, New RoleId {RoleId}", userId, roleId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating user role: UserId {UserId}, RoleId {RoleId}", userId, roleId);
+                throw;
+            }
+        }
     }
 }

@@ -34,4 +34,9 @@ namespace SWP391_BE.DTOs
         public bool IsVerification { get; set; }
         public bool IsBanned { get; set; }
     }
+
+    public class UpdateUserRoleDTO
+    {
+        public int RoleId { get; set; }
+    }
 } 

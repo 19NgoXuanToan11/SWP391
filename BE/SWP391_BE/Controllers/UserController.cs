@@ -138,5 +138,30 @@ namespace SWP391_BE.Controllers
                 return StatusCode(500, "An error occurred while deleting the user");
             }
         }
+
+        [HttpPatch("{id}/role")]
+        public async Task<IActionResult> UpdateUserRole(int id, UpdateUserRoleDTO updateUserRoleDTO)
+        {
+            try
+            {
+                if (updateUserRoleDTO == null)
+                {
+                    return BadRequest("Role update data is required");
+                }
+
+                await _userService.UpdateUserRoleAsync(id, updateUserRoleDTO.RoleId);
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning(ex, "Invalid operation while updating user role for user {Id}", id);
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating role for user {Id}", id);
+                return StatusCode(500, "An error occurred while updating the user's role");
+            }
+        }
     }
 } 

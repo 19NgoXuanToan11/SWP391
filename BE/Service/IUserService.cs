@@ -10,5 +10,6 @@ namespace Service
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(int id);
         Task<bool> ExistsAsync(int id);
+        Task UpdateUserRoleAsync(int userId, int roleId);
     }
 }
