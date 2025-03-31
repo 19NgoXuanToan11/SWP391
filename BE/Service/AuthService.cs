@@ -159,7 +159,7 @@ namespace Service
                 {
                     // Kiểm tra xem user đã verify trước đó chưa
                     var verifiedUser = await _context.Users
-                        .FirstOrDefaultAsync(u => u.IsVerification);
+                        .FirstOrDefaultAsync(u => u.IsVerification && u.VerificationToken == token);
 
                     if (verifiedUser != null)
                     {
@@ -185,16 +185,26 @@ namespace Service
                 }
 
                 Console.WriteLine($"[VerifyEmail] Current verification status: {user.IsVerification}");
-                Console.WriteLine($"[VerifyEmail] Token expiration: {user.ExpirationToken}");
 
-                // Kiểm tra token hết hạn
-                if (!string.IsNullOrEmpty(user.ExpirationToken) &&
-                    DateTime.Parse(user.ExpirationToken) < DateTime.UtcNow)
+                // SỬA LỖI: Kiểm tra định dạng và xử lý ExpirationToken
+                if (!string.IsNullOrEmpty(user.ExpirationToken))
                 {
-                    Console.WriteLine("[VerifyEmail] Token has expired");
-                    response.Success = false;
-                    response.Message = "Token đã hết hạn";
-                    return response;
+                    DateTime expirationDate;
+                    bool isValidDate = DateTime.TryParse(user.ExpirationToken, out expirationDate);
+
+                    if (isValidDate && expirationDate < DateTime.UtcNow)
+                    {
+                        Console.WriteLine("[VerifyEmail] Token has expired");
+                        response.Success = false;
+                        response.Message = "Token đã hết hạn";
+                        return response;
+                    }
+                    else if (!isValidDate)
+                    {
+                        // Nếu ExpirationToken không phải là định dạng DateTime hợp lệ,
+                        // bỏ qua kiểm tra hết hạn và tiếp tục xác thực
+                        Console.WriteLine("[VerifyEmail] Invalid expiration format, continuing verification");
+                    }
                 }
 
                 Console.WriteLine("[VerifyEmail] Token is valid, updating user status");
@@ -203,9 +213,6 @@ namespace Service
                 {
                     // Chỉ cập nhật trạng thái IsVerification, giữ nguyên token
                     user.IsVerification = true;
-                    // Không set null cho VerificationToken và ExpirationToken
-                    // user.VerificationToken = null;
-                    // user.ExpirationToken = null;
 
                     Console.WriteLine("[VerifyEmail] Attempting to save changes to database");
                     await _context.SaveChangesAsync();
@@ -394,7 +401,6 @@ namespace Service
                         FullName = payload.Name,
                         Password = randomPassword,
                         PasswordHash = passwordHash,
-                        PhotoUrl = payload.Picture,
                         RoleId = 3, // User Role
                         CreatedAt = DateTime.UtcNow,
                         IsVerification = true
