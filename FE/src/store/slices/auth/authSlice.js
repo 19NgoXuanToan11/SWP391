@@ -157,16 +157,6 @@ const authSlice = createSlice({
       transferGuestWishlistToUser(userId);
     },
     logout: (state, action) => {
-      // Lưu username trước khi xóa state
-      const username = state.user?.username;
-      const userAvatar = username
-        ? localStorage.getItem(`userAvatar_${username}`)
-        : null;
-
-      // Lưu lại allCarts và allWishlists
-      const allCarts = localStorage.getItem("allCarts");
-      const allWishlists = localStorage.getItem("allWishlists");
-
       // Reset state
       state.user = null;
       state.token = null;
@@ -187,14 +177,14 @@ const authSlice = createSlice({
       localStorage.removeItem("token");
       localStorage.removeItem("auth_mode");
 
+      // Xóa userAvatar key chung để tránh lây nhiễm
+      localStorage.removeItem("userAvatar");
+
       // Khôi phục dữ liệu giỏ hàng và danh sách yêu thích
+      const allCarts = localStorage.getItem("allCarts");
+      const allWishlists = localStorage.getItem("allWishlists");
       if (allCarts) localStorage.setItem("allCarts", allCarts);
       if (allWishlists) localStorage.setItem("allWishlists", allWishlists);
-
-      // Khôi phục avatar nếu có
-      if (username && userAvatar) {
-        localStorage.setItem(`userAvatar_${username}`, userAvatar);
-      }
 
       // Dispatch action để xóa giỏ hàng và danh sách yêu thích trong Redux store
       if (action.payload && action.payload.dispatch) {

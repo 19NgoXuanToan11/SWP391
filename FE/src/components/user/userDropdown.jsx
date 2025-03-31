@@ -170,13 +170,10 @@ export const UserDropdown = ({ onLogout }) => {
             userData.fullName || userData.username || userData.name || "User";
           const username = userData.username || "";
           const avatarKey = `userAvatar_${username}`;
-          const globalKey = "userAvatar";
 
-          // Thử lấy avatar từ nhiều nguồn
+          // Chỉ sử dụng avatar từ photoURL hoặc key riêng của user, không dùng key chung
           const avatarUrl =
-            userData.photoURL ||
-            localStorage.getItem(avatarKey) ||
-            localStorage.getItem(globalKey);
+            userData.photoURL || localStorage.getItem(avatarKey);
 
           setUserInfo({
             name: displayName,

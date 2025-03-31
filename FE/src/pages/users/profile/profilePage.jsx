@@ -44,32 +44,26 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const authUserStr = localStorage.getItem("auth_user");
-    const avatarKey = "userAvatar";
-    setLoading(true);
-
     if (authUserStr) {
       try {
         const authUser = JSON.parse(authUserStr);
         const username = authUser.username || "";
-        const userId = authUser.id || "";
-        const fullName = authUser.fullName || username;
+        const avatarKey = `userAvatar_${username}`;
 
-        // Cập nhật userInfo từ dữ liệu trong localStorage
+        // Chỉ lấy avatar từ photoURL hoặc key riêng của user
+        const avatarUrl = authUser.photoURL || localStorage.getItem(avatarKey);
+
         setUserInfo({
-          username: username,
-          fullName: fullName,
+          username: authUser.username || "",
           email: authUser.email || "",
-          avatar: authUser.photoURL || localStorage.getItem(avatarKey) || null,
+          avatar: avatarUrl || null, // Nếu không có thì gán null
           phoneNumber: authUser.phoneNumber || "",
           address: authUser.address || "",
+          fullName:
+            authUser.fullName || authUser.name || authUser.username || "",
         });
 
-        // Lấy thông tin từ API nếu có userId
-        if (userId) {
-          fetchUserInfoFromAPI(userId);
-        } else {
-          setLoading(false);
-        }
+        setLoading(false);
       } catch (error) {
         console.error("Error parsing auth_user:", error);
         setLoading(false);

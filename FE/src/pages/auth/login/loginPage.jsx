@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGoogle } from "react-icons/fa";
-import { HiEye, HiEyeOff } from "react-icons/hi"; 
+import { HiEye, HiEyeOff } from "react-icons/hi";
 import backgroundVideo from "../../../assets/videos/beauty-background.mp4";
 import { useLoginMutation } from "../../../services/api/beautyShopApi";
 import { message } from "antd";
@@ -135,6 +135,10 @@ export default function LoginPage() {
           setLoading(false);
           return;
         }
+
+        // Xóa tất cả các key avatar chung trước khi đăng nhập vào tài khoản mới
+        localStorage.removeItem("userAvatar");
+        localStorage.removeItem("tempUserAvatar");
 
         const userData = {
           username: tokenPayload.unique_name,

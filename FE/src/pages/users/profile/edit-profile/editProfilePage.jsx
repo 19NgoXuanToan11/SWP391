@@ -273,12 +273,15 @@ const EditProfilePage = () => {
         updatedUserData
       );
 
-      // Cập nhật avatar vào tất cả các storage để đồng bộ
+      // Cập nhật avatar vào storage riêng của user, không lưu key chung
       const avatarKey = `userAvatar_${values.username}`;
-      const globalAvatarKey = "userAvatar";
 
-      localStorage.setItem(avatarKey, avatarUrl);
-      localStorage.setItem(globalAvatarKey, avatarUrl);
+      if (avatarUrl) {
+        localStorage.setItem(avatarKey, avatarUrl);
+        // Không lưu vào key chung nữa
+        // localStorage.setItem(globalAvatarKey, avatarUrl);
+      }
+
       localStorage.removeItem("tempUserAvatar"); // Xóa avatar tạm thời
 
       // Lưu avatar vào IndexedDB

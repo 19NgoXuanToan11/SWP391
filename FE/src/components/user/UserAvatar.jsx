@@ -17,21 +17,17 @@ const UserAvatar = ({ size = 32, className, forceUpdate }) => {
 
         // Tạo key riêng cho mỗi user
         const avatarKey = `userAvatar_${username}`;
-        const globalAvatarKey = "userAvatar"; // Key chung
 
-        // Ưu tiên lấy avatar từ các nguồn theo thứ tự
-        let avatarUrl =
-          authUser.photoURL ||
-          localStorage.getItem(avatarKey) ||
-          localStorage.getItem(globalAvatarKey) ||
-          sessionStorage.getItem(avatarKey);
+        // Chỉ lấy avatar từ photoURL trong auth_user hoặc key riêng của user
+        // Không sử dụng key chung
+        const avatarUrl = authUser.photoURL || localStorage.getItem(avatarKey);
 
-        if (avatarUrl) {
+        // Nếu có avatarUrl hợp lệ thì mới set
+        if (avatarUrl && avatarUrl.trim() !== "") {
           setAvatar(avatarUrl);
 
-          // Đồng bộ vào tất cả các storage để đảm bảo nhất quán
+          // Chỉ lưu vào key riêng của user
           localStorage.setItem(avatarKey, avatarUrl);
-          localStorage.setItem(globalAvatarKey, avatarUrl);
 
           // Cập nhật lại auth_user để đảm bảo photoURL luôn mới nhất
           const updatedUser = { ...authUser, photoURL: avatarUrl };
@@ -42,28 +38,15 @@ const UserAvatar = ({ size = 32, className, forceUpdate }) => {
             new CustomEvent("avatarUpdated", { detail: { avatarUrl } })
           );
         } else {
-          // Thử lấy từ IndexedDB nếu không có
-          getAvatarFromIndexedDB(username).then((url) => {
-            if (url) {
-              setAvatar(url);
-              // Khôi phục vào các storage
-              localStorage.setItem(avatarKey, url);
-              localStorage.setItem(globalAvatarKey, url);
-
-              // Cập nhật auth_user
-              const updatedUser = { ...authUser, photoURL: url };
-              localStorage.setItem("auth_user", JSON.stringify(updatedUser));
-
-              // Kích hoạt sự kiện
-              window.dispatchEvent(
-                new CustomEvent("avatarUpdated", { detail: { avatarUrl: url } })
-              );
-            }
-          });
+          // Nếu không có avatar, set null
+          setAvatar(null);
         }
       } catch (error) {
         console.error("Error parsing auth_user:", error);
+        setAvatar(null);
       }
+    } else {
+      setAvatar(null);
     }
   };
 
