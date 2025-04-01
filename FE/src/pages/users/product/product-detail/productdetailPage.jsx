@@ -14,6 +14,7 @@ import {
   Typography,
   notification,
   Spin,
+  InputNumber,
 } from "antd";
 import {
   ShoppingCartOutlined,
@@ -329,13 +330,16 @@ export default function ProductDetailPage() {
                     >
                       <MinusOutlined className="text-gray-500" />
                     </button>
-                    <input
-                      type="number"
+                    <InputNumber
+                      min={1}
+                      max={100}
                       value={quantity}
-                      onChange={(e) =>
-                        setQuantity(parseInt(e.target.value) || 1)
+                      onChange={(value) =>
+                        setQuantity(value ? Math.floor(Math.abs(value)) : 1)
                       }
                       className="w-16 h-10 border-y border-gray-200 text-center focus:outline-none"
+                      controls={false}
+                      keyboard={false}
                     />
                     <button
                       onClick={() => setQuantity(quantity + 1)}

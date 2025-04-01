@@ -413,7 +413,6 @@ export default function ProductsPage() {
     { feature: "Danh mục" },
     { feature: "Thành phần chính" },
     { feature: "Mô tả" },
-    { feature: "Còn lại" },
   ].map((row) => {
     const rowData = { ...row };
     productsToCompare.forEach((product) => {
@@ -431,8 +430,6 @@ export default function ProductsPage() {
         rowData[product.productId] = product.mainIngredients;
       if (row.feature === "Mô tả")
         rowData[product.productId] = product.description;
-      if (row.feature === "Còn lại")
-        rowData[product.productId] = `${product.stock} sản phẩm`;
     });
     return rowData;
   });

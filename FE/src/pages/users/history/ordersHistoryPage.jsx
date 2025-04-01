@@ -136,7 +136,6 @@ const OrdersHistoryPage = () => {
           .filter((order) => {
             // Chỉ giữ đơn hàng đã thanh toán (historyStatus: "COMPLETED")
             return order.historyStatus === "COMPLETED";
-
           })
           .map((order) => {
             // Tính tổng tiền từ các sản phẩm
@@ -617,15 +616,6 @@ const OrdersHistoryPage = () => {
                               <span className="text-purple-500 mr-1">#</span>
                               <span>{order.id}</span>
                             </h3>
-                            {order.status === "shipping" && (
-                              <Badge
-                                count="Mới"
-                                style={{
-                                  backgroundColor: "#FF4D4F",
-                                  marginLeft: "8px",
-                                }}
-                              />
-                            )}
                           </div>
                           <div className="flex items-center gap-2 text-gray-500 text-sm mt-1">
                             <CalendarOutlined />

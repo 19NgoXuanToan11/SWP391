@@ -79,7 +79,20 @@ const AccountsPage = () => {
               "https://ui-avatars.com/api/?name=" + user.username,
             username: user.username,
             email: user.email,
-            role: user.roleId === 1 ? "Admin" : "User",
+            role: (() => {
+              switch (user.roleId) {
+                case 1:
+                  return "Admin";
+                case 2:
+                  return "Staff";
+                case 3:
+                  return "Customer";
+                case 4:
+                  return "Guest";
+                default:
+                  return "User";
+              }
+            })(),
             status: user.isVerification ? "Active" : "Inactive",
             lastLogin: user.createdAt || "N/A",
             joinDate: user.createdAt || "N/A",
@@ -683,12 +696,26 @@ const AccountsPage = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <Tag
-                            color={user.role === "Admin" ? "purple" : "blue"}
+                            color={(() => {
+                              switch (user.role) {
+                                case "Admin": return "purple";
+                                case "Staff": return "blue";
+                                case "Customer": return "green";
+                                case "Guest": return "orange";
+                                default: return "default";
+                              }
+                            })()}
                             className="px-3 py-1 rounded-full text-xs font-medium"
                           >
-                            {user.role === "Admin"
-                              ? "Quản trị viên"
-                              : "Người dùng"}
+                            {(() => {
+                              switch (user.role) {
+                                case "Admin": return "Quản trị viên";
+                                case "Staff": return "Nhân viên";
+                                case "Customer": return "Khách hàng";
+                                case "Guest": return "Khách";
+                                default: return "Người dùng";
+                              }
+                            })()}
                           </Tag>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -845,10 +872,26 @@ const AccountsPage = () => {
 
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
                     <Tag
-                      color={user.role === "Admin" ? "purple" : "blue"}
+                      color={(() => {
+                        switch (user.role) {
+                          case "Admin": return "purple";
+                          case "Staff": return "blue";
+                          case "Customer": return "green";
+                          case "Guest": return "orange";
+                          default: return "default";
+                        }
+                      })()}
                       className="px-3 py-1 rounded-full text-xs font-medium"
                     >
-                      {user.role === "Admin" ? "Quản trị viên" : "Người dùng"}
+                      {(() => {
+                        switch (user.role) {
+                          case "Admin": return "Quản trị viên";
+                          case "Staff": return "Nhân viên";
+                          case "Customer": return "Khách hàng";
+                          case "Guest": return "Khách";
+                          default: return "Người dùng";
+                        }
+                      })()}
                     </Tag>
                     <div className="flex items-center text-xs text-gray-500">
                       <CalendarOutlined className="mr-1" />

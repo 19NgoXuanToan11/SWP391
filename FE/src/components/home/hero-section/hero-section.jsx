@@ -39,7 +39,7 @@ export function HeroSection() {
                 </span>
               </h1>
               <p className="text-lg text-gray-600 md:text-xl max-w-2xl leading-relaxed">
-                Bắt đầu hành trình chăm sóc da biến đổi được thiết kế riêng cho
+                Bắt đầu hành trình chăm sóc da được thiết kế riêng cho
                 bạn. Các chuyên gia thẩm mỹ của chúng tôi tạo ra những nghi lễ
                 làm đẹp độc đáo giúp nuôi dưỡng và nâng cao vẻ rạng rỡ tự nhiên
                 của làn da bạn.

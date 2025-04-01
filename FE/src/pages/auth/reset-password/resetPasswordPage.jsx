@@ -9,7 +9,7 @@ import {
   ArrowLeftOutlined,
   SafetyOutlined,
 } from "@ant-design/icons";
-import background from "../../../assets/pictures/model.jpg";
+import backgroundVideo from "../../../assets/videos/beauty-background.mp4";
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
@@ -330,11 +330,14 @@ const ResetPasswordPage = () => {
     <div className="h-screen flex overflow-hidden">
       {/* Left side */}
       <div className="hidden lg:block lg:w-1/2 relative">
-        <motion.img
+        <motion.video
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
           transition={{ duration: 1.5 }}
-          src={background}
+          src={backgroundVideo}
+          autoPlay
+          muted
+          loop
           alt="Hình nền trang trí"
           className="absolute inset-0 w-full h-full object-cover"
         />

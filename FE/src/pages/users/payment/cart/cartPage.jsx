@@ -61,6 +61,9 @@ function CartPage() {
   const { isAuthenticated, user } = useSelector(selectAuth);
   const [loading, setLoading] = React.useState(false);
 
+  // Thêm state để lưu trữ sản phẩm không tồn tại
+  const [nonExistentProducts, setNonExistentProducts] = React.useState([]);
+
   // Lấy danh sách wishlist từ Redux store
   const wishlistItems = useSelector(selectWishlistItems);
 
@@ -68,6 +71,9 @@ function CartPage() {
   const isInWishlist = (productId) => {
     return wishlistItems.some((item) => item.id === productId);
   };
+
+  // Add state for price syncing
+  const [isPriceSyncing, setIsPriceSyncing] = React.useState(false);
 
   const handleQuantityChange = (id, value) => {
     dispatch(updateQuantity({ id, quantity: value }));
@@ -176,6 +182,47 @@ function CartPage() {
     message.success("Đã xóa tất cả sản phẩm khỏi giỏ hàng");
   };
 
+  // Hàm kiểm tra sự tồn tại của sản phẩm
+  const checkProductExistence = async (productId) => {
+    try {
+      const response = await axios.get(
+        `https://localhost:7285/api/Product/${productId}`
+      );
+      return response.status === 200;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    const validateCartItems = async () => {
+      if (cartItems.length > 0) {
+        const nonExistent = [];
+
+        for (const item of cartItems) {
+          const exists = await checkProductExistence(item.id);
+          if (!exists) {
+            nonExistent.push(item);
+            dispatch(removeFromCart(item.id));
+          }
+        }
+
+        if (nonExistent.length > 0) {
+          notification.warning({
+            message: "Thông báo giỏ hàng",
+            description: `Một số sản phẩm đã bị xóa khỏi giỏ hàng do không còn tồn tại: ${nonExistent
+              .map((item) => item.name)
+              .join(", ")}`,
+            placement: "bottomRight",
+            duration: 5,
+          });
+        }
+      }
+    };
+
+    validateCartItems();
+  }, [cartItems, dispatch]);
+
   useEffect(() => {
     // Khi component mount hoặc khi thông tin người dùng thay đổi
     if (isAuthenticated && user) {
@@ -198,6 +245,71 @@ function CartPage() {
       }
     }
   }, [dispatch, isAuthenticated, user]);
+
+  // Add useEffect for price syncing
+  useEffect(() => {
+    const syncProductPrices = async () => {
+      if (cartItems.length === 0 || isPriceSyncing) return;
+
+      setIsPriceSyncing(true);
+      try {
+        const updatedItems = await Promise.all(
+          cartItems.map(async (item) => {
+            try {
+              const response = await axios.get(
+                `https://localhost:7285/api/Product/${item.id}`
+              );
+
+              // If price has changed, update the item
+              if (response.data.price !== item.price) {
+                return {
+                  ...item,
+                  price: response.data.price,
+                  originalPrice:
+                    response.data.originalPrice || response.data.price,
+                };
+              }
+              return item;
+            } catch (error) {
+              console.error(`Error fetching product ${item.id}:`, error);
+              return item;
+            }
+          })
+        );
+
+        // Check if any prices were updated
+        const pricesChanged = updatedItems.some(
+          (newItem, index) => newItem.price !== cartItems[index].price
+        );
+
+        if (pricesChanged) {
+          // Update cart with new prices
+          dispatch({
+            type: "cart/setCart",
+            payload: {
+              items: updatedItems,
+              total: updatedItems.reduce(
+                (total, item) => total + item.price * item.quantity,
+                0
+              ),
+              quantity: updatedItems.reduce(
+                (total, item) => total + item.quantity,
+                0
+              ),
+            },
+          });
+
+          message.info("Giá sản phẩm trong giỏ hàng đã được cập nhật");
+        }
+      } catch (error) {
+        console.error("Error syncing product prices:", error);
+      } finally {
+        setIsPriceSyncing(false);
+      }
+    };
+
+    syncProductPrices();
+  }, [cartItems, dispatch]);
 
   if (!cartItems) {
     return (
@@ -362,13 +474,37 @@ function CartPage() {
                                   min={1}
                                   max={item.stock}
                                   value={item.quantity}
-                                  onChange={(value) =>
+                                  onChange={(value) => {
+                                    if (value === null || isNaN(value)) {
+                                      message.warning("Vui lòng chỉ nhập số");
+                                      return;
+                                    }
                                     handleQuantityChange(
                                       item.id,
-                                      parseInt(value) || 1
-                                    )
-                                  }
-                                  className="w-20 text-center focus:border-pink-400 hover:border-pink-400"
+                                      Math.floor(Math.abs(value)) || 1
+                                    );
+                                  }}
+                                  onKeyDown={(e) => {
+                                    // Cho phép các phím điều khiển và số
+                                    const allowedKeys = [
+                                      "Backspace",
+                                      "Delete",
+                                      "ArrowLeft",
+                                      "ArrowRight",
+                                      "Tab",
+                                    ];
+
+                                    if (
+                                      !allowedKeys.includes(e.key) &&
+                                      !/^[0-9]$/.test(e.key) &&
+                                      !e.ctrlKey &&
+                                      !e.metaKey
+                                    ) {
+                                      e.preventDefault();
+                                      message.warning("Vui lòng chỉ nhập số");
+                                    }
+                                  }}
+                                  className="w-16 text-center !border-gray-200"
                                   controls={false}
                                 />
                                 <Button
