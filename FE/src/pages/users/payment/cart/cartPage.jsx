@@ -19,6 +19,7 @@ import {
   Skeleton,
   notification,
   Spin,
+  Checkbox,
 } from "antd";
 import {
   ShoppingCartOutlined,
@@ -75,6 +76,9 @@ function CartPage() {
   // Add state for price syncing
   const [isPriceSyncing, setIsPriceSyncing] = React.useState(false);
 
+  // Add state for selected items
+  const [selectedItems, setSelectedItems] = React.useState([]);
+
   const handleQuantityChange = (id, value) => {
     dispatch(updateQuantity({ id, quantity: value }));
     message.success("Số lượng đã được cập nhật");
@@ -111,18 +115,23 @@ function CartPage() {
   };
 
   const calculateTotal = () => {
-    return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
+    if (selectedItems.length === 0) return 0;
+
+    return cartItems
+      .filter((item) => selectedItems.includes(item.id))
+      .reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   const calculateDiscount = () => {
-    return cartItems.reduce(
-      (total, item) =>
-        total + (item.originalPrice - item.price) * item.quantity,
-      0
-    );
+    if (selectedItems.length === 0) return 0;
+
+    return cartItems
+      .filter((item) => selectedItems.includes(item.id))
+      .reduce(
+        (total, item) =>
+          total + (item.originalPrice - item.price) * item.quantity,
+        0
+      );
   };
 
   const formatPrice = (price) => {
@@ -133,8 +142,8 @@ function CartPage() {
   };
 
   const handleCheckout = async () => {
-    if (cartItems.length === 0) {
-      message.warning("Giỏ hàng của bạn đang trống");
+    if (selectedItems.length === 0) {
+      message.warning("Vui lòng chọn ít nhất một sản phẩm để thanh toán");
       return;
     }
 
@@ -150,14 +159,16 @@ function CartPage() {
       // Kiểm tra và xử lý ID người dùng
       let userId = user.id;
 
-      // Tạo đối tượng đơn hàng
+      // Tạo đối tượng đơn hàng - chỉ bao gồm các sản phẩm đã chọn
       const order = {
         userId: userId,
-        items: cartItems.map((item) => ({
-          productId: item.id,
-          quantity: item.quantity,
-          price: item.price,
-        })),
+        items: cartItems
+          .filter((item) => selectedItems.includes(item.id))
+          .map((item) => ({
+            productId: item.id,
+            quantity: item.quantity,
+            price: item.price,
+          })),
       };
 
       console.log("Sending order:", order);
@@ -311,6 +322,33 @@ function CartPage() {
     syncProductPrices();
   }, [cartItems, dispatch]);
 
+  // Initialize selected items with all items when component mounts or cart changes
+  useEffect(() => {
+    if (cartItems && cartItems.length > 0) {
+      setSelectedItems(cartItems.map((item) => item.id));
+    } else {
+      setSelectedItems([]);
+    }
+  }, [cartItems.length]);
+
+  // Handle select/deselect all
+  const handleSelectAllChange = (e) => {
+    if (e.target.checked) {
+      setSelectedItems(cartItems.map((item) => item.id));
+    } else {
+      setSelectedItems([]);
+    }
+  };
+
+  // Handle individual item selection
+  const handleItemSelect = (id, checked) => {
+    if (checked) {
+      setSelectedItems((prev) => [...prev, id]);
+    } else {
+      setSelectedItems((prev) => prev.filter((itemId) => itemId !== id));
+    }
+  };
+
   if (!cartItems) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -395,9 +433,35 @@ function CartPage() {
           <Row gutter={24}>
             <Col xs={24} lg={16}>
               <Card className="rounded-3xl shadow-md mb-6">
+                {cartItems.length > 0 && (
+                  <div className="mb-4 flex items-center">
+                    <Checkbox
+                      onChange={(e) => handleSelectAllChange(e)}
+                      checked={
+                        selectedItems.length === cartItems.length &&
+                        cartItems.length > 0
+                      }
+                    >
+                      <Text strong>
+                        Chọn tất cả ({selectedItems.length}/{cartItems.length}{" "}
+                        sản phẩm)
+                      </Text>
+                    </Checkbox>
+                  </div>
+                )}
+                <Divider className="my-2" />
+
                 {cartItems.map((item) => (
                   <div key={item.id}>
                     <div className="flex gap-6 py-6">
+                      <div className="flex items-center mr-2">
+                        <Checkbox
+                          checked={selectedItems.includes(item.id)}
+                          onChange={(e) =>
+                            handleItemSelect(item.id, e.target.checked)
+                          }
+                        />
+                      </div>
                       <div className="relative">
                         <Image
                           src={item.image}
@@ -549,6 +613,12 @@ function CartPage() {
 
                   <div className="space-y-4">
                     <div className="flex justify-between">
+                      <Text>Sản phẩm đã chọn</Text>
+                      <Text>
+                        {selectedItems.length}/{cartItems.length}
+                      </Text>
+                    </div>
+                    <div className="flex justify-between">
                       <Text>Tạm tính</Text>
                       <Text>{formatPrice(calculateTotal())}</Text>
                     </div>
@@ -563,7 +633,7 @@ function CartPage() {
 
                   <button
                     type="button"
-                    disabled={loading || cartItems.length === 0}
+                    disabled={loading || selectedItems.length === 0}
                     onClick={handleCheckout}
                     className="w-full py-2 px-6 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 
                       text-white font-medium text-lg hover:from-pink-600 hover:to-purple-600 
