@@ -35,6 +35,7 @@ import {
   useGetCategoriesQuery,
 } from "../../../services/api/beautyShopApi.js";
 import { motion } from "framer-motion";
+import uploadFile from "../../../utils/upload/upload";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -47,6 +48,8 @@ const ProductPage = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [viewMode, setViewMode] = useState("grid");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [existingImages, setExistingImages] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // Queries
   const {
@@ -101,6 +104,8 @@ const ProductPage = () => {
 
   // Xử lý chỉnh sửa sản phẩm
   const handleEdit = (product) => {
+    setEditingProduct(product);
+
     // Helper function to map volume name to ID
     const getVolumeIdFromName = (name) => {
       const volumeMap = {
@@ -113,7 +118,6 @@ const ProductPage = () => {
       return volumeMap[name] || null;
     };
 
-    setEditingProduct(product);
     form.setFieldsValue({
       productName: product.productName,
       description: product.description,
@@ -121,30 +125,59 @@ const ProductPage = () => {
       brandId: product.brandId,
       categoryId: product.categoryId,
       mainIngredients: product.mainIngredients,
-      volumeId: getVolumeIdFromName(product.volumeName), // Convert name to ID
+      volumeId: getVolumeIdFromName(product.volumeName),
       skinTypeId: product.skinTypeId,
-      imageUrls: product.imageUrls?.join(", "),
     });
+
+    // Display existing images in the Upload component if available
+    if (product.imageUrls && product.imageUrls.length > 0) {
+      // Format existing images for Upload component
+      const fileList = product.imageUrls.map((url, index) => ({
+        uid: `-${index}`,
+        name: `image-${index}.jpg`,
+        status: "done",
+        url: url,
+      }));
+
+      // Set files to state if needed for preview
+      setExistingImages(fileList);
+    }
+
     setIsModalVisible(true);
   };
 
   // Xử lý submit form
   const handleFormSubmit = async (values) => {
     try {
-      // Xử lý chuỗi URL hình ảnh thành mảng
-      const imageUrlsArray = values.imageUrls
-        ? values.imageUrls
-            .split(",")
-            .map((url) => url.trim())
-            .filter((url) => url)
-        : [];
+      setLoading(true);
+
+      // Handle image uploads
+      let imageUrlsArray = [];
+
+      // If we have upload files
+      if (
+        values.productImage &&
+        values.productImage.fileList &&
+        values.productImage.fileList.length > 0
+      ) {
+        // Upload each file and collect URLs
+        const uploadPromises = values.productImage.fileList.map(
+          (file) => uploadFile(file.originFileObj, "products") // Use "products" folder
+        );
+
+        imageUrlsArray = await Promise.all(uploadPromises);
+      }
+      // If editing product and no new images uploaded, use existing URLs
+      else if (editingProduct && editingProduct.imageUrls) {
+        imageUrlsArray = editingProduct.imageUrls;
+      }
 
       const productData = {
         productName: values.productName,
         description: values.description,
-        price: parseFloat(values.price), // Đảm bảo price là số
+        price: parseFloat(values.price),
         mainIngredients: values.mainIngredients,
-        brandId: parseInt(values.brandId), // Đảm bảo ID là số
+        brandId: parseInt(values.brandId),
         volumeId: parseInt(values.volumeId),
         skinTypeId: parseInt(values.skinTypeId),
         categoryId: parseInt(values.categoryId),
@@ -158,19 +191,21 @@ const ProductPage = () => {
         }).unwrap();
         message.success("Cập nhật sản phẩm thành công");
       } else {
-        const response = await createProduct(productData).unwrap();
+        await createProduct(productData).unwrap();
         message.success("Tạo sản phẩm mới thành công");
       }
 
       setIsModalVisible(false);
       form.resetFields();
       setEditingProduct(null);
-      refetch(); // Refresh danh sách sản phẩm
+      refetch();
     } catch (error) {
       console.error("Error:", error);
       message.error(
         error.data?.message || "Không thể lưu sản phẩm. Vui lòng thử lại!"
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -405,17 +440,34 @@ const ProductPage = () => {
               </Form.Item>
 
               <Form.Item
-                name="imageUrls"
-                label="URL hình ảnh"
+                name="productImage"
+                label="Hình ảnh sản phẩm"
                 rules={[
-                  { required: true, message: "Vui lòng nhập URL hình ảnh" },
+                  {
+                    required: editingProduct ? false : true,
+                    message: "Vui lòng tải lên hình ảnh sản phẩm",
+                  },
                 ]}
-                tooltip="Nhập URL hình ảnh, nếu có nhiều hình thì phân cách bằng dấu phẩy"
+                tooltip="Tải lên hình ảnh sản phẩm từ máy tính của bạn"
               >
-                <Input.TextArea
-                  placeholder="https://example.com/image1.jpg"
-                  autoSize={{ minRows: 1, maxRows: 3 }}
-                />
+                <Upload
+                  name="productImage"
+                  listType="picture-card"
+                  showUploadList={true}
+                  beforeUpload={() => false}
+                  maxCount={5}
+                  multiple={true}
+                  fileList={existingImages}
+                  onChange={(info) => {
+                    // Update file list when changed
+                    setExistingImages(info.fileList);
+                  }}
+                >
+                  <div>
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Tải ảnh</div>
+                  </div>
+                </Upload>
               </Form.Item>
             </div>
 
