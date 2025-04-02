@@ -313,5 +313,60 @@ namespace Service
                 throw;
             }
         }
+
+        public async Task UpdateProductStockAsync(int productId, int quantityToReduce)
+        {
+            try
+            {
+                var product = await _context.Products.FindAsync(productId);
+                if (product == null)
+                {
+                    throw new KeyNotFoundException($"Không tìm thấy sản phẩm với ID {productId}");
+                }
+
+                if (product.Stock == null || product.Stock < quantityToReduce)
+                {
+                    throw new InvalidOperationException($"Sản phẩm {product.ProductName} không đủ số lượng trong kho");
+                }
+
+                product.Stock -= quantityToReduce;
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Đã cập nhật số lượng tồn kho của sản phẩm {ProductId} từ {OldStock} thành {NewStock}", 
+                    productId, product.Stock + quantityToReduce, product.Stock);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi cập nhật số lượng tồn kho của sản phẩm {ProductId}: {Message}", productId, ex.Message);
+                throw;
+            }
+        }
+
+        public async Task RestoreProductStockAsync(int productId, int quantityToRestore)
+        {
+            try
+            {
+                var product = await _context.Products.FindAsync(productId);
+                if (product == null)
+                {
+                    throw new KeyNotFoundException($"Không tìm thấy sản phẩm với ID {productId}");
+                }
+
+                // Nếu stock là null, khởi tạo giá trị
+                if (product.Stock == null)
+                {
+                    product.Stock = 0;
+                }
+
+                product.Stock += quantityToRestore;
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Đã khôi phục số lượng tồn kho của sản phẩm {ProductId} từ {OldStock} thành {NewStock}", 
+                    productId, product.Stock - quantityToRestore, product.Stock);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi khôi phục số lượng tồn kho của sản phẩm {ProductId}: {Message}", productId, ex.Message);
+                throw;
+            }
+        }
     }
 }

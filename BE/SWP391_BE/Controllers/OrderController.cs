@@ -14,15 +14,18 @@ namespace SWP391_BE.Controllers
         private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
         private readonly ILogger<OrderController> _logger;
+        private readonly IProductService _productService;
 
         public OrderController(
             IOrderService orderService, 
             IMapper mapper,
-            ILogger<OrderController> logger)
+            ILogger<OrderController> logger,
+            IProductService productService)
         {
             _orderService = orderService;
             _mapper = mapper;
             _logger = logger;
+            _productService = productService;
         }
 
         [HttpGet]
@@ -72,6 +75,22 @@ namespace SWP391_BE.Controllers
                 {
                     return BadRequest("Order data is required");
                 }
+                
+                // Kiểm tra số lượng tồn kho trước khi tạo đơn hàng
+                foreach (var item in createOrderDTO.Items)
+                {
+                    var product = await _productService.GetProductByIdAsync(item.ProductId);
+                    if (product == null)
+                    {
+                        return BadRequest($"Sản phẩm với ID {item.ProductId} không tồn tại");
+                    }
+                    
+                    if (product.Stock == null || product.Stock < item.Quantity)
+                    {
+                        return BadRequest($"Sản phẩm {product.ProductName} chỉ còn {product.Stock} sản phẩm trong kho");
+                    }
+                }
+                
                 List<OrderDetail> orderDetails = new List<OrderDetail>();
                 decimal totalAmount = 0;
 
@@ -94,7 +113,14 @@ namespace SWP391_BE.Controllers
                     Status = "Pending",
                     OrderDetails = orderDetails
                 };
+                
                 await _orderService.AddOrderAsync(order);
+                
+                // Cập nhật số lượng tồn kho sau khi đơn hàng được tạo thành công
+                foreach (var item in createOrderDTO.Items)
+                {
+                    await _productService.UpdateProductStockAsync(item.ProductId, item.Quantity);
+                }
 
                 var createdOrderDto = _mapper.Map<OrderDTO>(order);
                 return CreatedAtAction(
@@ -191,6 +217,41 @@ namespace SWP391_BE.Controllers
             {
                 _logger.LogError(ex, "Error updating order status for order {Id}", id);
                 return StatusCode(500, "An error occurred while updating the order status");
+            }
+        }
+
+        [HttpPut("{id}/cancel")]
+        public async Task<IActionResult> CancelOrder(int id)
+        {
+            try
+            {
+                var order = await _orderService.GetOrderByIdAsync(id);
+                if (order == null)
+                {
+                    return NotFound($"Không tìm thấy đơn hàng với ID {id}");
+                }
+
+                // Kiểm tra trạng thái đơn hàng hiện tại
+                if (order.Status == "Cancelled" || order.Status == "Completed" || order.Status == "Delivered")
+                {
+                    return BadRequest($"Không thể hủy đơn hàng có trạng thái {order.Status}");
+                }
+
+                // Cập nhật trạng thái đơn hàng thành "Cancelled"
+                await _orderService.UpdateOrderStatusAsync(id, "Cancelled");
+
+                // Khôi phục số lượng tồn kho cho từng sản phẩm trong đơn hàng
+                foreach (var orderDetail in order.OrderDetails)
+                {
+                    await _productService.RestoreProductStockAsync(orderDetail.ProductId, orderDetail.Quantity);
+                }
+
+                return Ok(new { message = "Đơn hàng đã được hủy thành công" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi hủy đơn hàng {Id}", id);
+                return StatusCode(500, "Đã xảy ra lỗi khi hủy đơn hàng");
             }
         }
     }
