@@ -321,22 +321,42 @@ namespace Service
                 var product = await _context.Products.FindAsync(productId);
                 if (product == null)
                 {
+                    _logger.LogWarning("Không tìm thấy sản phẩm với ID {ProductId}", productId);
                     throw new KeyNotFoundException($"Không tìm thấy sản phẩm với ID {productId}");
                 }
 
-                if (product.Stock == null || product.Stock < quantityToReduce)
+                _logger.LogInformation("Sản phẩm {ProductId} hiện có Stock = {Stock}, cần giảm {QuantityToReduce}", 
+                    productId, product.Stock, quantityToReduce);
+
+                if (product.Stock == null)
                 {
+                    _logger.LogWarning("Stock của sản phẩm {ProductId} là null", productId);
+                    product.Stock = 0;
+                }
+
+                if (product.Stock < quantityToReduce)
+                {
+                    _logger.LogWarning("Sản phẩm {ProductId} không đủ số lượng trong kho. Hiện có Stock = {Stock}, Cần giảm: {QuantityToReduce}", 
+                        productId, product.Stock, quantityToReduce);
                     throw new InvalidOperationException($"Sản phẩm {product.ProductName} không đủ số lượng trong kho");
                 }
 
+                // Lưu giá trị cũ để log
+                int oldStock = product.Stock.Value;
+                
+                // Cập nhật stock
                 product.Stock -= quantityToReduce;
-                await _context.SaveChangesAsync();
-                _logger.LogInformation("Đã cập nhật số lượng tồn kho của sản phẩm {ProductId} từ {OldStock} thành {NewStock}", 
-                    productId, product.Stock + quantityToReduce, product.Stock);
+                
+                // Đảm bảo lưu thay đổi
+                _context.Products.Update(product);
+                int rowsAffected = await _context.SaveChangesAsync();
+                
+                _logger.LogInformation("Đã cập nhật Stock của sản phẩm {ProductId} từ {OldStock} thành {NewStock}. Rows affected: {RowsAffected}", 
+                    productId, oldStock, product.Stock, rowsAffected);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Lỗi khi cập nhật số lượng tồn kho của sản phẩm {ProductId}: {Message}", productId, ex.Message);
+                _logger.LogError(ex, "Lỗi khi cập nhật Stock của sản phẩm {ProductId}: {Message}", productId, ex.Message);
                 throw;
             }
         }

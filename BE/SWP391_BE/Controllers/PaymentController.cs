@@ -319,11 +319,25 @@ namespace SWP391_BE.Controllers
                     await _orderService.UpdateOrderStatusAsync(orderId.Value, "Paid");
                     
                     // Trừ stock cho từng sản phẩm trong đơn hàng
+                    _logger.LogInformation("Bắt đầu cập nhật stock cho đơn hàng {OrderId}", orderId.Value);
+
                     foreach (var orderDetail in order.OrderDetails)
                     {
-                        await _productService.UpdateProductStockAsync(orderDetail.ProductId, orderDetail.Quantity);
-                        _logger.LogInformation("Reduced stock for product {ProductId} by {Quantity} units", 
+                        _logger.LogInformation("Cập nhật stock cho sản phẩm {ProductId}, số lượng cần giảm: {Quantity}", 
                             orderDetail.ProductId, orderDetail.Quantity);
+                        
+                        try {
+                            // Đảm bảo gọi đúng phương thức và đợi nó hoàn thành
+                            // orderDetail.Quantity là số lượng sản phẩm trong đơn hàng, cũng chính là số lượng stock cần giảm
+                            await _productService.UpdateProductStockAsync(orderDetail.ProductId, orderDetail.Quantity);
+                            _logger.LogInformation("Đã giảm thành công {Quantity} đơn vị stock cho sản phẩm {ProductId}", 
+                                orderDetail.Quantity, orderDetail.ProductId);
+                        }
+                        catch (Exception ex) {
+                            _logger.LogError(ex, "Lỗi khi giảm stock cho sản phẩm {ProductId}: {Message}", 
+                                orderDetail.ProductId, ex.Message);
+                            // Có thể xử lý lỗi ở đây, ví dụ: gửi thông báo cho admin
+                        }
                     }
 
                     // Lưu thông tin thanh toán
