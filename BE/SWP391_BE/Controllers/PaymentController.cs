@@ -20,13 +20,14 @@ namespace SWP391_BE.Controllers
         private readonly IOrderService _orderService;
         private readonly IPaymentService _paymentService;
         private readonly IHistoryService _historyService;
-        public PaymentController(PayOS payOS, IOrderService orderService, IPaymentService paymentService, IHistoryService historyservice)
+        private readonly IProductService _productService;
+        public PaymentController(PayOS payOS, IOrderService orderService, IPaymentService paymentService, IHistoryService historyservice, IProductService productService)
         {
             _payOS = payOS;
             _orderService = orderService;
             _paymentService = paymentService;
             _historyService = historyservice;
-
+            _productService = productService;
         }
         public record ConfirmWebhook(
             string webhook_url
@@ -220,6 +221,16 @@ namespace SWP391_BE.Controllers
                     if (order == null)
                     {
                         return Ok(new Response(-1, "Order not found", null));
+                    }
+
+                    // Cập nhật trạng thái đơn hàng
+                    order.Status = "Paid";
+                    await _orderService.UpdateOrderAsync(order);
+
+                    // Trừ stock cho các sản phẩm trong đơn hàng
+                    foreach (var orderDetail in order.OrderDetails)
+                    {
+                        await _productService.UpdateProductStockAsync(orderDetail.ProductId, orderDetail.Quantity);
                     }
 
                     // Tạo và lưu bản ghi History
