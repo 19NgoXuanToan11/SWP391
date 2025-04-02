@@ -7,6 +7,7 @@ using Net.payOS;
 using Repo;
 using Service;
 using SWP391_BE.Mappings;
+using SWP391_BE.Middleware;
 using System.Text;
 
 IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
@@ -117,7 +118,7 @@ builder.Services.AddCors(options =>
                 "http://localhost:5173", // FE local
                 "https://swp-391-pink.vercel.app", // FE deployed
                 "https://api-sandbox.payos.vn",
-                "https://0604-27-78-79-30.ngrok-free.app" // Thêm ngrok URL mới vào đây mỗi lần restart
+                "https://3903-171-249-90-212.ngrok-free.app/" // Thêm ngrok URL mới vào đây mỗi lần restart
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -159,6 +160,7 @@ if (app.Environment.IsDevelopment())
 
 // Remove UseHttpsRedirection if testing with HTTP
 // app.UseHttpsRedirection();
+
 
 app.UseCors("AllowFrontend");
 app.UseAuthentication();

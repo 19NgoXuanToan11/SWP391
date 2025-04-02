@@ -11,4 +11,4 @@ namespace Service
         Task UpdateProductImageAsync(ProductImage productImage);
         Task DeleteProductImageAsync(int id);
     }
-} 
+}

@@ -6,6 +6,8 @@ const endpoints = {
   LOGOUT: "/Auth/logout",
   REFRESH_TOKEN: "/Auth/refresh-token",
   VERIFY_EMAIL: "/Auth/verify-email",
+  FORGOT_PASSWORD: "/Auth/forgot-password",
+  RESET_PASSWORD: "/Auth/reset-password",
 
   // User
   GET_PROFILE: "/user/profile",

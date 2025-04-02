@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Net.payOS;
 using Net.payOS.Types;
 using Service;
@@ -18,11 +19,14 @@ namespace SWP391_BE.Controllers
         private readonly PayOS _payOS;
         private readonly IOrderService _orderService;
         private readonly IPaymentService _paymentService;
-        public PaymentController(PayOS payOS, IOrderService orderService, IPaymentService paymentService)
+        private readonly IHistoryService _historyService;
+        public PaymentController(PayOS payOS, IOrderService orderService, IPaymentService paymentService, IHistoryService historyservice)
         {
             _payOS = payOS;
             _orderService = orderService;
             _paymentService = paymentService;
+            _historyService = historyservice;
+
         }
         public record ConfirmWebhook(
             string webhook_url
@@ -87,7 +91,31 @@ namespace SWP391_BE.Controllers
                 return Ok(new Response(-1, "fail", null));
             }
         }
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetPaidPaymentsByUserId(int userId)
+        {
+            var payments = await _paymentService.GetPaidPaymentsByUserIdAsync(userId);
+            if (!payments.Any())
+            {
+                return NotFound(new { message = "Không có đơn hàng đã thanh toán nào!" });
+            }
 
+            return Ok(payments.Select(payment => new
+            {
+                PaymentId = payment.PaymentId,
+                OrderId = payment.OrderId,
+                PaymentDate = payment.PaymentDate,
+                Amount = payment.Amount,
+                Status = payment.Status,
+                Products = payment.Order.OrderDetails.Select(od => new
+                {
+                    ProductName = od.Product.ProductName,
+                    ProductImages = od.Product.Images.Select(img => img.ImageUrl).ToList(),
+                    Quantity = od.Quantity,
+                    Price = od.Price
+                }).ToList()
+            }));
+        }
 
         [HttpPost("create")]
         public async Task<IActionResult> CreatePaymentLink([FromBody] CreatePaymentLinkRequest body)
@@ -123,7 +151,7 @@ namespace SWP391_BE.Controllers
 
 
 
-                PaymentData paymentData = new PaymentData(orderCode, total, $"Mã đơn hàng:{order.OrderId}", items, cancelUrl, returnUrl);
+                PaymentData paymentData = new PaymentData(orderCode, total, $"{order.OrderId}", items, cancelUrl, returnUrl);
 
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
 
@@ -132,7 +160,7 @@ namespace SWP391_BE.Controllers
                     OrderId = order.OrderId,
                     CreatedDate = DateTime.Now,
                     Amount = total,
-                    Status = "PENDING",
+                    Status = createPayment.status,
                     BuyerName = body.BuyerName,
                     BuyerAddress = body.BuyerAddress,
                     BuyerEmail = body.BuyerEmail,
@@ -160,7 +188,8 @@ namespace SWP391_BE.Controllers
             {
                 WebhookData data = _payOS.verifyPaymentWebhookData(body);
 
-
+                Console.WriteLine($"Description: {data.description}");
+                Console.WriteLine($"Description: {data.code}");
                 // Kiểm tra mô tả giao dịch
                 if (data.description == "Ma giao dich thu nghiem" || data.description == "VQRIO123")
                 {
@@ -187,11 +216,25 @@ namespace SWP391_BE.Controllers
                     payment.PaymentDate = DateTime.Now;
 
                     await _paymentService.UpdatePaymentAsync(payment);
+                    var order = await _orderService.GetOrderByIdAsync(orderId.Value);
+                    if (order == null)
+                    {
+                        return Ok(new Response(-1, "Order not found", null));
+                    }
 
+                    // Tạo và lưu bản ghi History
+                    var history = new History
+                    {
+                        TrackingCode = GenerateTrackingCode(), // Tạo mã vận đơn ngẫu nhiên
+                        Shipper = "Nguyen Van A", // Giả định tên shipper, có thể lấy từ IShipperService
+                        Status = "COMPLETED", // Cập nhật status
+                        OrderDetails = order.OrderDetails // Gán chi tiết đơn hàng
+                    };
+
+                    await _historyService.AddAsync(history);
                     return Ok(new Response(0, "Ok", null));
                 }
                 return Ok(new Response(0, "Ok", null));
-
             }
             catch (Exception e)
             {
@@ -199,19 +242,17 @@ namespace SWP391_BE.Controllers
                 return Ok(new Response(-1, "fail", null));
             }
         }
+        private string GenerateTrackingCode()
+        {
+            return "TRK-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
+        }
         private int? ExtractOrderIdFromDescription(string description)
         {
             try
             {
-                // Tách chuỗi theo dấu ":" => ["Mã đơn hàng", "12345"]
-                var parts = description.Split(':');
-                if (parts.Length < 2)
-                {
-                    return null;
-                }
 
                 // Lấy phần số, loại bỏ khoảng trắng thừa
-                if (int.TryParse(parts[1].Trim(), out int orderId))
+                if (int.TryParse(description.Trim(), out int orderId))
                 {
                     return orderId;
                 }

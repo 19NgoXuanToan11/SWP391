@@ -4,23 +4,53 @@
 # Bỏ qua file chỉ mục của Copilot
 CopilotIndices/
 
-# Bỏ qua file build của .NET
+# Bỏ qua thư mục build của .NET
 bin/
 obj/
 
-# Bỏ qua file tạm thời
+# Bỏ qua file tạm thời của Visual Studio và .NET
 *.suo
 *.user
 *.cache
 *.db
 *.db-shm
 *.db-wal
+*.csproj.user
+*.log
 
-# Bỏ qua thư mục build
-bin/
-obj/
+# Bỏ qua file tự động tạo bởi MSBuild
+**/[Aa]ssembly[Ii]nfo.cs
+**/[Aa]ssembly[Ii]nfo[Ii]nputs.cache
+**/[Gg]eneratedMS[Bb]uild[Ee]ditor[Cc]onfig.editorconfig
 
-# Bỏ qua file DLL, PDB, EXE
+# Bỏ qua file DLL, PDB, EXE (trừ khi cần commit thư viện cụ thể)
 *.dll
 *.pdb
 *.exe
+
+# Bỏ qua các file và thư mục tạm thời khác
+*.tmp
+*.bak
+*.swp
+/BE/Repo/obj/Debug/net8.0
+/BE/Repo/obj/Debug
+/BE/.vs/SWP391_BE/CopilotIndices/17.12.38.29086
+/BE/.vs/SWP391_BE/CopilotIndices
+/BE/.vs/SWP391_BE
+/BE/Data/obj
+/BE/Data/obj
+/BE/Service/obj/Debug/net8.0
+/BE/Service/obj/Debug
+/BE/Service/obj
+/BE/Service/obj
+/BE/SWP391_BE/obj/Debug/net8.0
+/BE/SWP391_BE/obj/Debug
+/BE/SWP391_BE/obj/Debug/net8.0
+/BE/SWP391_BE/obj/Debug/net8.0
+/BE/SWP391_BE/obj
+/BE/SWP391_BE/obj
+/BE/Repo/obj/Debug/net8.0
+/BE/SWP391_BE/obj/Debug/net8.0/EndpointInfo
+/BE/.vs/SWP391_BE/v17
+/BE/.vs/SWP391_BE/CopilotIndices/17.12.38.29086
+/BE/.vs/SWP391_BE/CopilotIndices

@@ -36,5 +36,20 @@ namespace Service
         {
             await _orderRepository.DeleteAsync(id);
         }
+
+        public async Task UpdateOrderStatusAsync(int id, string status)
+        {
+            await _orderRepository.UpdateOrderStatusAsync(id, status);
+        }
+
+        public async Task<bool> OrderExistsAsync(int id)
+        {
+            return await _orderRepository.OrderExistsAsync(id);
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId)
+        {
+            return await _orderRepository.GetOrdersByUserIdAsync(userId);
+        }
     }
 }

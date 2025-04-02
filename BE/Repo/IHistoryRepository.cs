@@ -13,5 +13,8 @@ namespace Repo
         Task<History?> GetByTrackingCodeAsync(string trackingCode);
         Task AddAsync(History history);
         Task UpdateAsync(History history);
+        Task<History?> GetOrderHistoryByOrderIdAsync(int orderId);
+        Task<IEnumerable<History>> GetHistoriesByUserIdAsync(int userId);
+
     }
 }

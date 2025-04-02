@@ -45,5 +45,34 @@ namespace Repo
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task UpdateOrderStatusAsync(int id, string status)
+        {
+            // Use direct database query to update only the Status column
+            // This avoids loading the entity and any related entities completely
+            await _context.Database.ExecuteSqlRawAsync(
+                "UPDATE Orders SET Status = {0} WHERE OrderId = {1}", 
+                status, id);
+        }
+
+        public async Task<bool> OrderExistsAsync(int id)
+        {
+            return await _context.Orders.AnyAsync(o => o.OrderId == id);
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId)
+        {
+            return await _context.Orders
+                .Where(o => o.UserId == userId)
+                .Select(o => new Order
+                {
+                    OrderId = o.OrderId,
+                    Status = o.Status,
+                    OrderDate = o.OrderDate,
+                    TotalAmount = o.TotalAmount,
+                    PaymentMethod = o.PaymentMethod
+                })
+                .ToListAsync();
+        }
     }
 }

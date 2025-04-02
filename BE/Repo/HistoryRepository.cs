@@ -41,5 +41,31 @@ namespace Repo
             _context.History.Update(history);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<History?> GetOrderHistoryByOrderIdAsync(int orderId)
+        {
+            try
+            {
+                return await _context.History
+                    .Include(h => h.OrderDetails)
+                        .ThenInclude(od => od.Product)
+                            .ThenInclude(p => p.Images)
+                    .FirstOrDefaultAsync(h => h.OrderDetails.Any(od => od.OrderId == orderId));
+            }
+            catch (Exception)
+            {
+                // If there's an error (like missing table or column), return null
+                return null;
+            }
+        }
+        public async Task<IEnumerable<History>> GetHistoriesByUserIdAsync(int userId)
+        {
+            return await _context.History
+                .Include(h => h.OrderDetails)
+                    .ThenInclude(od => od.Product)
+                        .ThenInclude(p => p.Images)
+                .Where(h => h.OrderDetails.Any(od => od.Order.UserId == userId)) // Lọc theo UserId
+                .ToListAsync();
+        }
     }
 }

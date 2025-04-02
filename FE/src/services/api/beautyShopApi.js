@@ -53,16 +53,12 @@ const beautyShopApi = createApi({
 
     // Product endpoints
     getProducts: builder.query({
-      query: (params) => ({
-        url: endpoints.GET_PRODUCTS,
-        method: "GET",
-        params,
-      }),
+      query: () => endpoints.GET_PRODUCTS,
       providesTags: ["Products"],
     }),
 
     getProductById: builder.query({
-      query: (id) => `/Product/${id}`,
+      query: (id) => endpoints.GET_PRODUCT_DETAIL.replace(":id", id),
       transformResponse: (response) => {
         console.log("API Response:", response);
         return response;
@@ -77,7 +73,35 @@ const beautyShopApi = createApi({
       query: (productData) => ({
         url: endpoints.CREATE_PRODUCT,
         method: "POST",
-        data: productData,
+        body: {
+          productName: productData.productName,
+          description: productData.description,
+          price: productData.price,
+          stock: productData.stock,
+          mainIngredients: productData.mainIngredients,
+          brandId: productData.brandId,
+          volumeId: productData.volumeId,
+          skinTypeId: productData.skinTypeId,
+          categoryId: productData.categoryId,
+          imageUrls: productData.imageUrls,
+        },
+      }),
+      invalidatesTags: ["Products"],
+    }),
+
+    updateProduct: builder.mutation({
+      query: ({ id, productData }) => ({
+        url: endpoints.UPDATE_PRODUCT.replace(":id", id),
+        method: "PUT",
+        body: productData,
+      }),
+      invalidatesTags: ["Products"],
+    }),
+
+    deleteProduct: builder.mutation({
+      query: (id) => ({
+        url: endpoints.DELETE_PRODUCT.replace(":id", id),
+        method: "DELETE",
       }),
       invalidatesTags: ["Products"],
     }),
@@ -109,7 +133,7 @@ const beautyShopApi = createApi({
     }),
 
     updateCategory: builder.mutation({
-      query: ({ id, ...categoryData }) => ({
+      query: ({ id, categoryData }) => ({
         url: endpoints.UPDATE_CATEGORY.replace(":id", id),
         method: "PUT",
         body: categoryData,
@@ -139,9 +163,26 @@ const beautyShopApi = createApi({
       query: (orderData) => ({
         url: endpoints.CREATE_ORDER,
         method: "POST",
-        data: orderData,
+        body: orderData,
       }),
-      invalidatesTags: ["Orders"],
+      invalidatesTags: ["Orders", "Products"],
+    }),
+
+    cancelOrder: builder.mutation({
+      query: (orderId) => ({
+        url: `Order/${orderId}/cancel`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Orders", "Products"],
+    }),
+
+    updateOrderStatus: builder.mutation({
+      query: ({ orderId, status }) => ({
+        url: `Order/${orderId}/status`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["Orders", "Products"],
     }),
 
     updateUserProfile: builder.mutation({
@@ -180,7 +221,7 @@ const beautyShopApi = createApi({
     }),
 
     updateBrand: builder.mutation({
-      query: ({ id, ...brandData }) => ({
+      query: ({ id, brandData }) => ({
         url: endpoints.UPDATE_BRAND.replace(":id", id),
         method: "PUT",
         body: brandData,
@@ -194,6 +235,24 @@ const beautyShopApi = createApi({
         method: "DELETE",
       }),
       invalidatesTags: ["Brands"],
+    }),
+
+    // Forgot password endpoint
+    forgotPassword: builder.mutation({
+      query: (data) => ({
+        url: endpoints.FORGOT_PASSWORD,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    // Reset password endpoint
+    resetPassword: builder.mutation({
+      query: (data) => ({
+        url: endpoints.RESET_PASSWORD,
+        method: "POST",
+        body: data,
+      }),
     }),
   }),
 });
@@ -211,11 +270,17 @@ export const {
   useDeleteCategoryMutation,
   useGetOrdersQuery,
   useCreateOrderMutation,
+  useCancelOrderMutation,
+  useUpdateOrderStatusMutation,
   useUpdateUserProfileMutation,
   useGetBrandsQuery,
   useCreateBrandMutation,
   useUpdateBrandMutation,
   useDeleteBrandMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
 } = beautyShopApi;
 
 export default beautyShopApi;

@@ -15,19 +15,29 @@ namespace Service
         {
             _historyrepo = historyrepo;
         }
-        public async Task AddHistoryAsync(History history)
+        public async Task AddAsync(History history)
         {
-             await _historyrepo.AddAsync(history);
+            await _historyrepo.AddAsync(history);
         }
 
         public async Task<IEnumerable<History>> GetAllHistoriesAsync()
         {
-                return await _historyrepo.GetAllAsync();
+            return await _historyrepo.GetAllAsync();
+        }
+
+        public async Task<IEnumerable<History>> GetHistoriesByUserIdAsync(int userId)
+        {
+            return await _historyrepo.GetHistoriesByUserIdAsync(userId);
         }
 
         public async Task<History?> GetHistoryByTrackingCodeAsync(string trackingCode)
         {
             return await _historyrepo.GetByTrackingCodeAsync(trackingCode);
+        }
+
+        public async Task<History?> GetOrderHistoryByOrderIdAsync(int orderId)
+        {
+            return await _historyrepo.GetOrderHistoryByOrderIdAsync(orderId);
         }
 
         public async Task UpdateHistoryStatusAsync(string trackingCode, string status)
@@ -39,5 +49,6 @@ namespace Service
                 await _historyrepo.UpdateAsync(history);
             }
         }
+
     }
 }

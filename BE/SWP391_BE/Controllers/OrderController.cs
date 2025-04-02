@@ -157,5 +157,41 @@ namespace SWP391_BE.Controllers
                 return StatusCode(500, "An error occurred while deleting the order");
             }
         }
+
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> UpdateOrderStatus(int id, [FromBody] OrderStatusDTO statusDTO)
+        {
+            try
+            {
+                if (statusDTO == null || string.IsNullOrEmpty(statusDTO.Status))
+                {
+                    return BadRequest("Order status is required");
+                }
+
+                // Validate the status value
+                string[] validStatuses = new[] { "pending", "delivering", "complete", "failed" };
+                if (!validStatuses.Contains(statusDTO.Status.ToLower()))
+                {
+                    return BadRequest($"Invalid status. Valid values are: {string.Join(", ", validStatuses)}");
+                }
+
+                // Check if order exists without loading related entities
+                var orderExists = await _orderService.OrderExistsAsync(id);
+                if (!orderExists)
+                {
+                    return NotFound($"Order with ID {id} not found");
+                }
+
+                // Use the specialized method for updating status
+                await _orderService.UpdateOrderStatusAsync(id, statusDTO.Status);
+                
+                return Ok(new { message = $"Order status updated to {statusDTO.Status}" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating order status for order {Id}", id);
+                return StatusCode(500, "An error occurred while updating the order status");
+            }
+        }
     }
 } 

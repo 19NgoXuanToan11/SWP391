@@ -61,5 +61,15 @@ namespace Repo
             return await _context.Payments.FirstOrDefaultAsync(p => p.OrderCode == orderCode);
         }
 
+        public async Task<IEnumerable<Payment>> GetPaidPaymentsByUserIdAsync(int userId)
+        {
+            return await _context.Payments
+                .Include(p => p.Order)
+                    .ThenInclude(o => o.OrderDetails)
+                        .ThenInclude(od => od.Product)
+                            .ThenInclude(p => p.Images)
+                .Where(p => p.Order.UserId == userId && p.Status == "PAID")
+                .ToListAsync();
+        }
     }
 }

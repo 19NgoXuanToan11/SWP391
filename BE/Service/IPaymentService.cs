@@ -13,5 +13,6 @@ namespace Service
         Task UpdatePaymentAsync(Payment payment);
         Task DeletePaymentAsync(int id);
         Task AddPaymentHistoryAsync(PaymentHistory history);
+        Task<IEnumerable<Payment>> GetPaidPaymentsByUserIdAsync(int userId);
     }
 }
