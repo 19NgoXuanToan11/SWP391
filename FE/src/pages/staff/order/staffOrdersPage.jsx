@@ -25,6 +25,7 @@ import {
   MoreOutlined,
   CarOutlined,
   CheckCircleOutlined,
+  CloseCircleOutlined,
 } from "@ant-design/icons";
 import {
   Table,
@@ -257,17 +258,17 @@ const OrdersPage = () => {
     switch (status.toLowerCase()) {
       case "pending":
         return "orange";
-      case "confirmed":
-        return "blue";
       case "processing":
         return "cyan";
       case "shipping":
+      case "delivering":
         return "geekblue";
       case "delivered":
-        return "purple";
       case "completed":
+      case "complete":
         return "green";
       case "cancelled":
+      case "failed":
         return "red";
       default:
         return "default";
@@ -373,6 +374,53 @@ const OrdersPage = () => {
     try {
       setLoading(true);
 
+      // Lấy trạng thái hiện tại từ record hoặc từ localStorage
+      const orderStatusUpdates = JSON.parse(
+        localStorage.getItem("orderStatusUpdates") || "{}"
+      );
+      
+      const orderToUpdate = orders.find((order) => order.orderId === orderId);
+      if (!orderToUpdate) {
+        message.error("Không tìm thấy đơn hàng");
+        setLoading(false);
+        return;
+      }
+      
+      const currentStatus = 
+        orderStatusUpdates[orderId] || 
+        orderStatusUpdates[orderToUpdate.trackingCode] || 
+        orderToUpdate.status || 
+        "pending";
+      
+      // Kiểm tra quy tắc chuyển đổi trạng thái
+      // 1. Từ "pending" chỉ có thể chuyển sang "shipping" hoặc "cancelled"
+      // 2. Từ "shipping" chỉ có thể chuyển sang "delivered" hoặc "cancelled"
+      // 3. Từ "delivered" không thể chuyển về trạng thái trước đó
+      // 4. Từ "cancelled" không thể chuyển sang trạng thái khác
+      
+      let isValidTransition = true;
+      let errorMessage = "";
+      
+      if (currentStatus === "pending" && newStatus !== "pending" && newStatus !== "shipping" && newStatus !== "cancelled") {
+        isValidTransition = false;
+        errorMessage = "Từ trạng thái Chờ xác nhận chỉ có thể chuyển sang Đang giao hàng hoặc Đã hủy";
+      } else if (currentStatus === "shipping" && newStatus !== "shipping" && newStatus !== "delivered" && newStatus !== "cancelled") {
+        isValidTransition = false;
+        errorMessage = "Từ trạng thái Đang giao hàng chỉ có thể chuyển sang Đã giao hàng hoặc Đã hủy";
+      } else if (currentStatus === "delivered" && newStatus !== "delivered") {
+        isValidTransition = false;
+        errorMessage = "Không thể thay đổi trạng thái sau khi đã giao hàng";
+      } else if (currentStatus === "cancelled" && newStatus !== "cancelled") {
+        isValidTransition = false;
+        errorMessage = "Không thể thay đổi trạng thái sau khi đã hủy đơn hàng";
+      }
+      
+      if (!isValidTransition) {
+        message.error(errorMessage);
+        setLoading(false);
+        return;
+      }
+
       // Chuyển đổi trạng thái hiển thị sang trạng thái API chấp nhận
       let apiStatus;
       switch (newStatus) {
@@ -395,9 +443,6 @@ const OrdersPage = () => {
       });
 
       message.success("Cập nhật trạng thái đơn hàng thành công");
-
-      // Tìm đơn hàng trong danh sách để lấy trackingCode
-      const orderToUpdate = orders.find((order) => order.orderId === orderId);
 
       if (orderToUpdate) {
         // Cập nhật UI cho orders
@@ -426,10 +471,7 @@ const OrdersPage = () => {
         setPayments(updatedPayments);
 
         // Lưu vào localStorage với TRACKING CODE để phía người dùng có thể sử dụng
-        const orderStatusUpdates = JSON.parse(
-          localStorage.getItem("orderStatusUpdates") || "{}"
-        );
-
+        
         // Lưu trạng thái theo orderId để đảm bảo lưu được ngay cả khi không có trackingCode
         orderStatusUpdates[orderId] = newStatus;
 
@@ -553,15 +595,19 @@ const OrdersPage = () => {
     switch (status.toLowerCase()) {
       case "pending":
         return "Chờ xác nhận";
-      case "confirmed":
-        return "Đã xác nhận";
       case "processing":
         return "Đang chuẩn bị";
+      case "shipping":
+        return "Đang giao hàng";
       case "delivering":
         return "Đang giao hàng";
+      case "delivered":
+        return "Đã giao hàng";
       case "completed":
-        return "Hoàn thành";
+      case "complete":
+        return "Đã giao hàng";
       case "cancelled":
+      case "failed":
         return "Đã hủy";
       default:
         return status;
@@ -791,6 +837,29 @@ const OrdersPage = () => {
                   </span>
                   <p className="text-xs text-gray-500 mt-0.5">
                     Khách hàng đã nhận
+                  </p>
+                </div>
+              </div>
+            </Option>
+            <Option
+              value="cancelled"
+              label={
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                  <span>Đã hủy</span>
+                </div>
+              }
+            >
+              <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 mr-3">
+                  <CloseCircleOutlined className="text-red-500 text-sm" />
+                </div>
+                <div>
+                  <span className="text-gray-800 font-medium">
+                    Đã hủy
+                  </span>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Đơn hàng đã bị hủy
                   </p>
                 </div>
               </div>
