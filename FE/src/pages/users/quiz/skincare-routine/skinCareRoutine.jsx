@@ -12,6 +12,7 @@ import {
   Tag,
   Divider,
   message,
+  Badge,
 } from "antd";
 import {
   SkinOutlined,
@@ -1085,13 +1086,29 @@ export default function SkinCareRoutinePage() {
                             {product.productName}
                           </Text>
                           <div className="flex items-center justify-between mt-1">
-                            <Text className="text-pink-600 text-xs font-bold">
+                            <Text className="text-pink-600 font-bold">
                               {new Intl.NumberFormat("vi-VN", {
                                 style: "currency",
                                 currency: "VND",
                                 maximumFractionDigits: 0,
                               }).format(product.price)}
                             </Text>
+                            {product.stock <= 0 ? (
+                              <Badge
+                                count="Hết hàng"
+                                style={{ backgroundColor: "#f5222d" }}
+                              />
+                            ) : product.stock <= 5 ? (
+                              <Badge
+                                count={`Còn ${product.stock}`}
+                                style={{ backgroundColor: "#fa8c16" }}
+                              />
+                            ) : (
+                              <Badge
+                                count="Còn hàng"
+                                style={{ backgroundColor: "#52c41a" }}
+                              />
+                            )}
                           </div>
                         </div>
                       </div>
@@ -1212,6 +1229,22 @@ export default function SkinCareRoutinePage() {
                               maximumFractionDigits: 0,
                             }).format(product.price)}
                           </Text>
+                          {product.stock <= 0 ? (
+                            <Badge
+                              count="Hết hàng"
+                              style={{ backgroundColor: "#f5222d" }}
+                            />
+                          ) : product.stock <= 5 ? (
+                            <Badge
+                              count={`Còn ${product.stock}`}
+                              style={{ backgroundColor: "#fa8c16" }}
+                            />
+                          ) : (
+                            <Badge
+                              count="Còn hàng"
+                              style={{ backgroundColor: "#52c41a" }}
+                            />
+                          )}
                         </div>
                       </div>
                     </div>

@@ -77,6 +77,7 @@ const beautyShopApi = createApi({
           productName: productData.productName,
           description: productData.description,
           price: productData.price,
+          stock: productData.stock,
           mainIngredients: productData.mainIngredients,
           brandId: productData.brandId,
           volumeId: productData.volumeId,
@@ -162,9 +163,26 @@ const beautyShopApi = createApi({
       query: (orderData) => ({
         url: endpoints.CREATE_ORDER,
         method: "POST",
-        data: orderData,
+        body: orderData,
       }),
-      invalidatesTags: ["Orders"],
+      invalidatesTags: ["Orders", "Products"],
+    }),
+
+    cancelOrder: builder.mutation({
+      query: (orderId) => ({
+        url: `Order/${orderId}/cancel`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Orders", "Products"],
+    }),
+
+    updateOrderStatus: builder.mutation({
+      query: ({ orderId, status }) => ({
+        url: `Order/${orderId}/status`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["Orders", "Products"],
     }),
 
     updateUserProfile: builder.mutation({
@@ -252,6 +270,8 @@ export const {
   useDeleteCategoryMutation,
   useGetOrdersQuery,
   useCreateOrderMutation,
+  useCancelOrderMutation,
+  useUpdateOrderStatusMutation,
   useUpdateUserProfileMutation,
   useGetBrandsQuery,
   useCreateBrandMutation,
