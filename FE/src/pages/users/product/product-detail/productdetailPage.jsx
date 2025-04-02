@@ -287,24 +287,46 @@ export default function ProductDetailPage() {
                       {product?.skinTypeName}
                     </Text>
                   </div>
-                </div>
-
-                {/* Main Ingredients */}
-                <div>
-                  <Text className="text-black font-bold block mb-3">
-                    Thành phần chính
-                  </Text>
-                  <div className="flex flex-wrap gap-2">
-                    {product?.mainIngredients
-                      ?.split(",")
-                      .map((ingredient, index) => (
-                        <Tag
-                          key={index}
-                          className="m-0 px-3 py-1.5 bg-gray-50 text-gray-600 border-gray-100 rounded-full"
-                        >
-                          {ingredient.trim()}
+                  <div>
+                    <Text className="text-gray-500 block mb-1">
+                      Tình trạng kho
+                    </Text>
+                    {product.stock <= 0 ? (
+                      <Text className="text-lg font-medium text-red-500">
+                        Hết hàng
+                      </Text>
+                    ) : product.stock <= 5 ? (
+                      <Text className="text-lg font-medium text-orange-500">
+                        Sắp hết hàng ({product.stock} sản phẩm)
+                      </Text>
+                    ) : (
+                      <Text className="text-lg font-medium text-green-500">
+                        Còn hàng ({product.stock} sản phẩm)
+                      </Text>
+                    )}
+                  </div>
+                  <div>
+                    <Text className="text-gray-500 block mb-1">
+                      Thành phần chính
+                    </Text>
+                    <div className="flex flex-wrap gap-1">
+                      {product?.mainIngredients
+                        ?.split(",")
+                        .slice(0, 2)
+                        .map((ingredient, index) => (
+                          <Tag
+                            key={index}
+                            className="m-0 px-2 py-0.5 bg-gray-50 text-gray-600 border-gray-100 rounded-full"
+                          >
+                            {ingredient.trim()}
+                          </Tag>
+                        ))}
+                      {product?.mainIngredients?.split(",").length > 2 && (
+                        <Tag className="m-0 px-2 py-0.5 bg-gray-50 text-gray-600 border-gray-100 rounded-full">
+                          +{product?.mainIngredients?.split(",").length - 2}
                         </Tag>
-                      ))}
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -317,63 +339,78 @@ export default function ProductDetailPage() {
                     {product?.description}
                   </Text>
                 </div>
-              </div>
 
-              {/* Bottom Actions */}
-              <div className="pt-8 mt-8 border-t border-gray-100">
-                <div className="flex items-center gap-4 mb-6">
-                  <Text className="text-gray-600">Số lượng:</Text>
-                  <div className="flex items-center">
-                    <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="w-10 h-10 rounded-l-lg border border-r-0 border-gray-200 flex items-center justify-center hover:bg-gray-50"
-                    >
-                      <MinusOutlined className="text-gray-500" />
-                    </button>
-                    <InputNumber
-                      min={1}
-                      max={100}
-                      value={quantity}
-                      onChange={(value) =>
-                        setQuantity(value ? Math.floor(Math.abs(value)) : 1)
-                      }
-                      className="w-16 h-10 border-y border-gray-200 text-center focus:outline-none"
-                      controls={false}
-                      keyboard={false}
-                    />
-                    <button
-                      onClick={() => setQuantity(quantity + 1)}
-                      className="w-10 h-10 rounded-r-lg border border-l-0 border-gray-200 flex items-center justify-center hover:bg-gray-50"
-                    >
-                      <PlusOutlined className="text-gray-500" />
-                    </button>
+                {/* Bottom Actions */}
+                <div className="pt-8 mt-4">
+                  <div className="flex items-center gap-4 mb-6">
+                    <Text className="text-gray-600">Số lượng:</Text>
+                    <div className="flex items-center">
+                      <button
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        className="w-10 h-10 rounded-l-lg border border-r-0 border-gray-200 flex items-center justify-center hover:bg-gray-50"
+                        disabled={product.stock <= 0}
+                      >
+                        <MinusOutlined className="text-gray-500" />
+                      </button>
+                      <InputNumber
+                        min={1}
+                        max={product.stock || 1}
+                        value={quantity}
+                        onChange={(value) =>
+                          setQuantity(
+                            value
+                              ? Math.min(
+                                  Math.floor(Math.abs(value)),
+                                  product.stock || 1
+                                )
+                              : 1
+                          )
+                        }
+                        className="w-16 h-10 border-y border-gray-200 text-center focus:outline-none"
+                        controls={false}
+                        keyboard={false}
+                        disabled={product.stock <= 0}
+                      />
+                      <button
+                        onClick={() =>
+                          setQuantity(
+                            Math.min(quantity + 1, product.stock || 1)
+                          )
+                        }
+                        className="w-10 h-10 rounded-r-lg border border-l-0 border-gray-200 flex items-center justify-center hover:bg-gray-50"
+                        disabled={
+                          quantity >= product.stock || product.stock <= 0
+                        }
+                      >
+                        <PlusOutlined className="text-gray-500" />
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-6 gap-4">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleAddToCart}
-                    className="col-span-4 h-14 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium flex items-center justify-center gap-2 transition-all duration-200"
-                  >
-                    <ShoppingCartOutlined className="text-xl" />
-                    Thêm vào giỏ hàng
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleWishlistToggle}
-                    className={`col-span-2 h-14 rounded-xl border-2 flex items-center justify-center gap-2 transition-all duration-200
-                      ${
-                        isInWishlist
-                          ? "border-pink-500 text-pink-500 bg-pink-50"
-                          : "border-gray-200 text-gray-400 hover:border-pink-500 hover:text-pink-500"
-                      }`}
-                  >
-                    {isInWishlist ? <HeartFilled /> : <HeartOutlined />}
-                    {isInWishlist ? "Đã thích" : "Yêu thích"}
-                  </motion.button>
+                  <div className="flex gap-3">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleAddToCart}
+                      className="col-span-4 h-14 w-full bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium flex items-center justify-center gap-2 transition-all duration-200"
+                      disabled={product.stock <= 0}
+                    >
+                      <ShoppingCartOutlined className="text-xl" />
+                      {product.stock <= 0 ? "Hết hàng" : "Thêm vào giỏ hàng"}
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      className="px-6 py-3 border border-pink-500 text-pink-500 rounded-lg font-medium hover:bg-pink-50 transition-colors"
+                      onClick={handleWishlistToggle}
+                    >
+                      {isInWishlist ? (
+                        <HeartFilled className="text-lg text-pink-500" />
+                      ) : (
+                        <HeartOutlined className="text-lg" />
+                      )}
+                    </motion.button>
+                  </div>
                 </div>
               </div>
             </div>

@@ -122,6 +122,7 @@ const ProductPage = () => {
       productName: product.productName,
       description: product.description,
       price: product.price,
+      stock: product.stock || 0,
       brandId: product.brandId,
       categoryId: product.categoryId,
       mainIngredients: product.mainIngredients,
@@ -187,6 +188,7 @@ const ProductPage = () => {
         productName: values.productName,
         description: values.description,
         price: parseFloat(values.price),
+        stock: parseInt(values.stock),
         mainIngredients: values.mainIngredients,
         brandId: parseInt(values.brandId),
         volumeId: parseInt(values.volumeId),
@@ -358,6 +360,9 @@ const ProductPage = () => {
                     <th className="px-6 py-4 w-[120px] text-left text-sm font-medium text-gray-500">
                       Giá
                     </th>
+                    <th className="px-6 py-4 w-[100px] text-left text-sm font-medium text-gray-500">
+                      Số lượng
+                    </th>
                     <th className="px-6 py-4 w-[100px] text-right text-sm font-medium text-gray-500">
                       Thao tác
                     </th>
@@ -411,6 +416,9 @@ const ProductPage = () => {
                       </td>
                       <td className="px-6 py-4 text-sm font-medium text-pink-500 whitespace-nowrap">
                         {product.price?.toLocaleString()}đ
+                      </td>
+                      <td className="px-6 py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
+                        {product.stock || 0}
                       </td>
                       <td className="px-6 py-4 text-right text-sm font-medium">
                         <div className="flex justify-end space-x-2">
@@ -484,6 +492,14 @@ const ProductPage = () => {
                   }
                   parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
                 />
+              </Form.Item>
+
+              <Form.Item
+                name="stock"
+                label="Số lượng trong kho"
+                rules={[{ required: true, message: "Vui lòng nhập số lượng" }]}
+              >
+                <InputNumber className="w-full" min={0} precision={0} />
               </Form.Item>
 
               <Form.Item

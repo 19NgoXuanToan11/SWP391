@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Spin,
@@ -13,6 +13,8 @@ import {
   Badge,
   Tooltip,
   Button,
+  Modal,
+  Tabs,
 } from "antd";
 import {
   CheckCircleOutlined,
@@ -37,6 +39,8 @@ import {
   DownOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { useCancelOrderMutation } from "../../../services/api/beautyShopApi";
 
 const { RangePicker } = DatePicker;
 
@@ -51,6 +55,11 @@ const OrdersHistoryPage = () => {
   const [expandedOrder, setExpandedOrder] = useState(null);
   const [dateRange, setDateRange] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
+  const navigate = useNavigate();
+  const [selectedOrder, setSelectedOrder] = useState(null);
+
+  // RTK Query hook for order cancellation
+  const [cancelOrder, { isLoading: isCancelling }] = useCancelOrderMutation();
 
   // Lấy userId từ localStorage
   const [userId, setUserId] = useState(() => {
@@ -77,6 +86,7 @@ const OrdersHistoryPage = () => {
   // Thêm state để lưu trữ status updates
   const [orderStatusUpdates, setOrderStatusUpdates] = useState({});
 
+  // RTK Query hook for order cancellation
   useEffect(() => {
     fetchOrders();
 
@@ -435,6 +445,50 @@ const OrdersHistoryPage = () => {
     }
   };
 
+  // Handle order cancellation
+  const handleCancelOrder = async (orderId) => {
+    try {
+      // Confirm with user
+      Modal.confirm({
+        title: "Hủy đơn hàng",
+        content: "Bạn có chắc chắn muốn hủy đơn hàng này không?",
+        okText: "Hủy đơn hàng",
+        okType: "danger",
+        cancelText: "Không",
+        async onOk() {
+          try {
+            await cancelOrder(orderId).unwrap();
+            message.success("Đơn hàng đã được hủy thành công");
+
+            // Update local state
+            setOrders(
+              orders.map((order) =>
+                order.id === orderId ? { ...order, status: "cancelled" } : order
+              )
+            );
+
+            // Also update in localStorage to maintain consistency with staff view
+            const orderStatusUpdates = JSON.parse(
+              localStorage.getItem("orderStatusUpdates") || "{}"
+            );
+            orderStatusUpdates[orderId] = "cancelled";
+            localStorage.setItem(
+              "orderStatusUpdates",
+              JSON.stringify(orderStatusUpdates)
+            );
+
+            // Reload orders
+            fetchOrders();
+          } catch (error) {
+            message.error("Không thể hủy đơn hàng. Vui lòng thử lại sau.");
+          }
+        },
+      });
+    } catch (error) {
+      message.error("Đã xảy ra lỗi. Vui lòng thử lại sau.");
+    }
+  };
+
   return (
     <div className="min-h-screen py-12 px-4">
       <div className="max-w-6xl mx-auto">
@@ -733,6 +787,24 @@ const OrdersHistoryPage = () => {
                           {formatPrice(order.total)}
                         </span>
                       </div>
+
+                      {/* Cancel Order Button - Only show for pending or shipping orders */}
+                      {(order.status === "pending" ||
+                        order.status === "shipping") && (
+                        <Button
+                          danger
+                          type="text"
+                          icon={<CloseCircleOutlined />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCancelOrder(order.id);
+                          }}
+                          loading={isCancelling}
+                          className="text-sm"
+                        >
+                          Hủy đơn
+                        </Button>
+                      )}
 
                       <button
                         onClick={() => toggleOrderExpand(order.id)}
