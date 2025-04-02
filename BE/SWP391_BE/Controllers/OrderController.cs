@@ -76,7 +76,7 @@ namespace SWP391_BE.Controllers
                     return BadRequest("Order data is required");
                 }
                 
-                // Kiểm tra số lượng tồn kho trước khi tạo đơn hàng
+                // Kiểm tra số lượng tồn kho trước khi tạo đơn hàng (vẫn giữ phần này để đảm bảo không tạo đơn hàng khi không đủ hàng)
                 foreach (var item in createOrderDTO.Items)
                 {
                     var product = await _productService.GetProductByIdAsync(item.ProductId);
@@ -116,11 +116,7 @@ namespace SWP391_BE.Controllers
                 
                 await _orderService.AddOrderAsync(order);
                 
-                // Cập nhật số lượng tồn kho sau khi đơn hàng được tạo thành công
-                foreach (var item in createOrderDTO.Items)
-                {
-                    await _productService.UpdateProductStockAsync(item.ProductId, item.Quantity);
-                }
+                // Không trừ stock ở đây nữa, vì sẽ trừ khi thanh toán thành công
 
                 var createdOrderDto = _mapper.Map<OrderDTO>(order);
                 return CreatedAtAction(

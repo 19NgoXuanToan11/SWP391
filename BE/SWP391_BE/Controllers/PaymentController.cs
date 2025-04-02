@@ -9,6 +9,8 @@ using SWP391_BE.DTOs;
 using System.Collections;
 using System.Net.NetworkInformation;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace SWP391_BE.Controllers
 {
@@ -20,12 +22,16 @@ namespace SWP391_BE.Controllers
         private readonly IOrderService _orderService;
         private readonly IPaymentService _paymentService;
         private readonly IHistoryService _historyService;
-        public PaymentController(PayOS payOS, IOrderService orderService, IPaymentService paymentService, IHistoryService historyservice)
+        private readonly IProductService _productService;
+        private readonly ILogger<PaymentController> _logger;
+        public PaymentController(PayOS payOS, IOrderService orderService, IPaymentService paymentService, IHistoryService historyservice, IProductService productService, ILogger<PaymentController> logger)
         {
             _payOS = payOS;
             _orderService = orderService;
             _paymentService = paymentService;
             _historyService = historyservice;
+            _productService = productService;
+            _logger = logger;
 
         }
         public record ConfirmWebhook(
@@ -263,6 +269,90 @@ namespace SWP391_BE.Controllers
             }
 
             return null;
+        }
+
+        [HttpPost("payos-webhook")]
+        public async Task<IActionResult> payOSTransferHandler([FromBody] PayOSWebhookDTO webhookData)
+        {
+            try
+            {
+                _logger.LogInformation("Received PayOS webhook: {WebhookData}", JsonConvert.SerializeObject(webhookData));
+                
+                var data = webhookData.data;
+                if (data == null)
+                {
+                    _logger.LogWarning("PayOS webhook data is null");
+                    return BadRequest("Invalid webhook data");
+                }
+
+                // Kiểm tra mã trạng thái thanh toán
+                if (data.code == "00") // Mã thành công
+                {
+                    // Lấy orderId từ orderCode
+                    string orderCode = data.orderCode;
+                    int? orderId = null;
+                    
+                    if (!string.IsNullOrEmpty(orderCode) && orderCode.StartsWith("ORDER_"))
+                    {
+                        string orderIdStr = orderCode.Substring(6); // Bỏ tiền tố "ORDER_"
+                        if (int.TryParse(orderIdStr, out int id))
+                        {
+                            orderId = id;
+                        }
+                    }
+
+                    if (!orderId.HasValue)
+                    {
+                        _logger.LogWarning("Could not extract orderId from orderCode: {OrderCode}", orderCode);
+                        return BadRequest("Invalid order code format");
+                    }
+
+                    // Cập nhật trạng thái đơn hàng thành "Paid"
+                    var order = await _orderService.GetOrderByIdAsync(orderId.Value);
+                    if (order == null)
+                    {
+                        _logger.LogWarning("Order not found with ID: {OrderId}", orderId.Value);
+                        return NotFound($"Order not found with ID: {orderId.Value}");
+                    }
+
+                    // Cập nhật trạng thái đơn hàng
+                    await _orderService.UpdateOrderStatusAsync(orderId.Value, "Paid");
+                    
+                    // Trừ stock cho từng sản phẩm trong đơn hàng
+                    foreach (var orderDetail in order.OrderDetails)
+                    {
+                        await _productService.UpdateProductStockAsync(orderDetail.ProductId, orderDetail.Quantity);
+                        _logger.LogInformation("Reduced stock for product {ProductId} by {Quantity} units", 
+                            orderDetail.ProductId, orderDetail.Quantity);
+                    }
+
+                    // Lưu thông tin thanh toán
+                    var payment = new Payment
+                    {
+                        OrderId = orderId.Value,
+                        Amount = data.amount,
+                        PaymentDate = DateTime.Now,
+                        PaymentMethod = "PayOS",
+                        TransactionId = data.transactionId,
+                        Status = "Completed"
+                    };
+                    
+                    await _paymentService.AddPaymentAsync(payment);
+                    
+                    _logger.LogInformation("Payment processed successfully for order {OrderId}", orderId.Value);
+                    return Ok(new { message = "Payment processed successfully" });
+                }
+                else
+                {
+                    _logger.LogWarning("Payment not successful. Code: {Code}, Message: {Message}", data.code, data.desc);
+                    return Ok(new { message = "Payment not successful" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing PayOS webhook");
+                return StatusCode(500, "An error occurred while processing the payment webhook");
+            }
         }
 
 
