@@ -14,15 +14,18 @@ namespace SWP391_BE.Controllers
         private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
         private readonly ILogger<OrderController> _logger;
+        private readonly IProductService _productService;
 
         public OrderController(
             IOrderService orderService, 
             IMapper mapper,
-            ILogger<OrderController> logger)
+            ILogger<OrderController> logger,
+            IProductService productService)
         {
             _orderService = orderService;
             _mapper = mapper;
             _logger = logger;
+            _productService = productService;
         }
 
         [HttpGet]
@@ -169,17 +172,31 @@ namespace SWP391_BE.Controllers
                 }
 
                 // Validate the status value
-                string[] validStatuses = new[] { "pending", "delivering", "complete", "failed" };
+                string[] validStatuses = new[] { "pending", "delivering", "complete", "failed", "cancelled" };
                 if (!validStatuses.Contains(statusDTO.Status.ToLower()))
                 {
                     return BadRequest($"Invalid status. Valid values are: {string.Join(", ", validStatuses)}");
                 }
 
-                // Check if order exists without loading related entities
-                var orderExists = await _orderService.OrderExistsAsync(id);
-                if (!orderExists)
+                // Get the order with details to check current status
+                var order = await _orderService.GetOrderByIdAsync(id);
+                if (order == null)
                 {
                     return NotFound($"Order with ID {id} not found");
+                }
+
+                // If order is being cancelled and was previously paid, restore stock
+                if (statusDTO.Status.ToLower() == "cancelled" && order.Status?.ToLower() == "paid")
+                {
+                    foreach (var orderDetail in order.OrderDetails)
+                    {
+                        var product = await _productService.GetProductByIdAsync(orderDetail.ProductId);
+                        if (product != null && product.Stock.HasValue)
+                        {
+                            product.Stock = product.Stock.Value + orderDetail.Quantity;
+                            await _productService.UpdateProductAsync(product);
+                        }
+                    }
                 }
 
                 // Use the specialized method for updating status
