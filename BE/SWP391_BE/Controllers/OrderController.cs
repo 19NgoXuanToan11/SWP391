@@ -190,12 +190,7 @@ namespace SWP391_BE.Controllers
                 {
                     foreach (var orderDetail in order.OrderDetails)
                     {
-                        var product = await _productService.GetProductByIdAsync(orderDetail.ProductId);
-                        if (product != null && product.Stock.HasValue)
-                        {
-                            product.Stock = product.Stock.Value + orderDetail.Quantity;
-                            await _productService.UpdateProductAsync(product);
-                        }
+                        await _productService.RestoreProductStockAsync(orderDetail.ProductId, orderDetail.Quantity);
                     }
                 }
 

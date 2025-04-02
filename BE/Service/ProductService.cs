@@ -313,5 +313,25 @@ namespace Service
                 throw;
             }
         }
+
+        public async Task UpdateProductStockAsync(int productId, int quantity)
+        {
+            var product = await _productRepository.GetByIdAsync(productId);
+            if (product != null && product.Stock.HasValue)
+            {
+                product.Stock = product.Stock.Value - quantity;
+                await _productRepository.UpdateAsync(product);
+            }
+        }
+
+        public async Task RestoreProductStockAsync(int productId, int quantity)
+        {
+            var product = await _productRepository.GetByIdAsync(productId);
+            if (product != null && product.Stock.HasValue)
+            {
+                product.Stock = product.Stock.Value + quantity;
+                await _productRepository.UpdateAsync(product);
+            }
+        }
     }
 }

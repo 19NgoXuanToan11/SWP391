@@ -603,3 +603,14 @@ C:\Desktop\IT\FPT\5\SWP391\SWP391\SWP391\BE\SWP391_BE\obj\Debug\net8.0\refint\SW
 C:\Desktop\IT\FPT\5\SWP391\SWP391\SWP391\BE\SWP391_BE\obj\Debug\net8.0\SWP391_BE.pdb
 C:\Desktop\IT\FPT\5\SWP391\SWP391\SWP391\BE\SWP391_BE\obj\Debug\net8.0\SWP391_BE.genruntimeconfig.cache
 C:\Desktop\IT\FPT\5\SWP391\SWP391\SWP391\BE\SWP391_BE\obj\Debug\net8.0\ref\SWP391_BE.dll
+D:\Git\SWP391\BE\SWP391_BE\obj\Debug\net8.0\SWP391_BE.csproj.AssemblyReference.cache
+D:\Git\SWP391\BE\SWP391_BE\obj\Debug\net8.0\SWP391_BE.GeneratedMSBuildEditorConfig.editorconfig
+D:\Git\SWP391\BE\SWP391_BE\obj\Debug\net8.0\SWP391_BE.AssemblyInfoInputs.cache
+D:\Git\SWP391\BE\SWP391_BE\obj\Debug\net8.0\SWP391_BE.AssemblyInfo.cs
+D:\Git\SWP391\BE\SWP391_BE\obj\Debug\net8.0\SWP391_BE.csproj.CoreCompileInputs.cache
+D:\Git\SWP391\BE\SWP391_BE\obj\Debug\net8.0\SWP391_BE.MvcApplicationPartsAssemblyInfo.cs
+D:\Git\SWP391\BE\SWP391_BE\obj\Debug\net8.0\SWP391_BE.MvcApplicationPartsAssemblyInfo.cache
+D:\Git\SWP391\BE\SWP391_BE\obj\Debug\net8.0\SWP391_BE.sourcelink.json
+D:\Git\SWP391\BE\SWP391_BE\obj\Debug\net8.0\SWP391_BE.dll
+D:\Git\SWP391\BE\SWP391_BE\obj\Debug\net8.0\refint\SWP391_BE.dll
+D:\Git\SWP391\BE\SWP391_BE\obj\Debug\net8.0\SWP391_BE.pdb

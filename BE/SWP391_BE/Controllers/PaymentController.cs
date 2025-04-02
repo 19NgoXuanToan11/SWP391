@@ -230,12 +230,7 @@ namespace SWP391_BE.Controllers
                     // Trừ stock cho các sản phẩm trong đơn hàng
                     foreach (var orderDetail in order.OrderDetails)
                     {
-                        var product = orderDetail.Product;
-                        if (product != null && product.Stock.HasValue)
-                        {
-                            product.Stock = product.Stock.Value - orderDetail.Quantity;
-                            await _productService.UpdateProductAsync(product);
-                        }
+                        await _productService.UpdateProductStockAsync(orderDetail.ProductId, orderDetail.Quantity);
                     }
 
                     // Tạo và lưu bản ghi History
