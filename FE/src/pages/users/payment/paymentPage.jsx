@@ -18,6 +18,7 @@ import {
   Form,
   Input,
   Modal,
+  Select,
 } from "antd";
 import {
   QrcodeOutlined,
@@ -33,6 +34,8 @@ import {
   HomeOutlined,
   PhoneOutlined,
   MailOutlined,
+  EnvironmentOutlined,
+  DownOutlined,
 } from "@ant-design/icons";
 import { QRCode } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
@@ -41,6 +44,7 @@ import { PaymentSteps } from "../../../components/payment-step/PaymentStep";
 import axios from "axios";
 
 const { Title, Text, Paragraph } = Typography;
+const { Option } = Select;
 
 export function PaymentPage() {
   const { orderId } = useParams();
@@ -57,6 +61,83 @@ export function PaymentPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [paymentUrl, setPaymentUrl] = useState("");
   const [form] = Form.useForm();
+
+  // State để lưu trữ địa chỉ đã lưu của người dùng
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [isAddressModalVisible, setIsAddressModalVisible] = useState(false);
+
+  // Hàm lấy địa chỉ đã lưu từ localStorage
+  const loadSavedAddresses = () => {
+    const userId = user?.id;
+    if (!userId) return [];
+
+    try {
+      const savedAddressesStr = localStorage.getItem(
+        `user_addresses_${userId}`
+      );
+      if (savedAddressesStr) {
+        const addresses = JSON.parse(savedAddressesStr);
+        setSavedAddresses(addresses);
+
+        // Nếu có địa chỉ đã lưu, tự động chọn địa chỉ đầu tiên
+        if (addresses.length > 0) {
+          setSelectedAddress(addresses[0]);
+          // Cập nhật form với thông tin địa chỉ đã lưu
+          form.setFieldsValue({
+            name: addresses[0].name,
+            address: addresses[0].address,
+            phone: addresses[0].phone,
+            email: addresses[0].email,
+          });
+        }
+
+        return addresses;
+      }
+    } catch (error) {
+      console.error("Error loading saved addresses:", error);
+    }
+    return [];
+  };
+
+  // Hàm lưu địa chỉ mới vào localStorage
+  const saveAddress = (addressInfo) => {
+    const userId = user?.id;
+    if (!userId) return;
+
+    // Kiểm tra xem có đủ thông tin địa chỉ không
+    if (
+      !addressInfo.name ||
+      !addressInfo.phone ||
+      !addressInfo.address ||
+      !addressInfo.email
+    ) {
+      console.warn("Cannot save incomplete address information");
+      return;
+    }
+
+    try {
+      // Kiểm tra xem địa chỉ đã tồn tại chưa để tránh trùng lặp
+      const existingAddresses = [...savedAddresses];
+      const existingIndex = existingAddresses.findIndex(
+        (addr) =>
+          addr.phone === addressInfo.phone &&
+          addr.address === addressInfo.address
+      );
+
+      if (existingIndex === -1) {
+        // Nếu chưa có địa chỉ này, thêm vào danh sách
+        const newAddresses = [...existingAddresses, addressInfo];
+        localStorage.setItem(
+          `user_addresses_${userId}`,
+          JSON.stringify(newAddresses)
+        );
+        setSavedAddresses(newAddresses);
+      }
+    } catch (error) {
+      console.error("Error saving address:", error);
+    }
+  };
 
   useEffect(() => {
     // Nếu không có orderId, điều hướng về trang cart
@@ -130,6 +211,23 @@ export function PaymentPage() {
     fetchOrder();
   }, [orderId, navigate]);
 
+  // Load địa chỉ đã lưu khi component mount và khi user thay đổi
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const addresses = loadSavedAddresses();
+
+      // Nếu không có địa chỉ đã lưu, điền thông tin mặc định từ tài khoản người dùng
+      if (!addresses || addresses.length === 0) {
+        form.setFieldsValue({
+          name: user.fullName || user.username || "",
+          email: user.email || "",
+          phone: user.phoneNumber || "",
+          address: user.address || "",
+        });
+      }
+    }
+  }, [isAuthenticated, user, form]);
+
   // const payOSConfig = {
   //   RETURN_URL: "", // required
   //   ELEMENT_ID: "", // required
@@ -162,14 +260,71 @@ export function PaymentPage() {
       return;
     }
 
+    // Kiểm tra xem có thông tin địa chỉ không
+    if (!selectedAddress && !form.getFieldValue("name")) {
+      message.error("Vui lòng nhập thông tin địa chỉ giao hàng");
+      return;
+    }
+
     setIsProcessing(true);
     try {
-      // Validate form first
-      await form.validateFields();
-      const buyerInfo = form.getFieldsValue();
+      let buyerInfo = {
+        name: "",
+        email: "",
+        phone: "",
+        address: "",
+      };
+
+      // Nếu đang dùng địa chỉ đã lưu, sử dụng thông tin từ địa chỉ đó
+      if (selectedAddress) {
+        buyerInfo = {
+          name: selectedAddress.name || "",
+          email: selectedAddress.email || "",
+          phone: selectedAddress.phone || "",
+          address: selectedAddress.address || "",
+        };
+      } else {
+        // Nếu không, validate form và lấy thông tin từ form
+        try {
+          await form.validateFields();
+          const formValues = form.getFieldsValue();
+          buyerInfo = {
+            name: formValues.name || "",
+            email: formValues.email || "",
+            phone: formValues.phone || "",
+            address: formValues.address || "",
+          };
+
+          // Lưu thông tin địa chỉ mới nếu đã điền đầy đủ
+          if (
+            buyerInfo.name &&
+            buyerInfo.phone &&
+            buyerInfo.address &&
+            buyerInfo.email
+          ) {
+            saveAddress(buyerInfo);
+          }
+        } catch (validationError) {
+          setIsProcessing(false);
+          return; // Form validation will show the errors
+        }
+      }
+
+      // Kiểm tra các trường bắt buộc
+      if (
+        !buyerInfo.name ||
+        !buyerInfo.phone ||
+        !buyerInfo.address ||
+        !buyerInfo.email
+      ) {
+        message.error("Vui lòng điền đầy đủ thông tin giao hàng");
+        setIsProcessing(false);
+        return;
+      }
 
       setLoading(true);
 
+      // Cấu trúc dữ liệu chính xác cho API
       const orderData = {
         buyerName: buyerInfo.name,
         buyerEmail: buyerInfo.email,
@@ -180,22 +335,87 @@ export function PaymentPage() {
         paymentMethod: paymentMethod,
       };
 
+      console.log("Final order data to be sent:", {
+        orderId: orderData.orderId,
+        UserId: orderData.UserId,
+        buyerName: orderData.buyerName,
+        buyerEmail: orderData.buyerEmail,
+        buyerPhone: orderData.buyerPhone,
+        buyerAddress: orderData.buyerAddress,
+        paymentMethod: orderData.paymentMethod,
+      });
+
       const response = await axios.post(
         "https://localhost:7285/Payment/create",
         orderData
       );
 
-      console.log(response.data);
+      console.log("API Response:", response.data);
       if (response.data && response.data.data) {
+        message.success("Đơn hàng đã được xác nhận");
         window.location.href = response.data.data.paymentUrl;
       } else {
         message.error("Không thể tạo liên kết thanh toán. Vui lòng thử lại!");
       }
     } catch (error) {
-      message.error("Đã xảy ra lỗi. Vui lòng thử lại!");
+      console.error("Payment error:", error);
+
+      // Log the complete error response for debugging
+      if (error.response) {
+        console.error("Error status:", error.response.status);
+        console.error("Error data:", error.response.data);
+
+        if (error.response.data && error.response.data.errors) {
+          // Display validation errors from the API
+          const errors = error.response.data.errors;
+          Object.entries(errors).forEach(([field, messages]) => {
+            console.error(`Field ${field} errors:`, messages);
+            messages.forEach((msg) => message.error(`${field}: ${msg}`));
+          });
+        } else if (error.response.data && error.response.data.message) {
+          message.error(error.response.data.message);
+        } else {
+          message.error(
+            `Error ${error.response.status}: ${error.response.statusText}`
+          );
+        }
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+        message.error("Không nhận được phản hồi từ máy chủ");
+      } else {
+        console.error("Error message:", error.message);
+        message.error(error.message || "Đã xảy ra lỗi khi xử lý đơn hàng");
+      }
     } finally {
       setIsProcessing(false);
       setLoading(false);
+    }
+  };
+
+  // Xử lý khi chọn địa chỉ đã lưu
+  const handleAddressChange = (addressIndex) => {
+    if (addressIndex === "new") {
+      // Nếu chọn "Địa chỉ mới", reset form và xóa địa chỉ đã chọn
+      form.resetFields();
+      if (user) {
+        form.setFieldsValue({
+          name: user.fullName || user.username || "",
+          email: user.email || "",
+          phone: user.phoneNumber || "",
+        });
+      }
+      setSelectedAddress(null);
+    } else {
+      // Điền thông tin địa chỉ đã lưu vào form
+      const selectedAddr = savedAddresses[addressIndex];
+      setSelectedAddress(selectedAddr);
+
+      form.setFieldsValue({
+        name: selectedAddr.name,
+        address: selectedAddr.address,
+        phone: selectedAddr.phone,
+        email: selectedAddr.email,
+      });
     }
   };
 
@@ -248,43 +468,40 @@ export function PaymentPage() {
             <Col xs={24} lg={14}>
               <Card
                 title={
-                  <Space>
-                    <ShoppingOutlined className="text-pink-500" />
+                  <div className="flex items-center gap-2 text-pink-500">
+                    <ShoppingOutlined />
                     <span>Chi Tiết Đơn Hàng</span>
-                  </Space>
+                  </div>
                 }
-                className="mb-6"
                 bordered={false}
-                bodyStyle={{ padding: "1.5rem" }}
+                className="mb-6"
               >
                 <div className="space-y-4">
-                  {order?.orderDetails.map((item) => (
+                  {order?.orderDetails?.map((item, index) => (
                     <div
-                      key={item.orderDetailId || item.id}
-                      className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl"
+                      key={index}
+                      className="flex items-center gap-4 p-3 bg-white rounded-xl border border-gray-100 hover:shadow-md transition-all"
                     >
-                      <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden">
                         <Image
-                          src={item.image}
-                          alt={item.productName || "Sản phẩm"}
-                          width={80}
-                          height={80}
-                          className="rounded-xl object-cover"
-                          preview={false}
-                          fallback="https://placehold.co/80x80/pink/white?text=BeautyCare"
+                          src={
+                            item.image ||
+                            "https://via.placeholder.com/300?text=Beauty+%26+Care"
+                          }
+                          alt={item.productName}
+                          className="w-full h-full object-cover"
+                          fallback="https://via.placeholder.com/300?text=No+Image"
                         />
-                        <div className="max-w-[70%]">
-                          <Text
-                            strong
-                            className="text-lg line-clamp-2 break-words"
-                          >
-                            {item.productName || "Sản phẩm"}
-                          </Text>
-                          <div>
-                            <Text type="secondary">
-                              Số lượng: {item.quantity}
-                            </Text>
-                          </div>
+                      </div>
+                      <div className="flex-grow">
+                        <Text
+                          strong
+                          className="text-gray-800 hover:text-pink-500 transition-colors"
+                        >
+                          {item.productName || "Sản phẩm"}
+                        </Text>
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <span>Số lượng: {item.quantity}</span>
                         </div>
                       </div>
                       <Text
@@ -315,87 +532,185 @@ export function PaymentPage() {
 
             <Col xs={24} lg={10}>
               <Card
-                title={
-                  <Space>
-                    <CreditCardOutlined className="text-pink-500" />
-                    <span>Phương Thức Thanh Toán</span>
-                  </Space>
-                }
                 className="mb-6"
                 bordered={false}
                 bodyStyle={{ padding: "1.5rem" }}
+                title={
+                  <div className="flex items-center gap-2 text-pink-500">
+                    <EnvironmentOutlined />
+                    <span>Địa Chỉ Nhận Hàng</span>
+                  </div>
+                }
               >
-                <Form
-                  form={form}
-                  layout="vertical"
-                  initialValues={{
-                    name: "",
-                    address: "",
-                    phone: "",
-                    email: "",
-                  }}
-                >
-                  <Form.Item
-                    name="name"
-                    label="Họ và tên"
-                    rules={[
-                      { required: true, message: "Vui lòng nhập họ và tên" },
-                    ]}
-                  >
-                    <Input
-                      prefix={<UserOutlined className="site-form-item-icon" />}
-                      placeholder="Nhập họ và tên người nhận"
-                    />
-                  </Form.Item>
+                {/* Hiển thị địa chỉ đã lưu nếu có */}
+                {savedAddresses.length > 0 && (
+                  <div>
+                    <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                      {selectedAddress && (
+                        <div className="p-4 bg-gray-50 border-b border-gray-200">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <div className="flex items-center gap-2 text-base">
+                                <span className="font-medium">
+                                  {selectedAddress.name}
+                                </span>
+                                <span className="text-gray-400 px-1">|</span>
+                                <span>{selectedAddress.phone}</span>
+                              </div>
+                              <div className="text-gray-600 mt-2">
+                                {selectedAddress.address}
+                              </div>
+                            </div>
+                            <div>
+                              <Tag color="pink" className="ml-2">
+                                Mặc Định
+                              </Tag>
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
-                  <Form.Item
-                    name="address"
-                    label="Địa chỉ"
-                    rules={[
-                      { required: true, message: "Vui lòng nhập địa chỉ" },
-                    ]}
-                  >
-                    <Input.TextArea
-                      prefix={<HomeOutlined className="site-form-item-icon" />}
-                      placeholder="Nhập địa chỉ giao hàng chi tiết"
-                      rows={3}
-                    />
-                  </Form.Item>
+                      <div className="p-3 flex justify-between items-center">
+                        <Button
+                          type="primary"
+                          ghost
+                          className="text-pink-500 border-pink-500 hover:text-pink-600 hover:border-pink-600"
+                          onClick={() => setIsAddressModalVisible(true)}
+                        >
+                          Thay Đổi
+                        </Button>
+                        <Button
+                          type="link"
+                          className="text-blue-500"
+                          onClick={() => handleAddressChange("new")}
+                        >
+                          <span className="text-lg mr-1">+</span>
+                          Thêm địa chỉ mới
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
-                  <Form.Item
-                    name="phone"
-                    label="Số điện thoại"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng nhập số điện thoại",
-                      },
-                      {
-                        pattern: /^[0-9]{10}$/,
-                        message: "Số điện thoại không hợp lệ",
-                      },
-                    ]}
+                {(!savedAddresses.length || selectedAddress === null) && (
+                  <Form
+                    form={form}
+                    layout="vertical"
+                    initialValues={{
+                      name: "",
+                      address: "",
+                      phone: "",
+                      email: "",
+                    }}
                   >
-                    <Input
-                      prefix={<PhoneOutlined className="site-form-item-icon" />}
-                      placeholder="Nhập số điện thoại"
-                    />
-                  </Form.Item>
+                    <Form.Item
+                      name="name"
+                      label="Họ và tên"
+                      rules={[
+                        { required: true, message: "Vui lòng nhập họ và tên" },
+                      ]}
+                    >
+                      <Input
+                        prefix={
+                          <UserOutlined className="site-form-item-icon" />
+                        }
+                        placeholder="Nhập họ và tên người nhận"
+                      />
+                    </Form.Item>
 
-                  <Form.Item
-                    name="email"
-                    label="Email"
-                    rules={[
-                      { required: true, message: "Vui lòng nhập email" },
-                      { type: "email", message: "Email không hợp lệ" },
-                    ]}
+                    <Form.Item
+                      name="address"
+                      label="Địa chỉ"
+                      rules={[
+                        { required: true, message: "Vui lòng nhập địa chỉ" },
+                      ]}
+                    >
+                      <Input.TextArea
+                        prefix={
+                          <HomeOutlined className="site-form-item-icon" />
+                        }
+                        placeholder="Nhập địa chỉ giao hàng chi tiết"
+                        rows={3}
+                      />
+                    </Form.Item>
+
+                    <Form.Item
+                      name="phone"
+                      label="Số điện thoại"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Vui lòng nhập số điện thoại",
+                        },
+                        {
+                          pattern: /^[0-9]{10}$/,
+                          message: "Số điện thoại không hợp lệ",
+                        },
+                      ]}
+                    >
+                      <Input
+                        prefix={
+                          <PhoneOutlined className="site-form-item-icon" />
+                        }
+                        placeholder="Nhập số điện thoại"
+                      />
+                    </Form.Item>
+
+                    <Form.Item
+                      name="email"
+                      label="Email"
+                      rules={[
+                        { required: true, message: "Vui lòng nhập email" },
+                        { type: "email", message: "Email không hợp lệ" },
+                      ]}
+                    >
+                      <Input
+                        prefix={
+                          <MailOutlined className="site-form-item-icon" />
+                        }
+                        placeholder="Nhập email"
+                      />
+                    </Form.Item>
+                  </Form>
+                )}
+              </Card>
+
+              <Card
+                className="mb-6"
+                bordered={false}
+                bodyStyle={{ padding: "1.5rem" }}
+                // title={
+                //   <div className="flex items-center gap-2 text-pink-500">
+                //     <CreditCardOutlined />
+                //     <span>Phương Thức Thanh Toán</span>
+                //   </div>
+                // }
+              >
+                {/* <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <Radio.Group
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
                   >
-                    <Input
-                      prefix={<MailOutlined className="site-form-item-icon" />}
-                      placeholder="Nhập email"
-                    />
-                  </Form.Item>
-                </Form>
+                    <Space direction="vertical" className="w-full">
+                      <Radio value="cod" className="py-2">
+                        <Space>
+                          <WalletOutlined className="text-lg text-orange-500" />
+                          <span className="font-medium">
+                            Thanh toán khi nhận hàng (COD)
+                          </span>
+                        </Space>
+                      </Radio>
+                      <Radio value="qr" className="py-2">
+                        <Space>
+                          <QrcodeOutlined className="text-lg text-blue-500" />
+                          <span className="font-medium">
+                            Thanh toán qua QR Code
+                          </span>
+                        </Space>
+                      </Radio>
+                    </Space>
+                  </Radio.Group>
+                </div> */}
 
                 <div className="mt-6">
                   <Button
@@ -446,6 +761,72 @@ export function PaymentPage() {
         <p>
           Bạn sẽ được chuyển đến trang thanh toán VNPay để hoàn tất giao dịch.
         </p>
+      </Modal>
+
+      {/* Modal hiển thị danh sách địa chỉ đã lưu */}
+      <Modal
+        title="Địa Chỉ Nhận Hàng"
+        open={isAddressModalVisible}
+        onCancel={() => setIsAddressModalVisible(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsAddressModalVisible(false)}>
+            Hủy
+          </Button>,
+          <Button
+            key="new"
+            type="primary"
+            className="bg-blue-500"
+            onClick={() => {
+              handleAddressChange("new");
+              setIsAddressModalVisible(false);
+            }}
+          >
+            + Thêm Địa Chỉ Mới
+          </Button>,
+        ]}
+        width={600}
+      >
+        <div className="address-list-container">
+          {savedAddresses.map((addr, index) => (
+            <div
+              key={index}
+              className={`p-4 border rounded-lg mb-3 cursor-pointer hover:border-pink-300 ${
+                selectedAddress &&
+                selectedAddress.phone === addr.phone &&
+                selectedAddress.address === addr.address
+                  ? "border-pink-500 bg-pink-50"
+                  : "border-gray-200"
+              }`}
+              onClick={() => {
+                handleAddressChange(index);
+                setIsAddressModalVisible(false);
+              }}
+            >
+              <div className="flex justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{addr.name}</span>
+                    <span className="text-gray-400">|</span>
+                    <span>{addr.phone}</span>
+                    {index === 0 && (
+                      <Tag color="pink" className="ml-2">
+                        Mặc Định
+                      </Tag>
+                    )}
+                  </div>
+                  <div className="text-gray-600 mt-2">{addr.address}</div>
+                </div>
+                {selectedAddress &&
+                  selectedAddress.phone === addr.phone &&
+                  selectedAddress.address === addr.address && (
+                    <div className="text-pink-500">
+                      <CheckCircleOutlined />
+                    </div>
+                  )}
+              </div>
+            </div>
+          ))}
+        </div>
       </Modal>
     </div>
   );

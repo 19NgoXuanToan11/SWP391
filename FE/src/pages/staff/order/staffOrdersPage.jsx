@@ -571,16 +571,16 @@ const OrdersPage = () => {
   // Payment table columns
   const paymentColumns = [
     {
-      title: "Mã giao dịch",
-      dataIndex: "paymentId",
-      key: "paymentId",
-      render: (text) => (
+      title: "Mã đơn hàng",
+      dataIndex: "orderId",
+      key: "orderId",
+      render: (text, record) => (
         <div className="flex items-center space-x-2">
           <span className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg">
-            <DollarOutlined className="text-blue-600" />
+            <ShoppingCartOutlined className="text-blue-600" />
           </span>
           <Text strong className="text-blue-600">
-            #{text}
+            #{text || "N/A"}
           </Text>
         </div>
       ),
@@ -596,7 +596,7 @@ const OrdersPage = () => {
               {text}
             </Text>
             <Text type="secondary" className="text-xs">
-              ID: {record.paymentId}
+              Mã GD: {record.paymentId}
             </Text>
           </div>
         </div>
@@ -862,7 +862,7 @@ const OrdersPage = () => {
                   Tìm kiếm
                 </label>
                 <Input
-                  placeholder="Tìm kiếm giao dịch..."
+                  placeholder="Tìm kiếm đơn hàng..."
                   prefix={<SearchOutlined className="text-blue-500" />}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}

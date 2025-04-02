@@ -161,15 +161,26 @@ const ProductPage = () => {
         values.productImage.fileList.length > 0
       ) {
         // Upload each file and collect URLs
-        const uploadPromises = values.productImage.fileList.map(
-          (file) => uploadFile(file.originFileObj, "products") // Use "products" folder
-        );
+        const uploadPromises = values.productImage.fileList
+          .map((file) => {
+            if (file.originFileObj) {
+              return uploadFile(file.originFileObj, "products");
+            } else if (file.url) {
+              return Promise.resolve(file.url);
+            }
+            return Promise.resolve(null);
+          })
+          .filter((p) => p !== null);
 
         imageUrlsArray = await Promise.all(uploadPromises);
+        console.log("Uploaded images:", imageUrlsArray);
       }
       // If editing product and no new images uploaded, use existing URLs
       else if (editingProduct && editingProduct.imageUrls) {
         imageUrlsArray = editingProduct.imageUrls;
+      } else if (editingProduct && editingProduct.imageUrl) {
+        // Fallback to single imageUrl if imageUrls is not available
+        imageUrlsArray = [editingProduct.imageUrl];
       }
 
       const productData = {
@@ -181,24 +192,60 @@ const ProductPage = () => {
         volumeId: parseInt(values.volumeId),
         skinTypeId: parseInt(values.skinTypeId),
         categoryId: parseInt(values.categoryId),
+        // Đồng bộ cả hai trường dữ liệu - cần thiết cho API
         imageUrls: imageUrlsArray,
+        imageUrl: imageUrlsArray.length > 0 ? imageUrlsArray[0] : "",
       };
 
+      console.log("Sending product data:", productData);
+
       if (editingProduct) {
-        await updateProduct({
-          id: editingProduct.productId,
-          productData,
-        }).unwrap();
-        message.success("Cập nhật sản phẩm thành công");
+        try {
+          await updateProduct({
+            id: editingProduct.productId,
+            productData,
+          }).unwrap();
+          message.success("Cập nhật sản phẩm thành công");
+
+          // Lưu hình ảnh vào localStorage tạm thời để hiển thị ngay lập tức
+          if (imageUrlsArray.length > 0) {
+            localStorage.setItem(
+              `product_image_${editingProduct.productId}`,
+              imageUrlsArray[0]
+            );
+          }
+        } catch (error) {
+          console.error("Lỗi khi cập nhật sản phẩm:", error);
+          message.error("Không thể cập nhật sản phẩm");
+        }
       } else {
-        await createProduct(productData).unwrap();
-        message.success("Tạo sản phẩm mới thành công");
+        try {
+          const result = await createProduct(productData).unwrap();
+          message.success("Tạo sản phẩm mới thành công");
+          console.log("Created product result:", result);
+
+          // Nếu API trả về ID sản phẩm, lưu hình ảnh vào localStorage
+          if (result && result.productId && imageUrlsArray.length > 0) {
+            localStorage.setItem(
+              `product_image_${result.productId}`,
+              imageUrlsArray[0]
+            );
+          }
+        } catch (error) {
+          console.error("Lỗi khi tạo sản phẩm mới:", error);
+          message.error("Không thể tạo sản phẩm mới");
+        }
       }
 
       setIsModalVisible(false);
       form.resetFields();
       setEditingProduct(null);
-      refetch();
+      setExistingImages([]);
+
+      // Thêm delay trước khi refetch để đảm bảo API đã cập nhật dữ liệu
+      setTimeout(() => {
+        refetch();
+      }, 500);
     } catch (error) {
       console.error("Error:", error);
       message.error(
