@@ -36,6 +36,7 @@ import {
   MailOutlined,
   EnvironmentOutlined,
   DownOutlined,
+  PercentageOutlined,
 } from "@ant-design/icons";
 import { QRCode } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
@@ -155,6 +156,29 @@ export function PaymentPage() {
 
         // If order details don't have images, you might need to fetch them separately
         const orderData = res.data;
+        
+        // Retrieve cart data from localStorage to get promotion information
+        try {
+          // Get order info from sessionStorage if available (set during checkout)
+          const orderSessionData = sessionStorage.getItem(`order_info_${orderId}`);
+          if (orderSessionData) {
+            const parsedOrderData = JSON.parse(orderSessionData);
+            console.log("Retrieved order info from sessionStorage:", parsedOrderData);
+            // Update order data with promotion info from session storage
+            if (parsedOrderData.promotionId && parsedOrderData.promotionDiscount) {
+              orderData.promotionId = parsedOrderData.promotionId;
+              orderData.promotionDiscount = parsedOrderData.promotionDiscount;
+              orderData.subtotal = parsedOrderData.subtotal;
+              // If the API subtotal doesn't match what we had in the cart,
+              // ensure we use the correct one with the discount applied
+              if (parsedOrderData.total && orderData.totalAmount !== parsedOrderData.total) {
+                orderData.totalAmount = parsedOrderData.total;
+              }
+            }
+          }
+        } catch (sessionError) {
+          console.error("Error retrieving order info from session:", sessionError);
+        }
 
         // Check if we need to fetch product images separately
         if (
@@ -515,7 +539,29 @@ export function PaymentPage() {
                 </div>
 
                 <div className="mt-6 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl">
-                  <div className="flex justify-between items-center">
+                  {/* Hiển thị tạm tính trước khi áp dụng mã giảm giá */}
+                  <div className="flex justify-between items-center mb-2">
+                    <Text className="text-gray-600">Tạm tính</Text>
+                    <Text className="text-gray-600">
+                      {formatPrice(order?.subtotal || order?.totalAmount)}
+                    </Text>
+                  </div>
+
+                  {/* Hiển thị mã khuyến mãi nếu có */}
+                  {order?.promotionId && order?.promotionDiscount > 0 && (
+                    <div className="flex justify-between items-center mb-2">
+                      <div className="flex items-center">
+                        <PercentageOutlined className="text-pink-500 mr-2" />
+                        <Text className="text-green-500">Mã khuyến mãi</Text>
+                      </div>
+                      <Text className="text-green-500">
+                        -{formatPrice(order?.promotionDiscount)}
+                      </Text>
+                    </div>
+                  )}
+
+                  {/* Tổng thanh toán cuối cùng */}
+                  <div className="flex justify-between items-center mt-3 pt-3 border-t border-gray-200">
                     <Text strong className="text-lg">
                       Tổng Thanh Toán
                     </Text>

@@ -278,6 +278,28 @@ function CartPage() {
         },
       });
 
+      // Store order information in sessionStorage for retrieval in payment page
+      try {
+        // Save the order information in sessionStorage including promotion details
+        const orderInfo = {
+          orderId: res.data.orderId,
+          promotionId: appliedPromotion?.promotionId || null,
+          promotionDiscount: discountAmount || 0,
+          subtotal: orderTotal,
+          total: finalTotal,
+        };
+        sessionStorage.setItem(
+          `order_info_${res.data.orderId}`,
+          JSON.stringify(orderInfo)
+        );
+        console.log("Order info saved to session storage:", orderInfo);
+      } catch (sessionError) {
+        console.error(
+          "Error saving order info to session storage:",
+          sessionError
+        );
+      }
+
       // Nếu đã sử dụng mã khuyến mãi, xóa mã khuyến mãi khỏi giỏ hàng
       if (appliedPromotion) {
         dispatch(removePromotion());
