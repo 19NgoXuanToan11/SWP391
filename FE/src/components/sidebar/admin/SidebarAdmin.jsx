@@ -11,6 +11,7 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   LogoutOutlined,
+  PercentageOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -33,6 +34,11 @@ const SidebarAdmin = () => {
     { path: "/admin/products", icon: <GiftOutlined />, label: "Sản phẩm" },
     { path: "/admin/category", icon: <AppstoreOutlined />, label: "Danh mục" },
     { path: "/admin/brand", icon: <TagOutlined />, label: "Thương hiệu" },
+    {
+      path: "/admin/promotion",
+      icon: <PercentageOutlined />,
+      label: "Khuyến mãi",
+    },
   ];
 
   const handleLogout = () => {

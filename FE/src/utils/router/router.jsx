@@ -21,6 +21,7 @@ import CategoryPage from "../../pages/admin/category/categoryPage";
 import OrdersPage from "../../pages/admin/order/ordersPage";
 import AccountsPage from "../../pages/admin/account/accountsPage";
 import ProductPage from "../../pages/admin/product/productPage";
+import PromotionPage from "../../pages/admin/promotion/promotionPage";
 
 // staff
 import StaffLoginPage from "../../pages/staff/login/staffLoginPage";
@@ -149,6 +150,14 @@ export const router = createBrowserRouter([
         element: (
           <AdminProtectedRoute>
             <BrandsPage />
+          </AdminProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/promotion",
+        element: (
+          <AdminProtectedRoute>
+            <PromotionPage />
           </AdminProtectedRoute>
         ),
       },

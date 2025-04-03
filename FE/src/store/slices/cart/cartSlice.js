@@ -16,6 +16,8 @@ const loadCartState = () => {
         items: [],
         total: 0,
         quantity: 0,
+        promotion: null,
+        discountAmount: 0,
       };
       // Lưu lại vào localStorage
       localStorage.setItem("allCarts", JSON.stringify(allCarts));
@@ -29,6 +31,8 @@ const loadCartState = () => {
       items: [],
       total: 0,
       quantity: 0,
+      promotion: null,
+      discountAmount: 0,
     };
   }
 };
@@ -112,6 +116,8 @@ const cartSlice = createSlice({
       state.items = [];
       state.total = 0;
       state.quantity = 0;
+      state.promotion = null;
+      state.discountAmount = 0;
 
       // Lưu vào localStorage - lưu ý chỉ xóa dữ liệu của người dùng hiện tại
       const userStr = localStorage.getItem("auth_user");
@@ -121,7 +127,13 @@ const cartSlice = createSlice({
       try {
         const allCarts = JSON.parse(localStorage.getItem("allCarts")) || {};
         if (allCarts[userId]) {
-          allCarts[userId] = { items: [], total: 0, quantity: 0 };
+          allCarts[userId] = {
+            items: [],
+            total: 0,
+            quantity: 0,
+            promotion: null,
+            discountAmount: 0,
+          };
           localStorage.setItem("allCarts", JSON.stringify(allCarts));
         }
       } catch (err) {
@@ -134,12 +146,31 @@ const cartSlice = createSlice({
       state.items = newCartState.items;
       state.total = newCartState.total;
       state.quantity = newCartState.quantity;
+      state.promotion = newCartState.promotion;
+      state.discountAmount = newCartState.discountAmount;
     },
 
     setCart: (state, action) => {
       state.items = action.payload.items || [];
       state.total = action.payload.total || 0;
       state.quantity = action.payload.quantity || 0;
+      state.promotion = action.payload.promotion || null;
+      state.discountAmount = action.payload.discountAmount || 0;
+    },
+
+    applyPromotion: (state, action) => {
+      state.promotion = action.payload;
+      if (action.payload) {
+        state.discountAmount =
+          (state.total * action.payload.discountPercentage) / 100;
+      } else {
+        state.discountAmount = 0;
+      }
+    },
+
+    removePromotion: (state) => {
+      state.promotion = null;
+      state.discountAmount = 0;
     },
   },
 });
@@ -151,6 +182,8 @@ export const {
   clearCart,
   loadCart,
   setCart,
+  applyPromotion,
+  removePromotion,
 } = cartSlice.actions;
 
 // Selectors

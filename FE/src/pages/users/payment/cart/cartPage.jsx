@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -20,6 +20,7 @@ import {
   notification,
   Spin,
   Checkbox,
+  Select,
 } from "antd";
 import {
   ShoppingCartOutlined,
@@ -37,11 +38,15 @@ import {
   SyncOutlined,
   MinusOutlined,
   PlusOutlined,
+  PercentageOutlined,
+  TagOutlined,
 } from "@ant-design/icons";
 import {
   removeFromCart,
   updateQuantity,
   clearCart,
+  applyPromotion,
+  removePromotion,
 } from "../../../../store/slices/cart/cartSlice";
 import { PaymentSteps } from "../../../../components/payment-step/PaymentStep";
 import { selectAuth } from "../../../../store/slices/auth/authSlice";
@@ -50,9 +55,11 @@ import {
   selectWishlistItems,
 } from "../../../../store/slices/wishlist/wishlistSlice";
 import axios from "axios";
+import { useGetPromotionsQuery } from "../../../../services/api/beautyShopApi";
 
 const { Title, Text, Paragraph } = Typography;
 const { Step } = Steps;
+const { Option } = Select;
 
 function CartPage() {
   const navigate = useNavigate();
@@ -78,6 +85,22 @@ function CartPage() {
 
   // Add state for selected items
   const [selectedItems, setSelectedItems] = React.useState([]);
+
+  // Lấy danh sách mã khuyến mãi
+  const { data: promotions, isLoading: isLoadingPromotions } =
+    useGetPromotionsQuery();
+
+  // Lấy thông tin mã khuyến mãi đã áp dụng từ Redux store
+  const appliedPromotion = useSelector((state) => state.cart.promotion);
+  const discountAmount = useSelector((state) => state.cart.discountAmount);
+
+  // Tìm các mã khuyến mãi đang hoạt động
+  const activePromotions = promotions?.filter((promo) => {
+    const now = new Date();
+    const startDate = new Date(promo.startDate);
+    const endDate = new Date(promo.endDate);
+    return now >= startDate && now <= endDate;
+  });
 
   const handleQuantityChange = (id, value) => {
     dispatch(updateQuantity({ id, quantity: value }));
@@ -141,6 +164,71 @@ function CartPage() {
     }).format(price);
   };
 
+  // Cập nhật hàm tính toán tổng tiền sau khi áp dụng mã khuyến mãi
+  const calculateFinalTotal = () => {
+    const subtotal = calculateTotal();
+    if (appliedPromotion) {
+      // Đảm bảo không giảm giá quá tổng tiền
+      return Math.max(0, subtotal - discountAmount);
+    }
+    return subtotal;
+  };
+
+  // Hàm áp dụng mã khuyến mãi
+  const handleApplyPromotion = (promotionId) => {
+    if (!promotionId) {
+      dispatch(removePromotion());
+      notification.info({
+        message: "Đã hủy mã khuyến mãi",
+        description: "Mã khuyến mãi đã được gỡ bỏ khỏi giỏ hàng của bạn.",
+        placement: "bottomRight",
+        icon: <TagOutlined style={{ color: "#1890ff" }} />,
+      });
+      return;
+    }
+
+    // Kiểm tra nếu không có sản phẩm nào được chọn
+    if (selectedItems.length === 0) {
+      notification.warning({
+        message: "Không thể áp dụng khuyến mãi",
+        description:
+          "Vui lòng chọn ít nhất một sản phẩm trước khi áp dụng mã khuyến mãi.",
+        placement: "bottomRight",
+        icon: <InfoCircleOutlined style={{ color: "orange" }} />,
+      });
+      return;
+    }
+
+    const selectedPromotion = promotions.find(
+      (p) => p.promotionId == promotionId
+    );
+    if (selectedPromotion) {
+      dispatch(applyPromotion(selectedPromotion));
+
+      // Tính số tiền sẽ giảm
+      const subtotal = calculateTotal();
+      const discountValue =
+        (subtotal * selectedPromotion.discountPercentage) / 100;
+
+      notification.success({
+        message: "Áp dụng mã khuyến mãi thành công",
+        description: (
+          <div>
+            <p>Đã áp dụng: {selectedPromotion.promotionName}</p>
+            <p>
+              Giảm giá: {selectedPromotion.discountPercentage}% tổng giá trị đơn
+              hàng
+            </p>
+            <p>Số tiền giảm: {formatPrice(discountValue)}</p>
+          </div>
+        ),
+        placement: "bottomRight",
+        duration: 5,
+        icon: <PercentageOutlined style={{ color: "#52c41a" }} />,
+      });
+    }
+  };
+
   const handleCheckout = async () => {
     if (selectedItems.length === 0) {
       message.warning("Vui lòng chọn ít nhất một sản phẩm để thanh toán");
@@ -159,6 +247,12 @@ function CartPage() {
       // Kiểm tra và xử lý ID người dùng
       let userId = user.id;
 
+      // Tính toán tổng giá trị đơn hàng
+      const orderTotal = calculateTotal();
+
+      // Tính toán giá cuối cùng sau khi áp dụng khuyến mãi
+      const finalTotal = calculateFinalTotal();
+
       // Tạo đối tượng đơn hàng - chỉ bao gồm các sản phẩm đã chọn
       const order = {
         userId: userId,
@@ -169,6 +263,11 @@ function CartPage() {
             quantity: item.quantity,
             price: item.price,
           })),
+        // Thêm thông tin khuyến mãi
+        promotionId: appliedPromotion?.promotionId || null,
+        promotionDiscount: discountAmount || 0,
+        subtotal: orderTotal,
+        total: finalTotal,
       };
 
       console.log("Sending order:", order);
@@ -178,6 +277,11 @@ function CartPage() {
           "Content-Type": "application/json",
         },
       });
+
+      // Nếu đã sử dụng mã khuyến mãi, xóa mã khuyến mãi khỏi giỏ hàng
+      if (appliedPromotion) {
+        dispatch(removePromotion());
+      }
 
       navigate(`/payment/${res.data.orderId}`);
     } catch (e) {
@@ -622,11 +726,56 @@ function CartPage() {
                       <Text>Tạm tính</Text>
                       <Text>{formatPrice(calculateTotal())}</Text>
                     </div>
+
+                    {/* Phần mã khuyến mãi mới thêm vào */}
+                    <div className="mt-4">
+                      <div className="flex items-center mb-2">
+                        <TagOutlined className="text-orange-500 mr-2" />
+                        <Text strong>Mã khuyến mãi</Text>
+                      </div>
+                      <div className="flex gap-2">
+                        <Select
+                          placeholder="Chọn mã khuyến mãi"
+                          className="w-full"
+                          loading={isLoadingPromotions}
+                          value={appliedPromotion?.promotionId || undefined}
+                          onChange={handleApplyPromotion}
+                          allowClear
+                          disabled={
+                            selectedItems.length === 0 || cartItems.length === 0
+                          }
+                        >
+                          {activePromotions?.map((promotion) => (
+                            <Option
+                              key={promotion.promotionId}
+                              value={promotion.promotionId}
+                            >
+                              <div className="flex items-center">
+                                <PercentageOutlined className="text-red-500 mr-2" />
+                                <span>
+                                  {promotion.promotionName} - Giảm{" "}
+                                  {promotion.discountPercentage}%
+                                </span>
+                              </div>
+                            </Option>
+                          ))}
+                        </Select>
+                      </div>
+                      {appliedPromotion && (
+                        <div className="mt-2 flex justify-between">
+                          <Text className="text-green-500">Giảm giá</Text>
+                          <Text className="text-green-500">
+                            -{formatPrice(discountAmount)}
+                          </Text>
+                        </div>
+                      )}
+                    </div>
+
                     <Divider className="my-4" />
                     <div className="flex justify-between">
                       <Text strong>Tổng cộng:</Text>
                       <Title level={3} className="text-pink-500">
-                        {formatPrice(calculateTotal())}
+                        {formatPrice(calculateFinalTotal())}
                       </Title>
                     </div>
                   </div>

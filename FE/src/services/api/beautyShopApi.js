@@ -12,7 +12,14 @@ const beautyShopApi = createApi({
     },
     credentials: "include",
   }),
-  tagTypes: ["Products", "Categories", "Orders", "User", "Brands"],
+  tagTypes: [
+    "Products",
+    "Categories",
+    "Orders",
+    "User",
+    "Brands",
+    "Promotions",
+  ],
   endpoints: (builder) => ({
     // Auth endpoints
     login: builder.mutation({
@@ -254,6 +261,43 @@ const beautyShopApi = createApi({
         body: data,
       }),
     }),
+
+    // Promotion endpoints
+    getPromotions: builder.query({
+      query: () => "/Promotion",
+      providesTags: ["Promotions"],
+    }),
+
+    getPromotionById: builder.query({
+      query: (id) => `/Promotion/${id}`,
+      providesTags: (result, error, id) => [{ type: "Promotions", id }],
+    }),
+
+    createPromotion: builder.mutation({
+      query: (promotionData) => ({
+        url: "/Promotion",
+        method: "POST",
+        body: promotionData,
+      }),
+      invalidatesTags: ["Promotions"],
+    }),
+
+    updatePromotion: builder.mutation({
+      query: ({ id, promotionData }) => ({
+        url: `/Promotion/${id}`,
+        method: "PUT",
+        body: promotionData,
+      }),
+      invalidatesTags: ["Promotions"],
+    }),
+
+    deletePromotion: builder.mutation({
+      query: (id) => ({
+        url: `/Promotion/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Promotions"],
+    }),
   }),
 });
 
@@ -281,6 +325,11 @@ export const {
   useResetPasswordMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
+  useGetPromotionsQuery,
+  useGetPromotionByIdQuery,
+  useCreatePromotionMutation,
+  useUpdatePromotionMutation,
+  useDeletePromotionMutation,
 } = beautyShopApi;
 
 export default beautyShopApi;

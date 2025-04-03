@@ -44,6 +44,13 @@ const endpoints = {
   CREATE_BRAND: "/Brand",
   UPDATE_BRAND: "/Brand/:id",
   DELETE_BRAND: "/Brand/:id",
+
+  // Promotions
+  GET_PROMOTIONS: "/Promotion",
+  GET_PROMOTION_DETAIL: "/Promotion/:id",
+  CREATE_PROMOTION: "/Promotion",
+  UPDATE_PROMOTION: "/Promotion/:id",
+  DELETE_PROMOTION: "/Promotion/:id",
 };
 
 export default endpoints;
