@@ -319,45 +319,96 @@ function CartPage() {
     message.success("Đã xóa tất cả sản phẩm khỏi giỏ hàng");
   };
 
-  // Hàm kiểm tra sự tồn tại của sản phẩm
-  const checkProductExistence = async (productId) => {
-    try {
-      const response = await axios.get(
-        `https://localhost:7285/api/Product/${productId}`
-      );
-      return response.status === 200;
-    } catch (error) {
-      return false;
-    }
-  };
-
+  // Add validation for cart items on component mount
   useEffect(() => {
-    const validateCartItems = async () => {
-      if (cartItems.length > 0) {
-        const nonExistent = [];
+    const validateAndCleanCart = () => {
+      if (cartItems.length === 0) return;
 
-        for (const item of cartItems) {
-          const exists = await checkProductExistence(item.id);
-          if (!exists) {
-            nonExistent.push(item);
-            dispatch(removeFromCart(item.id));
-          }
+      // Log all cart items for debugging
+      console.log("Validating cart items:", JSON.stringify(cartItems, null, 2));
+
+      // Find items with invalid IDs
+      const validItems = [];
+      const invalidItems = [];
+
+      cartItems.forEach((item) => {
+        // Skip completely empty or null items
+        if (!item) {
+          invalidItems.push(item);
+          return;
         }
 
-        if (nonExistent.length > 0) {
-          notification.warning({
-            message: "Thông báo giỏ hàng",
-            description: `Một số sản phẩm đã bị xóa khỏi giỏ hàng do không còn tồn tại: ${nonExistent
-              .map((item) => item.name)
-              .join(", ")}`,
-            placement: "bottomRight",
-            duration: 5,
+        // For products with any name identifier, we consider them valid
+        if (item.name || item.productName) {
+          // Always ensure we have proper defaults for missing properties
+          const validItem = {
+            ...item,
+            id: item.id || Date.now(), // Keep the ID even if it's a temporary one
+            productId: item.productId || item.id || Date.now(),
+            name: item.name || item.productName || "Sản phẩm không xác định",
+            productName:
+              item.productName || item.name || "Sản phẩm không xác định",
+            price: parseFloat(item.price) || 0,
+            quantity: parseInt(item.quantity) || 1,
+            image: item.image || item.productImages || "",
+            productImages: item.productImages || item.image || "",
+            brand: item.brand || item.brandName || "",
+            brandName: item.brandName || item.brand || "",
+            stock: item.stock !== undefined ? item.stock : true,
+            discount: item.discount || 0,
+            description: item.description || "",
+            // Preserve product key and fromOrder for identification
+            productKey: item.productKey || null,
+            fromOrder: item.fromOrder || null,
+          };
+          validItems.push(validItem);
+        } else {
+          // Invalid item - has no name at all
+          invalidItems.push(item);
+        }
+      });
+
+      // If we found invalid items, update the cart
+      if (invalidItems.length > 0) {
+        console.log(
+          "Removing completely invalid items from cart:",
+          invalidItems
+        );
+
+        // Update the cart with only valid items
+        dispatch({
+          type: "cart/setCart",
+          payload: {
+            items: validItems,
+            total: validItems.reduce(
+              (total, item) =>
+                total +
+                (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 1),
+              0
+            ),
+            quantity: validItems.reduce(
+              (total, item) => total + (parseInt(item.quantity) || 1),
+              0
+            ),
+            promotion: null,
+            discountAmount: 0,
+          },
+        });
+
+        // Notify the user only if we removed items that had any identifiable information
+        const namedInvalidItems = invalidItems.filter(
+          (item) => item && (item.name || item.productName)
+        );
+        if (namedInvalidItems.length > 0) {
+          message.warning({
+            content: `Đã xóa ${namedInvalidItems.length} sản phẩm không hợp lệ khỏi giỏ hàng`,
+            duration: 3,
           });
         }
       }
     };
 
-    validateCartItems();
+    validateAndCleanCart();
   }, [cartItems, dispatch]);
 
   useEffect(() => {
@@ -383,6 +434,130 @@ function CartPage() {
     }
   }, [dispatch, isAuthenticated, user]);
 
+  // Add useEffect for checking if products still exist in database
+  useEffect(() => {
+    const checkProductsExist = async () => {
+      if (cartItems.length === 0) return;
+
+      try {
+        const validItems = [];
+        const nonExistentItems = [];
+
+        // Check each product asynchronously
+        await Promise.all(
+          cartItems.map(async (item) => {
+            try {
+              // Skip validation for invalid items
+              if (!item) {
+                nonExistentItems.push(item);
+                return;
+              }
+
+              // Always keep products from order history (identified by productKey or fromOrder)
+              if (item.productKey || item.fromOrder) {
+                console.log(
+                  `Keeping product from order history: ${
+                    item.name || "Unknown"
+                  }`
+                );
+                validItems.push(item);
+                return;
+              }
+
+              // For regular products with database IDs, verify they exist
+              if (isNaN(parseInt(item.id))) {
+                console.error(
+                  `Invalid product ID: ${item ? item.id : "undefined"}`
+                );
+                nonExistentItems.push(item);
+                return;
+              }
+
+              const productId = parseInt(item.id);
+              const response = await axios.get(
+                `https://localhost:7285/api/Product/${productId}`
+              );
+
+              // If we get a successful response, the product exists
+              validItems.push({
+                ...item,
+                id: productId,
+                productId: productId,
+                // Update with the latest price from the API
+                price: response.data.price || item.price,
+                originalPrice: response.data.originalPrice || item.price,
+              });
+            } catch (error) {
+              console.error(
+                `Error checking product ${item ? item.id : "undefined"}:`,
+                error
+              );
+
+              // Keep products from order history despite API errors
+              if (item && (item.productKey || item.fromOrder)) {
+                console.log(
+                  `Keeping product despite API error: ${item.name || "Unknown"}`
+                );
+                validItems.push(item);
+              } else if (
+                error.response &&
+                (error.response.status === 400 || error.response.status === 404)
+              ) {
+                // If the error is a 400 Bad Request, it likely means the product doesn't exist
+                nonExistentItems.push(item);
+              }
+            }
+          })
+        );
+
+        // If we found non-existent products, update the cart
+        if (nonExistentItems.length > 0) {
+          console.log("Products no longer exist:", nonExistentItems);
+
+          // Update the cart with only valid items
+          dispatch({
+            type: "cart/setCart",
+            payload: {
+              items: validItems,
+              total: validItems.reduce(
+                (total, item) =>
+                  total +
+                  (parseFloat(item.price) || 0) *
+                    (parseInt(item.quantity) || 1),
+                0
+              ),
+              quantity: validItems.reduce(
+                (total, item) => total + (parseInt(item.quantity) || 1),
+                0
+              ),
+              promotion: null,
+              discountAmount: 0,
+            },
+          });
+
+          // Show notification about removed products
+          if (nonExistentItems.length > 0) {
+            const removedNames = nonExistentItems.map(
+              (item) =>
+                item.name || item.productName || "Sản phẩm không xác định"
+            );
+            message.warning({
+              content: `Một số sản phẩm đã bị xóa khỏi giỏ hàng do không còn tồn tại: ${removedNames.join(
+                ", "
+              )}`,
+              duration: 5,
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error checking products existence:", error);
+      }
+    };
+
+    // Run the check when the component mounts or when the cart changes
+    checkProductsExist();
+  }, [cartItems, dispatch]);
+
   // Add useEffect for price syncing
   useEffect(() => {
     const syncProductPrices = async () => {
@@ -393,8 +568,38 @@ function CartPage() {
         const updatedItems = await Promise.all(
           cartItems.map(async (item) => {
             try {
+              // Skip API calls for products with our unique identifiers
+              // These are from order history and their prices are predetermined
+              if (
+                !item ||
+                item.id > 1000000000 ||
+                item.source ||
+                item.addedAt ||
+                item.orderIndex !== undefined ||
+                item.fromOrder ||
+                item.originalProductId
+              ) {
+                console.log(
+                  `Skipping API call for product from order history: ${
+                    item ? item.name : "undefined"
+                  } with ID ${item ? item.id : "undefined"}`
+                );
+                return item;
+              }
+
+              // Ensure the ID is valid
+              if (!item.id || isNaN(parseInt(item.id))) {
+                console.error(
+                  `Invalid product ID: ${item ? item.id : "undefined"}`
+                );
+                // Add to nonExistentProducts to be removed later
+                setNonExistentProducts((prev) => [...prev, item]);
+                return item;
+              }
+
+              const productId = parseInt(item.id);
               const response = await axios.get(
-                `https://localhost:7285/api/Product/${item.id}`
+                `https://localhost:7285/api/Product/${productId}`
               );
 
               // If price has changed, update the item
@@ -408,7 +613,17 @@ function CartPage() {
               }
               return item;
             } catch (error) {
-              console.error(`Error fetching product ${item.id}:`, error);
+              console.error(
+                `Error fetching product ${item ? item.id : "undefined"}:`,
+                error
+              );
+              // If the error is a 400 Bad Request, it likely means the product doesn't exist
+              if (
+                error.response &&
+                (error.response.status === 400 || error.response.status === 404)
+              ) {
+                setNonExistentProducts((prev) => [...prev, item]);
+              }
               return item;
             }
           })

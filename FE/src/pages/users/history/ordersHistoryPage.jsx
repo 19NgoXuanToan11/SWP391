@@ -15,6 +15,8 @@ import {
   Button,
   Modal,
   Tabs,
+  notification,
+  Image,
 } from "antd";
 import {
   CheckCircleOutlined,
@@ -37,10 +39,16 @@ import {
   FireOutlined,
   RightOutlined,
   DownOutlined,
+  ShoppingCartOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { store } from "../../../store/rootReducer";
 import { useCancelOrderMutation } from "../../../services/api/beautyShopApi";
+import {
+  addToCart,
+  updateQuantity,
+} from "../../../store/slices/cart/cartSlice";
 
 const { RangePicker } = DatePicker;
 
@@ -57,6 +65,8 @@ const OrdersHistoryPage = () => {
   const [activeTab, setActiveTab] = useState("all");
   const navigate = useNavigate();
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [expandedProductDetails, setExpandedProductDetails] = useState({});
+  const dispatch = useDispatch();
 
   // RTK Query hook for order cancellation
   const [cancelOrder, { isLoading: isCancelling }] = useCancelOrderMutation();
@@ -86,6 +96,105 @@ const OrdersHistoryPage = () => {
   // Thêm state để lưu trữ status updates
   const [orderStatusUpdates, setOrderStatusUpdates] = useState({});
 
+  // Function to fetch product details for an order with empty products array
+  const fetchOrderProducts = async (orderId) => {
+    try {
+      // Only fetch if we have a valid orderId
+      if (!orderId) return [];
+
+      const response = await axios.get(
+        `${API_BASE_URL}/api/Orders/${orderId}/details`,
+        {
+          headers: {
+            accept: "*/*",
+          },
+        }
+      );
+
+      console.log(
+        `Fetched product details for order ${orderId}:`,
+        response.data
+      );
+
+      if (response.data && Array.isArray(response.data.orderItems)) {
+        return response.data.orderItems.map((item) => {
+          // Ensure we have numeric IDs
+          const productId = parseInt(item.productId);
+
+          return {
+            id: productId,
+            productId: productId,
+            productName: item.productName,
+            price: parseFloat(item.price) || 0,
+            quantity: parseInt(item.quantity) || 1,
+            productImages: item.imageUrl || item.productImage,
+            brandName: item.brandName || "Không có thông tin",
+            category: item.categoryName || "Không có thông tin",
+            description: item.description || "Không có mô tả chi tiết",
+          };
+        });
+      }
+
+      return [];
+    } catch (error) {
+      console.error(
+        `Error fetching product details for order ${orderId}:`,
+        error
+      );
+      return [];
+    }
+  };
+
+  // Function to retrieve detailed product information by ID
+  const fetchProductById = async (productId) => {
+    try {
+      if (!productId) return null;
+
+      // Ensure we have a valid numeric ID
+      const numericProductId = parseInt(productId);
+      if (isNaN(numericProductId)) {
+        console.error(`Invalid product ID: ${productId}`);
+        return null;
+      }
+
+      const response = await axios.get(
+        `${API_BASE_URL}/api/Product/${numericProductId}`,
+        {
+          headers: {
+            accept: "*/*",
+          },
+        }
+      );
+
+      if (response.data) {
+        // Ensure all ID and numeric fields are properly formatted
+        const id = parseInt(response.data.id || response.data.productId);
+        return {
+          id: id,
+          productId: id,
+          productName: response.data.productName || response.data.name,
+          price: parseFloat(response.data.price) || 0,
+          productImages:
+            response.data.imageUrls?.[0] || response.data.productImage,
+          description: response.data.description || "",
+          brandName: response.data.brandName || "",
+          category: response.data.categoryName || "",
+          specifications: response.data.specifications || {},
+          origin: response.data.origin || "",
+          sku: response.data.sku || "",
+        };
+      }
+
+      return null;
+    } catch (error) {
+      console.error(
+        `Error fetching product details for ID ${productId}:`,
+        error
+      );
+      return null;
+    }
+  };
+
   // RTK Query hook for order cancellation
   useEffect(() => {
     fetchOrders();
@@ -107,6 +216,47 @@ const OrdersHistoryPage = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Effect to try to retrieve cart details for "unpaid" orders
+  useEffect(() => {
+    // Check if we have any unpaid orders without products
+    const unpaidOrdersWithoutProducts = orders.filter(
+      (order) =>
+        order.status === "unpaid" &&
+        (!order.products || order.products.length === 0)
+    );
+
+    if (unpaidOrdersWithoutProducts.length > 0) {
+      // Try to get cart details from localStorage
+      try {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+        if (cart.length > 0) {
+          // Update orders with cart products for unpaid orders
+          setOrders((prevOrders) =>
+            prevOrders.map((order) => {
+              if (
+                order.status === "unpaid" &&
+                (!order.products || order.products.length === 0)
+              ) {
+                return {
+                  ...order,
+                  products: cart,
+                  total: cart.reduce(
+                    (sum, item) => sum + item.price * item.quantity,
+                    0
+                  ),
+                };
+              }
+              return order;
+            })
+          );
+        }
+      } catch (error) {
+        console.error("Error retrieving cart for unpaid orders:", error);
+      }
+    }
+  }, [orders]);
 
   const fetchOrders = async () => {
     // Kiểm tra userId có tồn tại không
@@ -141,90 +291,94 @@ const OrdersHistoryPage = () => {
 
       // Process the response based on the API structure
       if (response.data && Array.isArray(response.data)) {
-        // Lọc đơn hàng - chỉ lấy những đơn có historyStatus là "COMPLETED"
-        const formattedOrders = response.data
-          .filter((order) => {
-            // Chỉ giữ đơn hàng đã thanh toán (historyStatus: "COMPLETED")
-            return order.historyStatus === "COMPLETED";
-          })
-          .map((order) => {
-            // Tính tổng tiền từ các sản phẩm
-            let totalAmount = 0;
-            if (order.products && Array.isArray(order.products)) {
-              totalAmount = order.products.reduce((sum, product) => {
-                return sum + (product.price || 0) * (product.quantity || 1);
-              }, 0);
-            }
+        // Include all orders instead of filtering by historyStatus
+        const formattedOrders = response.data.map((order) => {
+          // Tính tổng tiền từ các sản phẩm
+          let totalAmount = 0;
+          if (order.products && Array.isArray(order.products)) {
+            totalAmount = order.products.reduce((sum, product) => {
+              return sum + (product.price || 0) * (product.quantity || 1);
+            }, 0);
+          }
 
-            // Chuyển đổi trạng thái từ API sang trạng thái trong ứng dụng
-            let status = (order.orderStatus || "").toLowerCase();
+          // Chuyển đổi trạng thái từ API sang trạng thái trong ứng dụng
+          let status = (order.orderStatus || "").toLowerCase();
 
-            // Kiểm tra xem status có phải là "PAID" không
-            const isPaid =
-              status === "paid" ||
-              order.status === "PAID" ||
-              (order.paymentStatus &&
-                order.paymentStatus.toUpperCase() === "PAID") ||
-              order.historyStatus === "COMPLETED";
+          // Kiểm tra xem status có phải là "PAID" không
+          const isPaid =
+            status === "paid" ||
+            order.status === "PAID" ||
+            (order.paymentStatus &&
+              order.paymentStatus.toUpperCase() === "PAID") ||
+            order.historyStatus === "COMPLETED";
 
-            // Kiểm tra nếu có cập nhật trạng thái từ staff trong localStorage
-            const hasStatusUpdate =
+          // Kiểm tra nếu có cập nhật trạng thái từ staff trong localStorage
+          const hasStatusUpdate =
+            orderStatusUpdates[order.orderId] ||
+            (order.trackingCode && orderStatusUpdates[order.trackingCode]);
+
+          // Ưu tiên sử dụng trạng thái từ localStorage (nếu có)
+          if (hasStatusUpdate) {
+            status =
               orderStatusUpdates[order.orderId] ||
-              (order.trackingCode && orderStatusUpdates[order.trackingCode]);
-
-            // Ưu tiên sử dụng trạng thái từ localStorage (nếu có)
-            if (hasStatusUpdate) {
-              status =
-                orderStatusUpdates[order.orderId] ||
-                orderStatusUpdates[order.trackingCode];
-            } else {
-              // Nếu không có trong localStorage, xử lý trạng thái từ API
-              // Đảm bảo trạng thái khớp với các giá trị trong dropdown
-              switch (status) {
-                case "completed":
-                case "complete":
-                  status = "completed";
-                  break;
-                case "shipping":
-                case "delivering":
-                  status = "shipping";
-                  break;
-                case "pending":
-                  status = "pending";
-                  break;
-                case "cancelled":
-                case "failed":
-                  status = "cancelled";
-                  break;
-                case "delivered":
-                case "complete":
-                  status = "delivered";
-                  break;
-                default:
-                  // Nếu đã thanh toán và không có trạng thái cụ thể, hiển thị là completed
-                  if (isPaid) {
+              orderStatusUpdates[order.trackingCode];
+          } else {
+            // Nếu không có trong localStorage, xử lý trạng thái từ API
+            // Đảm bảo trạng thái khớp với các giá trị trong dropdown
+            switch (status) {
+              case "completed":
+              case "complete":
+                status = "completed";
+                break;
+              case "shipping":
+              case "delivering":
+                status = "shipping";
+                break;
+              case "pending":
+                status = "pending";
+                break;
+              case "cancelled":
+              case "failed":
+                status = "cancelled";
+                break;
+              case "delivered":
+              case "complete":
+                status = "delivered";
+                break;
+              default:
+                // Nếu đã thanh toán và không có trạng thái cụ thể, hiển thị là completed
+                if (isPaid) {
+                  // Only set as completed if actually delivered
+                  if (
+                    order.orderStatus &&
+                    order.orderStatus.toLowerCase() === "delivered"
+                  ) {
                     status = "completed";
                   } else {
-                    status = "pending"; // Trạng thái mặc định nếu không xác định
+                    // If paid but not delivered yet, keep the actual status
+                    status = "pending"; // Default to pending if status is unknown
                   }
-              }
+                } else {
+                  status = "unpaid"; // Changed from "pending" to "unpaid" for unpaid orders
+                }
             }
+          }
 
-            return {
-              id: order.orderId || order.id || "N/A",
-              orderId: order.orderId || order.id || "N/A",
-              trackingCode: order.trackingCode || "N/A",
-              shipper: order.shipper || "Chưa xác định",
-              status: status,
-              date: order.orderDate || new Date().toISOString(),
-              total: order.totalAmount || totalAmount,
-              products: order.products || [],
-              estimatedDelivery: new Date(
-                Date.now() + 3 * 24 * 60 * 60 * 1000
-              ).toISOString(),
-              isPaid: isPaid,
-            };
-          });
+          return {
+            id: order.orderId || order.id || "N/A",
+            orderId: order.orderId || order.id || "N/A",
+            trackingCode: order.trackingCode || "N/A",
+            shipper: order.shipper || "Chưa xác định",
+            status: status,
+            date: order.orderDate || new Date().toISOString(),
+            total: order.totalAmount || totalAmount,
+            products: order.products || [],
+            estimatedDelivery: new Date(
+              Date.now() + 3 * 24 * 60 * 60 * 1000
+            ).toISOString(),
+            isPaid: isPaid,
+          };
+        });
 
         setOrders(formattedOrders);
       } else {
@@ -261,6 +415,8 @@ const OrdersHistoryPage = () => {
         return "bg-yellow-500";
       case "cancelled":
         return "bg-red-500";
+      case "unpaid":
+        return "bg-orange-500";
       default:
         return "bg-gray-500";
     }
@@ -276,6 +432,8 @@ const OrdersHistoryPage = () => {
         return "shadow-yellow-300";
       case "cancelled":
         return "shadow-red-300";
+      case "unpaid":
+        return "shadow-orange-300";
       default:
         return "shadow-gray-300";
     }
@@ -291,6 +449,8 @@ const OrdersHistoryPage = () => {
         return <ClockCircleOutlined className="text-yellow-500" />;
       case "cancelled":
         return <CloseCircleOutlined className="text-red-500" />;
+      case "unpaid":
+        return <ExclamationCircleOutlined className="text-orange-500" />;
       default:
         return <InfoCircleOutlined className="text-gray-500" />;
     }
@@ -308,9 +468,26 @@ const OrdersHistoryPage = () => {
         return "Đã giao hàng";
       case "cancelled":
         return "Đã hủy";
+      case "unpaid":
+        return "Chưa thanh toán";
       default:
         return "Không xác định";
     }
+  };
+
+  // New function to get payment status text
+  const getPaymentStatusText = (isPaid) => {
+    return isPaid ? "Đã thanh toán" : "Chưa thanh toán";
+  };
+
+  // New function to get payment status color
+  const getPaymentStatusColor = (isPaid) => {
+    return isPaid ? "bg-green-500" : "bg-orange-500";
+  };
+
+  // New function to get payment status glow
+  const getPaymentStatusGlow = (isPaid) => {
+    return isPaid ? "shadow-green-300" : "shadow-orange-300";
   };
 
   const getStatusIconComponent = (status, className = "") => {
@@ -337,6 +514,12 @@ const OrdersHistoryPage = () => {
         return (
           <div className={`rounded-full bg-red-100 p-2 ${className}`}>
             <CloseCircleOutlined className="text-red-500 text-lg" />
+          </div>
+        );
+      case "unpaid":
+        return (
+          <div className={`rounded-full bg-orange-100 p-2 ${className}`}>
+            <ExclamationCircleOutlined className="text-orange-500 text-lg" />
           </div>
         );
       default:
@@ -435,6 +618,7 @@ const OrdersHistoryPage = () => {
     shipping: orders.filter((o) => o.status === "shipping").length,
     pending: orders.filter((o) => o.status === "pending").length,
     cancelled: orders.filter((o) => o.status === "cancelled").length,
+    unpaid: orders.filter((o) => o.status === "unpaid").length,
   };
 
   const toggleOrderExpand = (orderId) => {
@@ -442,6 +626,92 @@ const OrdersHistoryPage = () => {
       setExpandedOrder(null);
     } else {
       setExpandedOrder(orderId);
+
+      // Find the order
+      const order = orders.find((o) => o.id === orderId);
+
+      // Log the order for debugging
+      console.log(
+        `Expanding order ${orderId}:`,
+        JSON.stringify(order, null, 2)
+      );
+
+      // If the order has no products or empty products array, fetch them
+      if (order && (!order.products || order.products.length === 0)) {
+        // Set loading state for this order
+        setOrders((prevOrders) =>
+          prevOrders.map((o) =>
+            o.id === orderId ? { ...o, productsLoading: true } : o
+          )
+        );
+
+        // Fetch products and update the order
+        fetchOrderProducts(orderId).then((products) => {
+          console.log(
+            `Fetched products for order ${orderId}:`,
+            JSON.stringify(products, null, 2)
+          );
+
+          // Ensure each product has required fields
+          const processedProducts = products.map((product) => {
+            // For each product, ensure it has valid fields or provide defaults
+            return {
+              ...product,
+              id: product.id || product.productId || Date.now(),
+              productId: product.productId || product.id || Date.now(),
+              productName: product.productName || "Sản phẩm không rõ tên",
+              price: parseFloat(product.price) || 0,
+              quantity: parseInt(product.quantity) || 1,
+              productImages: product.productImages || product.image || "",
+              brandName: product.brandName || product.brand || "",
+              category: product.category || "",
+              description: product.description || "",
+            };
+          });
+
+          setOrders((prevOrders) =>
+            prevOrders.map((o) =>
+              o.id === orderId
+                ? {
+                    ...o,
+                    products: processedProducts,
+                    productsLoading: false,
+                  }
+                : o
+            )
+          );
+        });
+      } else if (order && order.products && order.products.length > 0) {
+        // If we already have products, ensure they all have the required fields
+        const processedProducts = order.products.map((product) => {
+          return {
+            ...product,
+            id: product.id || product.productId || Date.now(),
+            productId: product.productId || product.id || Date.now(),
+            productName: product.productName || "Sản phẩm không rõ tên",
+            price: parseFloat(product.price) || 0,
+            quantity: parseInt(product.quantity) || 1,
+            productImages: product.productImages || product.image || "",
+            brandName: product.brandName || product.brand || "",
+            category: product.category || "",
+            description: product.description || "",
+          };
+        });
+
+        if (
+          JSON.stringify(order.products) !== JSON.stringify(processedProducts)
+        ) {
+          console.log(
+            "Updating products with processed versions:",
+            processedProducts
+          );
+          setOrders((prevOrders) =>
+            prevOrders.map((o) =>
+              o.id === orderId ? { ...o, products: processedProducts } : o
+            )
+          );
+        }
+      }
     }
   };
 
@@ -489,14 +759,339 @@ const OrdersHistoryPage = () => {
     }
   };
 
+  // Navigate to product detail page
+  const navigateToProductDetail = (product) => {
+    if (product && (product.id || product.productId)) {
+      const productId = product.id || product.productId;
+
+      // Show loading message
+      message.loading({
+        content: "Đang chuẩn bị thông tin sản phẩm...",
+        key: "productNavigation",
+      });
+
+      // Try to fetch fresh product data to ensure we have the latest info
+      fetchProductById(productId)
+        .then((fullProduct) => {
+          message.success({
+            content: "Đã tìm thấy thông tin sản phẩm!",
+            key: "productNavigation",
+            duration: 1,
+          });
+
+          // Navigate to product page
+          navigate(`/product/${productId}`);
+        })
+        .catch((error) => {
+          // If fetching fails, still navigate but with a warning
+          message.warning({
+            content: "Đang chuyển hướng với thông tin có sẵn",
+            key: "productNavigation",
+            duration: 1,
+          });
+          navigate(`/product/${productId}`);
+        });
+    } else {
+      message.error("Không thể xem chi tiết sản phẩm");
+    }
+  };
+
+  // Add single product to cart
+  const handleAddToCart = (product) => {
+    try {
+      // Log the original product object
+      console.log("Adding to cart product:", JSON.stringify(product, null, 2));
+
+      if (!product) {
+        message.warning("Sản phẩm không hợp lệ");
+        return;
+      }
+
+      // Get current cart to check for existing products
+      const currentCart = store.getState().cart.items || [];
+
+      // Extract essential product info
+      const name =
+        product.productName || product.name || "Sản phẩm không xác định";
+      const price = parseFloat(product.price) || 0;
+      const quantity = parseInt(product.quantity) || 1;
+
+      // Create a product key based on name and price
+      const productKey = `${name}_${price}`;
+
+      // Check if this product already exists in the cart by matching name and price
+      const existingProduct = currentCart.find(
+        (item) => item.name === name && parseFloat(item.price) === price
+      );
+
+      if (existingProduct) {
+        // If product exists, update its quantity
+        console.log(`Product already in cart, updating quantity: ${name}`);
+        dispatch(
+          updateQuantity({
+            id: existingProduct.id,
+            quantity: existingProduct.quantity + quantity,
+          })
+        );
+
+        // Show success message with enhanced UI
+        notification.success({
+          message: "Đã cập nhật số lượng trong giỏ hàng",
+          description: (
+            <div className="flex items-start">
+              <div className="mr-3">
+                <Image
+                  src={existingProduct.image}
+                  alt={name}
+                  width={50}
+                  preview={false}
+                  className="rounded-md"
+                />
+              </div>
+              <div>
+                <div className="font-medium">{name}</div>
+                <div className="text-sm text-gray-500 mt-1">
+                  Số lượng: {existingProduct.quantity + quantity} (
+                  {quantity > 1 ? `+${quantity}` : "+1"})
+                </div>
+                <div className="mt-2">
+                  <button
+                    onClick={() => navigate("/cart")}
+                    className="text-purple-600 hover:text-purple-800 text-sm font-medium"
+                  >
+                    Xem giỏ hàng
+                  </button>
+                </div>
+              </div>
+            </div>
+          ),
+          icon: <ShoppingCartOutlined className="text-green-500" />,
+          placement: "bottomRight",
+          duration: 3,
+        });
+      } else {
+        // Create a new cart item
+        const originalId = product.id || product.productId || null;
+        const tempId = Date.now();
+
+        const cartItem = {
+          id: originalId || tempId,
+          productId: originalId || tempId,
+          name: name,
+          productName: name,
+          price: price,
+          quantity: quantity,
+          image: product.productImages || product.image || "",
+          productImages: product.productImages || product.image || "",
+          brand: product.brandName || product.brand || "",
+          brandName: product.brandName || product.brand || "",
+          category: product.category || "",
+          stock: true,
+          discount: parseInt(product.discount) || 0,
+          description: product.description || "",
+          originalPrice:
+            parseFloat(product.originalPrice) || parseFloat(product.price) || 0,
+          // Add metadata
+          fromOrder: product.orderId,
+          productKey: productKey,
+        };
+
+        // Add the product to cart
+        console.log(`Adding new product to cart: ${name}`);
+        dispatch(addToCart(cartItem));
+
+        // Show success message with enhanced UI
+        notification.success({
+          message: "Đã thêm vào giỏ hàng",
+          description: (
+            <div className="flex items-start">
+              <div className="mr-3">
+                <Image
+                  src={cartItem.image}
+                  alt={cartItem.name}
+                  width={50}
+                  preview={false}
+                  className="rounded-md"
+                />
+              </div>
+              <div>
+                <div className="font-medium">{cartItem.name}</div>
+                <div className="text-sm text-gray-500 mt-1">
+                  {formatPrice(cartItem.price)}
+                </div>
+                <div className="mt-2">
+                  <button
+                    onClick={() => navigate("/cart")}
+                    className="text-purple-600 hover:text-purple-800 text-sm font-medium"
+                  >
+                    Xem giỏ hàng
+                  </button>
+                </div>
+              </div>
+            </div>
+          ),
+          icon: <ShoppingCartOutlined className="text-green-500" />,
+          placement: "bottomRight",
+          duration: 3,
+        });
+      }
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+      message.error("Không thể thêm sản phẩm vào giỏ hàng");
+    }
+  };
+
+  // Add all products from an order to cart
+  const buyAllAgain = (order) => {
+    try {
+      // Validate order has products
+      if (!order.products || order.products.length === 0) {
+        message.warning("Không có sản phẩm nào để mua lại");
+        return;
+      }
+
+      console.log("Order products:", JSON.stringify(order.products, null, 2));
+
+      // Get current cart items to check for existing products
+      const currentCart = store.getState().cart.items || [];
+      console.log("Current cart before adding:", currentCart);
+
+      let addedProducts = 0;
+      const productMap = {}; // To track products we're adding in this operation
+
+      // First, process all products to be added
+      order.products.forEach((product, index) => {
+        // Skip invalid products
+        if (!product) {
+          console.warn("Skipping undefined product");
+          return;
+        }
+
+        // Extract essential product info
+        const name =
+          product.productName || product.name || "Sản phẩm không xác định";
+        const price = parseFloat(product.price) || 0;
+        const quantity = parseInt(product.quantity) || 1;
+
+        // Create a product key based on name and price to identify similar products
+        // This key helps us group identical products
+        const productKey = `${name}_${price}`;
+
+        if (productMap[productKey]) {
+          // If we've already processed this product in this order, just increase quantity
+          productMap[productKey].quantity += quantity;
+        } else {
+          // Otherwise create a new entry with a consistent ID
+          const originalId = product.id || product.productId || null;
+          const tempId = Date.now() + index;
+
+          productMap[productKey] = {
+            id: originalId || tempId,
+            productId: originalId || tempId,
+            name: name,
+            productName: name,
+            price: price,
+            quantity: quantity,
+            image: product.productImages || product.image || "",
+            productImages: product.productImages || product.image || "",
+            brand: product.brandName || product.brand || "",
+            brandName: product.brandName || product.brand || "",
+            category: product.category || "",
+            stock: true,
+            discount: parseInt(product.discount) || 0,
+            description: product.description || "",
+            originalPrice:
+              parseFloat(product.originalPrice) ||
+              parseFloat(product.price) ||
+              0,
+            // Add metadata to identify this product
+            fromOrder: order.id || order.orderId,
+            productKey: productKey,
+          };
+        }
+      });
+
+      // Now process each product against the existing cart
+      Object.values(productMap).forEach((newProduct) => {
+        // Check if this product already exists in the cart by matching name and price
+        const existingProduct = currentCart.find(
+          (item) =>
+            item.name === newProduct.name &&
+            parseFloat(item.price) === parseFloat(newProduct.price)
+        );
+
+        if (existingProduct) {
+          // If product exists, update its quantity
+          console.log(
+            `Product already in cart, updating quantity: ${newProduct.name}`
+          );
+          dispatch(
+            updateQuantity({
+              id: existingProduct.id,
+              quantity: existingProduct.quantity + newProduct.quantity,
+            })
+          );
+        } else {
+          // If product doesn't exist, add it as new
+          console.log(`Adding new product to cart: ${newProduct.name}`);
+          dispatch(addToCart(newProduct));
+        }
+
+        addedProducts++;
+      });
+
+      // Only show success message if products were added
+      if (addedProducts > 0) {
+        // Show success message with enhanced UI
+        notification.success({
+          message: "Đã thêm vào giỏ hàng",
+          description: (
+            <div>
+              <div className="font-medium">
+                {addedProducts} sản phẩm đã được thêm vào giỏ hàng
+              </div>
+              <div className="text-sm text-gray-500 mt-1">
+                Đơn hàng #{order.id || order.orderId}
+              </div>
+              <div className="mt-2">
+                <button
+                  onClick={() => navigate("/cart")}
+                  className="text-purple-600 hover:text-purple-800 text-sm font-medium"
+                >
+                  Xem giỏ hàng
+                </button>
+              </div>
+            </div>
+          ),
+          icon: <ShoppingCartOutlined className="text-green-500" />,
+          placement: "bottomRight",
+          duration: 3,
+        });
+      } else {
+        message.warning("Không thể thêm sản phẩm vào giỏ hàng");
+      }
+    } catch (error) {
+      console.error("Error adding all products to cart:", error);
+      message.error("Không thể thêm sản phẩm vào giỏ hàng");
+    }
+  };
+
+  // Toggle product details expansion
+  const toggleProductDetails = (productId) => {
+    setExpandedProductDetails((prev) => ({
+      ...prev,
+      [productId]: !prev[productId],
+    }));
+  };
+
   return (
     <div className="min-h-screen py-12 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header section with animated background */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 1, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.2 }}
           className="relative mb-10 overflow-hidden rounded-3xl"
         >
           <div className="absolute inset-0 animate-gradient-x"></div>
@@ -511,9 +1106,9 @@ const OrdersHistoryPage = () => {
 
         {/* Advanced Search & Filter Section */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 1, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.2 }}
           className="mb-8 bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100"
         >
           <div className="p-4 md:p-6">
@@ -575,6 +1170,15 @@ const OrdersHistoryPage = () => {
                         <div className="flex items-center gap-3 py-1">
                           <div className="w-3 h-3 rounded-full bg-yellow-500" />
                           <span className="font-medium">Chờ xác nhận</span>
+                        </div>
+                      ),
+                    },
+                    {
+                      value: "unpaid",
+                      label: (
+                        <div className="flex items-center gap-3 py-1">
+                          <div className="w-3 h-3 rounded-full bg-orange-500" />
+                          <span className="font-medium">Chưa thanh toán</span>
                         </div>
                       ),
                     },
@@ -650,10 +1254,10 @@ const OrdersHistoryPage = () => {
               {filteredOrders.map((order, index) => (
                 <motion.div
                   key={order.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 1, y: 0 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  transition={{ duration: 0.3, delay: 0 }}
                   className={`bg-white rounded-2xl shadow-md hover:shadow-lg 
                     border border-gray-100 hover:border-purple-200 
                     transition-all duration-300 overflow-hidden
@@ -695,6 +1299,17 @@ const OrdersHistoryPage = () => {
                                 {getStatusText(order.status)}
                               </span>
                             ) : null}
+
+                            {/* Payment status badge */}
+                            <span
+                              className={`px-3 py-1 rounded-full text-white ${getPaymentStatusColor(
+                                order.isPaid
+                              )} shadow-sm ${getPaymentStatusGlow(
+                                order.isPaid
+                              )}`}
+                            >
+                              {getPaymentStatusText(order.isPaid)}
+                            </span>
 
                             {/* Tag trạng thái mới từ staff/admin */}
                             {orderStatusUpdates[order.trackingCode] && (
@@ -828,10 +1443,10 @@ const OrdersHistoryPage = () => {
                   {/* Order Details (Expandable) */}
                   {expandedOrder === order.id && (
                     <motion.div
-                      initial={{ opacity: 0, height: 0 }}
+                      initial={{ opacity: 1, height: "auto" }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: 0.2 }}
                       className="border-t border-gray-100"
                     >
                       <div className="p-6">
@@ -841,24 +1456,36 @@ const OrdersHistoryPage = () => {
                         </h4>
 
                         <div className="space-y-4">
-                          {order.products && order.products.length > 0 ? (
+                          {order.productsLoading ? (
+                            <div className="flex justify-center py-8">
+                              <Spin
+                                indicator={
+                                  <LoadingOutlined
+                                    style={{ fontSize: 24 }}
+                                    spin
+                                  />
+                                }
+                                tip="Đang tải thông tin sản phẩm..."
+                              />
+                            </div>
+                          ) : order.products && order.products.length > 0 ? (
                             order.products.map((product, index) => (
                               <div
                                 key={index}
-                                className="flex justify-between items-center p-3 border border-gray-100 rounded-xl
+                                className="flex flex-col md:flex-row justify-between p-4 border border-gray-100 rounded-xl
                                   hover:border-purple-200 transition-all hover:bg-gray-50"
                               >
-                                <div className="flex items-center gap-4">
+                                <div className="flex flex-col md:flex-row items-start md:items-center gap-4 w-full md:w-auto">
                                   <div className="relative">
                                     {product.productImages ? (
                                       <img
                                         src={product.productImages}
                                         alt={product.productName}
-                                        className="w-16 h-16 object-cover rounded-lg border border-gray-200"
+                                        className="w-24 h-24 object-cover rounded-lg border border-gray-200"
                                       />
                                     ) : (
-                                      <div className="w-16 h-16 bg-purple-50 rounded-lg flex items-center justify-center">
-                                        <ShoppingOutlined className="text-2xl text-purple-400" />
+                                      <div className="w-24 h-24 bg-purple-50 rounded-lg flex items-center justify-center">
+                                        <ShoppingOutlined className="text-3xl text-purple-400" />
                                       </div>
                                     )}
                                     {product.quantity > 1 && (
@@ -867,12 +1494,17 @@ const OrdersHistoryPage = () => {
                                       </div>
                                     )}
                                   </div>
-                                  <div>
-                                    <h5 className="font-medium text-gray-800 hover:text-purple-600 transition-colors cursor-pointer">
+                                  <div className="flex-1">
+                                    <h5
+                                      className="font-medium text-lg text-gray-800 hover:text-purple-600 transition-colors cursor-pointer"
+                                      onClick={() =>
+                                        navigateToProductDetail(product)
+                                      }
+                                    >
                                       {product.productName ||
                                         `Sản phẩm #${index + 1}`}
                                     </h5>
-                                    <div className="text-sm text-gray-500 mt-1 flex flex-wrap gap-2">
+                                    <div className="text-sm text-gray-500 mt-2 flex flex-wrap gap-2">
                                       {product.brandName && (
                                         <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full text-xs">
                                           {product.brandName}
@@ -887,18 +1519,112 @@ const OrdersHistoryPage = () => {
                                         Số lượng: {product.quantity || 1}
                                       </span>
                                     </div>
-                                  </div>
-                                </div>
-                                <div className="text-right">
-                                  <div className="font-bold text-gray-800">
-                                    {formatPrice(product.price || 0)}
-                                  </div>
-                                  <div className="text-xs text-gray-500 mt-1">
-                                    {formatPrice(
-                                      (product.price || 0) *
-                                        (product.quantity || 1)
+                                    {product.description && (
+                                      <p className="text-sm text-gray-600 mt-2">
+                                        {product.description.length > 120
+                                          ? product.description.substring(
+                                              0,
+                                              120
+                                            ) + "..."
+                                          : product.description}
+                                      </p>
+                                    )}
+                                    <div className="mt-3">
+                                      <Button
+                                        type="link"
+                                        size="small"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          toggleProductDetails(
+                                            product.id ||
+                                              product.productId ||
+                                              index
+                                          );
+                                        }}
+                                        className="px-0 text-purple-600 hover:text-purple-700"
+                                      >
+                                        {expandedProductDetails[
+                                          product.id ||
+                                            product.productId ||
+                                            index
+                                        ]
+                                          ? "Ẩn chi tiết"
+                                          : "Xem thêm chi tiết"}
+                                      </Button>
+                                    </div>
+
+                                    {/* Expanded product details */}
+                                    {expandedProductDetails[
+                                      product.id || product.productId || index
+                                    ] && (
+                                      <div className="mt-3 p-3 bg-purple-50 rounded-lg border border-purple-100 text-sm">
+                                        <h6 className="font-medium mb-2 text-purple-700">
+                                          Thông tin chi tiết
+                                        </h6>
+                                        <ul className="space-y-2">
+                                          {product.specifications &&
+                                            Object.entries(
+                                              product.specifications
+                                            ).map(([key, value], i) => (
+                                              <li
+                                                key={i}
+                                                className="flex justify-between"
+                                              >
+                                                <span className="text-gray-600">
+                                                  {key}:
+                                                </span>
+                                                <span className="font-medium text-gray-800">
+                                                  {value}
+                                                </span>
+                                              </li>
+                                            ))}
+                                          {product.origin && (
+                                            <li className="flex justify-between">
+                                              <span className="text-gray-600">
+                                                Xuất xứ:
+                                              </span>
+                                              <span className="font-medium text-gray-800">
+                                                {product.origin}
+                                              </span>
+                                            </li>
+                                          )}
+                                          {product.sku && (
+                                            <li className="flex justify-between">
+                                              <span className="text-gray-600">
+                                                Mã sản phẩm:
+                                              </span>
+                                              <span className="font-medium text-gray-800">
+                                                {product.sku}
+                                              </span>
+                                            </li>
+                                          )}
+                                        </ul>
+                                      </div>
                                     )}
                                   </div>
+                                </div>
+                                <div className="flex flex-col justify-between items-end mt-4 md:mt-0">
+                                  <div className="text-right">
+                                    <div className="font-bold text-gray-800 text-lg">
+                                      {formatPrice(product.price || 0)}
+                                    </div>
+                                    <div className="text-sm text-gray-500 mt-1">
+                                      {formatPrice(
+                                        (product.price || 0) *
+                                          (product.quantity || 1)
+                                      )}
+                                    </div>
+                                  </div>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleAddToCart(product);
+                                    }}
+                                    className="mt-4 flex items-center justify-center bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-300"
+                                  >
+                                    <ShoppingOutlined className="mr-2" />
+                                    Mua lại
+                                  </button>
                                 </div>
                               </div>
                             ))
@@ -906,6 +1632,39 @@ const OrdersHistoryPage = () => {
                             <div className="py-6 text-center text-gray-500 italic bg-gray-50 rounded-xl">
                               <ShoppingOutlined className="text-2xl mb-2 text-gray-400" />
                               <p>Không có thông tin chi tiết sản phẩm</p>
+                              <Button
+                                type="primary"
+                                className="mt-4 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 border-0"
+                                onClick={() => {
+                                  // Set loading state for this order
+                                  setOrders((prevOrders) =>
+                                    prevOrders.map((o) =>
+                                      o.id === order.id
+                                        ? { ...o, productsLoading: true }
+                                        : o
+                                    )
+                                  );
+
+                                  // Fetch products and update the order
+                                  fetchOrderProducts(order.id).then(
+                                    (products) => {
+                                      setOrders((prevOrders) =>
+                                        prevOrders.map((o) =>
+                                          o.id === order.id
+                                            ? {
+                                                ...o,
+                                                products,
+                                                productsLoading: false,
+                                              }
+                                            : o
+                                        )
+                                      );
+                                    }
+                                  );
+                                }}
+                              >
+                                Lấy thông tin sản phẩm
+                              </Button>
                             </div>
                           )}
 
@@ -925,12 +1684,72 @@ const OrdersHistoryPage = () => {
                                   {formatPrice(order.total)}
                                 </span>
                               </div>
+                              {/* Only show "Mua lại tất cả" button when there are more than 1 products */}
+                              {order.products && order.products.length > 1 && (
+                                <div className="mt-4 flex justify-end">
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      buyAllAgain(order);
+                                    }}
+                                    className="flex items-center justify-center bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 border-0 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 py-2 px-4 text-white font-semibold"
+                                  >
+                                    Mua lại tất cả
+                                  </button>
+                                </div>
+                              )}
                             </div>
                           </div>
 
                           {/* Order Timeline */}
                           <div className="mt-6">
                             <div className="relative pl-6 ml-2 space-y-6 before:absolute before:top-0 before:bottom-0 before:left-0 before:w-[2px] before:bg-gray-200">
+                              {/* Unpaid Status - show for unpaid orders */}
+                              {order.status === "unpaid" && (
+                                <div className="relative flex items-center gap-4">
+                                  <div className="absolute left-[-22px] w-5 h-5 rounded-full bg-orange-500 border-4 border-orange-100"></div>
+                                  <div className="flex-1 bg-orange-50 p-3 rounded-lg shadow-sm">
+                                    <div className="flex justify-between items-center">
+                                      <span className="font-medium text-orange-700">
+                                        Chưa thanh toán
+                                      </span>
+                                      <span className="text-xs text-gray-500">
+                                        {formatDate(order.date)}
+                                      </span>
+                                    </div>
+                                    <p className="text-sm text-gray-600 mt-1">
+                                      Đơn hàng của bạn đang chờ thanh toán
+                                    </p>
+                                    {order.products &&
+                                      order.products.length > 0 && (
+                                        <div className="mt-3 bg-white p-2 rounded-lg border border-orange-100">
+                                          <p className="text-sm text-gray-700 mb-2">
+                                            <InfoCircleOutlined className="text-blue-500 mr-2" />
+                                            Bạn có thể tiếp tục thanh toán hoặc
+                                            {order.products.length > 1
+                                              ? " mua lại các sản phẩm"
+                                              : " mua lại sản phẩm"}
+                                            trong đơn hàng này.
+                                          </p>
+                                          <div className="flex gap-2">
+                                            <Button
+                                              type="primary"
+                                              size="small"
+                                              onClick={() =>
+                                                navigate(`/payment/${order.id}`)
+                                              }
+                                              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 border-0"
+                                            >
+                                              Tiếp tục thanh toán
+                                            </Button>
+                                          </div>
+                                        </div>
+                                      )}
+                                  </div>
+                                </div>
+                              )}
+
                               {/* Shipping Status - show only if relevant */}
                               {(order.status === "shipping" ||
                                 orderStatusUpdates[order.trackingCode] ===
@@ -993,6 +1812,28 @@ const OrdersHistoryPage = () => {
                                     <p className="text-sm text-gray-600 mt-1">
                                       Đơn hàng đã bị hủy
                                     </p>
+                                    {order.products &&
+                                      order.products.length > 0 && (
+                                        <div className="mt-3 bg-white p-2 rounded-lg border border-red-100">
+                                          <p className="text-sm text-gray-700">
+                                            <InfoCircleOutlined className="text-blue-500 mr-2" />
+                                            {order.products.length > 1 ? (
+                                              <>
+                                                Bạn vẫn có thể mua lại các sản
+                                                phẩm trong đơn hàng này bằng
+                                                cách nhấn nút "Mua lại tất cả"
+                                                bên dưới.
+                                              </>
+                                            ) : (
+                                              <>
+                                                Bạn vẫn có thể mua lại sản phẩm
+                                                trong đơn hàng này bằng cách
+                                                nhấn nút "Mua lại".
+                                              </>
+                                            )}
+                                          </p>
+                                        </div>
+                                      )}
                                   </div>
                                 </div>
                               )}
@@ -1008,7 +1849,7 @@ const OrdersHistoryPage = () => {
           </div>
         ) : (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
             className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-8 text-center"
           >
