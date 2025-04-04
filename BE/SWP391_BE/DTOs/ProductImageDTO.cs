@@ -7,6 +7,7 @@ namespace SWP391_BE.DTOs
         public int ImageId { get; set; }
         public string ImageUrl { get; set; } = null!;
         public int ProductId { get; set; }
+        public List<string> ImageUrls { get; set; } = new List<string>();
     }
 
     public class CreateProductImageDTO
@@ -17,6 +18,8 @@ namespace SWP391_BE.DTOs
 
         [Required(ErrorMessage = "ID sản phẩm không được để trống")]
         public int ProductId { get; set; }
+
+        public List<string> ImageUrls { get; set; } = new List<string>();
     }
 
     public class UpdateProductImageDTO
@@ -24,5 +27,7 @@ namespace SWP391_BE.DTOs
         [Required(ErrorMessage = "URL hình ảnh không được để trống")]
         [Url(ErrorMessage = "URL hình ảnh không hợp lệ")]
         public string ImageUrl { get; set; } = null!;
+
+        public List<string> ImageUrls { get; set; } = new List<string>();
     }
 } 
