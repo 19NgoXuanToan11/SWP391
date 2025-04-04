@@ -1403,23 +1403,25 @@ const OrdersHistoryPage = () => {
                         </span>
                       </div>
 
-                      {/* Cancel Order Button - Only show for pending or shipping orders */}
+                      {/* Cancel Order Button - Only show for pending or shipping orders that have been paid */}
                       {(order.status === "pending" ||
-                        order.status === "shipping") && (
-                        <Button
-                          danger
-                          type="text"
-                          icon={<CloseCircleOutlined />}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCancelOrder(order.id);
-                          }}
-                          loading={isCancelling}
-                          className="text-sm"
-                        >
-                          Hủy đơn
-                        </Button>
-                      )}
+                        order.status === "shipping") &&
+                        order.status !== "unpaid" &&
+                        order.isPaid && (
+                          <Button
+                            danger
+                            type="text"
+                            icon={<CloseCircleOutlined />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCancelOrder(order.id);
+                            }}
+                            loading={isCancelling}
+                            className="text-sm"
+                          >
+                            Hủy đơn
+                          </Button>
+                        )}
 
                       <button
                         onClick={() => toggleOrderExpand(order.id)}
