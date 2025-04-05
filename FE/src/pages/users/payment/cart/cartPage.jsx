@@ -102,13 +102,51 @@ function CartPage() {
     return now >= startDate && now <= endDate;
   });
 
-  const handleQuantityChange = (id, value) => {
-    dispatch(updateQuantity({ id, quantity: value }));
-    message.success("Số lượng đã được cập nhật");
+  const handleQuantityChange = (id, value, index) => {
+    // Get the current item before updating
+    const item = cartItems[index];
+    const oldQuantity = item.quantity;
+
+    console.log(
+      `Updating quantity for item: ${item.name} at index ${index} from ${oldQuantity} to ${value}`
+    );
+
+    // Dispatch update action
+    dispatch(updateQuantity({ id, quantity: value, index }));
+
+    // Show a more detailed notification
+    notification.success({
+      message: "Đã cập nhật số lượng trong giỏ hàng",
+      description: (
+        <div className="flex items-start">
+          <div className="mr-3">
+            <Image
+              src={item.image}
+              alt={item.name}
+              width={50}
+              preview={false}
+              className="rounded-md"
+            />
+          </div>
+          <div>
+            <div className="font-medium">{item.name}</div>
+            <div className="text-sm text-gray-500 mt-1">
+              Số lượng: {value}{" "}
+              {value > oldQuantity
+                ? `(+${value - oldQuantity})`
+                : `(-${oldQuantity - value})`}
+            </div>
+          </div>
+        </div>
+      ),
+      icon: <ShoppingCartOutlined className="text-green-500" />,
+      placement: "bottomRight",
+      duration: 3,
+    });
   };
 
-  const handleRemoveItem = (id) => {
-    dispatch(removeFromCart(id));
+  const handleRemoveItem = (id, index) => {
+    dispatch(removeFromCart({ id, index }));
     message.success("Sản phẩm đã được xóa khỏi giỏ hàng");
   };
 
@@ -140,21 +178,25 @@ function CartPage() {
   const calculateTotal = () => {
     if (selectedItems.length === 0) return 0;
 
-    return cartItems
-      .filter((item) => selectedItems.includes(item.id))
-      .reduce((total, item) => total + item.price * item.quantity, 0);
+    return cartItems.reduce((total, item, index) => {
+      // Check if this item is selected using our composite ID
+      if (selectedItems.includes(`${item.id}_${index}`)) {
+        return total + item.price * item.quantity;
+      }
+      return total;
+    }, 0);
   };
 
   const calculateDiscount = () => {
     if (selectedItems.length === 0) return 0;
 
-    return cartItems
-      .filter((item) => selectedItems.includes(item.id))
-      .reduce(
-        (total, item) =>
-          total + (item.originalPrice - item.price) * item.quantity,
-        0
-      );
+    return cartItems.reduce((total, item, index) => {
+      // Check if this item is selected using our composite ID
+      if (selectedItems.includes(`${item.id}_${index}`)) {
+        return total + (item.originalPrice - item.price) * item.quantity;
+      }
+      return total;
+    }, 0);
   };
 
   const formatPrice = (price) => {
@@ -257,7 +299,9 @@ function CartPage() {
       const order = {
         userId: userId,
         items: cartItems
-          .filter((item) => selectedItems.includes(item.id))
+          .filter((item, index) =>
+            selectedItems.includes(`${item.id}_${index}`)
+          )
           .map((item) => ({
             productId: item.id,
             quantity: item.quantity,
@@ -666,27 +710,37 @@ function CartPage() {
   // Initialize selected items with all items when component mounts or cart changes
   useEffect(() => {
     if (cartItems && cartItems.length > 0) {
-      setSelectedItems(cartItems.map((item) => item.id));
+      // Use a more unique identifier to ensure distinct selection for each cart item
+      setSelectedItems(
+        cartItems.map((item, index) => {
+          // Use a combination of ID and index if there are duplicate IDs
+          return `${item.id}_${index}`;
+        })
+      );
     } else {
       setSelectedItems([]);
     }
-  }, [cartItems.length]);
+  }, [cartItems]);
 
   // Handle select/deselect all
   const handleSelectAllChange = (e) => {
     if (e.target.checked) {
-      setSelectedItems(cartItems.map((item) => item.id));
+      // Use a more unique identifier when selecting all items
+      setSelectedItems(cartItems.map((item, index) => `${item.id}_${index}`));
     } else {
       setSelectedItems([]);
     }
   };
 
   // Handle individual item selection
-  const handleItemSelect = (id, checked) => {
+  const handleItemSelect = (id, index, checked) => {
+    const itemId = `${id}_${index}`;
     if (checked) {
-      setSelectedItems((prev) => [...prev, id]);
+      setSelectedItems((prev) => [...prev, itemId]);
     } else {
-      setSelectedItems((prev) => prev.filter((itemId) => itemId !== id));
+      setSelectedItems((prev) =>
+        prev.filter((selectedId) => selectedId !== itemId)
+      );
     }
   };
 
@@ -780,7 +834,10 @@ function CartPage() {
                       onChange={(e) => handleSelectAllChange(e)}
                       checked={
                         selectedItems.length === cartItems.length &&
-                        cartItems.length > 0
+                        cartItems.length > 0 &&
+                        cartItems.every((item, index) =>
+                          selectedItems.includes(`${item.id}_${index}`)
+                        )
                       }
                     >
                       <Text strong>
@@ -792,14 +849,16 @@ function CartPage() {
                 )}
                 <Divider className="my-2" />
 
-                {cartItems.map((item) => (
-                  <div key={item.id}>
+                {cartItems.map((item, index) => (
+                  <div key={`${item.id}_${index}`}>
                     <div className="flex gap-6 py-6">
                       <div className="flex items-center mr-2">
                         <Checkbox
-                          checked={selectedItems.includes(item.id)}
+                          checked={selectedItems.includes(
+                            `${item.id}_${index}`
+                          )}
                           onChange={(e) =>
-                            handleItemSelect(item.id, e.target.checked)
+                            handleItemSelect(item.id, index, e.target.checked)
                           }
                         />
                       </div>
@@ -866,12 +925,14 @@ function CartPage() {
                               <div className="flex items-center space-x-2">
                                 <Button
                                   icon={<MinusOutlined />}
-                                  onClick={() =>
+                                  onClick={(e) => {
+                                    e.stopPropagation();
                                     handleQuantityChange(
                                       item.id,
-                                      Math.max(1, item.quantity - 1)
-                                    )
-                                  }
+                                      Math.max(1, item.quantity - 1),
+                                      index
+                                    );
+                                  }}
                                   className="border-gray-300 hover:border-pink-400 hover:text-pink-500 transition-colors"
                                   disabled={item.quantity <= 1}
                                 />
@@ -886,7 +947,8 @@ function CartPage() {
                                     }
                                     handleQuantityChange(
                                       item.id,
-                                      Math.floor(Math.abs(value)) || 1
+                                      Math.floor(Math.abs(value)) || 1,
+                                      index
                                     );
                                   }}
                                   onKeyDown={(e) => {
@@ -914,12 +976,14 @@ function CartPage() {
                                 />
                                 <Button
                                   icon={<PlusOutlined />}
-                                  onClick={() =>
+                                  onClick={(e) => {
+                                    e.stopPropagation();
                                     handleQuantityChange(
                                       item.id,
-                                      Math.min(item.stock, item.quantity + 1)
-                                    )
-                                  }
+                                      Math.min(item.stock, item.quantity + 1),
+                                      index
+                                    );
+                                  }}
                                   className="border-gray-300 hover:border-pink-400 hover:text-pink-500 transition-colors"
                                   disabled={item.quantity >= item.stock}
                                 />
@@ -930,7 +994,10 @@ function CartPage() {
                             <Tooltip title="Xóa sản phẩm">
                               <Button
                                 icon={<DeleteOutlined />}
-                                onClick={() => handleRemoveItem(item.id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleRemoveItem(item.id, index);
+                                }}
                                 className="border-gray-200 text-gray-500 hover:text-red-500 hover:border-red-300"
                               />
                             </Tooltip>

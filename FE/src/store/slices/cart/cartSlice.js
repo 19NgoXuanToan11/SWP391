@@ -77,16 +77,35 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const newItem = action.payload;
-      const existingItem = state.items.find((item) => item.id === newItem.id);
+
+      // Check if the exact same product exists by comparing multiple properties
+      const existingItem = state.items.find(
+        (item) =>
+          // Match by name and price - essential product identifiers
+          item.name === newItem.name &&
+          parseFloat(item.price) === parseFloat(newItem.price) &&
+          // Additional checks to ensure we're dealing with the same product
+          ((newItem.productKey && item.productKey === newItem.productKey) ||
+            (newItem.id === item.id &&
+              (!newItem.brand || !item.brand || newItem.brand === item.brand)))
+      );
 
       if (existingItem) {
+        // Update quantity if the exact same product exists
+        console.log(`Updating existing item: ${existingItem.name}`);
         existingItem.quantity =
           parseInt(existingItem.quantity) + parseInt(newItem.quantity);
       } else {
-        state.items.push({
+        // Add as a new item with timestamp to ensure uniqueness
+        console.log(`Adding new item: ${newItem.name}`);
+        const uniqueItem = {
           ...newItem,
           quantity: parseInt(newItem.quantity),
-        });
+          // Add timestamp if not present to ensure uniqueness
+          addedAt:
+            newItem.addedAt || Date.now() + Math.floor(Math.random() * 1000),
+        };
+        state.items.push(uniqueItem);
       }
 
       state.total = calculateCartTotal(state.items);
@@ -95,20 +114,58 @@ const cartSlice = createSlice({
     },
 
     removeFromCart: (state, action) => {
-      state.items = state.items.filter((item) => item.id !== action.payload);
+      // Check if the action payload is a string/number (ID only) or an object with additional parameters
+      if (
+        typeof action.payload === "object" &&
+        action.payload.index !== undefined
+      ) {
+        // If an index is provided, remove the specific item at that index
+        state.items = state.items.filter(
+          (item, index) =>
+            !(item.id === action.payload.id && index === action.payload.index)
+        );
+      } else {
+        // Backward compatibility: remove all items with matching ID
+        state.items = state.items.filter((item) => item.id !== action.payload);
+      }
+
       state.total = calculateCartTotal(state.items);
       state.quantity = calculateCartQuantity(state.items);
       saveCartState(state);
     },
 
     updateQuantity: (state, action) => {
-      const { id, quantity } = action.payload;
-      const item = state.items.find((item) => item.id === id);
-      if (item) {
-        item.quantity = parseInt(quantity);
-        state.total = calculateCartTotal(state.items);
-        state.quantity = calculateCartQuantity(state.items);
+      const { id, quantity, index } = action.payload;
+
+      if (index !== undefined) {
+        // If we have an index, update the specific item at that index
+        if (index >= 0 && index < state.items.length) {
+          // Make sure the item at this index matches the expected ID
+          if (state.items[index].id === id) {
+            console.log(
+              `Updating quantity for item at index ${index} from ${state.items[index].quantity} to ${quantity}`
+            );
+            state.items[index].quantity = parseInt(quantity);
+          } else {
+            console.error(
+              `Item at index ${index} has ID ${state.items[index].id}, but expected ID ${id}`
+            );
+          }
+        } else {
+          console.error(
+            `Invalid index: ${index}, cart has ${state.items.length} items`
+          );
+        }
+      } else {
+        // Backward compatibility: update the first item with matching ID
+        const item = state.items.find((item) => item.id === id);
+        if (item) {
+          item.quantity = parseInt(quantity);
+        }
       }
+
+      state.total = calculateCartTotal(state.items);
+      state.quantity = calculateCartQuantity(state.items);
       saveCartState(state);
     },
 

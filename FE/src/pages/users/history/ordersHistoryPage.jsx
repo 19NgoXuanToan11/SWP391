@@ -1013,28 +1013,66 @@ const OrdersHistoryPage = () => {
 
       // Now process each product against the existing cart
       Object.values(productMap).forEach((newProduct) => {
-        // Check if this product already exists in the cart by matching name and price
+        // Use a more precise matching strategy with name and other properties
         const existingProduct = currentCart.find(
           (item) =>
+            // Match by name and price - both must match exactly
             item.name === newProduct.name &&
-            parseFloat(item.price) === parseFloat(newProduct.price)
+            parseFloat(item.price) === parseFloat(newProduct.price) &&
+            // Also match by product key if available, or check if both are the same product type
+            ((item.productKey && item.productKey === newProduct.productKey) ||
+              (item.id === newProduct.id && item.brand === newProduct.brand))
         );
 
+        console.log(
+          `Looking for product in cart: ${newProduct.name} with price ${newProduct.price}`
+        );
         if (existingProduct) {
-          // If product exists, update its quantity
           console.log(
-            `Product already in cart, updating quantity: ${newProduct.name}`
+            `Found existing product: ${existingProduct.name} with price ${existingProduct.price} and ID ${existingProduct.id}`
           );
+        } else {
+          console.log(`No existing product found, adding as new`);
+        }
+
+        // Find the exact index of the existing product in the cart if it exists
+        const existingIndex = existingProduct
+          ? currentCart.findIndex(
+              (item) =>
+                item.name === newProduct.name &&
+                parseFloat(item.price) === parseFloat(newProduct.price) &&
+                ((item.productKey &&
+                  item.productKey === newProduct.productKey) ||
+                  (item.id === newProduct.id &&
+                    item.brand === newProduct.brand))
+            )
+          : -1;
+
+        if (existingProduct && existingIndex >= 0) {
+          // If exact product exists, update its quantity
+          console.log(
+            `Product already in cart, updating quantity: ${newProduct.name} at index ${existingIndex}`
+          );
+          console.log(
+            `Current quantity: ${existingProduct.quantity}, Adding: ${newProduct.quantity}`
+          );
+
           dispatch(
             updateQuantity({
               id: existingProduct.id,
               quantity: existingProduct.quantity + newProduct.quantity,
+              index: existingIndex, // Pass the correct index for the item
             })
           );
         } else {
-          // If product doesn't exist, add it as new
+          // If product doesn't exist or has different characteristics, add it as new
           console.log(`Adding new product to cart: ${newProduct.name}`);
-          dispatch(addToCart(newProduct));
+          // Add a unique timestamp to ensure each new item is distinct
+          const uniqueNewProduct = {
+            ...newProduct,
+            addedAt: Date.now() + Math.floor(Math.random() * 1000),
+          };
+          dispatch(addToCart(uniqueNewProduct));
         }
 
         addedProducts++;
@@ -1042,13 +1080,32 @@ const OrdersHistoryPage = () => {
 
       // Only show success message if products were added
       if (addedProducts > 0) {
+        // Count how many products were updated vs newly added
+        const updatedProducts = Object.keys(productMap).filter((key) => {
+          const product = productMap[key];
+          return currentCart.some(
+            (item) =>
+              item.name === product.name &&
+              parseFloat(item.price) === parseFloat(product.price)
+          );
+        }).length;
+
+        const newlyAddedProducts = addedProducts - updatedProducts;
+
         // Show success message with enhanced UI
         notification.success({
-          message: "Đã thêm vào giỏ hàng",
+          message: "Đã cập nhật giỏ hàng",
           description: (
             <div>
               <div className="font-medium">
-                {addedProducts} sản phẩm đã được thêm vào giỏ hàng
+                {updatedProducts > 0 && (
+                  <p>{updatedProducts} sản phẩm đã được cập nhật số lượng</p>
+                )}
+                {newlyAddedProducts > 0 && (
+                  <p>
+                    {newlyAddedProducts} sản phẩm mới đã được thêm vào giỏ hàng
+                  </p>
+                )}
               </div>
               <div className="text-sm text-gray-500 mt-1">
                 Đơn hàng #{order.id || order.orderId}
