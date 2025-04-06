@@ -25,6 +25,7 @@ namespace SWP391_BE.Controllers
             _logger = logger;
         }
 
+        // L?y t?t c? khuy?n mãi
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PromotionDTO>>> GetAllPromotions()
         {
@@ -44,6 +45,7 @@ namespace SWP391_BE.Controllers
             }
         }
 
+        // L?y khuy?n mãi theo ID
         [HttpGet("{id}")]
         public async Task<ActionResult<PromotionDTO>> GetPromotion(int id)
         {
@@ -63,6 +65,7 @@ namespace SWP391_BE.Controllers
             }
         }
 
+        // Thêm khuy?n mãi
         [HttpPost]
         public async Task<ActionResult<PromotionDTO>> CreatePromotion(CreatePromotionDTO createPromotionDTO)
         {
@@ -95,6 +98,7 @@ namespace SWP391_BE.Controllers
             }
         }
 
+        // C?p nh?t khuy?n mãi
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePromotion(int id, UpdatePromotionDTO updatePromotionDTO)
         {
@@ -127,6 +131,7 @@ namespace SWP391_BE.Controllers
             }
         }
 
+        // Xóa khuy?n mãi
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePromotion(int id)
         {
@@ -148,4 +153,4 @@ namespace SWP391_BE.Controllers
             }
         }
     }
-} 
+}

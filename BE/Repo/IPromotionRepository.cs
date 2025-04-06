@@ -9,5 +9,6 @@ namespace Repo
         Task AddAsync(Promotion promotion);
         Task UpdateAsync(Promotion promotion);
         Task DeleteAsync(int id);
+        Task<Promotion?> GetActivePromotionAsync();
     }
 }
