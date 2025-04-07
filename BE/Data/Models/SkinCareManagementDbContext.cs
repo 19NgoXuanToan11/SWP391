@@ -210,23 +210,28 @@ public partial class SkinCareManagementDbContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAFEDF282D4");
-
+            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF96C8F1E7");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
-            entity.Property(e => e.OrderDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.PaymentMethod).HasMaxLength(50);
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .HasDefaultValue("Pending");
-            entity.Property(e => e.TotalAmount).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.OrderDate).HasColumnType("datetime");
+            entity.Property(e => e.TotalAmount).HasColumnType("decimal(18,2)");
+            entity.Property(e => e.Status).HasMaxLength(50);
+            entity.Property(e => e.PaymentMethod).HasMaxLength(50);
+            entity.Property(e => e.PromotionId).HasColumnName("PromotionID");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Orders)
+            // Configure relationship with User
+            entity.HasOne(d => d.User)
+                .WithMany(p => p.Orders)
                 .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Orders__UserID__37A5467C");
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK__Orders__UserID__890123");
+
+            // Configure relationship with Promotion
+            entity.HasOne(d => d.Promotion)
+                .WithMany()
+                .HasForeignKey(d => d.PromotionId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK__Orders__PromotionID__901234");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
@@ -291,13 +296,17 @@ public partial class SkinCareManagementDbContext : DbContext
 
         modelBuilder.Entity<Promotion>(entity =>
         {
-            entity.HasKey(e => e.PromotionId).HasName("PK__Promotio__52C42F2F29F30FEF");
-
+            entity.HasKey(e => e.PromotionId).HasName("PK__Promotio__52C42F2F7F60ED59");
             entity.Property(e => e.PromotionId).HasColumnName("PromotionID");
+            entity.Property(e => e.PromotionName)
+                .HasMaxLength(255)
+                .IsUnicode(false);
             entity.Property(e => e.DiscountPercentage).HasColumnType("decimal(5, 2)");
-            entity.Property(e => e.EndDate).HasColumnType("datetime");
-            entity.Property(e => e.PromotionName).HasMaxLength(100);
             entity.Property(e => e.StartDate).HasColumnType("datetime");
+            entity.Property(e => e.EndDate).HasColumnType("datetime");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValue(true)
+                .HasColumnType("bit");
         });
 
         modelBuilder.Entity<Role>(entity =>
@@ -473,16 +482,6 @@ public partial class SkinCareManagementDbContext : DbContext
                 .HasForeignKey(d => d.PaymentId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__PaymentHistory__PaymentID__234567");
-        });
-
-        modelBuilder.Entity<Promotion>(entity =>
-        {
-            entity.HasKey(e => e.PromotionId).HasName("PK__Promotio__52C42F2F7F60ED59");
-            entity.Property(e => e.PromotionId).HasColumnName("PromotionID");
-            entity.Property(e => e.PromotionName).HasMaxLength(100);
-            entity.Property(e => e.DiscountPercentage).HasColumnType("decimal(18,2)");
-            entity.Property(e => e.StartDate).HasColumnType("datetime");
-            entity.Property(e => e.EndDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<DashboardReport>(entity =>

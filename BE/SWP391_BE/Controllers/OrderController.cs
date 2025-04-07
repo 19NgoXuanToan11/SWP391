@@ -89,12 +89,19 @@ namespace SWP391_BE.Controllers
                     orderDetails.Add(orderDetail);
                 });
 
+                // Áp dụng giảm giá nếu có mã khuyến mãi
+                if (createOrderDTO.PromotionId.HasValue && createOrderDTO.PromotionDiscount.HasValue)
+                {
+                    totalAmount = totalAmount - createOrderDTO.PromotionDiscount.Value;
+                }
+
                 var order = new Order
                 {
                     UserId = createOrderDTO.UserId,
                     OrderDate = DateTime.Now,
                     TotalAmount = totalAmount,
                     Status = "Pending",
+                    PromotionId = createOrderDTO.PromotionId,
                     OrderDetails = orderDetails
                 };
                 await _orderService.AddOrderAsync(order);

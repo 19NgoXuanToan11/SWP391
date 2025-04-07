@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "D:\\Git\\SWP391\\BE\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\controllers\\paymentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\controllers\\paymentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|d:\\git\\swp391\\be\\swp391_be\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0A1D4A93-9528-469F-8308-16BE31C1C524}|SWP391_BE\\SWP391_BE.csproj|solutionrelative:swp391_be\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -22,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 373,
-          "SelectedChildIndex": 78,
+          "SelectedChildIndex": 76,
           "Children": [
             {
               "$type": "Bookmark",
@@ -329,6 +333,19 @@
               "Name": "ST:1:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
             },
             {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PaymentController.cs",
+              "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\PaymentController.cs",
+              "RelativeDocumentMoniker": "SWP391_BE\\Controllers\\PaymentController.cs",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Controllers\\PaymentController.cs",
+              "RelativeToolTip": "SWP391_BE\\Controllers\\PaymentController.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAQwEoAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-07T08:24:07.015Z",
+              "EditorCaption": ""
+            },
+            {
               "$type": "Bookmark",
               "Name": "ST:2:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
             },
@@ -338,12 +355,12 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Program.cs",
               "RelativeDocumentMoniker": "SWP391_BE\\Program.cs",
-              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Program.cs*",
-              "RelativeToolTip": "SWP391_BE\\Program.cs*",
+              "ToolTip": "D:\\Git\\SWP391\\BE\\SWP391_BE\\Program.cs",
+              "RelativeToolTip": "SWP391_BE\\Program.cs",
               "ViewState": "AgIAAGcAAAAAAAAAAAAAAHgAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-02T17:56:28.542Z",
@@ -351,7 +368,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\SWP391_BE\\appsettings.json",
               "RelativeDocumentMoniker": "SWP391_BE\\appsettings.json",
@@ -359,12 +376,11 @@
               "RelativeToolTip": "SWP391_BE\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-04-02T17:56:28.002Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-02T17:56:28.002Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "ProductService.cs",
               "DocumentMoniker": "D:\\Git\\SWP391\\BE\\Service\\ProductService.cs",
               "RelativeDocumentMoniker": "Service\\ProductService.cs",
@@ -372,8 +388,7 @@
               "RelativeToolTip": "Service\\ProductService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwBQAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T17:49:16.258Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-02T17:49:16.258Z"
             }
           ]
         },
