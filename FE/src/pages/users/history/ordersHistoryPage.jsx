@@ -753,46 +753,39 @@ const OrdersHistoryPage = () => {
 
   // Handle order cancellation
   const handleCancelOrder = async (orderId) => {
-    try {
-      // Confirm with user
-      Modal.confirm({
-        title: "Hủy đơn hàng",
-        content: "Bạn có chắc chắn muốn hủy đơn hàng này không?",
-        okText: "Hủy đơn hàng",
-        okType: "danger",
-        cancelText: "Không",
-        async onOk() {
-          try {
-            await cancelOrder(orderId).unwrap();
-            message.success("Đơn hàng đã được hủy thành công");
+    Modal.confirm({
+      title: "Xác nhận hủy đơn hàng",
+      icon: <ExclamationCircleOutlined />,
+      content: "Bạn có chắc chắn muốn hủy đơn hàng này không?",
+      okText: "Đồng ý",
+      cancelText: "Hủy",
+      async onOk() {
+        try {
+          const response = await axios.put(
+            `${API_BASE_URL}/api/Order/cancel/${orderId}`,
+            null,
+            {
+              headers: {
+                accept: "*/*",
+              },
+            }
+          );
 
-            // Update local state
-            setOrders(
-              orders.map((order) =>
-                order.id === orderId ? { ...order, status: "cancelled" } : order
-              )
-            );
-
-            // Also update in localStorage to maintain consistency with staff view
-            const orderStatusUpdates = JSON.parse(
-              localStorage.getItem("orderStatusUpdates") || "{}"
-            );
-            orderStatusUpdates[orderId] = "cancelled";
-            localStorage.setItem(
-              "orderStatusUpdates",
-              JSON.stringify(orderStatusUpdates)
-            );
-
-            // Reload orders
+          if (response.status === 200) {
+            message.success("Hủy đơn hàng thành công");
+            // Refresh orders list
             fetchOrders();
-          } catch (error) {
+          } else {
             message.error("Không thể hủy đơn hàng. Vui lòng thử lại sau.");
           }
-        },
-      });
-    } catch (error) {
-      message.error("Đã xảy ra lỗi. Vui lòng thử lại sau.");
-    }
+        } catch (error) {
+          console.error("Error cancelling order:", error);
+          message.error(
+            error.response?.data?.message || "Có lỗi xảy ra khi hủy đơn hàng"
+          );
+        }
+      },
+    });
   };
 
   // Navigate to product detail page
