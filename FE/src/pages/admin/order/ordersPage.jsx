@@ -354,11 +354,8 @@ const OrdersPage = () => {
 
                 return {
                   ...item,
-                  productName:
-                    productResponse.data.productName ||
-                    productResponse.data.name ||
-                    `Sản phẩm #${item.productId}`,
                   image: productImage,
+                  productName: productResponse.data.name,
                 };
               } catch (error) {
                 console.error(
@@ -373,11 +370,9 @@ const OrdersPage = () => {
         );
 
         orderWithProductDetails.orderDetails = updatedOrderDetails;
-        setSelectedOrder(orderWithProductDetails);
-      } else {
-        setSelectedOrder(response.data);
       }
 
+      setSelectedOrder(orderWithProductDetails);
       setOrderDetailsVisible(true);
     } catch (error) {
       console.error("Error fetching order details:", error);
