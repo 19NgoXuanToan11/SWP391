@@ -820,8 +820,8 @@ const OrdersHistoryPage = () => {
     }
   };
 
-  // Add single product to cart
-  const handleAddToCart = async (product) => {
+  // Add a single product to cart
+  const handleAddToCart = (product) => {
     try {
       // Log the original product object
       console.log("Adding to cart product:", JSON.stringify(product, null, 2));
@@ -829,6 +829,12 @@ const OrdersHistoryPage = () => {
       if (!product) {
         message.warning("Sản phẩm không hợp lệ");
         return;
+      }
+
+      // Store order information if it exists
+      const order = product.parentOrder;
+      if (order) {
+        console.log("Order status:", order.status);
       }
 
       // Get current cart to check for existing products
@@ -850,6 +856,7 @@ const OrdersHistoryPage = () => {
       if (existingProduct) {
         // If product exists, update its quantity
         console.log(`Product already in cart, updating quantity: ${name}`);
+
         dispatch(
           updateQuantity({
             id: existingProduct.id,
@@ -916,6 +923,8 @@ const OrdersHistoryPage = () => {
           originalPrice: parseFloat(product.originalPrice) || parseFloat(product.price) || 0,
           // Không thêm fromOrder để tạo đơn hàng mới hoàn toàn
           productKey: productKey,
+          // Thêm thông tin order để biết xử lý lúc thanh toán
+          parentOrderStatus: order ? order.status : null
         };
 
         // Add the product to cart
@@ -973,6 +982,7 @@ const OrdersHistoryPage = () => {
       }
 
       console.log("Order products:", JSON.stringify(order.products, null, 2));
+      console.log("Order status:", order.status);
 
       // Get current cart items to check for existing products
       const currentCart = store.getState().cart.items || [];
@@ -1029,6 +1039,8 @@ const OrdersHistoryPage = () => {
             // Add metadata to identify this product
             fromOrder: order.id || order.orderId,
             productKey: productKey,
+            // Thêm thông tin order status để biết xử lý lúc thanh toán
+            parentOrderStatus: order.status
           };
         }
       });
@@ -1698,7 +1710,12 @@ const OrdersHistoryPage = () => {
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      handleAddToCart(product);
+                                      // Thêm thông tin order cho product
+                                      const productWithOrderInfo = {
+                                        ...product,
+                                        parentOrder: order
+                                      };
+                                      handleAddToCart(productWithOrderInfo);
                                     }}
                                     className="mt-4 flex items-center justify-center bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-300"
                                   >

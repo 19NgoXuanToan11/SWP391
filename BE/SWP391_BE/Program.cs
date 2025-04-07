@@ -118,7 +118,7 @@ builder.Services.AddCors(options =>
                 "http://localhost:5173", // FE local
                 "https://swp-391-pink.vercel.app", // FE deployed
                 "https://api-sandbox.payos.vn",
-                "https://b679-171-249-144-209.ngrok-free.app/" // Thêm ngrok URL mới vào đây mỗi lần restart
+                "https://d487-27-78-66-182.ngrok-free.app/" // Thêm ngrok URL mới vào đây mỗi lần restart
             )
             .AllowAnyHeader()
             .AllowAnyMethod()

@@ -51,6 +51,7 @@ export function PaymentPage() {
   const { orderId } = useParams();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
+  const cartItems = useSelector((state) => state.cart.items);
 
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedPayment, setSelectedPayment] = useState("qr");
@@ -291,6 +292,46 @@ export function PaymentPage() {
     }
 
     setIsProcessing(true);
+    try {
+      // Kiểm tra giỏ hàng xem có sản phẩm nào từ đơn hàng đã thanh toán không
+      const hasItemsFromPaidOrders = cartItems.some(
+        item => item.parentOrderStatus === "paid" || 
+                item.parentOrderStatus === "Paid" || 
+                item.parentOrderStatus === "delivered" ||
+                item.parentOrderStatus === "completed"
+      );
+      
+      if (hasItemsFromPaidOrders) {
+        console.log("Giỏ hàng có chứa sản phẩm từ đơn hàng đã thanh toán");
+        // Hiển thị thông báo cho người dùng
+        Modal.confirm({
+          title: "Xác nhận thanh toán",
+          content: "Trong giỏ hàng của bạn có sản phẩm từ đơn hàng đã thanh toán trước đó. Bạn có muốn tiếp tục đặt hàng?",
+          okText: "Tiếp tục thanh toán",
+          cancelText: "Hủy",
+          onOk: () => {
+            // Tiếp tục xử lý thanh toán
+            processPayment();
+          },
+          onCancel: () => {
+            setIsProcessing(false);
+            setLoading(false);
+          }
+        });
+      } else {
+        // Nếu không có sản phẩm từ đơn hàng đã thanh toán, tiếp tục bình thường
+        processPayment();
+      }
+    } catch (error) {
+      console.error("Payment check error:", error);
+      message.error("Đã xảy ra lỗi khi kiểm tra đơn hàng. Vui lòng thử lại!");
+      setIsProcessing(false);
+      setLoading(false);
+    }
+  };
+
+  // Tách xử lý thanh toán ra thành một hàm riêng để có thể gọi lại
+  const processPayment = async () => {
     try {
       let buyerInfo = {
         name: "",
