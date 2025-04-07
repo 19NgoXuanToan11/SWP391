@@ -99,11 +99,9 @@ const OrdersHistoryPage = () => {
   // Function to fetch product details for an order with empty products array
   const fetchOrderProducts = async (orderId) => {
     try {
-      // Only fetch if we have a valid orderId
-      if (!orderId) return [];
-
-      const response = await axios.get(
-        `${API_BASE_URL}/api/Orders/${orderId}/details`,
+      // Lấy thông tin đơn hàng
+      const orderResponse = await axios.get(
+        `${API_BASE_URL}/api/Order/${orderId}`,
         {
           headers: {
             accept: "*/*",
@@ -111,28 +109,54 @@ const OrdersHistoryPage = () => {
         }
       );
 
-      console.log(
-        `Fetched product details for order ${orderId}:`,
-        response.data
-      );
+      if (orderResponse.data && orderResponse.data.orderDetails) {
+        // Lấy thông tin sản phẩm cho mỗi orderDetail
+        const products = await Promise.all(
+          orderResponse.data.orderDetails.map(async (item) => {
+            try {
+              const productResponse = await axios.get(
+                `${API_BASE_URL}/api/Product/${item.productId}`,
+                {
+                  headers: {
+                    accept: "*/*",
+                  },
+                }
+              );
 
-      if (response.data && Array.isArray(response.data.orderItems)) {
-        return response.data.orderItems.map((item) => {
-          // Ensure we have numeric IDs
-          const productId = parseInt(item.productId);
+              const productId = item.productId;
+              return {
+                id: productId,
+                productId: productId,
+                productName: productResponse.data.productName || productResponse.data.name,
+                price: parseFloat(item.price) || 0,
+                quantity: parseInt(item.quantity) || 1,
+                productImages: productResponse.data.imageUrls?.[0] || productResponse.data.image,
+                brandName: productResponse.data.brandName || "Không có thông tin",
+                category: productResponse.data.categoryName || "Không có thông tin",
+                description: productResponse.data.description || "Không có mô tả chi tiết",
+                specifications: productResponse.data.specifications || {},
+              };
+            } catch (error) {
+              console.error(
+                `Error fetching product details for product ${item.productId}:`,
+                error
+              );
+              return {
+                id: item.productId,
+                productId: item.productId,
+                productName: "Không thể tải thông tin sản phẩm",
+                price: parseFloat(item.price) || 0,
+                quantity: parseInt(item.quantity) || 1,
+                productImages: null,
+                brandName: "Không có thông tin",
+                category: "Không có thông tin",
+                description: "Không có mô tả chi tiết",
+              };
+            }
+          })
+        );
 
-          return {
-            id: productId,
-            productId: productId,
-            productName: item.productName,
-            price: parseFloat(item.price) || 0,
-            quantity: parseInt(item.quantity) || 1,
-            productImages: item.imageUrl || item.productImage,
-            brandName: item.brandName || "Không có thông tin",
-            category: item.categoryName || "Không có thông tin",
-            description: item.description || "Không có mô tả chi tiết",
-          };
-        });
+        return products;
       }
 
       return [];
@@ -797,7 +821,7 @@ const OrdersHistoryPage = () => {
   };
 
   // Add single product to cart
-  const handleAddToCart = (product) => {
+  const handleAddToCart = async (product) => {
     try {
       // Log the original product object
       console.log("Adding to cart product:", JSON.stringify(product, null, 2));
@@ -811,8 +835,7 @@ const OrdersHistoryPage = () => {
       const currentCart = store.getState().cart.items || [];
 
       // Extract essential product info
-      const name =
-        product.productName || product.name || "Sản phẩm không xác định";
+      const name = product.productName || product.name || "Sản phẩm không xác định";
       const price = parseFloat(product.price) || 0;
       const quantity = parseInt(product.quantity) || 1;
 
@@ -874,6 +897,7 @@ const OrdersHistoryPage = () => {
         const originalId = product.id || product.productId || null;
         const tempId = Date.now();
 
+        // Tạo một đối tượng sản phẩm mới hoàn toàn, không liên kết với đơn hàng cũ
         const cartItem = {
           id: originalId || tempId,
           productId: originalId || tempId,
@@ -889,10 +913,8 @@ const OrdersHistoryPage = () => {
           stock: true,
           discount: parseInt(product.discount) || 0,
           description: product.description || "",
-          originalPrice:
-            parseFloat(product.originalPrice) || parseFloat(product.price) || 0,
-          // Add metadata
-          fromOrder: product.orderId,
+          originalPrice: parseFloat(product.originalPrice) || parseFloat(product.price) || 0,
+          // Không thêm fromOrder để tạo đơn hàng mới hoàn toàn
           productKey: productKey,
         };
 
@@ -1463,8 +1485,7 @@ const OrdersHistoryPage = () => {
                       {/* Cancel Order Button - Only show for pending or shipping orders that have been paid */}
                       {(order.status === "pending" ||
                         order.status === "shipping") &&
-                        order.status !== "unpaid" &&
-                        order.isPaid && (
+                        order.status !== "unpaid" && (
                           <Button
                             danger
                             type="text"

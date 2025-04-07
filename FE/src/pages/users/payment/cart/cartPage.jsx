@@ -303,9 +303,9 @@ function CartPage() {
             selectedItems.includes(`${item.id}_${index}`)
           )
           .map((item) => ({
-            productId: item.id,
-            quantity: item.quantity,
-            price: item.price,
+            productId: parseInt(item.id) || parseInt(item.productId),
+            quantity: parseInt(item.quantity) || 1,
+            price: parseFloat(item.price) || 0,
           })),
         // Thêm thông tin khuyến mãi
         promotionId: appliedPromotion?.promotionId || null,
@@ -313,6 +313,19 @@ function CartPage() {
         subtotal: orderTotal,
         total: finalTotal,
       };
+
+      // Validate order data before sending
+      if (!order.items || order.items.length === 0) {
+        message.error("Vui lòng chọn ít nhất một sản phẩm để thanh toán");
+        return;
+      }
+
+      // Validate each item has valid productId
+      const invalidItems = order.items.filter(item => !item.productId || isNaN(item.productId));
+      if (invalidItems.length > 0) {
+        message.error("Có sản phẩm không hợp lệ trong giỏ hàng. Vui lòng thử lại!");
+        return;
+      }
 
       console.log("Sending order:", order);
 
