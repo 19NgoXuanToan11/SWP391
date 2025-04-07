@@ -127,13 +127,19 @@ const OrdersHistoryPage = () => {
               return {
                 id: productId,
                 productId: productId,
-                productName: productResponse.data.productName || productResponse.data.name,
+                productName:
+                  productResponse.data.productName || productResponse.data.name,
                 price: parseFloat(item.price) || 0,
                 quantity: parseInt(item.quantity) || 1,
-                productImages: productResponse.data.imageUrls?.[0] || productResponse.data.image,
-                brandName: productResponse.data.brandName || "Không có thông tin",
-                category: productResponse.data.categoryName || "Không có thông tin",
-                description: productResponse.data.description || "Không có mô tả chi tiết",
+                productImages:
+                  productResponse.data.imageUrls?.[0] ||
+                  productResponse.data.image,
+                brandName:
+                  productResponse.data.brandName || "Không có thông tin",
+                category:
+                  productResponse.data.categoryName || "Không có thông tin",
+                description:
+                  productResponse.data.description || "Không có mô tả chi tiết",
                 specifications: productResponse.data.specifications || {},
               };
             } catch (error) {
@@ -175,9 +181,15 @@ const OrdersHistoryPage = () => {
       if (!productId) return null;
 
       // Ensure we have a valid numeric ID
-      const numericProductId = parseInt(productId);
-      if (isNaN(numericProductId)) {
-        console.error(`Invalid product ID: ${productId}`);
+      let numericProductId;
+      try {
+        numericProductId = parseInt(productId);
+        if (isNaN(numericProductId) || numericProductId <= 0) {
+          console.error(`Invalid product ID format: ${productId}`);
+          return null;
+        }
+      } catch (error) {
+        console.error(`Error parsing product ID ${productId}:`, error);
         return null;
       }
 
@@ -788,33 +800,19 @@ const OrdersHistoryPage = () => {
     if (product && (product.id || product.productId)) {
       const productId = product.id || product.productId;
 
-      // Show loading message
-      message.loading({
-        content: "Đang chuẩn bị thông tin sản phẩm...",
-        key: "productNavigation",
-      });
-
-      // Try to fetch fresh product data to ensure we have the latest info
-      fetchProductById(productId)
-        .then((fullProduct) => {
-          message.success({
-            content: "Đã tìm thấy thông tin sản phẩm!",
-            key: "productNavigation",
-            duration: 1,
-          });
-
-          // Navigate to product page
-          navigate(`/product/${productId}`);
-        })
-        .catch((error) => {
-          // If fetching fails, still navigate but with a warning
-          message.warning({
-            content: "Đang chuyển hướng với thông tin có sẵn",
-            key: "productNavigation",
-            duration: 1,
-          });
-          navigate(`/product/${productId}`);
-        });
+      // Try to parse the ID to a valid integer
+      try {
+        const parsedId = parseInt(productId);
+        if (!isNaN(parsedId)) {
+          // Navigate directly without pre-fetching
+          navigate(`/product/${parsedId}`);
+        } else {
+          message.error("ID sản phẩm không hợp lệ");
+        }
+      } catch (error) {
+        console.error("Error parsing product ID:", error);
+        message.error("Không thể xem chi tiết sản phẩm");
+      }
     } else {
       message.error("Không thể xem chi tiết sản phẩm");
     }
@@ -841,7 +839,8 @@ const OrdersHistoryPage = () => {
       const currentCart = store.getState().cart.items || [];
 
       // Extract essential product info
-      const name = product.productName || product.name || "Sản phẩm không xác định";
+      const name =
+        product.productName || product.name || "Sản phẩm không xác định";
       const price = parseFloat(product.price) || 0;
       const quantity = parseInt(product.quantity) || 1;
 
@@ -920,11 +919,12 @@ const OrdersHistoryPage = () => {
           stock: true,
           discount: parseInt(product.discount) || 0,
           description: product.description || "",
-          originalPrice: parseFloat(product.originalPrice) || parseFloat(product.price) || 0,
+          originalPrice:
+            parseFloat(product.originalPrice) || parseFloat(product.price) || 0,
           // Không thêm fromOrder để tạo đơn hàng mới hoàn toàn
           productKey: productKey,
           // Thêm thông tin order để biết xử lý lúc thanh toán
-          parentOrderStatus: order ? order.status : null
+          parentOrderStatus: order ? order.status : null,
         };
 
         // Add the product to cart
@@ -1040,7 +1040,7 @@ const OrdersHistoryPage = () => {
             fromOrder: order.id || order.orderId,
             productKey: productKey,
             // Thêm thông tin order status để biết xử lý lúc thanh toán
-            parentOrderStatus: order.status
+            parentOrderStatus: order.status,
           };
         }
       });
@@ -1497,7 +1497,7 @@ const OrdersHistoryPage = () => {
                       {/* Cancel Order Button - Only show for pending or shipping orders that have been paid */}
                       {(order.status === "pending" ||
                         order.status === "shipping") &&
-                        order.status !== "unpaid" && (
+                        order.isPaid && (
                           <Button
                             danger
                             type="text"
@@ -1713,7 +1713,7 @@ const OrdersHistoryPage = () => {
                                       // Thêm thông tin order cho product
                                       const productWithOrderInfo = {
                                         ...product,
-                                        parentOrder: order
+                                        parentOrder: order,
                                       };
                                       handleAddToCart(productWithOrderInfo);
                                     }}

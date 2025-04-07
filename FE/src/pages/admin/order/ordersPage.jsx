@@ -405,6 +405,13 @@ const OrdersPage = () => {
         orderToUpdate.status ||
         "pending";
 
+      // Kiểm tra nếu đơn hàng đã hủy thì không cho phép thay đổi trạng thái
+      if (currentStatus === "cancelled") {
+        message.error("Không thể thay đổi trạng thái của đơn hàng đã hủy");
+        setLoading(false);
+        return;
+      }
+
       // Kiểm tra quy tắc chuyển đổi trạng thái
       // 1. Từ "pending" chỉ có thể chuyển sang "shipping" hoặc "cancelled"
       // 2. Từ "shipping" chỉ có thể chuyển sang "delivered" hoặc "cancelled"
@@ -435,9 +442,6 @@ const OrdersPage = () => {
       } else if (currentStatus === "delivered" && newStatus !== "delivered") {
         isValidTransition = false;
         errorMessage = "Không thể thay đổi trạng thái sau khi đã giao hàng";
-      } else if (currentStatus === "cancelled" && newStatus !== "cancelled") {
-        isValidTransition = false;
-        errorMessage = "Không thể thay đổi trạng thái sau khi đã hủy đơn hàng";
       }
 
       if (!isValidTransition) {
@@ -450,16 +454,16 @@ const OrdersPage = () => {
       let apiStatus;
       switch (newStatus) {
         case "shipping":
-          apiStatus = "delivering"; // API chấp nhận "delivering" thay vì "shipping"
+          apiStatus = "delivering";
           break;
         case "delivered":
-          apiStatus = "complete"; // API chấp nhận "complete" thay vì "delivered"
+          apiStatus = "complete";
           break;
         case "cancelled":
-          apiStatus = "failed"; // API chấp nhận "failed" thay vì "cancelled"
+          apiStatus = "failed";
           break;
         default:
-          apiStatus = newStatus; // Trường hợp "pending" giữ nguyên
+          apiStatus = newStatus;
       }
 
       // Gọi API để cập nhật
@@ -469,52 +473,24 @@ const OrdersPage = () => {
 
       message.success("Cập nhật trạng thái đơn hàng thành công");
 
+      // Cập nhật UI
       if (orderToUpdate) {
-        // Cập nhật UI cho orders
         const updatedOrders = orders.map((order) => {
           if (order.orderId === orderId) {
             return {
               ...order,
-              status: newStatus, // Vẫn lưu trạng thái giao diện trong state local
+              status: newStatus,
             };
           }
           return order;
         });
         setOrders(updatedOrders);
 
-        // Cập nhật UI cho payments nếu order có trong danh sách payments
-        const updatedPayments = payments.map((payment) => {
-          if (payment.orderId === orderId) {
-            return {
-              ...payment,
-              status: payment.status, // Giữ nguyên trạng thái thanh toán
-              orderStatus: newStatus, // Cập nhật trạng thái đơn hàng
-            };
-          }
-          return payment;
-        });
-        setPayments(updatedPayments);
-
-        // Lưu vào localStorage với TRACKING CODE và orderId để đồng bộ với staff
+        // Cập nhật localStorage
         const orderStatusUpdates = JSON.parse(
           localStorage.getItem("orderStatusUpdates") || "{}"
         );
-
-        // Lưu trạng thái theo orderId để đảm bảo đồng bộ với staff
         orderStatusUpdates[orderId] = newStatus;
-
-        // Nếu có trackingCode thì lưu thêm theo trackingCode
-        if (orderToUpdate.trackingCode) {
-          orderStatusUpdates[orderToUpdate.trackingCode] = newStatus;
-          console.log(
-            `Admin đã cập nhật trạng thái cho đơn hàng có mã theo dõi: ${orderToUpdate.trackingCode}`
-          );
-        } else {
-          console.warn(
-            "Không tìm thấy mã theo dõi (trackingCode) cho đơn hàng, nhưng đã lưu theo orderId"
-          );
-        }
-
         localStorage.setItem(
           "orderStatusUpdates",
           JSON.stringify(orderStatusUpdates)
