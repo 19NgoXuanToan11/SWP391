@@ -4,22 +4,22 @@ namespace Service
 {
     public interface IPromotionService
     {
-        // L?y t?t c? khuy?n mãi
+        // L?y t?t c? khuy?n mï¿½i
         Task<IEnumerable<Promotion>> GetAllPromotionsAsync();
 
-        // L?y khuy?n mãi theo ID
-        Task<Promotion?> GetPromotionByIdAsync(int id);
+        // L?y khuy?n mï¿½i theo ID
+        Task<Promotion?> GetByIdAsync(int id);
 
-        // L?y khuy?n mãi ?ang áp d?ng (cho ??n hàng)
+        // L?y khuy?n mï¿½i ?ang ï¿½p d?ng (cho ??n hï¿½ng)
         Task<Promotion?> GetActivePromotionAsync();
 
-        // Thêm khuy?n mãi
+        // Thï¿½m khuy?n mï¿½i
         Task AddPromotionAsync(Promotion promotion);
 
-        // C?p nh?t khuy?n mãi
+        // C?p nh?t khuy?n mï¿½i
         Task UpdatePromotionAsync(Promotion promotion);
 
-        // Xóa khuy?n mãi
+        // Xï¿½a khuy?n mï¿½i
         Task DeletePromotionAsync(int id);
     }
 }

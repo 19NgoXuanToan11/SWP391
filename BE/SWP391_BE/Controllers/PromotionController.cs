@@ -25,7 +25,7 @@ namespace SWP391_BE.Controllers
             _logger = logger;
         }
 
-        // L?y t?t c? khuy?n mãi
+        // L?y t?t c? khuy?n mï¿½i
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PromotionDTO>>> GetAllPromotions()
         {
@@ -45,13 +45,13 @@ namespace SWP391_BE.Controllers
             }
         }
 
-        // L?y khuy?n mãi theo ID
+        // L?y khuy?n mï¿½i theo ID
         [HttpGet("{id}")]
         public async Task<ActionResult<PromotionDTO>> GetPromotion(int id)
         {
             try
             {
-                var promotion = await _promotionService.GetPromotionByIdAsync(id);
+                var promotion = await _promotionService.GetByIdAsync(id);
                 if (promotion == null)
                 {
                     return NotFound($"Promotion with ID {id} not found");
@@ -65,7 +65,7 @@ namespace SWP391_BE.Controllers
             }
         }
 
-        // Thêm khuy?n mãi
+        // Thï¿½m khuy?n mï¿½i
         [HttpPost]
         public async Task<ActionResult<PromotionDTO>> CreatePromotion(CreatePromotionDTO createPromotionDTO)
         {
@@ -98,7 +98,7 @@ namespace SWP391_BE.Controllers
             }
         }
 
-        // C?p nh?t khuy?n mãi
+        // C?p nh?t khuy?n mï¿½i
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePromotion(int id, UpdatePromotionDTO updatePromotionDTO)
         {
@@ -114,7 +114,7 @@ namespace SWP391_BE.Controllers
                     return BadRequest("Start date must be before end date");
                 }
 
-                var existingPromotion = await _promotionService.GetPromotionByIdAsync(id);
+                var existingPromotion = await _promotionService.GetByIdAsync(id);
                 if (existingPromotion == null)
                 {
                     return NotFound($"Promotion with ID {id} not found");
@@ -131,13 +131,13 @@ namespace SWP391_BE.Controllers
             }
         }
 
-        // Xóa khuy?n mãi
+        // Xï¿½a khuy?n mï¿½i
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePromotion(int id)
         {
             try
             {
-                var promotion = await _promotionService.GetPromotionByIdAsync(id);
+                var promotion = await _promotionService.GetByIdAsync(id);
                 if (promotion == null)
                 {
                     return NotFound($"Promotion with ID {id} not found");

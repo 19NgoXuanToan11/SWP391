@@ -72,7 +72,9 @@ namespace SWP391_BE.Controllers
                 }
 
                 // Lấy khuyến mãi áp dụng cho đơn hàng (nếu có)
-                var promotion = await _promotionService.GetActivePromotionAsync();
+                var promotion = order.PromotionId.HasValue 
+                    ? await _promotionService.GetByIdAsync(order.PromotionId.Value)
+                    : null;
 
                 var cancelUrl = "http://localhost:5173/cart";
                 var returnUrl = "http://localhost:5173/order-success";
@@ -100,10 +102,8 @@ namespace SWP391_BE.Controllers
                 int finalTotal = (int)Math.Ceiling(total); // Đảm bảo tổng tiền là số nguyên
 
                 // Tạo dữ liệu thanh toán cho PayOS
-                PaymentData paymentData = new PaymentData(orderCode, (int)total, $"{order.OrderId}", items, cancelUrl, returnUrl);
+                PaymentData paymentData = new PaymentData(orderCode, finalTotal, $"{order.OrderId}", items, cancelUrl, returnUrl);
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
-
-
 
                 var payment = new Payment
                 {

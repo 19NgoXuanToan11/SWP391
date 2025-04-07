@@ -12,33 +12,33 @@ namespace Repo
             _context = context;
         }
 
-        // L?y t?t c? khuy?n mãi
+        // L?y t?t c? khuy?n mï¿½i
         public async Task<IEnumerable<Promotion>> GetAllAsync()
         {
             return await _context.Promotions.ToListAsync();
         }
 
-        // L?y khuy?n mãi theo ID
+        // L?y khuy?n mï¿½i theo ID
         public async Task<Promotion?> GetByIdAsync(int id)
         {
             return await _context.Promotions.FindAsync(id);
         }
 
-        // Thêm khuy?n mãi
+        // Thï¿½m khuy?n mï¿½i
         public async Task AddAsync(Promotion promotion)
         {
             await _context.Promotions.AddAsync(promotion);
             await _context.SaveChangesAsync();
         }
 
-        // C?p nh?t khuy?n mãi
+        // C?p nh?t khuy?n mï¿½i
         public async Task UpdateAsync(Promotion promotion)
         {
             _context.Promotions.Update(promotion);
             await _context.SaveChangesAsync();
         }
 
-        // Xóa khuy?n mãi
+        // Xï¿½a khuy?n mï¿½i
         public async Task DeleteAsync(int id)
         {
             var promotion = await _context.Promotions.FindAsync(id);
@@ -49,12 +49,12 @@ namespace Repo
             }
         }
 
-        // L?y khuy?n mãi ?ang áp d?ng cho ??n hàng (d?a trên ngày hi?n t?i)
+        // L?y khuy?n mï¿½i ?ang ï¿½p d?ng cho ??n hï¿½ng (d?a trï¿½n ngï¿½y hi?n t?i)
         public async Task<Promotion?> GetActivePromotionAsync()
         {
+            var now = DateTime.UtcNow;
             return await _context.Promotions
-                                 .Where(p => p.StartDate <= DateTime.Now && p.EndDate >= DateTime.Now)
-                                 .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(p => p.StartDate <= now && p.EndDate >= now && p.IsActive);
         }
     }
 }

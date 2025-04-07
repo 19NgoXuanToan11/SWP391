@@ -14,11 +14,17 @@ namespace SWP391_BE.Mappings
                 .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.OrderDate))
                 .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.TotalAmount))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-                .ForMember(dest => dest.PaymentMethod, opt => opt.MapFrom(src => src.PaymentMethod));
+                .ForMember(dest => dest.PaymentMethod, opt => opt.MapFrom(src => src.PaymentMethod))
+                .ForMember(dest => dest.PromotionId, opt => opt.MapFrom(src => src.PromotionId))
+                .ForMember(dest => dest.PromotionDiscount, opt => opt.MapFrom(src => 
+                    src.Promotion != null && src.Promotion.DiscountPercentage.HasValue 
+                    ? (src.TotalAmount * src.Promotion.DiscountPercentage.Value / 100) 
+                    : 0));
 
             CreateMap<CreateOrderDTO, Order>()
                 .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => DateTime.UtcNow))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => "Pending"))
+                .ForMember(dest => dest.PromotionId, opt => opt.MapFrom(src => src.PromotionId))
                 .ForMember(dest => dest.OrderDetails, opt => opt.Ignore())
                 .ForMember(dest => dest.Payments, opt => opt.Ignore());
 

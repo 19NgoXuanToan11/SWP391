@@ -11,6 +11,8 @@ namespace SWP391_BE.DTOs
         public decimal? TotalAmount { get; set; }
         public string? Status { get; set; }
         public string? PaymentMethod { get; set; }
+        public int? PromotionId { get; set; }
+        public decimal? PromotionDiscount { get; set; }
 
         public List<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
     }
@@ -26,6 +28,8 @@ namespace SWP391_BE.DTOs
     {
         public int UserId { get; set; }
         public List<CartItem> Items { get; set; } = new List<CartItem>();
+        public int? PromotionId { get; set; }
+        public decimal? PromotionDiscount { get; set; }
     }
 
     public class UpdateOrderDTO

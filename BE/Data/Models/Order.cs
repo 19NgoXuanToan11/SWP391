@@ -19,7 +19,10 @@ public partial class Order
 
     public string? PaymentMethod { get; set; }
 
+    public int? PromotionId { get; set; }
+
     public virtual User User { get; set; } = null!;
+    public virtual Promotion? Promotion { get; set; }
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 }
