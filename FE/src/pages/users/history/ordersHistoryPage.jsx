@@ -1621,29 +1621,6 @@ const OrdersHistoryPage = () => {
                                           : product.description}
                                       </p>
                                     )}
-                                    <div className="mt-3">
-                                      <Button
-                                        type="link"
-                                        size="small"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          toggleProductDetails(
-                                            product.id ||
-                                              product.productId ||
-                                              index
-                                          );
-                                        }}
-                                        className="px-0 text-purple-600 hover:text-purple-700"
-                                      >
-                                        {expandedProductDetails[
-                                          product.id ||
-                                            product.productId ||
-                                            index
-                                        ]
-                                          ? "Ẩn chi tiết"
-                                          : "Xem thêm chi tiết"}
-                                      </Button>
-                                    </div>
 
                                     {/* Expanded product details */}
                                     {expandedProductDetails[
