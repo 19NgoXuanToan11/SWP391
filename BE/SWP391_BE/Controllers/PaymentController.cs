@@ -226,5 +226,20 @@ namespace SWP391_BE.Controllers
 
             return null;
         }
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllPayments()
+        {
+            try
+            {
+                var payments = await _paymentService.GetAllPaymentsAsync();
+                return Ok(new Response(0, "success", payments));
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                return Ok(new Response(-1, "fail", null));
+            }
+        }
     }
 }
