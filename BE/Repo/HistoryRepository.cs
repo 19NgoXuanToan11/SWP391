@@ -64,7 +64,9 @@ namespace Repo
                 .Include(h => h.OrderDetails)
                     .ThenInclude(od => od.Product)
                         .ThenInclude(p => p.Images)
-                .Where(h => h.OrderDetails.Any(od => od.Order.UserId == userId)) // Lọc theo UserId
+                .Include(h => h.OrderDetails) // Include OrderDetails
+                    .ThenInclude(od => od.Order) // Include Order để lấy TotalAmount
+                .Where(h => h.OrderDetails.Any(od => od.Order.UserId == userId))
                 .ToListAsync();
         }
     }

@@ -56,6 +56,8 @@ namespace SWP391_BE.DTOs
         public string TrackingCode { get; set; }
         public string Shipper { get; set; }
         public string HistoryStatus { get; set; }
+        public decimal? TotalAmount { get; set; }
+        public decimal? FinalAmount { get; set; }
         public List<OrderDetailHistoryDTO> Products { get; set; }
     }
 
