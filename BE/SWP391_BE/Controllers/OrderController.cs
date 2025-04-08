@@ -192,16 +192,13 @@ namespace SWP391_BE.Controllers
                     return NotFound($"Order with ID {id} not found");
                 }
 
-                // If order is being cancelled and was previously paid, restore stock
-                if (statusDTO.Status.ToLower() == "cancelled" && order.Status?.ToLower() == "paid")
+                // Kiểm tra nếu trạng thái hiện tại là "Đang vận chuyển"
+                if (order.Status?.ToLower() == "delivering")
                 {
-                    foreach (var orderDetail in order.OrderDetails)
-                    {
-                        await _productService.RestoreProductStockAsync(orderDetail.ProductId, orderDetail.Quantity);
-                    }
+                    return Forbid("Không thể chỉnh sửa trạng thái đơn hàng khi đã chuyển sang 'Đang vận chuyển'.");
                 }
 
-                // Use the specialized method for updating status
+                // Cập nhật trạng thái đơn hàng
                 await _orderService.UpdateOrderStatusAsync(id, statusDTO.Status);
                 
                 return Ok(new { message = $"Order status updated to {statusDTO.Status}" });
@@ -210,6 +207,43 @@ namespace SWP391_BE.Controllers
             {
                 _logger.LogError(ex, "Error updating order status for order {Id}", id);
                 return StatusCode(500, "An error occurred while updating the order status");
+            }
+        }
+
+        [HttpPut("cancel/{id}")]
+        public async Task<IActionResult> CancelOrder(int id)
+        {
+            try
+            {
+                var order = await _orderService.GetOrderByIdAsync(id);
+                if (order == null)
+                {
+                    return NotFound($"Order with ID {id} not found");
+                }
+                if (order.Status?.ToLower() == "delivering")
+                {
+                    return BadRequest("Không thể hủy đơn hàng khi đã chuyển sang 'Đang vận chuyển'.");
+                }
+
+                // Cập nhật trạng thái đơn hàng thành "Cancelled"
+                order.Status = "Cancelled";
+                await _orderService.UpdateOrderAsync(order);
+
+                // Khôi phục lại số lượng sản phẩm nếu đơn hàng đã được thanh toán
+                if (order.Status.ToLower() == "paid")
+                {
+                    foreach (var orderDetail in order.OrderDetails)
+                    {
+                        await _productService.RestoreProductStockAsync(orderDetail.ProductId, orderDetail.Quantity);
+                    }
+                }
+
+                return Ok(new { message = $"Order with ID {id} has been cancelled." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error cancelling order {Id}", id);
+                return StatusCode(500, "An error occurred while cancelling the order:" +ex.Message);
             }
         }
     }

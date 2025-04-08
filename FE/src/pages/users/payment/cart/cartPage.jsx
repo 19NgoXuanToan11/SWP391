@@ -288,10 +288,10 @@ function CartPage() {
       setLoading(true);
 
       // Lấy các sản phẩm đã chọn
-      let selectedCartItems = cartItems.filter((item, index) => 
+      let selectedCartItems = cartItems.filter((item, index) =>
         selectedItems.includes(`${item.id}_${index}`)
       );
-      
+
       // Kiểm tra và xử lý ID người dùng
       let userId = user.id;
 
@@ -305,7 +305,7 @@ function CartPage() {
       let orderItems = [];
       for (const item of selectedCartItems) {
         let productId;
-        
+
         try {
           // Đảm bảo productId là số nguyên hợp lệ
           if (item.productId && !isNaN(parseInt(item.productId))) {
@@ -316,64 +316,77 @@ function CartPage() {
             console.warn("Bỏ qua sản phẩm có ID không hợp lệ:", item);
             continue;
           }
-          
+
           // Kiểm tra nếu đây là sản phẩm từ đơn hàng cũ (có parentOrderStatus)
           // Các sản phẩm này thường có ID tạm thời rất lớn (timestamp)
-          if (item.parentOrderStatus && (productId > 1000000000 || item.fromOrder)) {
+          if (
+            item.parentOrderStatus &&
+            (productId > 1000000000 || item.fromOrder)
+          ) {
             console.log("Phát hiện sản phẩm từ đơn hàng cũ:", item.name);
-            
+
             // Sử dụng một ID mặc định hợp lệ cho tất cả sản phẩm từ đơn hàng cũ
-            console.log(`Sản phẩm "${item.name}" từ đơn hàng cũ có ID không hợp lệ: ${productId}`);
-            
+            console.log(
+              `Sản phẩm "${item.name}" từ đơn hàng cũ có ID không hợp lệ: ${productId}`
+            );
+
             // Sử dụng ID=2 làm mặc định (đảm bảo ID này tồn tại trong cơ sở dữ liệu)
             productId = 2;
             console.log(`Đã chuyển ID cho "${item.name}" thành: ${productId}`);
           }
-          
+
           if (productId <= 0) {
             console.warn("Bỏ qua sản phẩm có ID không hợp lệ (ID <= 0):", item);
             continue;
           }
-          
+
           // Thêm item hợp lệ vào danh sách
           orderItems.push({
             productId: productId,
             quantity: parseInt(item.quantity) || 1,
-            price: parseFloat(item.price) || 0
+            price: parseFloat(item.price) || 0,
           });
         } catch (error) {
           console.error("Lỗi khi xử lý sản phẩm:", error);
           // Bỏ qua sản phẩm lỗi
         }
       }
-      
+
       // Kiểm tra nếu không còn sản phẩm nào hợp lệ
       if (orderItems.length === 0) {
-        message.error("Không có sản phẩm hợp lệ để đặt hàng. Vui lòng thử lại!");
+        message.error(
+          "Không có sản phẩm hợp lệ để đặt hàng. Vui lòng thử lại!"
+        );
         setLoading(false);
         return;
       }
-      
+
       // Log để kiểm tra
       console.log("Danh sách sản phẩm đã lọc:", orderItems);
-      
+
       // Tạo đối tượng đơn hàng đúng định dạng
       const createOrderDTO = {
         userId: parseInt(userId),
         items: orderItems,
-        promotionId: appliedPromotion?.promotionId ? parseInt(appliedPromotion.promotionId) : null,
+        promotionId: appliedPromotion?.promotionId
+          ? parseInt(appliedPromotion.promotionId)
+          : null,
         promotionDiscount: discountAmount || 0,
         subtotal: orderTotal,
-        total: finalTotal
+        total: finalTotal,
       };
 
       console.log("Gửi đơn hàng:", JSON.stringify(createOrderDTO));
 
-      const res = await axios.post("https://localhost:7285/api/Order", createOrderDTO, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await axios.post(
+        "https://localhost:7285/api/Order",
+        createOrderDTO,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       // Lưu thông tin đơn hàng vào sessionStorage để sử dụng ở trang thanh toán
       try {
@@ -388,29 +401,37 @@ function CartPage() {
           `order_info_${res.data.orderId}`,
           JSON.stringify(orderInfo)
         );
-        console.log("Đã lưu thông tin đơn hàng vào session storage:", orderInfo);
+        console.log(
+          "Đã lưu thông tin đơn hàng vào session storage:",
+          orderInfo
+        );
       } catch (sessionError) {
-        console.error("Lỗi khi lưu thông tin đơn hàng vào session storage:", sessionError);
+        console.error(
+          "Lỗi khi lưu thông tin đơn hàng vào session storage:",
+          sessionError
+        );
       }
 
       // Nếu đã sử dụng mã khuyến mãi, xóa mã khuyến mãi khỏi giỏ hàng
       if (appliedPromotion) {
         dispatch(removePromotion());
       }
-      
+
       // Hiển thị thông báo thành công rõ ràng
       console.log("ĐƠN HÀNG ĐÃ ĐƯỢC TẠO THÀNH CÔNG:", res.data);
-      message.success(`Đơn hàng #${res.data.orderId} đã được tạo thành công! Đang chuyển đến trang thanh toán...`);
+      message.success(
+        `Đơn hàng #${res.data.orderId} đã được tạo thành công! Đang chuyển đến trang thanh toán...`
+      );
 
       // Chuyển đến trang thanh toán
       navigate(`/payment/${res.data.orderId}`);
     } catch (e) {
       console.log("Lỗi khi tạo đơn hàng:", e);
-      
+
       // Xử lý lỗi chi tiết từ API
       if (e.response && e.response.data) {
         console.error("Chi tiết lỗi API:", e.response.data);
-        
+
         if (e.response.data.message) {
           message.error(`Lỗi: ${e.response.data.message}`);
         } else if (e.response.data.errors) {
@@ -421,7 +442,7 @@ function CartPage() {
               errorMessages.push(...e.response.data.errors[key]);
             }
           }
-          
+
           if (errorMessages.length > 0) {
             message.error(`Lỗi: ${errorMessages[0]}`);
           } else {
@@ -1118,32 +1139,38 @@ function CartPage() {
                         <Text strong>Mã khuyến mãi</Text>
                       </div>
                       <div className="flex gap-2">
-                        <Select
-                          placeholder="Chọn mã khuyến mãi"
-                          className="w-full"
-                          loading={isLoadingPromotions}
-                          value={appliedPromotion?.promotionId || undefined}
-                          onChange={handleApplyPromotion}
-                          allowClear
-                          disabled={
-                            selectedItems.length === 0 || cartItems.length === 0
-                          }
-                        >
-                          {activePromotions?.map((promotion) => (
-                            <Option
-                              key={promotion.promotionId}
-                              value={promotion.promotionId}
-                            >
-                              <div className="flex items-center">
-                                <PercentageOutlined className="text-red-500 mr-2" />
-                                <span>
-                                  {promotion.promotionName} - Giảm{" "}
-                                  {promotion.discountPercentage}%
-                                </span>
-                              </div>
-                            </Option>
-                          ))}
-                        </Select>
+                        <div className="w-full">
+                          <Text className="text-gray-500 mb-2 block">
+                            Các mã bạn có thể áp dụng được
+                          </Text>
+                          <Select
+                            placeholder="Chọn mã khuyến mãi"
+                            className="w-full"
+                            loading={isLoadingPromotions}
+                            value={appliedPromotion?.promotionId || undefined}
+                            onChange={handleApplyPromotion}
+                            allowClear
+                            disabled={
+                              selectedItems.length === 0 ||
+                              cartItems.length === 0
+                            }
+                          >
+                            {activePromotions?.map((promotion) => (
+                              <Option
+                                key={promotion.promotionId}
+                                value={promotion.promotionId}
+                              >
+                                <div className="flex items-center">
+                                  <PercentageOutlined className="text-red-500 mr-2" />
+                                  <span>
+                                    {promotion.promotionName} - Giảm{" "}
+                                    {promotion.discountPercentage}%
+                                  </span>
+                                </div>
+                              </Option>
+                            ))}
+                          </Select>
+                        </div>
                       </div>
                       {appliedPromotion && (
                         <div className="mt-2 flex justify-between">

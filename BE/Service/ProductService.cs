@@ -329,7 +329,7 @@ namespace Service
             var product = await _productRepository.GetByIdAsync(productId);
             if (product != null && product.Stock.HasValue)
             {
-                product.Stock = product.Stock.Value + quantity;
+                product.Stock += quantity;
                 await _productRepository.UpdateAsync(product);
             }
         }
