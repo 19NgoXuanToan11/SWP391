@@ -220,30 +220,35 @@ namespace SWP391_BE.Controllers
                 {
                     return NotFound($"Order with ID {id} not found");
                 }
+
+                // Kiểm tra trạng thái đơn hàng
                 if (order.Status?.ToLower() == "delivering")
                 {
                     return BadRequest("Không thể hủy đơn hàng khi đã chuyển sang 'Đang vận chuyển'.");
+                }
+
+                // Kiểm tra nếu đơn hàng đã bị hủy trước đó
+                if (order.Status?.ToLower() == "cancelled")
+                {
+                    return BadRequest("Đơn hàng đã được hủy trước đó.");
                 }
 
                 // Cập nhật trạng thái đơn hàng thành "Cancelled"
                 order.Status = "Cancelled";
                 await _orderService.UpdateOrderAsync(order);
 
-                // Khôi phục lại số lượng sản phẩm nếu đơn hàng đã được thanh toán
-                if (order.Status.ToLower() == "paid")
+                // Khôi phục số lượng tồn kho (Stock) cho tất cả sản phẩm trong đơn hàng
+                foreach (var orderDetail in order.OrderDetails)
                 {
-                    foreach (var orderDetail in order.OrderDetails)
-                    {
-                        await _productService.RestoreProductStockAsync(orderDetail.ProductId, orderDetail.Quantity);
-                    }
+                    await _productService.RestoreProductStockAsync(orderDetail.ProductId, orderDetail.Quantity);
                 }
 
-                return Ok(new { message = $"Order with ID {id} has been cancelled." });
+                return Ok(new { message = $"Order with ID {id} has been cancelled, and stock has been restored." });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error cancelling order {Id}", id);
-                return StatusCode(500, "An error occurred while cancelling the order:" +ex.Message);
+                return StatusCode(500, "An error occurred while cancelling the order: " + ex.Message);
             }
         }
     }

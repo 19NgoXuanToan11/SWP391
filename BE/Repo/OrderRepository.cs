@@ -63,15 +63,8 @@ namespace Repo
         public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(int userId)
         {
             return await _context.Orders
+                .Include(o => o.Promotion)
                 .Where(o => o.UserId == userId)
-                .Select(o => new Order
-                {
-                    OrderId = o.OrderId,
-                    Status = o.Status,
-                    OrderDate = o.OrderDate,
-                    TotalAmount = o.TotalAmount,
-                    PaymentMethod = o.PaymentMethod
-                })
                 .ToListAsync();
         }
     }

@@ -326,12 +326,20 @@ namespace Service
 
         public async Task RestoreProductStockAsync(int productId, int quantity)
         {
-            var product = await _productRepository.GetByIdAsync(productId);
-            if (product != null && product.Stock.HasValue)
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
             {
-                product.Stock += quantity;
-                await _productRepository.UpdateAsync(product);
+                throw new Exception($"Product with ID {productId} not found.");
             }
+
+            // Cộng lại số lượng tồn kho
+            product.Stock += quantity;
+            if (product.Stock < 0) // Đảm bảo Stock không âm
+            {
+                product.Stock = 0;
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

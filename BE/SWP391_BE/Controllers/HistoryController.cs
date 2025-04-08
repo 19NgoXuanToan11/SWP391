@@ -53,8 +53,8 @@ namespace SWP391_BE.Controllers
                 }).ToList()
             });
         }
+ 
         [HttpGet("user/{userId}")]
-        
         public async Task<IActionResult> GetHistoriesByUserId(int userId)
         {
             var histories = await _historyService.GetHistoriesByUserIdAsync(userId);
@@ -68,13 +68,14 @@ namespace SWP391_BE.Controllers
                 TrackingCode = history.TrackingCode,
                 Shipper = history.Shipper,
                 Status = history.Status,
+                TotalAmount = history.OrderDetails.FirstOrDefault()?.Order.TotalAmount ?? 0, // Lấy TotalAmount từ Order
                 Products = history.OrderDetails.Select(od => new
                 {
                     ProductName = od.Product.ProductName,
                     ProductImages = od.Product.Images
                         .Where(img => img.IsMainImage)
                         .Select(img => img.ImageUrl)
-                        .FirstOrDefault() ?? od.Product.Images.FirstOrDefault()?.ImageUrl ?? "default-image.jpg", // Hình ảnh sản phẩm
+                        .FirstOrDefault() ?? od.Product.Images.FirstOrDefault()?.ImageUrl ?? "default-image.jpg",
                     Quantity = od.Quantity,
                     Price = od.Price
                 }).ToList()
@@ -150,6 +151,10 @@ namespace SWP391_BE.Controllers
                             TrackingCode = history?.TrackingCode ?? "Not Available",
                             Shipper = history?.Shipper ?? "Not Available",
                             HistoryStatus = history?.Status ?? "Not Available",
+                            TotalAmount = order.TotalAmount,
+                            FinalAmount = order.Promotion != null && order.Promotion.DiscountPercentage.HasValue && order.TotalAmount.HasValue
+                                ? Math.Round(order.TotalAmount.Value - (order.TotalAmount.Value * order.Promotion.DiscountPercentage.Value / 100), 2)
+                                : order.TotalAmount,
                             Products = new List<OrderDetailHistoryDTO>()
                         };
 
@@ -178,6 +183,10 @@ namespace SWP391_BE.Controllers
                             TrackingCode = "Not Available",
                             Shipper = "Not Available",
                             HistoryStatus = "Not Available",
+                            TotalAmount = order.TotalAmount,
+                            FinalAmount = order.Promotion != null && order.Promotion.DiscountPercentage.HasValue && order.TotalAmount.HasValue
+                                ? Math.Round(order.TotalAmount.Value - (order.TotalAmount.Value * order.Promotion.DiscountPercentage.Value / 100), 2)
+                                : order.TotalAmount,
                             Products = new List<OrderDetailHistoryDTO>()
                         });
                     }
