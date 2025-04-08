@@ -33,7 +33,10 @@ function OrderSuccessPage() {
         .get(`https://localhost:7285/Payment/orderCode/${orderCode}`)
         .then((res) => {
           if (res.data.error === 0) {
+            console.log("Payment data received:", res.data.data);
             setPayment(res.data.data);
+          } else {
+            console.error("API error:", res.data);
           }
         })
         .catch((err) => console.error("Lỗi khi gọi API:", err))
@@ -45,7 +48,14 @@ function OrderSuccessPage() {
     dispatch(clearCart());
   }, [dispatch]);
 
-  console.log(payment);
+  // Kiểm tra dữ liệu payment
+  console.log("Payment state:", payment, "OrderCode:", orderCode);
+  
+  // Đảm bảo có mã đơn hàng trước khi hiển thị
+  const orderIdToShow = payment && payment.orderId ? `#${payment.orderId}` : (
+    orderCode ? `#${orderCode.slice(-3)}` : "#000"
+  );
+
   return (
     <div className="min-h-screen py-12 px-4">
       <div className="max-w-4xl mx-auto">
@@ -93,7 +103,7 @@ function OrderSuccessPage() {
                   <div className="flex justify-between items-center">
                     <Text className="text-gray-500">Mã đơn hàng:</Text>
                     <Tag color="blue" className="text-base px-4 py-1">
-                      {payment?.orderId}
+                      {orderIdToShow}
                     </Tag>
                   </div>
 

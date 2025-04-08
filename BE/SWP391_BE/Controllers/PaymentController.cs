@@ -241,5 +241,25 @@ namespace SWP391_BE.Controllers
                 return Ok(new Response(-1, "fail", null));
             }
         }
+
+        // API để lấy thông tin thanh toán theo orderCode
+        [HttpGet("orderCode/{orderCode}")]
+        public async Task<IActionResult> GetPaymentByOrderCode(int orderCode)
+        {
+            try
+            {
+                var payment = await _paymentService.GetPaymentByOrderCodeAsync(orderCode);
+                if (payment == null)
+                {
+                    return Ok(new Response(-1, "Payment not found", null));
+                }
+                return Ok(new Response(0, "success", payment));
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                return Ok(new Response(-1, "fail", null));
+            }
+        }
     }
 }
