@@ -192,10 +192,23 @@ namespace SWP391_BE.Controllers
                     return NotFound($"Order with ID {id} not found");
                 }
 
-                // Kiểm tra nếu trạng thái hiện tại là "Đang vận chuyển"
-                if (order.Status?.ToLower() == "delivering")
+                string currentStatus = order.Status?.ToLower() ?? "pending"; // Default to pending if null
+                string requestedStatus = statusDTO.Status.ToLower();
+
+                // Define allowed transitions
+                var allowedTransitions = new Dictionary<string, string[]>
                 {
-                    return Forbid("Không thể chỉnh sửa trạng thái đơn hàng khi đã chuyển sang 'Đang vận chuyển'.");
+                    ["pending"] = new[] { "delivering", "cancelled" },
+                    ["delivering"] = new[] { "complete", "failed" },
+                    ["failed"] = new[] { "pending" },     // Optional: allow reprocessing
+                    ["cancelled"] = new[] { "pending" },  // Optional: allow reinstating
+                    ["complete"] = Array.Empty<string>()  // Final state
+                };
+
+                if (!allowedTransitions.TryGetValue(currentStatus, out var validNextStatuses) ||
+                    !validNextStatuses.Contains(requestedStatus))
+                {
+                    return Forbid($"Cannot change status from '{currentStatus}' to '{requestedStatus}'.");
                 }
 
                 // Cập nhật trạng thái đơn hàng
@@ -234,8 +247,7 @@ namespace SWP391_BE.Controllers
                 }
 
                 // Cập nhật trạng thái đơn hàng thành "Cancelled"
-                order.Status = "Cancelled";
-                await _orderService.UpdateOrderAsync(order);
+                await _orderService.UpdateOrderStatusAsync(id, "Cancelled");
 
                 // Khôi phục số lượng tồn kho (Stock) cho tất cả sản phẩm trong đơn hàng
                 foreach (var orderDetail in order.OrderDetails)
