@@ -200,9 +200,9 @@ namespace SWP391_BE.Controllers
                 {
                     ["pending"] = new[] { "delivering", "cancelled" },
                     ["delivering"] = new[] { "complete", "failed" },
-                    ["failed"] = new[] { "pending" },     // Optional: allow reprocessing
-                    ["cancelled"] = new[] { "pending" },  // Optional: allow reinstating
-                    ["complete"] = Array.Empty<string>()  // Final state
+                    ["failed"] = Array.Empty<string>(),     // Final state
+                    ["cancelled"] = Array.Empty<string>(),  // Final state
+                    ["complete"] = Array.Empty<string>()    // Final state
                 };
 
                 if (!allowedTransitions.TryGetValue(currentStatus, out var validNextStatuses) ||
