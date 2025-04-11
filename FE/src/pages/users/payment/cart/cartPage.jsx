@@ -324,15 +324,62 @@ function CartPage() {
             (productId > 1000000000 || item.fromOrder)
           ) {
             console.log("Phát hiện sản phẩm từ đơn hàng cũ:", item.name);
-
-            // Sử dụng một ID mặc định hợp lệ cho tất cả sản phẩm từ đơn hàng cũ
             console.log(
-              `Sản phẩm "${item.name}" từ đơn hàng cũ có ID không hợp lệ: ${productId}`
+              `Sản phẩm "${item.name}" từ đơn hàng cũ có ID: ${productId}`
             );
-
-            // Sử dụng ID=2 làm mặc định (đảm bảo ID này tồn tại trong cơ sở dữ liệu)
-            productId = 2;
-            console.log(`Đã chuyển ID cho "${item.name}" thành: ${productId}`);
+            
+            // Lấy ID gốc từ sản phẩm nếu có
+            if (item.originalProductId) {
+              productId = item.originalProductId;
+              console.log(`Đã sử dụng ID gốc cho "${item.name}": ${productId}`);
+            } else {
+              // Nếu không có ID gốc, tìm sản phẩm tương ứng trong danh sách sản phẩm
+              const matchingProduct = cartItems.find(p => 
+                p.name === item.name && 
+                p.price === item.price && 
+                !p.parentOrderStatus
+              );
+              
+              if (matchingProduct) {
+                productId = matchingProduct.productId || matchingProduct.id;
+                console.log(`Đã tìm thấy ID tương ứng cho "${item.name}": ${productId}`);
+              } else {
+                console.warn(`Không tìm thấy ID tương ứng cho sản phẩm "${item.name}"`);
+                
+                // Thử tìm sản phẩm từ API bằng tên sản phẩm
+                try {
+                  // Tìm kiếm sản phẩm từ API
+                  const searchResponse = await axios.get(
+                    `https://localhost:7285/api/Product/search?searchTerm=${encodeURIComponent(item.name)}`
+                  );
+                  
+                  if (searchResponse.data && searchResponse.data.length > 0) {
+                    // Tìm sản phẩm có tên và giá tương tự
+                    const apiProduct = searchResponse.data.find(p => 
+                      p.productName === item.name && 
+                      Math.abs(p.price - item.price) < 1000 // Cho phép sai lệch giá tối đa 1000đ
+                    );
+                    
+                    if (apiProduct) {
+                      productId = apiProduct.productId;
+                      console.log(`Đã tìm thấy ID từ API cho "${item.name}": ${productId}`);
+                    } else {
+                      // Nếu không tìm thấy sản phẩm chính xác, sử dụng sản phẩm đầu tiên
+                      productId = searchResponse.data[0].productId;
+                      console.log(`Đã sử dụng ID từ sản phẩm tương tự cho "${item.name}": ${productId}`);
+                    }
+                  } else {
+                    console.warn(`Không tìm thấy sản phẩm tương ứng trên API cho "${item.name}"`);
+                    // Bỏ qua sản phẩm này thay vì sử dụng ID tạm thời
+                    continue;
+                  }
+                } catch (apiError) {
+                  console.error(`Lỗi khi tìm kiếm sản phẩm từ API:`, apiError);
+                  // Bỏ qua sản phẩm này thay vì sử dụng ID tạm thời
+                  continue;
+                }
+              }
+            }
           }
 
           if (productId <= 0) {
