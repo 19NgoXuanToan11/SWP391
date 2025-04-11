@@ -179,7 +179,7 @@ namespace SWP391_BE.Controllers
                 }
 
                 // Validate the status value
-                string[] validStatuses = new[] { "pending", "delivering", "complete", "failed", "cancelled" };
+                string[] validStatuses = new[] { "pending", "paid", "delivering", "complete", "failed", "cancelled" };
                 if (!validStatuses.Contains(statusDTO.Status.ToLower()))
                 {
                     return BadRequest($"Invalid status. Valid values are: {string.Join(", ", validStatuses)}");
@@ -198,7 +198,8 @@ namespace SWP391_BE.Controllers
                 // Define allowed transitions
                 var allowedTransitions = new Dictionary<string, string[]>
                 {
-                    ["pending"] = new[] { "delivering", "cancelled" },
+                    ["pending"] = new[] { "paid", "delivering", "cancelled" },
+                    ["paid"] = new[] { "delivering", "cancelled" },
                     ["delivering"] = new[] { "complete", "failed" },
                     ["failed"] = Array.Empty<string>(),     // Final state
                     ["cancelled"] = Array.Empty<string>(),  // Final state
