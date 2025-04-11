@@ -102,7 +102,7 @@ namespace SWP391_BE.Controllers
                 int finalTotal = (int)Math.Ceiling(total); // Đảm bảo tổng tiền là số nguyên
 
                 // Tạo dữ liệu thanh toán cho PayOS
-                PaymentData paymentData = new PaymentData(orderCode, finalTotal, $"{orderCode}", items, cancelUrl, returnUrl);
+                PaymentData paymentData = new PaymentData(orderCode, finalTotal, $"{order.OrderId}", items, cancelUrl, returnUrl);
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
 
                 var payment = new Payment
@@ -149,7 +149,7 @@ namespace SWP391_BE.Controllers
 
                 if (data.code == "00")
                 {
-                    int? orderId = await ExtractOrderIdFromDescription(data.description);
+                    int? orderId = ExtractOrderIdFromDescription(data.description);
                     if (!orderId.HasValue)
                     {
                         return Ok(new Response(-1, "fail", null));
@@ -209,15 +209,14 @@ namespace SWP391_BE.Controllers
             return "TRK-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
         }
 
-        private async Task<int?> ExtractOrderIdFromDescription(string description)
+        private int? ExtractOrderIdFromDescription(string description)
         {
             try
             {
                 // Lấy phần số, loại bỏ khoảng trắng thừa
-                if (int.TryParse(description.Trim(), out int orderCode))
+                if (int.TryParse(description.Trim(), out int orderId))
                 {
-                    var payment = await _paymentService.GetPaymentByOrderCodeAsync(orderCode);
-                    return payment?.OrderId;
+                    return orderId;
                 }
             }
             catch (Exception ex)
