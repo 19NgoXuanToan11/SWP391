@@ -156,5 +156,35 @@ namespace SWP391_BE.Controllers
                 return StatusCode(500, "An error occurred while deleting the product image");
             }
         }
+
+        [HttpPut("setMainImage/{id}")]
+        public async Task<IActionResult> SetMainImage(int id)
+        {
+            try
+            {
+                var imageToSet = await _productImageService.GetProductImageByIdAsync(id);
+                if (imageToSet == null)
+                {
+                    return NotFound($"Product image with ID {id} not found");
+                }
+
+                // Get all images for this product
+                var productImages = await _productImageService.GetImagesByProductIdAsync(imageToSet.ProductId);
+
+                // Update all images - set IsMainImage to false except for the selected one
+                foreach (var image in productImages)
+                {
+                    image.IsMainImage = (image.ImageId == id);
+                    await _productImageService.UpdateProductImageAsync(image);
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error setting main image {Id}", id);
+                return StatusCode(500, "An error occurred while setting the main image");
+            }
+        }
     }
-} 
+}

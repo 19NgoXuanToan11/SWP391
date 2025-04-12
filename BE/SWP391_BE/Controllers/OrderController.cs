@@ -17,7 +17,7 @@ namespace SWP391_BE.Controllers
         private readonly IProductService _productService;
 
         public OrderController(
-            IOrderService orderService, 
+            IOrderService orderService,
             IMapper mapper,
             ILogger<OrderController> logger,
             IProductService productService)
@@ -173,54 +173,107 @@ namespace SWP391_BE.Controllers
         {
             try
             {
+                _logger.LogInformation("Received request to update order {OrderId} status to {Status}", id, statusDTO?.Status);
+
                 if (statusDTO == null || string.IsNullOrEmpty(statusDTO.Status))
                 {
-                    return BadRequest("Order status is required");
+                    return BadRequest(new { message = "Order status is required" });
                 }
 
-                // Validate the status value
-                string[] validStatuses = new[] { "pending", "paid", "delivering", "complete", "failed", "cancelled" };
-                if (!validStatuses.Contains(statusDTO.Status.ToLower()))
-                {
-                    return BadRequest($"Invalid status. Valid values are: {string.Join(", ", validStatuses)}");
-                }
+                // Normalize the status
+                string requestedStatus = statusDTO.Status.ToLower();
 
-                // Get the order with details to check current status
+                // Get the order with details
                 var order = await _orderService.GetOrderByIdAsync(id);
                 if (order == null)
                 {
-                    return NotFound($"Order with ID {id} not found");
+                    return NotFound(new { message = $"Order with ID {id} not found" });
                 }
 
-                string currentStatus = order.Status?.ToLower() ?? "pending"; // Default to pending if null
-                string requestedStatus = statusDTO.Status.ToLower();
+                // Map frontend to backend status values
+                if (requestedStatus == "shipping") requestedStatus = "delivering";
+                if (requestedStatus == "delivered") requestedStatus = "complete";
 
-                // Define allowed transitions
-                var allowedTransitions = new Dictionary<string, string[]>
-                {
-                    ["pending"] = new[] { "paid", "delivering", "cancelled" },
-                    ["paid"] = new[] { "delivering", "cancelled" },
-                    ["delivering"] = new[] { "complete", "failed" },
-                    ["failed"] = Array.Empty<string>(),     // Final state
-                    ["cancelled"] = Array.Empty<string>(),  // Final state
-                    ["complete"] = Array.Empty<string>()    // Final state
-                };
+                // Get current order status (normalize it)
+                string currentStatus = (order.Status?.ToLower() ?? "pending");
 
-                if (!allowedTransitions.TryGetValue(currentStatus, out var validNextStatuses) ||
-                    !validNextStatuses.Contains(requestedStatus))
+                _logger.LogInformation("Current status: {Current}, Requested: {Requested}",
+                    currentStatus, requestedStatus);
+
+                // Check if we're allowing cancellation - this should always be allowed
+                bool isCancellation = requestedStatus == "cancelled";
+
+                // Check if payment status is confirmed in the request
+                bool paymentConfirmedInRequest = statusDTO.PaymentConfirmed == true;
+
+                // If explicitly marked as payment confirmed in request or cancelling, skip payment checks
+                if (!paymentConfirmedInRequest && !isCancellation)
                 {
-                    return Forbid($"Cannot change status from '{currentStatus}' to '{requestedStatus}'.");
+                    // Check if any payment is complete
+                    bool isPaid = false;
+
+                    if (order.Payments != null && order.Payments.Any())
+                    {
+                        isPaid = order.Payments.Any(p =>
+                            (p.Status?.ToLower() == "paid" ||
+                            p.Status?.ToLower() == "completed" ||
+                            p.Status?.ToLower() == "đã thanh toán"));
+
+                        _logger.LogInformation("Payment check from Payment records: {IsPaid}", isPaid);
+                    }
+
+                    // If no payment record found or payment not confirmed, return error
+                    if (!isPaid)
+                    {
+                        _logger.LogWarning("Payment required for status change: {Current} → {Requested}",
+                            currentStatus, requestedStatus);
+                        return BadRequest(new { message = "Cannot update order status because payment is not confirmed" });
+                    }
                 }
 
-                // Cập nhật trạng thái đơn hàng
-                await _orderService.UpdateOrderStatusAsync(id, statusDTO.Status);
-                
-                return Ok(new { message = $"Order status updated to {statusDTO.Status}" });
+                // Only these transitions should be restricted
+                bool isValidTransition = true;
+
+                // Cancelled/Failed/Complete are final states
+                if (currentStatus == "cancelled" || currentStatus == "failed" || currentStatus == "complete")
+                {
+                    isValidTransition = false;
+                }
+                // From pending: can go to delivering, cancelled
+                else if (currentStatus == "pending")
+                {
+                    isValidTransition = (requestedStatus == "delivering" ||
+                                         requestedStatus == "cancelled");
+                }
+                // From delivering: can go to complete, cancelled
+                else if (currentStatus == "delivering")
+                {
+                    isValidTransition = (requestedStatus == "complete" ||
+                                         requestedStatus == "cancelled");
+                }
+
+                if (!isValidTransition)
+                {
+                    return BadRequest(new
+                    {
+                        message = $"Invalid transition: Cannot change status from '{currentStatus}' to '{requestedStatus}'"
+                    });
+                }
+
+                // Update the status
+                await _orderService.UpdateOrderStatusAsync(id, requestedStatus);
+                _logger.LogInformation("Successfully updated order {OrderId} status to {Status}", id, requestedStatus);
+
+                return Ok(new { message = $"Order status updated to {requestedStatus}" });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating order status for order {Id}", id);
-                return StatusCode(500, "An error occurred while updating the order status");
+                return StatusCode(500, new
+                {
+                    message = "An error occurred while updating the order status",
+                    details = ex.Message
+                });
             }
         }
 
@@ -265,4 +318,4 @@ namespace SWP391_BE.Controllers
             }
         }
     }
-} 
+}

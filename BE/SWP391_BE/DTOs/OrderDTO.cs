@@ -41,8 +41,10 @@ namespace SWP391_BE.DTOs
     public class OrderStatusDTO
     {
         public string Status { get; set; }
+        public bool PaymentConfirmed { get; set; }
+
     }
-    
+
     public class OrderStatusInfoDTO
     {
         public int OrderId { get; set; }

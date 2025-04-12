@@ -28,6 +28,12 @@ namespace SWP391_BE.DTOs
         // Đảm bảo `ImageUrls` không null
         public List<string> ImageUrls { get; set; } = new List<string>();
 
+        // Main image URL (IsMainImage = true)
+        public string? MainImageUrl { get; set; }
+
+        // Thumbnail URLs (IsMainImage = false)
+        public List<string> ThumbnailUrls { get; set; } = new List<string>();
+
         public class CreateProductDTO
         {
             [Required(ErrorMessage = "Tên sản phẩm không được để trống")]
@@ -60,6 +66,12 @@ namespace SWP391_BE.DTOs
 
             [MinLength(1, ErrorMessage = "Sản phẩm phải có ít nhất 1 hình ảnh")]
             public List<string> ImageUrls { get; set; } = new List<string>();
+
+            // Main image URL (IsMainImage = true)
+            public string? MainImageUrl { get; set; }
+
+            // Thumbnail URLs (IsMainImage = false)
+            public List<string> ThumbnailUrls { get; set; } = new List<string>();
         }
 
         public class UpdateProductDTO
@@ -94,6 +106,12 @@ namespace SWP391_BE.DTOs
 
             [MinLength(1)]
             public List<string> ImageUrls { get; set; } = new List<string>();
+
+            // Main image URL (IsMainImage = true)
+            public string? MainImageUrl { get; set; }
+
+            // Thumbnail URLs (IsMainImage = false)
+            public List<string> ThumbnailUrls { get; set; } = new List<string>();
         }
     }
 }

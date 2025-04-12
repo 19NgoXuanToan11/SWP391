@@ -15,5 +15,7 @@ namespace Service
         Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm);
         Task UpdateProductStockAsync(int productId, int quantity);
         Task RestoreProductStockAsync(int productId, int quantity);
+        Task UpdateProductImagesAsync(int productId, List<string> imageUrls);
+
     }
 }
