@@ -97,12 +97,24 @@ const beautyShopApi = createApi({
     }),
 
     updateProduct: builder.mutation({
-      query: ({ id, productData }) => ({
-        url: endpoints.UPDATE_PRODUCT.replace(":id", id),
-        method: "PUT",
-        body: productData,
-      }),
-      invalidatesTags: ["Products"],
+      query: ({ id, productData }) => {
+        console.log(`Updating product ${id} with data:`, productData);
+        // Log image URLs specifically for debugging
+        if (productData.imageUrls) {
+          console.log(`Image URLs for product ${id}:`, productData.imageUrls);
+        }
+        
+        return {
+          url: `product/${id}`,
+          method: "PUT",
+          body: productData,
+        };
+      },
+      // Make sure to invalidate cache after update
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'Products', id },
+        'Products'
+      ],
     }),
 
     deleteProduct: builder.mutation({

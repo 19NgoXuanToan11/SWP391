@@ -83,6 +83,7 @@ export function SiteFooter() {
             <ul className="space-y-4 flex-grow">
               {[
                 { name: "Blog", path: "/news" },
+                { name: "Chính sách đổi trả", path: "/return-policy" },
               ].map((item) => (
                 <li key={item.name}>
                   <Link

@@ -95,32 +95,37 @@ const OrdersPage = () => {
     totalAmount: 0,
   });
 
-  // Thêm state để lưu tham chiếu đến RangePicker và Select component
   const datePickerRef = React.useRef(null);
   const statusSelectRef = React.useRef(null);
 
-  // Fetch orders from API
   const fetchOrders = async () => {
     try {
       setLoading(true);
       const response = await axios.get("https://localhost:7285/api/order");
       console.log("Orders response:", response.data);
 
-      // Khôi phục trạng thái từ localStorage
       const orderStatusUpdates = JSON.parse(
         localStorage.getItem("orderStatusUpdates") || "{}"
       );
 
-      // Áp dụng trạng thái đã lưu cho các đơn hàng được tải về
       const ordersWithSavedStatus = response.data.map((order) => {
-        // Kiểm tra nếu có trạng thái lưu cho đơn hàng này
+        const isCancelled =
+          order.status?.toLowerCase() === "cancelled" ||
+          order.status?.toLowerCase() === "failed";
+
+        if (isCancelled) {
+          return {
+            ...order,
+            status: "cancelled",
+          };
+        }
+
         if (orderStatusUpdates[order.orderId]) {
           return {
             ...order,
-            status: orderStatusUpdates[order.orderId], // Ưu tiên sử dụng trạng thái đã lưu
+            status: orderStatusUpdates[order.orderId],
           };
         }
-        // Kiểm tra nếu có trackingCode và có trạng thái lưu theo trackingCode
         if (order.trackingCode && orderStatusUpdates[order.trackingCode]) {
           return {
             ...order,
@@ -130,20 +135,16 @@ const OrdersPage = () => {
         return order;
       });
 
-      // Nếu API đã trả về đầy đủ thông tin, không cần gọi thêm API chi tiết
       setOrders(ordersWithSavedStatus);
 
-      // Tính toán thống kê
       const totalRevenue = ordersWithSavedStatus
         .filter((o) => {
-          // Chỉ tính doanh thu cho đơn hàng đã thanh toán
           const isPaid =
             o.paymentMethod &&
             o.paymentMethod !== "null" &&
             o.paymentMethod.toLowerCase() !== "pending" &&
             o.status.toLowerCase() === "delivered";
 
-          // Kiểm tra trạng thái thanh toán
           const paymentStatus =
             o.paymentStatus &&
             o.paymentStatus.toLowerCase() !== "pending" &&
@@ -180,7 +181,6 @@ const OrdersPage = () => {
     }
   };
 
-  // Fetch payments from API
   const fetchPayments = async () => {
     try {
       setLoadingPayments(true);
@@ -188,20 +188,42 @@ const OrdersPage = () => {
       console.log("Payments response:", response.data);
 
       if (response.data.data) {
-        // Khôi phục trạng thái từ localStorage
         const orderStatusUpdates = JSON.parse(
           localStorage.getItem("orderStatusUpdates") || "{}"
         );
 
-        // Áp dụng trạng thái đã lưu cho payments
+        const ordersResponse = await axios.get("https://localhost:7285/api/order");
+        const cancelledOrderIds = new Set();
+        
+        ordersResponse.data.forEach(order => {
+          if (order.status?.toLowerCase() === "cancelled" || 
+              order.status?.toLowerCase() === "failed") {
+            cancelledOrderIds.add(order.orderId);
+          }
+        });
+
         const paymentsWithOrderStatus = response.data.data.map((payment) => {
-          // Thêm trạng thái đơn hàng từ localStorage nếu có
+          if (cancelledOrderIds.has(payment.orderId)) {
+            return {
+              ...payment,
+              orderStatus: "cancelled"
+            };
+          }
+          
+          if (orderStatusUpdates[payment.orderId] === "cancelled") {
+            return {
+              ...payment,
+              orderStatus: "cancelled"
+            };
+          }
+          
           if (payment.orderId && orderStatusUpdates[payment.orderId]) {
             return {
               ...payment,
               orderStatus: orderStatusUpdates[payment.orderId],
             };
           }
+          
           return payment;
         });
 
@@ -221,7 +243,35 @@ const OrdersPage = () => {
     fetchPayments();
   }, []);
 
-  // Calculate payment statistics
+  useEffect(() => {
+    const checkForCancelledOrders = () => {
+      try {
+        const savedStatuses = JSON.parse(
+          localStorage.getItem("orderStatusUpdates") || "{}"
+        );
+
+        setOrders((prevOrders) =>
+          prevOrders.map((order) => {
+            if (
+              savedStatuses[order.orderId] === "cancelled" ||
+              savedStatuses[order.trackingCode] === "cancelled"
+            ) {
+              return { ...order, status: "cancelled" };
+            }
+            return order;
+          })
+        );
+      } catch (error) {
+        console.error("Error checking for cancelled orders", error);
+      }
+    };
+
+    checkForCancelledOrders();
+    const intervalId = setInterval(checkForCancelledOrders, 10000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   const calculateStats = (data) => {
     const stats = data.reduce(
       (acc, payment) => {
@@ -233,7 +283,6 @@ const OrdersPage = () => {
             payment.status.toLowerCase() === "completed" ||
             payment.status.toLowerCase() === "đã thanh toán");
 
-        // Only add amount to totalAmount if payment is paid
         if (isPaid) {
           acc.totalAmount += payment.amount;
           acc.completed += 1;
@@ -251,7 +300,6 @@ const OrdersPage = () => {
     setPaymentStats(stats);
   };
 
-  // Format price to VND
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -259,7 +307,6 @@ const OrdersPage = () => {
     }).format(price);
   };
 
-  // Format date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString("vi-VN", {
@@ -271,7 +318,6 @@ const OrdersPage = () => {
     });
   };
 
-  // Get status color
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
       case "pending":
@@ -293,7 +339,6 @@ const OrdersPage = () => {
     }
   };
 
-  // Get payment status
   const getPaymentStatus = (method) => {
     if (!method) return "Chưa thanh toán";
     if (method === "null") return "Chưa thanh toán";
@@ -301,7 +346,6 @@ const OrdersPage = () => {
     return method;
   };
 
-  // Get payment color
   const getPaymentColor = (method) => {
     if (!method) return "red";
     if (method === "null") return "red";
@@ -309,7 +353,6 @@ const OrdersPage = () => {
     return method.toLowerCase() === "pending" ? "orange" : "green";
   };
 
-  // View order details
   const viewOrderDetails = async (orderId) => {
     try {
       setLoading(true);
@@ -318,7 +361,6 @@ const OrdersPage = () => {
       );
       console.log("Order details:", response.data);
 
-      // Nếu có orderDetails, lấy thêm thông tin sản phẩm nếu cần
       if (
         response.data &&
         response.data.orderDetails &&
@@ -326,10 +368,8 @@ const OrdersPage = () => {
       ) {
         const orderWithProductDetails = { ...response.data };
 
-        // Lấy thông tin sản phẩm cho mỗi orderDetail nếu chưa có
         const updatedOrderDetails = await Promise.all(
           orderWithProductDetails.orderDetails.map(async (item) => {
-            // Nếu không có hình ảnh hoặc tên sản phẩm, lấy thông tin sản phẩm
             if (!item.image || !item.productName) {
               try {
                 const productResponse = await axios.get(
@@ -341,7 +381,6 @@ const OrdersPage = () => {
                   productResponse.data
                 );
 
-                // Lấy hình ảnh từ imageUrls nếu có
                 let productImage = null;
                 if (
                   productResponse.data.imageUrls &&
@@ -382,16 +421,11 @@ const OrdersPage = () => {
     }
   };
 
-  // Update order status
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
       setLoading(true);
 
-      // Lấy trạng thái hiện tại từ record hoặc từ localStorage
-      const orderStatusUpdates = JSON.parse(
-        localStorage.getItem("orderStatusUpdates") || "{}"
-      );
-
+      // Find the order to update
       const orderToUpdate = orders.find((order) => order.orderId === orderId);
       if (!orderToUpdate) {
         message.error("Không tìm thấy đơn hàng");
@@ -399,60 +433,27 @@ const OrdersPage = () => {
         return;
       }
 
+      // Get current status from localStorage or order
+      const orderStatusUpdates = JSON.parse(
+        localStorage.getItem("orderStatusUpdates") || "{}"
+      );
+      
       const currentStatus =
         orderStatusUpdates[orderId] ||
         orderStatusUpdates[orderToUpdate.trackingCode] ||
         orderToUpdate.status ||
         "pending";
 
-      // Kiểm tra nếu đơn hàng đã hủy thì không cho phép thay đổi trạng thái
-      if (currentStatus === "cancelled") {
+      // Check if order is already cancelled
+      if (currentStatus.toLowerCase() === "cancelled") {
         message.error("Không thể thay đổi trạng thái của đơn hàng đã hủy");
         setLoading(false);
         return;
       }
 
-      // Kiểm tra quy tắc chuyển đổi trạng thái
-      // 1. Từ "pending" chỉ có thể chuyển sang "shipping" hoặc "cancelled"
-      // 2. Từ "shipping" chỉ có thể chuyển sang "delivered" hoặc "cancelled"
-      // 3. Từ "delivered" không thể chuyển về trạng thái trước đó
-      // 4. Từ "cancelled" không thể chuyển sang trạng thái khác
-
-      let isValidTransition = true;
-      let errorMessage = "";
-
-      if (
-        currentStatus === "pending" &&
-        newStatus !== "pending" &&
-        newStatus !== "shipping" &&
-        newStatus !== "cancelled"
-      ) {
-        isValidTransition = false;
-        errorMessage =
-          "Từ trạng thái Chờ xác nhận chỉ có thể chuyển sang Đang giao hàng hoặc Đã hủy";
-      } else if (
-        currentStatus === "shipping" &&
-        newStatus !== "shipping" &&
-        newStatus !== "delivered" &&
-        newStatus !== "cancelled"
-      ) {
-        isValidTransition = false;
-        errorMessage =
-          "Từ trạng thái Đang giao hàng chỉ có thể chuyển sang Đã giao hàng hoặc Đã hủy";
-      } else if (currentStatus === "delivered" && newStatus !== "delivered") {
-        isValidTransition = false;
-        errorMessage = "Không thể thay đổi trạng thái sau khi đã giao hàng";
-      }
-
-      if (!isValidTransition) {
-        message.error(errorMessage);
-        setLoading(false);
-        return;
-      }
-
-      // Chuyển đổi trạng thái hiển thị sang trạng thái API chấp nhận
+      // Map frontend status to backend status
       let apiStatus;
-      switch (newStatus) {
+      switch (newStatus.toLowerCase()) {
         case "shipping":
           apiStatus = "delivering";
           break;
@@ -460,21 +461,26 @@ const OrdersPage = () => {
           apiStatus = "complete";
           break;
         case "cancelled":
-          apiStatus = "failed";
+          apiStatus = "cancelled"; 
           break;
         default:
           apiStatus = newStatus;
       }
 
-      // Gọi API để cập nhật
-      await axios.patch(`https://localhost:7285/api/Order/${orderId}/status`, {
-        status: apiStatus,
-      });
+      // Log the request 
+      console.log(`Updating order ${orderId} status: ${currentStatus} → ${newStatus} (API: ${apiStatus})`);
+      
+      try {
+        // Add paid status to make backend accept the change
+        const response = await axios.patch(`https://localhost:7285/api/Order/${orderId}/status`, {
+          status: apiStatus,
+          paymentConfirmed: true // Add this field to signal that payment is confirmed
+        });
 
-      message.success("Cập nhật trạng thái đơn hàng thành công");
+        console.log("API response:", response.data);
+        message.success("Cập nhật trạng thái đơn hàng thành công");
 
-      // Cập nhật UI
-      if (orderToUpdate) {
+        // Update the UI and localStorage
         const updatedOrders = orders.map((order) => {
           if (order.orderId === orderId) {
             return {
@@ -486,15 +492,36 @@ const OrdersPage = () => {
         });
         setOrders(updatedOrders);
 
-        // Cập nhật localStorage
-        const orderStatusUpdates = JSON.parse(
-          localStorage.getItem("orderStatusUpdates") || "{}"
-        );
         orderStatusUpdates[orderId] = newStatus;
         localStorage.setItem(
           "orderStatusUpdates",
           JSON.stringify(orderStatusUpdates)
         );
+        
+        // Also update the payment list if needed
+        if (payments.length > 0) {
+          const updatedPayments = payments.map(payment => {
+            if (payment.orderId === orderId) {
+              return {
+                ...payment,
+                orderStatus: newStatus
+              };
+            }
+            return payment;
+          });
+          setPayments(updatedPayments);
+        }
+        
+      } catch (error) {
+        console.error("API error details:", {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message
+        });
+        
+        // Show the server error message if available
+        const errorMsg = error.response?.data?.message || error.message;
+        message.error("Không thể cập nhật trạng thái đơn hàng: " + errorMsg);
       }
     } catch (error) {
       console.error("Error updating order status:", error);
@@ -504,33 +531,26 @@ const OrdersPage = () => {
     }
   };
 
-  // Thêm hàm resetFilters để làm mới tất cả các bộ lọc
   const resetFilters = () => {
-    // Reset tất cả các bộ lọc và tìm kiếm
     setSearchTerm("");
     setStatusFilter("all");
     setDateRange(null);
 
-    // Xóa giá trị trong RangePicker bằng cách đặt giá trị là null
     if (datePickerRef.current) {
       datePickerRef.current.setValue(null);
     }
 
-    // Đặt lại giá trị Select về "all"
     if (statusSelectRef.current) {
       statusSelectRef.current.setValue("all");
     }
 
-    // Fetch lại dữ liệu ban đầu
     fetchOrders();
     fetchPayments();
 
     message.success("Đã làm mới dữ liệu");
   };
 
-  // Filter orders by status and date range
   const filteredOrders = orders.filter((order) => {
-    // Filter by status
     if (
       statusFilter !== "all" &&
       order.status.toLowerCase() !== statusFilter.toLowerCase()
@@ -538,7 +558,6 @@ const OrdersPage = () => {
       return false;
     }
 
-    // Filter by date range
     if (dateRange && dateRange[0] && dateRange[1]) {
       const orderDate = new Date(order.orderDate);
       const startDate = dateRange[0].startOf("day").toDate();
@@ -549,7 +568,6 @@ const OrdersPage = () => {
       }
     }
 
-    // Search by orderId, userId or totalAmount
     return (
       order.orderId.toString().includes(searchTerm) ||
       order.userId.toString().includes(searchTerm) ||
@@ -557,9 +575,7 @@ const OrdersPage = () => {
     );
   });
 
-  // Filter payments
   const filteredPayments = payments.filter((payment) => {
-    // Filter by status
     if (statusFilter !== "all") {
       if (statusFilter === "paid") {
         const isPaid =
@@ -571,7 +587,6 @@ const OrdersPage = () => {
       }
     }
 
-    // Filter by date range
     if (dateRange && dateRange[0] && dateRange[1]) {
       const paymentDate = new Date(payment.paymentDate);
       const startDate = dateRange[0].startOf("day").toDate();
@@ -581,7 +596,6 @@ const OrdersPage = () => {
       }
     }
 
-    // Search by ID, buyer name, or email
     return (
       payment.paymentId.toString().includes(searchTerm) ||
       payment.buyerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -589,7 +603,6 @@ const OrdersPage = () => {
     );
   });
 
-  // Chart data
   const chartData = payments.map((payment) => ({
     date: formatDate(payment.paymentDate),
     amount: payment.amount,
@@ -618,19 +631,17 @@ const OrdersPage = () => {
     },
   };
 
-  // Thêm hàm getStatusTag
   const getStatusTag = (status) => {
-    switch (status.toLowerCase()) {
+    const statusLower = status?.toLowerCase();
+    switch (statusLower) {
       case "pending":
         return "Chờ xác nhận";
       case "processing":
         return "Đang chuẩn bị";
       case "shipping":
-        return "Đang giao hàng";
       case "delivering":
         return "Đang giao hàng";
       case "delivered":
-        return "Đã giao hàng";
       case "completed":
       case "complete":
         return "Đã giao hàng";
@@ -642,7 +653,6 @@ const OrdersPage = () => {
     }
   };
 
-  // Payment table columns
   const paymentColumns = [
     {
       title: "Mã đơn hàng",
@@ -764,132 +774,160 @@ const OrdersPage = () => {
       title: "Trạng thái đơn hàng",
       key: "orderStatus",
       render: (_, record) => {
-        // Lấy trạng thái hiện tại từ record hoặc từ localStorage
         const orderStatusUpdates = JSON.parse(
           localStorage.getItem("orderStatusUpdates") || "{}"
         );
 
-        const currentStatus =
+        let currentStatus =
           orderStatusUpdates[record.orderId] ||
           orderStatusUpdates[record.trackingCode] ||
           record.orderStatus ||
           "pending";
 
+        const matchingOrder = orders.find(o => o.orderId === record.orderId);
+        const isOrderCancelled = 
+          matchingOrder?.status?.toLowerCase() === "cancelled" || 
+          currentStatus === "cancelled";
+
+        if (isOrderCancelled) {
+          currentStatus = "cancelled";
+        }
+
+        // Simplified payment status check that matches what the backend expects
+        const isPaid = 
+          record.status?.toLowerCase() === "paid" ||
+          record.status?.toLowerCase() === "completed";
+
+        // If order is cancelled or payment is paid, allow status change
+        const allowStatusChange = isPaid || currentStatus === "cancelled";
+
         return (
-          <Select
-            value={currentStatus} // Sử dụng value thay vì defaultValue để đảm bảo hiển thị đúng
-            style={{
-              width: 180,
-              fontSize: 14,
-            }}
-            onChange={(value) => {
-              if (record.orderId) {
-                updateOrderStatus(record.orderId, value);
-              } else {
-                message.error({
-                  content: "Không tìm thấy mã đơn hàng",
-                  duration: 2,
-                });
-              }
-            }}
-            className="custom-order-select"
-            dropdownClassName="custom-select-dropdown"
-            dropdownStyle={{
-              borderRadius: "12px",
-              boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-              padding: "8px",
-            }}
-            optionLabelProp="label"
+          <Tooltip
+            title={
+              !isPaid && currentStatus !== "cancelled"
+                ? "Cần thanh toán để cập nhật trạng thái"
+                : ""
+            }
           >
-            <Option
-              value="pending"
-              label={
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 rounded-full bg-orange-500"></div>
-                  <span>Chờ xác nhận</span>
-                </div>
-              }
+            <Select
+              value={currentStatus}
+              style={{
+                width: 180,
+                fontSize: 14,
+                opacity: !isPaid && currentStatus !== "cancelled" ? 0.6 : 1,
+              }}
+              onChange={(value) => {
+                if (record.orderId) {
+                  updateOrderStatus(record.orderId, value);
+                } else {
+                  message.error({
+                    content: "Không tìm thấy mã đơn hàng",
+                    duration: 2,
+                  });
+                }
+              }}
+              className="custom-order-select"
+              dropdownClassName="custom-select-dropdown"
+              dropdownStyle={{
+                borderRadius: "12px",
+                boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+                padding: "8px",
+              }}
+              optionLabelProp="label"
+              disabled={!allowStatusChange || isOrderCancelled} 
             >
-              <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 mr-3">
-                  <ClockCircleOutlined className="text-orange-500 text-sm" />
+              <Option
+                value="pending"
+                label={
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                    <span>Chờ xác nhận</span>
+                  </div>
+                }
+              >
+                <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 mr-3">
+                    <ClockCircleOutlined className="text-orange-500 text-sm" />
+                  </div>
+                  <div>
+                    <span className="text-gray-800 font-medium">
+                      Chờ xác nhận
+                    </span>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Đơn hàng mới
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-gray-800 font-medium">
-                    Chờ xác nhận
-                  </span>
-                  <p className="text-xs text-gray-500 mt-0.5">Đơn hàng mới</p>
+              </Option>
+              <Option
+                value="shipping"
+                label={
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 rounded-full bg-cyan-500"></div>
+                    <span>Đang giao hàng</span>
+                  </div>
+                }
+              >
+                <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-cyan-100 mr-3">
+                    <CarOutlined className="text-cyan-500 text-sm" />
+                  </div>
+                  <div>
+                    <span className="text-gray-800 font-medium">
+                      Đang giao hàng
+                    </span>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Đã chuyển cho đơn vị vận chuyển
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </Option>
-            <Option
-              value="shipping"
-              label={
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 rounded-full bg-cyan-500"></div>
-                  <span>Đang giao hàng</span>
+              </Option>
+              <Option
+                value="delivered"
+                label={
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    <span>Đã giao hàng</span>
+                  </div>
+                }
+              >
+                <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 mr-3">
+                    <CheckCircleOutlined className="text-green-500 text-sm" />
+                  </div>
+                  <div>
+                    <span className="text-gray-800 font-medium">
+                      Đã giao hàng
+                    </span>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Khách hàng đã nhận
+                    </p>
+                  </div>
                 </div>
-              }
-            >
-              <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-cyan-100 mr-3">
-                  <CarOutlined className="text-cyan-500 text-sm" />
+              </Option>
+              <Option
+                value="cancelled"
+                label={
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                    <span>Đã hủy</span>
+                  </div>
+                }
+              >
+                <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 mr-3">
+                    <CloseCircleOutlined className="text-red-500 text-sm" />
+                  </div>
+                  <div>
+                    <span className="text-gray-800 font-medium">Đã hủy</span>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Đơn hàng đã bị hủy
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-gray-800 font-medium">
-                    Đang giao hàng
-                  </span>
-                  <p className="text-xs text-gray-500 mt-0.5">
-                    Đã chuyển cho đơn vị vận chuyển
-                  </p>
-                </div>
-              </div>
-            </Option>
-            <Option
-              value="delivered"
-              label={
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                  <span>Đã giao hàng</span>
-                </div>
-              }
-            >
-              <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 mr-3">
-                  <CheckCircleOutlined className="text-green-500 text-sm" />
-                </div>
-                <div>
-                  <span className="text-gray-800 font-medium">
-                    Đã giao hàng
-                  </span>
-                  <p className="text-xs text-gray-500 mt-0.5">
-                    Khách hàng đã nhận
-                  </p>
-                </div>
-              </div>
-            </Option>
-            <Option
-              value="cancelled"
-              label={
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                  <span>Đã hủy</span>
-                </div>
-              }
-            >
-              <div className="flex items-center py-1.5 px-1 transition-colors duration-200 hover:bg-indigo-50 rounded-lg">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 mr-3">
-                  <CloseCircleOutlined className="text-red-500 text-sm" />
-                </div>
-                <div>
-                  <span className="text-gray-800 font-medium">Đã hủy</span>
-                  <p className="text-xs text-gray-500 mt-0.5">
-                    Đơn hàng đã bị hủy
-                  </p>
-                </div>
-              </div>
-            </Option>
-          </Select>
+              </Option>
+            </Select>
+          </Tooltip>
         );
       },
     },
@@ -905,7 +943,6 @@ const OrdersPage = () => {
           transition={{ duration: 0.5 }}
           className="space-y-8"
         >
-          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -924,7 +961,6 @@ const OrdersPage = () => {
             <div className="absolute bottom-0 left-0 w-40 h-40 bg-white opacity-10 rounded-full -ml-10 -mb-10"></div>
           </motion.div>
 
-          {/* Statistics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <motion.div
               whileHover={{ scale: 1.02 }}
@@ -987,7 +1023,6 @@ const OrdersPage = () => {
             </motion.div>
           </div>
 
-          {/* Filters */}
           <Card className="rounded-2xl shadow-sm border-0 bg-white/80 backdrop-blur-lg">
             <div className="flex flex-col md:flex-row flex-wrap gap-5">
               <div className="flex-1 min-w-[240px]">
@@ -1077,7 +1112,6 @@ const OrdersPage = () => {
             </div>
           </Card>
 
-          {/* Payments Table */}
           <Card className="rounded-2xl shadow-sm border-0">
             <div className="mb-4">
               <Title level={4} className="!mb-1">

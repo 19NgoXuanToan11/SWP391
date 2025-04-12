@@ -61,7 +61,7 @@ export function ProductSlider() {
         id: product.productId,
         name: product.productName,
         price: product.price,
-        image: product.imageUrl,
+        image: product.imageUrls?.[0] || "https://via.placeholder.com/300x300.png?text=Sản+phẩm",
         brand: product.brandName,
         description: product.description,
         stock: product.stock > 0,
@@ -108,9 +108,12 @@ export function ProductSlider() {
                   <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
                     <div className="relative h-64 overflow-hidden">
                       <img
-                        src={product.imageUrls}
+                        src={product.imageUrls?.[0] || "https://via.placeholder.com/300x300.png?text=Sản+phẩm"}
                         alt={product.productName}
                         className="w-full h-full object-cover transition-all duration-300 group-hover:opacity-50 group-hover:scale-110"
+                        onError={(e) => {
+                          e.target.src = "https://via.placeholder.com/300x300.png?text=Sản+phẩm";
+                        }}
                       />
 
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">

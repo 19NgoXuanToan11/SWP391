@@ -61,6 +61,9 @@ import WishlistPage from "../../pages/users/wishlist/wishlistPage";
 // orders history
 import OrdersHistoryPage from "../../pages/users/history/ordersHistoryPage";
 
+// policies
+import ReturnPolicyPage from "../../pages/users/company/return-policy/returnPolicyPage";
+
 // google callback
 import { GoogleCallback } from "../../pages/auth/google/callback";
 
@@ -258,6 +261,12 @@ export const router = createBrowserRouter([
       {
         path: "orders",
         element: <OrdersHistoryPage />,
+      },
+
+      // policies
+      {
+        path: "return-policy",
+        element: <ReturnPolicyPage />,
       },
     ],
   },

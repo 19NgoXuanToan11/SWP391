@@ -62,9 +62,156 @@ const { Title, Text, Paragraph } = Typography;
 const { Step } = Steps;
 const { Option } = Select;
 
+// Add a debugging function to better understand stock values
+const isOutOfStock = (stockValue) => {
+  console.log(
+    `Checking stock value: ${stockValue}, type: ${typeof stockValue}`
+  );
+  return (
+    stockValue === 0 ||
+    stockValue === "0" ||
+    stockValue === null ||
+    stockValue === undefined ||
+    !stockValue ||
+    parseInt(stockValue || "0") <= 0
+  );
+};
+
+// Update the verifyCurrentStockLevels function to better handle order history items
+const verifyCurrentStockLevels = async (selectedCartItems) => {
+  try {
+    // Create a map to collect quantities by product ID
+    const requestedQuantities = {};
+    const itemsByProductId = {};
+
+    // For each selected cart item, remember how many we want to purchase
+    selectedCartItems.forEach((item) => {
+      // Determine the correct ID to use for verification
+      let productId = null;
+
+      // For "buy again" products from order history
+      if (item.productKey || item.fromOrder) {
+        // Use the productId if available and it's a valid number
+        if (item.productId && !isNaN(parseInt(item.productId))) {
+          productId = parseInt(item.productId);
+        }
+        // Otherwise, fall back to regular id if it's a reasonable value
+        else if (
+          item.id &&
+          !isNaN(parseInt(item.id)) &&
+          parseInt(item.id) < 1000000000
+        ) {
+          productId = parseInt(item.id);
+        }
+        // If no valid ID is found, use a default ID but log the issue
+        else {
+          console.warn(`No valid product ID for verification: ${item.name}`);
+          // Skip this item - no way to verify stock
+          return;
+        }
+      } else {
+        // For regular products, use the standard id
+        productId = parseInt(item.productId || item.id);
+      }
+
+      if (!isNaN(productId)) {
+        requestedQuantities[productId] =
+          (requestedQuantities[productId] || 0) + (item.quantity || 1);
+        itemsByProductId[productId] = item;
+      }
+    });
+
+    // Verify each product's current stock level from the API
+    const stockCheckResults = await Promise.all(
+      Object.keys(requestedQuantities).map(async (productId) => {
+        try {
+          // Make a direct API call to get current stock
+          const response = await axios.get(
+            `https://localhost:7285/api/Product/${productId}`
+          );
+
+          // Log the real-time stock value
+          console.log(`Real-time stock check for product ${productId}: 
+            Current DB stock: ${response.data.stock}, 
+            Requested quantity: ${requestedQuantities[productId]}`);
+
+          // Check if we have enough stock
+          const hasEnoughStock =
+            response.data.stock != null &&
+            parseInt(response.data.stock) >= requestedQuantities[productId];
+
+          // Return result for this product
+          return {
+            productId,
+            name: response.data.productName || itemsByProductId[productId].name,
+            requestedQuantity: requestedQuantities[productId],
+            actualStock: response.data.stock,
+            hasEnoughStock,
+            isOrderHistoryItem:
+              itemsByProductId[productId].productKey ||
+              itemsByProductId[productId].fromOrder,
+          };
+        } catch (error) {
+          console.error(
+            `Error checking stock for product ${productId}:`,
+            error
+          );
+          return {
+            productId,
+            name: itemsByProductId[productId]?.name || "Unknown product",
+            hasEnoughStock: false,
+            error: true,
+            isOrderHistoryItem:
+              itemsByProductId[productId]?.productKey ||
+              itemsByProductId[productId]?.fromOrder,
+          };
+        }
+      })
+    );
+
+    // Filter for items with insufficient stock
+    const insufficientStockItems = stockCheckResults.filter(
+      (item) => !item.hasEnoughStock
+    );
+
+    if (insufficientStockItems.length > 0) {
+      return {
+        success: false,
+        insufficientStockItems,
+      };
+    }
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Error during stock verification:", error);
+    return {
+      success: false,
+      error: "Có lỗi xảy ra khi kiểm tra số lượng tồn kho. Vui lòng thử lại.",
+    };
+  }
+};
+
 function CartPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
+
+  const handleConfirmClearCart = () => {
+    dispatch(clearCart());
+    message.success("Đã xóa tất cả sản phẩm khỏi giỏ hàng");
+    setIsOpen(false);
+  };
 
   const cartItems = useSelector((state) => state.cart.items);
   const { isAuthenticated, user } = useSelector(selectAuth);
@@ -87,6 +234,9 @@ function CartPage() {
   // Add state for selected items
   const [selectedItems, setSelectedItems] = React.useState([]);
 
+  // Add a ref to track whether we've shown out-of-stock modal
+  const outOfStockModalShownRef = React.useRef(false);
+
   // Lấy danh sách mã khuyến mãi
   const { data: promotions, isLoading: isLoadingPromotions } =
     useGetPromotionsQuery();
@@ -108,12 +258,23 @@ function CartPage() {
     const item = cartItems[index];
     const oldQuantity = item.quantity;
 
+    // Make sure we respect the stock limit
+    const stockLimit = parseInt(item.stock) || 0;
+    const newQuantity = Math.min(value, stockLimit > 0 ? stockLimit : value);
+
+    // If stock limit is reached, show a warning
+    if (stockLimit > 0 && value > stockLimit) {
+      message.warning(
+        `Số lượng tối đa có thể đặt là ${stockLimit} (tồn kho hiện tại)`
+      );
+    }
+
     console.log(
-      `Updating quantity for item: ${item.name} at index ${index} from ${oldQuantity} to ${value}`
+      `Updating quantity for item: ${item.name} at index ${index} from ${oldQuantity} to ${newQuantity}`
     );
 
-    // Dispatch update action
-    dispatch(updateQuantity({ id, quantity: value, index }));
+    // Dispatch update action with adjusted quantity
+    dispatch(updateQuantity({ id, quantity: newQuantity, index }));
 
     // Show a more detailed notification
     notification.success({
@@ -132,10 +293,13 @@ function CartPage() {
           <div>
             <div className="font-medium">{item.name}</div>
             <div className="text-sm text-gray-500 mt-1">
-              Số lượng: {value}{" "}
-              {value > oldQuantity
-                ? `(+${value - oldQuantity})`
-                : `(-${oldQuantity - value})`}
+              Số lượng: {newQuantity}{" "}
+              {newQuantity > oldQuantity
+                ? `(+${newQuantity - oldQuantity})`
+                : `(-${oldQuantity - newQuantity})`}
+            </div>
+            <div className="text-sm text-green-600 mt-1">
+              Còn {stockLimit} sản phẩm trong kho
             </div>
           </div>
         </div>
@@ -263,6 +427,14 @@ function CartPage() {
               hàng
             </p>
             <p>Số tiền giảm: {formatPrice(discountValue)}</p>
+            <p className="text-xs text-gray-500 mt-1">
+              Hạn sử dụng:{" "}
+              {new Date(selectedPromotion.startDate).toLocaleDateString(
+                "vi-VN"
+              )}{" "}
+              -{" "}
+              {new Date(selectedPromotion.endDate).toLocaleDateString("vi-VN")}
+            </p>
           </div>
         ),
         placement: "bottomRight",
@@ -273,11 +445,76 @@ function CartPage() {
   };
 
   const handleCheckout = async () => {
+    // Reset the ref at the start of each checkout attempt
+    outOfStockModalShownRef.current = false;
+
+    // First, check if any selected items are out of stock
+    const outOfStockItems = [];
+
+    for (const compositeId of selectedItems) {
+      const [itemId, indexStr] = compositeId.split("_");
+      const index = parseInt(indexStr);
+      const item = cartItems[index];
+
+      console.log(
+        `[DEBUG] Checking item: ${item.name}, Stock: ${
+          item.stock
+        }, Type: ${typeof item.stock}`
+      );
+
+      // Super strict check for out-of-stock
+      if (isOutOfStock(item.stock)) {
+        console.log(`[CRITICAL] Out of stock found: ${item.name}`);
+        outOfStockItems.push(item);
+      }
+    }
+
+    // If we have out-of-stock items, show modal and STOP
+    if (outOfStockItems.length > 0) {
+      console.log(
+        `[BLOCK] Blocking checkout - ${outOfStockItems.length} out-of-stock items`
+      );
+      outOfStockModalShownRef.current = true;
+
+      // Use await with Modal to ensure the flow stops
+      await new Promise((resolve) => {
+        Modal.error({
+          title: "Không thể tiến hành thanh toán",
+          content: (
+            <div>
+              <p>Các sản phẩm sau đã hết hàng:</p>
+              <ul style={{ marginLeft: "20px", marginTop: "10px" }}>
+                {outOfStockItems.map((item) => (
+                  <li key={item.id} style={{ marginBottom: "5px" }}>
+                    <strong>{item.name}</strong> (Số lượng trong kho:{" "}
+                    {item.stock || 0})
+                  </li>
+                ))}
+              </ul>
+              <p style={{ marginTop: "10px" }}>
+                Vui lòng xóa các sản phẩm này khỏi giỏ hàng hoặc bỏ chọn để tiếp
+                tục thanh toán.
+              </p>
+            </div>
+          ),
+          onOk: () => {
+            console.log("[MODAL] User acknowledged out-of-stock error");
+            resolve();
+          },
+        });
+      });
+
+      console.log("[BLOCK] Returning early - out of stock items");
+      return; // CRITICAL: Stop execution here
+    }
+
+    // Regular empty cart check
     if (selectedItems.length === 0) {
       message.warning("Vui lòng chọn ít nhất một sản phẩm để thanh toán");
       return;
     }
 
+    // Authentication check
     if (!isAuthenticated) {
       message.warning("Vui lòng đăng nhập để tiếp tục thanh toán");
       navigate("/login", { state: { from: "/cart" } });
@@ -291,6 +528,58 @@ function CartPage() {
       let selectedCartItems = cartItems.filter((item, index) =>
         selectedItems.includes(`${item.id}_${index}`)
       );
+
+      // NEW: Verify real-time stock levels before proceeding
+      message.loading({
+        content: "Đang kiểm tra tồn kho...",
+        key: "stockCheck",
+      });
+      const stockVerification = await verifyCurrentStockLevels(
+        selectedCartItems
+      );
+
+      // If verification failed, show error and stop
+      if (!stockVerification.success) {
+        message.error({
+          content: "Kiểm tra tồn kho thất bại",
+          key: "stockCheck",
+        });
+
+        if (stockVerification.insufficientStockItems?.length > 0) {
+          // Show modal with insufficient stock items
+          Modal.error({
+            title: "Không thể tiến hành thanh toán",
+            content: (
+              <div>
+                <p>Số lượng trong kho không đủ cho các sản phẩm sau:</p>
+                <ul style={{ marginLeft: "20px", marginTop: "10px" }}>
+                  {stockVerification.insufficientStockItems.map((item) => (
+                    <li key={item.productId} style={{ marginBottom: "5px" }}>
+                      <strong>{item.name}</strong> (Bạn yêu cầu:{" "}
+                      {item.requestedQuantity}, Hiện có: {item.actualStock || 0}
+                      )
+                    </li>
+                  ))}
+                </ul>
+                <p style={{ marginTop: "10px" }}>
+                  Có thể người khác vừa mua sản phẩm này. Vui lòng cập nhật giỏ
+                  hàng và thử lại.
+                </p>
+              </div>
+            ),
+          });
+          setLoading(false);
+          return;
+        }
+
+        if (stockVerification.error) {
+          message.error(stockVerification.error);
+          setLoading(false);
+          return;
+        }
+      }
+
+      message.success({ content: "Đủ hàng để xử lý", key: "stockCheck" });
 
       // Kiểm tra và xử lý ID người dùng
       let userId = user.id;
@@ -417,14 +706,22 @@ function CartPage() {
         dispatch(removePromotion());
       }
 
-      // Hiển thị thông báo thành công rõ ràng
-      console.log("ĐƠN HÀNG ĐÃ ĐƯỢC TẠO THÀNH CÔNG:", res.data);
+      // Ensure we have a valid order ID before navigating
+      if (!res.data.orderId) {
+        throw new Error("Không nhận được mã đơn hàng từ server");
+      }
+
+      const orderId = res.data.orderId;
+
+      // Show success message and navigate
       message.success(
-        `Đơn hàng #${res.data.orderId} đã được tạo thành công! Đang chuyển đến trang thanh toán...`
+        `Đơn hàng #${orderId} đã được tạo thành công! Đang chuyển đến trang thanh toán...`
       );
 
-      // Chuyển đến trang thanh toán
-      navigate(`/payment/${res.data.orderId}`);
+      // Use a more explicit navigation with explicit order ID to prevent navigation to empty URLs
+      const paymentUrl = `/payment/${orderId}`;
+      console.log(`Navigating to payment page: ${paymentUrl}`);
+      navigate(paymentUrl);
     } catch (e) {
       console.log("Lỗi khi tạo đơn hàng:", e);
 
@@ -460,8 +757,7 @@ function CartPage() {
   };
 
   const handleClearCart = () => {
-    dispatch(clearCart());
-    message.success("Đã xóa tất cả sản phẩm khỏi giỏ hàng");
+    handleOpenModal();
   };
 
   // Add validation for cart items on component mount
@@ -499,7 +795,7 @@ function CartPage() {
             productImages: item.productImages || item.image || "",
             brand: item.brand || item.brandName || "",
             brandName: item.brandName || item.brand || "",
-            stock: item.stock !== undefined ? item.stock : true,
+            stock: item.stock !== undefined ? item.stock : 0,
             discount: item.discount || 0,
             description: item.description || "",
             // Preserve product key and fromOrder for identification
@@ -598,59 +894,125 @@ function CartPage() {
                 return;
               }
 
-              // Always keep products from order history (identified by productKey or fromOrder)
-              if (item.productKey || item.fromOrder) {
+              // Even for products from order history (with productKey or fromOrder),
+              // we should still verify and update their stock levels
+              let isOrderHistoryItem = item.productKey || item.fromOrder;
+
+              // Determine which ID to use for API query
+              let productIdForAPI = null;
+
+              // For "buy again" products, use their productId if available
+              if (isOrderHistoryItem) {
+                // If it has a valid numeric productId, use that
+                if (item.productId && !isNaN(parseInt(item.productId))) {
+                  productIdForAPI = parseInt(item.productId);
+                  console.log(
+                    `Using productId ${productIdForAPI} for order history item: ${item.name}`
+                  );
+                }
+                // Otherwise try using the regular id
+                else if (
+                  item.id &&
+                  !isNaN(parseInt(item.id)) &&
+                  parseInt(item.id) < 1000000000
+                ) {
+                  productIdForAPI = parseInt(item.id);
+                  console.log(
+                    `Using id ${productIdForAPI} for order history item: ${item.name}`
+                  );
+                }
+
+                // No valid ID found, keep original item but mark potential issue
+                if (!productIdForAPI) {
+                  console.log(
+                    `No valid API ID for order history item: ${item.name}, keeping as is`
+                  );
+                  validItems.push({
+                    ...item,
+                    stock: item.stock || 0, // Ensure a numeric stock value
+                  });
+                  return;
+                }
+              } else {
+                // For regular products, use the standard ID
+                if (isNaN(parseInt(item.id))) {
+                  console.error(
+                    `Invalid product ID: ${item ? item.id : "undefined"}`
+                  );
+                  nonExistentItems.push(item);
+                  return;
+                }
+                productIdForAPI = parseInt(item.id);
+              }
+
+              // Now we have a valid ID to check with the API
+              try {
+                const response = await axios.get(
+                  `https://localhost:7285/api/Product/${productIdForAPI}`
+                );
+
+                // Debug the stock value from API
                 console.log(
-                  `Keeping product from order history: ${
-                    item.name || "Unknown"
-                  }`
+                  `Product ${productIdForAPI} stock from API:`,
+                  response.data.stock
                 );
-                validItems.push(item);
-                return;
-              }
 
-              // For regular products with database IDs, verify they exist
-              if (isNaN(parseInt(item.id))) {
+                // Create updated item with stock information
+                const updatedItem = {
+                  ...item,
+                  // Keep the original ID structure for tracking
+                  id: isOrderHistoryItem ? item.id : productIdForAPI,
+                  productId: productIdForAPI,
+                  // Directly assign stock from API
+                  stock: response.data.stock,
+                  // Update with the latest price from the API if not from order history
+                  // For order history items, preserve their original price
+                  price: isOrderHistoryItem
+                    ? item.price
+                    : response.data.price || item.price,
+                  originalPrice: isOrderHistoryItem
+                    ? item.originalPrice
+                    : response.data.originalPrice || item.price,
+                };
+
+                validItems.push(updatedItem);
+
+                // Log successful update
+                if (isOrderHistoryItem) {
+                  console.log(
+                    `Updated stock for order history item: ${item.name} to ${response.data.stock}`
+                  );
+                }
+              } catch (error) {
                 console.error(
-                  `Invalid product ID: ${item ? item.id : "undefined"}`
+                  `Error checking product ${productIdForAPI}:`,
+                  error
                 );
-                nonExistentItems.push(item);
-                return;
+
+                // For order history items with API errors, still keep them but mark as out of stock
+                if (isOrderHistoryItem) {
+                  console.log(
+                    `Keeping order history item despite API error: ${item.name}, setting stock to 0`
+                  );
+                  validItems.push({
+                    ...item,
+                    stock: 0, // Mark as out of stock due to API error
+                  });
+                } else if (
+                  error.response &&
+                  (error.response.status === 400 ||
+                    error.response.status === 404)
+                ) {
+                  // For regular items, handle as not found
+                  nonExistentItems.push(item);
+                }
               }
-
-              const productId = parseInt(item.id);
-              const response = await axios.get(
-                `https://localhost:7285/api/Product/${productId}`
-              );
-
-              // If we get a successful response, the product exists
-              validItems.push({
-                ...item,
-                id: productId,
-                productId: productId,
-                // Update with the latest price from the API
-                price: response.data.price || item.price,
-                originalPrice: response.data.originalPrice || item.price,
-              });
             } catch (error) {
               console.error(
-                `Error checking product ${item ? item.id : "undefined"}:`,
+                `Error processing item ${item ? item.id : "undefined"}:`,
                 error
               );
-
-              // Keep products from order history despite API errors
-              if (item && (item.productKey || item.fromOrder)) {
-                console.log(
-                  `Keeping product despite API error: ${item.name || "Unknown"}`
-                );
-                validItems.push(item);
-              } else if (
-                error.response &&
-                (error.response.status === 400 || error.response.status === 404)
-              ) {
-                // If the error is a 400 Bad Request, it likely means the product doesn't exist
-                nonExistentItems.push(item);
-              }
+              nonExistentItems.push(item);
             }
           })
         );
@@ -693,6 +1055,28 @@ function CartPage() {
               duration: 5,
             });
           }
+        } else if (JSON.stringify(cartItems) !== JSON.stringify(validItems)) {
+          // Update cart if any stock levels have changed
+          console.log("Updating cart with refreshed stock levels");
+          dispatch({
+            type: "cart/setCart",
+            payload: {
+              items: validItems,
+              total: validItems.reduce(
+                (total, item) =>
+                  total +
+                  (parseFloat(item.price) || 0) *
+                    (parseInt(item.quantity) || 1),
+                0
+              ),
+              quantity: validItems.reduce(
+                (total, item) => total + (parseInt(item.quantity) || 1),
+                0
+              ),
+              promotion: null,
+              discountAmount: 0,
+            },
+          });
         }
       } catch (error) {
         console.error("Error checking products existence:", error);
@@ -826,8 +1210,18 @@ function CartPage() {
   // Handle select/deselect all
   const handleSelectAllChange = (e) => {
     if (e.target.checked) {
-      // Use a more unique identifier when selecting all items
-      setSelectedItems(cartItems.map((item, index) => `${item.id}_${index}`));
+      // Only select in-stock items
+      setSelectedItems(
+        cartItems
+          .filter(
+            (item) =>
+              item.stock !== 0 &&
+              item.stock !== null &&
+              item.stock !== "0" &&
+              parseInt(item.stock || 0) > 0
+          )
+          .map((item, index) => `${item.id}_${index}`)
+      );
     } else {
       setSelectedItems([]);
     }
@@ -929,6 +1323,35 @@ function CartPage() {
           <Row gutter={24}>
             <Col xs={24} lg={16}>
               <Card className="rounded-3xl shadow-md mb-6">
+                {/* Confirmation Modal */}
+                <Modal
+                  title={
+                    <div className="flex items-center gap-2">
+                      <DeleteOutlined className="text-red-500" />
+                      <span>Xác nhận xóa</span>
+                    </div>
+                  }
+                  open={isOpen}
+                  onCancel={handleCloseModal}
+                  footer={[
+                    <Button key="cancel" onClick={handleCloseModal}>
+                      Hủy
+                    </Button>,
+                    <Button
+                      key="confirm"
+                      type="primary"
+                      danger
+                      onClick={handleConfirmClearCart}
+                    >
+                      Xóa tất cả
+                    </Button>,
+                  ]}
+                >
+                  <p>
+                    Bạn có chắc chắn muốn xóa tất cả sản phẩm khỏi giỏ hàng
+                    không?
+                  </p>
+                </Modal>
                 {cartItems.length > 0 && (
                   <div className="mb-4 flex items-center">
                     <Checkbox
@@ -961,6 +1384,7 @@ function CartPage() {
                           onChange={(e) =>
                             handleItemSelect(item.id, index, e.target.checked)
                           }
+                          disabled={isOutOfStock(item.stock)} // Disable checkbox for out-of-stock items
                         />
                       </div>
                       <div className="relative">
@@ -979,6 +1403,13 @@ function CartPage() {
                             </Tag>
                           </div>
                         )}
+                        {isOutOfStock(item.stock) && (
+                          <div className="absolute top-2 right-2">
+                            <Tag color="error" className="px-2 py-1">
+                              Hết hàng
+                            </Tag>
+                          </div>
+                        )}
                       </div>
                       <div className="flex-grow">
                         <div className="flex justify-between">
@@ -989,6 +1420,9 @@ function CartPage() {
                             <Space size="small" className="mb-2">
                               {item.isNew && (
                                 <Tag color="blue">Sản phẩm mới</Tag>
+                              )}
+                              {isOutOfStock(item.stock) && (
+                                <Tag color="error">Hết hàng</Tag>
                               )}
                             </Space>
                             {item.color && (
@@ -1035,11 +1469,18 @@ function CartPage() {
                                     );
                                   }}
                                   className="border-gray-300 hover:border-pink-400 hover:text-pink-500 transition-colors"
-                                  disabled={item.quantity <= 1}
+                                  disabled={
+                                    item.quantity <= 1 ||
+                                    isOutOfStock(item.stock)
+                                  }
                                 />
                                 <InputNumber
                                   min={1}
-                                  max={item.stock}
+                                  max={
+                                    parseInt(item.stock) > 0
+                                      ? parseInt(item.stock)
+                                      : 1
+                                  }
                                   value={item.quantity}
                                   onChange={(value) => {
                                     if (value === null || isNaN(value)) {
@@ -1074,6 +1515,7 @@ function CartPage() {
                                   }}
                                   className="w-16 text-center !border-gray-200"
                                   controls={false}
+                                  disabled={isOutOfStock(item.stock)}
                                 />
                                 <Button
                                   icon={<PlusOutlined />}
@@ -1081,12 +1523,18 @@ function CartPage() {
                                     e.stopPropagation();
                                     handleQuantityChange(
                                       item.id,
-                                      Math.min(item.stock, item.quantity + 1),
+                                      Math.min(
+                                        item.stock || 0,
+                                        item.quantity + 1
+                                      ),
                                       index
                                     );
                                   }}
                                   className="border-gray-300 hover:border-pink-400 hover:text-pink-500 transition-colors"
-                                  disabled={item.quantity >= item.stock}
+                                  disabled={
+                                    item.quantity >= (item.stock || 0) ||
+                                    isOutOfStock(item.stock)
+                                  }
                                 />
                               </div>
                             </div>
@@ -1102,6 +1550,64 @@ function CartPage() {
                                 className="border-gray-200 text-gray-500 hover:text-red-500 hover:border-red-300"
                               />
                             </Tooltip>
+                            <Button
+                              icon={<SyncOutlined />}
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                try {
+                                  message.loading({
+                                    content: "Đang cập nhật tồn kho...",
+                                    key: "refreshStock",
+                                  });
+                                  const response = await axios.get(
+                                    `https://localhost:7285/api/Product/${item.id}`
+                                  );
+
+                                  // Update the item with the latest stock
+                                  const updatedItem = {
+                                    ...item,
+                                    stock: response.data.stock,
+                                  };
+
+                                  // Create a new array with the updated item
+                                  const updatedCartItems = [...cartItems];
+                                  updatedCartItems[index] = updatedItem;
+
+                                  // Update cart in Redux
+                                  dispatch({
+                                    type: "cart/setCart",
+                                    payload: {
+                                      items: updatedCartItems,
+                                      total: updatedCartItems.reduce(
+                                        (total, item) =>
+                                          total + item.price * item.quantity,
+                                        0
+                                      ),
+                                      quantity: updatedCartItems.reduce(
+                                        (total, item) => total + item.quantity,
+                                        0
+                                      ),
+                                    },
+                                  });
+
+                                  message.success({
+                                    content: `Đã cập nhật tồn kho: ${response.data.stock}`,
+                                    key: "refreshStock",
+                                  });
+                                } catch (error) {
+                                  console.error(
+                                    "Error refreshing stock:",
+                                    error
+                                  );
+                                  message.error({
+                                    content: "Không thể cập nhật tồn kho",
+                                    key: "refreshStock",
+                                  });
+                                }
+                              }}
+                              className="border-gray-300 hover:border-blue-400 hover:text-blue-500 transition-colors"
+                              title="Cập nhật tồn kho"
+                            />
                           </Space>
                         </div>
                       </div>
@@ -1132,27 +1638,26 @@ function CartPage() {
                       <Text>{formatPrice(calculateTotal())}</Text>
                     </div>
 
-                    {/* Phần mã khuyến mãi mới thêm vào */}
+                    {/* Phần mã khuyến mãi */}
                     <div className="mt-4">
                       <div className="flex items-center mb-2">
                         <TagOutlined className="text-orange-500 mr-2" />
                         <Text strong>Mã khuyến mãi</Text>
                       </div>
-                      <div className="flex gap-2">
-                        <div className="w-full">
-                          <Text className="text-gray-500 mb-2 block">
-                            Các mã bạn có thể áp dụng được
-                          </Text>
+
+                      {!appliedPromotion ? (
+                        <>
                           <Select
                             placeholder="Chọn mã khuyến mãi"
                             className="w-full"
                             loading={isLoadingPromotions}
-                            value={appliedPromotion?.promotionId || undefined}
                             onChange={handleApplyPromotion}
-                            allowClear
                             disabled={
                               selectedItems.length === 0 ||
                               cartItems.length === 0
+                            }
+                            suffixIcon={
+                              <TagOutlined style={{ color: "#ff4d4f" }} />
                             }
                           >
                             {activePromotions?.map((promotion) => (
@@ -1162,39 +1667,220 @@ function CartPage() {
                               >
                                 <div className="flex items-center">
                                   <PercentageOutlined className="text-red-500 mr-2" />
-                                  <span>
-                                    {promotion.promotionName} - Giảm{" "}
-                                    {promotion.discountPercentage}%
-                                  </span>
+                                  <div className="flex flex-col">
+                                    <span className="font-medium">
+                                      {promotion.promotionName} (Giảm{" "}
+                                      {promotion.discountPercentage}%)
+                                    </span>
+                                    <span className="text-xs text-gray-500">
+                                      Hiệu lực:{" "}
+                                      {new Date(
+                                        promotion.startDate
+                                      ).toLocaleDateString("vi-VN")}{" "}
+                                      -{" "}
+                                      {new Date(
+                                        promotion.endDate
+                                      ).toLocaleDateString("vi-VN")}
+                                    </span>
+                                  </div>
                                 </div>
                               </Option>
                             ))}
                           </Select>
+                          <Text className="text-xs text-gray-500 block mt-1">
+                            Chọn mã giảm giá để nhận ưu đãi cho đơn hàng của bạn
+                          </Text>
+                        </>
+                      ) : (
+                        <div className="border border-green-200 rounded-lg overflow-hidden">
+                          <div className="flex items-center justify-between bg-green-50 px-3 py-2">
+                            <div className="flex items-center">
+                              <CheckCircleOutlined className="text-green-500 mr-2" />
+                              <Text strong>Đã áp dụng mã giảm giá</Text>
+                            </div>
+                            <Button
+                              type="text"
+                              icon={<DeleteOutlined />}
+                              onClick={() => handleApplyPromotion(null)}
+                              size="small"
+                              className="text-gray-500 hover:text-red-500"
+                            />
+                          </div>
+                          <div className="p-3">
+                            <div className="flex items-center justify-between mb-1">
+                              <Text strong>
+                                {appliedPromotion.promotionName}
+                              </Text>
+                              <Tag color="green">
+                                Giảm {appliedPromotion.discountPercentage}%
+                              </Tag>
+                            </div>
+                            <div className="text-xs text-gray-500 mb-2">
+                              <div className="flex items-center">
+                                <ClockCircleOutlined className="mr-1" />
+                                <span>
+                                  Hiệu lực:{" "}
+                                  {new Date(
+                                    appliedPromotion.startDate
+                                  ).toLocaleDateString("vi-VN")}{" "}
+                                  -{" "}
+                                  {new Date(
+                                    appliedPromotion.endDate
+                                  ).toLocaleDateString("vi-VN")}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex justify-between items-center pt-2 border-t border-gray-100">
+                              <Text>Tiết kiệm</Text>
+                              <Text className="text-green-600 font-medium">
+                                -{formatPrice(discountAmount)}
+                              </Text>
+                            </div>
+                          </div>
                         </div>
+                      )}
+
+                      {activePromotions &&
+                        activePromotions.length > 0 &&
+                        !appliedPromotion && (
+                          <div className="mt-3">
+                            <Text className="text-xs font-medium">
+                              Mã giảm giá khả dụng ({activePromotions.length})
+                            </Text>
+                            <div className="mt-1 max-h-20 overflow-y-auto pr-1">
+                              {activePromotions.map((promotion) => (
+                                <div
+                                  key={promotion.promotionId}
+                                  className="flex items-center justify-between text-xs p-1.5 border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+                                  onClick={() =>
+                                    handleApplyPromotion(promotion.promotionId)
+                                  }
+                                >
+                                  <div className="flex items-center">
+                                    <PercentageOutlined className="text-red-500 text-xs mr-1" />
+                                    <span>{promotion.promotionName}</span>
+                                  </div>
+                                  <div>
+                                    <Tag
+                                      color="red"
+                                      className="text-xs px-1 py-0"
+                                    >
+                                      {promotion.discountPercentage}%
+                                    </Tag>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                    </div>
+
+                    <Divider className="my-4" />
+                    <div className="flex flex-col space-y-2">
+                      <div className="flex justify-between">
+                        <Text>Tạm tính:</Text>
+                        <Text>{formatPrice(calculateTotal())}</Text>
                       </div>
+
                       {appliedPromotion && (
-                        <div className="mt-2 flex justify-between">
-                          <Text className="text-green-500">Giảm giá</Text>
-                          <Text className="text-green-500">
+                        <div className="flex justify-between">
+                          <Text className="text-green-600">Giảm giá:</Text>
+                          <Text className="text-green-600">
                             -{formatPrice(discountAmount)}
                           </Text>
                         </div>
                       )}
-                    </div>
 
-                    <Divider className="my-4" />
-                    <div className="flex justify-between">
-                      <Text strong>Tổng cộng:</Text>
-                      <Title level={3} className="text-pink-500">
-                        {formatPrice(calculateFinalTotal())}
-                      </Title>
+                      <div className="flex justify-between items-center pt-2">
+                        <Text strong className="text-lg">
+                          Tổng cộng:
+                        </Text>
+                        <Title
+                          level={3}
+                          className={`!m-0 ${
+                            appliedPromotion
+                              ? "text-green-600"
+                              : "text-pink-500"
+                          }`}
+                        >
+                          {formatPrice(calculateFinalTotal())}
+                        </Title>
+                      </div>
                     </div>
                   </div>
 
                   <button
                     type="button"
-                    disabled={loading || selectedItems.length === 0}
-                    onClick={handleCheckout}
+                    disabled={
+                      loading ||
+                      selectedItems.length === 0 ||
+                      // Ultra-strict check for out-of-stock items
+                      cartItems.some((item, index) => {
+                        if (!selectedItems.includes(`${item.id}_${index}`))
+                          return false;
+
+                        const stockValue = item.stock;
+                        console.log(
+                          `Button check: ${item.name}, Stock: ${stockValue}`
+                        );
+                        return isOutOfStock(stockValue);
+                      })
+                    }
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent any default action
+
+                      // Final check for out-of-stock items
+                      const outOfStockItems = cartItems.filter(
+                        (item, index) => {
+                          if (!selectedItems.includes(`${item.id}_${index}`))
+                            return false;
+
+                          const stockValue = item.stock;
+                          return isOutOfStock(stockValue);
+                        }
+                      );
+
+                      if (outOfStockItems.length > 0) {
+                        console.log(
+                          "[CRITICAL] Button click - found out of stock items!"
+                        );
+
+                        // This has to block everything
+                        Modal.error({
+                          title: "Không thể tiến hành thanh toán",
+                          content: (
+                            <div>
+                              <p>Các sản phẩm sau đã hết hàng:</p>
+                              <ul
+                                style={{
+                                  marginLeft: "20px",
+                                  marginTop: "10px",
+                                }}
+                              >
+                                {outOfStockItems.map((item) => (
+                                  <li
+                                    key={item.id}
+                                    style={{ marginBottom: "5px" }}
+                                  >
+                                    <strong>{item.name}</strong> (Số lượng trong
+                                    kho: {item.stock || 0})
+                                  </li>
+                                ))}
+                              </ul>
+                              <p style={{ marginTop: "10px" }}>
+                                Vui lòng xóa các sản phẩm này khỏi giỏ hàng hoặc
+                                bỏ chọn để tiếp tục thanh toán.
+                              </p>
+                            </div>
+                          ),
+                        });
+                        return; // Stop execution
+                      }
+
+                      // If we got here, there are no out-of-stock items, so proceed with checkout
+                      console.log("[DEBUG] Proceeding with checkout");
+                      handleCheckout();
+                    }}
                     className="w-full py-2 px-6 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 
                       text-white font-medium text-lg hover:from-pink-600 hover:to-purple-600 
                       transform hover:scale-105 transition-all duration-300 
