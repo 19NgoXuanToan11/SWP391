@@ -158,60 +158,49 @@ namespace Service
 
         public async Task<Product> AddProductAsync(Product product, List<string> imageUrls)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                product.CreatedAt = DateTime.UtcNow;
-
-                var brand = await _context.Brand.FindAsync(product.BrandId);
-                if (brand == null)
+                // Set creation date if not already set
+                if (!product.CreatedAt.HasValue)
                 {
-                    throw new Exception($"Brand với ID {product.BrandId} không tồn tại");
+                    product.CreatedAt = DateTime.UtcNow;
                 }
 
-                var volume = await _context.Volume.FindAsync(product.VolumeId);
-                if (volume == null)
-                {
-                    throw new Exception($"Volume với ID {product.VolumeId} không tồn tại");
-                }
-
-                var skinType = await _context.Skintypes.FindAsync(product.SkinTypeId);
-                if (skinType == null)
-                {
-                    throw new Exception($"SkinType với ID {product.SkinTypeId} không tồn tại");
-                }
-
-                var category = await _context.Categories.FindAsync(product.CategoryId);
-                if (category == null)
-                {
-                    throw new Exception($"Category với ID {product.CategoryId} không tồn tại");
-                }
-
-                await _productRepository.AddAsync(product);
+                // Add the product first
+                _context.Products.Add(product);
                 await _context.SaveChangesAsync();
 
-                if (imageUrls != null && imageUrls.Any())
+                // Now add all the images
+                _logger.LogInformation($"Adding {imageUrls.Count} images for new product {product.ProductId}");
+
+                for (int i = 0; i < imageUrls.Count; i++)
                 {
-                    var productImages = imageUrls.Select(url => new ProductImage
+                    var imageUrl = imageUrls[i];
+                    _logger.LogInformation($"Adding image URL: {imageUrl}");
+
+                    var productImage = new ProductImage
                     {
                         ProductId = product.ProductId,
-                        ImageUrl = url,
-                        IsMainImage = false
-                    }).ToList();
+                        ImageUrl = imageUrl,
+                        IsMainImage = i == 0 // First image is the main image
+                    };
 
-                    if (productImages.Count() > 0)
-                    {
-                        productImages[0].IsMainImage = true;
-                    }
-
-                    await _context.ProductImage.AddRangeAsync(productImages);
-                    await _context.SaveChangesAsync();
+                    _context.ProductImage.Add(productImage);
                 }
 
-                return product;
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                _logger.LogInformation($"Successfully added product {product.ProductId} with {imageUrls.Count} images");
+
+                // Reload the product with all related data
+                return await GetProductByIdAsync(product.ProductId);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error adding product");
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, $"Error adding product with images: {ex.Message}");
                 throw;
             }
         }
@@ -340,6 +329,51 @@ namespace Service
             }
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateProductImagesAsync(int productId, List<string> imageUrls)
+        {
+            var product = await _context.Products
+                .Include(p => p.Images)
+                .FirstOrDefaultAsync(p => p.ProductId == productId);
+
+            if (product == null)
+            {
+                throw new Exception($"Product with ID {productId} not found");
+            }
+
+            // Remove all existing images from the database
+            _context.ProductImage.RemoveRange(product.Images);
+            await _context.SaveChangesAsync();
+
+            // Clear the images collection in memory
+            product.Images.Clear();
+
+            // Add new images
+            var imagesList = new List<ProductImage>();
+            for (int i = 0; i < imageUrls.Count; i++)
+            {
+                var newImage = new ProductImage
+                {
+                    ProductId = productId,
+                    ImageUrl = imageUrls[i],
+                    IsMainImage = i == 0 // First image is main
+                };
+
+                imagesList.Add(newImage);
+                _context.ProductImage.Add(newImage);
+            }
+
+            // Update the product's image collection with new images
+            foreach (var image in imagesList)
+            {
+                product.Images.Add(image);
+            }
+
+            await _context.SaveChangesAsync();
+
+            // Log the update for debugging
+            _logger.LogInformation($"Updated product {productId} with {imageUrls.Count} images");
         }
     }
 }

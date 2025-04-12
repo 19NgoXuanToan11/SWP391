@@ -57,6 +57,8 @@ namespace SWP391_BE.Controllers
                     SkinTypeId = p.SkinTypeId,
                     CategoryId = p.CategoryId,
                     CreatedAt = p.CreatedAt,
+                    MainImageUrl = p.Images.FirstOrDefault(i => i.IsMainImage)?.ImageUrl,
+                    ThumbnailUrls = p.Images.Where(i => !i.IsMainImage).Select(i => i.ImageUrl).ToList(),
                     ImageUrls = p.Images.Select(i => i.ImageUrl).ToList(),
                     BrandName = p.Brand?.BrandName,
                     VolumeName = p.Volume?.VolumeSize,
@@ -97,6 +99,8 @@ namespace SWP391_BE.Controllers
                     SkinTypeId = product.SkinTypeId,
                     CategoryId = product.CategoryId,
                     CreatedAt = product.CreatedAt,
+                    MainImageUrl = product.Images.FirstOrDefault(i => i.IsMainImage)?.ImageUrl,
+                    ThumbnailUrls = product.Images.Where(i => !i.IsMainImage).Select(i => i.ImageUrl).ToList(),
                     ImageUrls = product.Images.Select(i => i.ImageUrl).ToList(),
                     BrandName = product.Brand?.BrandName,
                     VolumeName = product.Volume?.VolumeSize,
@@ -307,21 +311,48 @@ namespace SWP391_BE.Controllers
         {
             try
             {
+                _logger.LogInformation("Updating product with ID: {Id}", id);
+
+                if (updateProductDTO.ImageUrls != null)
+                {
+                    _logger.LogInformation("Image URLs included: {Count}", updateProductDTO.ImageUrls.Count);
+                    foreach (var url in updateProductDTO.ImageUrls)
+                    {
+                        _logger.LogInformation("Image URL: {Url}", url);
+                    }
+                }
+                else
+                {
+                    _logger.LogInformation("No image URLs included in update");
+                }
+
                 var existingProduct = await _productService.GetProductByIdAsync(id);
                 if (existingProduct == null)
                 {
                     return NotFound($"Product with ID {id} not found");
                 }
 
+                // Update basic product info
                 _mapper.Map(updateProductDTO, existingProduct);
+
+                // Image update needs to happen FIRST, then update the product
+                if (updateProductDTO.ImageUrls != null && updateProductDTO.ImageUrls.Any())
+                {
+                    _logger.LogInformation("Updating product images for product {Id}. Image count: {Count}",
+                        id, updateProductDTO.ImageUrls.Count);
+
+                    await _productService.UpdateProductImagesAsync(id, updateProductDTO.ImageUrls);
+                }
+
+                // Then update the product info
                 await _productService.UpdateProductAsync(existingProduct);
 
                 return NoContent();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error updating product {Id}", id);
-                return StatusCode(500, "Internal server error");
+                _logger.LogError(ex, "Error updating product {Id}: {Message}", id, ex.Message);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
