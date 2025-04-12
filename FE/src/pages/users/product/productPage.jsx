@@ -299,24 +299,21 @@ export default function ProductsPage() {
   };
 
   const handleWishlistToggle = (product) => {
-    const isCurrentlyInWishlist = isProductInWishlist(product.productId);
-
     dispatch(
       toggleWishlist({
         id: product.productId,
         name: product.productName,
         price: product.price,
-        image: product.imageUrls,
+        image: product.imageUrls?.[0] || "https://via.placeholder.com/300x300.png?text=Sản+phẩm",
         brand: product.brandName,
         description: product.description,
         stock: product.stock > 0,
         discount: product.discount,
         originalPrice: product.originalPrice,
-        rating: product.rating,
       })
     );
 
-    if (isCurrentlyInWishlist) {
+    if (isProductInWishlist(product.productId)) {
       // Thông báo xóa khỏi danh sách yêu thích
       notification.error({
         description: (
@@ -551,10 +548,13 @@ export default function ProductsPage() {
           >
             <div className="relative overflow-hidden">
               <img
-                src={product.imageUrls}
+                src={product.imageUrls?.[0] || "https://via.placeholder.com/300x300.png?text=Sản+phẩm"}
                 alt={product.productName}
                 className="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-500"
                 onClick={() => handleProductClick(product.productId)}
+                onError={(e) => {
+                  e.target.src = "https://via.placeholder.com/300x300.png?text=Sản+phẩm";
+                }}
               />
               {product.discount > 0 && (
                 <div className="absolute top-4 left-4 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg">
@@ -683,10 +683,13 @@ export default function ProductsPage() {
             <div className="flex flex-col md:flex-row">
               <div className="relative md:w-1/3 overflow-hidden">
                 <img
-                  src={product.imageUrls}
+                  src={product.imageUrls?.[0] || "https://via.placeholder.com/300x300.png?text=Sản+phẩm"}
                   alt={product.productName}
                   className="w-full h-64 md:h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                   onClick={() => handleProductClick(product.productId)}
+                  onError={(e) => {
+                    e.target.src = "https://via.placeholder.com/300x300.png?text=Sản+phẩm";
+                  }}
                 />
                 {product.discount > 0 && (
                   <div className="absolute top-4 left-4 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg">

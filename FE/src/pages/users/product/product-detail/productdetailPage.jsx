@@ -61,7 +61,32 @@ export default function ProductDetailPage() {
 
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("1");
-  const [selectedImage, setSelectedImage] = useState(0);
+  const [mainImage, setMainImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // Set main image when product data is loaded
+  useEffect(() => {
+    if (product) {
+      setMainImage(product.mainImageUrl || (product.imageUrls && product.imageUrls[0]));
+    }
+  }, [product]);
+
+  // Function to handle thumbnail click - sets the main image and updates backend
+  const handleThumbnailClick = async (imageUrl, imageId) => {
+    setMainImage(imageUrl);
+    
+    // Call API to update the main image if we have the image ID
+    if (imageId) {
+      setLoading(true);
+      try {
+        await api.put(`/api/ProductImage/setMainImage/${imageId}`);
+      } catch (error) {
+        console.error("Error setting main image:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   // Xử lý loading state
   if (isLoading) {
@@ -110,13 +135,12 @@ export default function ProductDetailPage() {
     );
   }
 
-  // Cập nhật productImages array sử dụng imageUrl
-  const productImages = [
-    product?.imageUrl, // Sử dụng imageUrl thay vì image
-    product?.imageUrl, // Có thể thêm nhiều ảnh khác nếu có
-    product?.imageUrl,
-    product?.imageUrl,
-  ];
+  // Get main image and thumbnails from the product data
+  const mainImageToShow = mainImage || product.mainImageUrl || (product.imageUrls && product.imageUrls[0]);
+  const thumbnails = product.thumbnailUrls || (product.imageUrls?.slice(1) || []);
+  
+  // If we only have imageUrls and not separate mainImageUrl/thumbnailUrls
+  const allImages = product.imageUrls || [];
 
   const formatPrice = (price) => {
     if (!price) return "Giá không có sẵn";
@@ -135,7 +159,7 @@ export default function ProductDetailPage() {
       name: product.productName,
       price: product.price,
       quantity: quantity,
-      image: product.imageUrls,
+      image: product.imageUrls?.[0] || "https://via.placeholder.com/300x300.png?text=Sản+phẩm",
       stock: product.stock,
     };
 
@@ -148,9 +172,12 @@ export default function ProductDetailPage() {
         <div className="flex flex-col">
           <div className="flex items-center gap-3 mb-2">
             <img
-              src={product.imageUrls}
+              src={product.imageUrls?.[0] || "https://via.placeholder.com/300x300.png?text=Sản+phẩm"}
               alt={product.productName}
               className="w-12 h-12 rounded-lg object-cover"
+              onError={(e) => {
+                e.target.src = "https://via.placeholder.com/300x300.png?text=Sản+phẩm";
+              }}
             />
             <div>
               <p className="font-medium">{product.productName}</p>
@@ -168,7 +195,7 @@ export default function ProductDetailPage() {
       ),
       placement: "bottomRight",
       duration: 3,
-      className: "custom-notification-success",
+      className:"custom-notification-success",
       style: {
         borderRadius: "16px",
       },
@@ -186,7 +213,7 @@ export default function ProductDetailPage() {
         id: product.productId,
         name: product.productName,
         price: product.price,
-        image: product.imageUrls,
+        image: product.imageUrls?.[0] || "https://via.placeholder.com/300x300.png?text=Sản+phẩm",
         brand: product.brandName,
         description: product.description,
         stock: product.stock > 0,
@@ -232,18 +259,81 @@ export default function ProductDetailPage() {
           </nav>
 
           <div className="grid grid-cols-1 lg:grid-cols-2">
-            {/* Left: Product Image */}
-            <div className="relative aspect-square">
-              <img
-                src={product?.imageUrls}
-                alt={product?.productName}
-                className="w-full h-full object-cover"
-              />
-              {product?.discount > 0 && (
-                <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1.5 rounded-full text-sm font-medium">
-                  -{product.discount}% giảm
-                </div>
-              )}
+            {/* Left: Product Image Gallery */}
+            <div className="p-6 flex flex-col">
+              <div className="relative aspect-square bg-gray-50 rounded-lg overflow-hidden mb-4">
+                {loading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white/70 z-10">
+                    <Spin />
+                  </div>
+                )}
+                <Image
+                  src={mainImageToShow}
+                  alt={product?.productName}
+                  className="w-full h-full object-contain"
+                  preview={false}
+                />
+                {product?.discount > 0 && (
+                  <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1.5 rounded-full text-sm font-medium">
+                    -{product.discount}% giảm
+                  </div>
+                )}
+              </div>
+              
+              {/* Thumbnails Row */}
+              <div className="flex gap-2 overflow-x-auto pb-2">
+                {/* Show all images as thumbnails if we have them */}
+                {allImages.length > 0 ? (
+                  allImages.map((imageUrl, index) => (
+                    <div 
+                      key={index}
+                      onClick={() => handleThumbnailClick(imageUrl)}
+                      className={`w-16 h-16 rounded-md overflow-hidden border-2 cursor-pointer transition-all ${
+                        mainImageToShow === imageUrl ? 'border-pink-500' : 'border-transparent'
+                      }`}
+                    >
+                      <img 
+                        src={imageUrl} 
+                        alt={`${product.productName} - thumbnail ${index + 1}`} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    {/* Display main image and thumbnails if available */}
+                    {product.mainImageUrl && (
+                      <div 
+                        onClick={() => handleThumbnailClick(product.mainImageUrl)}
+                        className={`w-16 h-16 rounded-md overflow-hidden border-2 cursor-pointer transition-all ${
+                          mainImageToShow === product.mainImageUrl ? 'border-pink-500' : 'border-transparent'
+                        }`}
+                      >
+                        <img 
+                          src={product.mainImageUrl} 
+                          alt={`${product.productName} - main image`} 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    {thumbnails.map((thumbnailUrl, index) => (
+                      <div 
+                        key={index}
+                        onClick={() => handleThumbnailClick(thumbnailUrl)}
+                        className={`w-16 h-16 rounded-md overflow-hidden border-2 cursor-pointer transition-all ${
+                          mainImageToShow === thumbnailUrl ? 'border-pink-500' : 'border-transparent'
+                        }`}
+                      >
+                        <img 
+                          src={thumbnailUrl} 
+                          alt={`${product.productName} - thumbnail ${index + 1}`} 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
             </div>
 
             {/* Right: Product Info */}

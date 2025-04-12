@@ -164,7 +164,6 @@ const OrdersHistoryPage = () => {
 
         return products;
       }
-
       return [];
     } catch (error) {
       console.error(
@@ -361,42 +360,56 @@ const OrdersHistoryPage = () => {
           } else {
             // Nếu không có trong localStorage, xử lý trạng thái từ API
             // Đảm bảo trạng thái khớp với các giá trị trong dropdown
-            switch (status) {
-              case "completed":
-              case "complete":
-                status = "completed";
-                break;
-              case "shipping":
-              case "delivering":
-                status = "shipping";
-                break;
-              case "pending":
-                status = "pending";
-                break;
-              case "cancelled":
-              case "failed":
-                status = "cancelled";
-                break;
-              case "delivered":
-              case "complete":
-                status = "delivered";
-                break;
-              default:
-                // Nếu đã thanh toán và không có trạng thái cụ thể, hiển thị là completed
-                if (isPaid) {
-                  // Only set as completed if actually delivered
-                  if (
-                    order.orderStatus &&
-                    order.orderStatus.toLowerCase() === "delivered"
-                  ) {
-                    status = "completed";
+
+            // IMPORTANT: Check for customer cancellation in any field
+            // Kiểm tra tất cả các trường có thể chứa thông tin hủy đơn hàng
+            const isCancelled =
+              status === "cancelled" ||
+              status === "failed" ||
+              order.status?.toLowerCase() === "cancelled" ||
+              order.status?.toLowerCase() === "failed" ||
+              (order.historyStatus &&
+                (order.historyStatus.toLowerCase() === "cancelled" ||
+                  order.historyStatus.toLowerCase() === "canceled" ||
+                  order.historyStatus.toLowerCase() === "failed"));
+
+            if (isCancelled) {
+              status = "cancelled";
+            } else {
+              // Nếu không phải trạng thái hủy, xử lý các trạng thái khác
+              switch (status) {
+                case "completed":
+                case "complete":
+                  status = "completed";
+                  break;
+                case "shipping":
+                case "delivering":
+                  status = "shipping";
+                  break;
+                case "pending":
+                  status = "pending";
+                  break;
+                case "delivered":
+                case "complete":
+                  status = "delivered";
+                  break;
+                default:
+                  // Nếu đã thanh toán và không có trạng thái cụ thể, hiển thị là completed
+                  if (isPaid) {
+                    // Only set as completed if actually delivered
+                    if (
+                      order.orderStatus &&
+                      order.orderStatus.toLowerCase() === "delivered"
+                    ) {
+                      status = "completed";
+                    } else {
+                      // If paid but not delivered yet, keep the actual status
+                      status = "pending"; // Default to pending if status is unknown
+                    }
                   } else {
-                    // If paid but not delivered yet, keep the actual status
-                    status = "pending"; // Default to pending if status is unknown
+                    status = "unpaid"; // Changed from "pending" to "unpaid" for unpaid orders
                   }
-                } else {
-                  status = "unpaid"; // Changed from "pending" to "unpaid" for unpaid orders
-                }
+              }
             }
           }
 
@@ -819,7 +832,28 @@ const OrdersHistoryPage = () => {
 
           if (response.status === 200) {
             message.success("Hủy đơn hàng thành công");
-            // Refresh orders list
+
+            // Immediately update the local state for better UX
+            setOrders((prevOrders) =>
+              prevOrders.map((order) =>
+                order.id === orderId ? { ...order, status: "cancelled" } : order
+              )
+            );
+
+            // Also update the localStorage to maintain consistency
+            const orderStatusUpdates = JSON.parse(
+              localStorage.getItem("orderStatusUpdates") || "{}"
+            );
+            const orderToUpdate = orders.find((o) => o.id === orderId);
+            if (orderToUpdate && orderToUpdate.trackingCode) {
+              orderStatusUpdates[orderToUpdate.trackingCode] = "cancelled";
+              localStorage.setItem(
+                "orderStatusUpdates",
+                JSON.stringify(orderStatusUpdates)
+              );
+            }
+
+            // Then refresh orders from server
             fetchOrders();
           } else {
             message.error("Không thể hủy đơn hàng. Vui lòng thử lại sau.");
@@ -834,31 +868,69 @@ const OrdersHistoryPage = () => {
     });
   };
 
-  // Navigate to product detail page
+  // Enhanced navigation to product detail page
   const navigateToProductDetail = (product) => {
-    if (product && (product.id || product.productId)) {
-      const productId = product.id || product.productId;
+    console.log("Product object received:", product);
 
-      // Try to parse the ID to a valid integer
+    // Try with productId first (most reliable)
+    if (product && product.productId) {
+      const productId = product.productId;
+      console.log("Using productId for navigation:", productId);
+
       try {
         const parsedId = parseInt(productId);
         if (!isNaN(parsedId)) {
-          // Navigate directly without pre-fetching
+          console.log("Successfully parsed productId:", parsedId);
           navigate(`/product/${parsedId}`);
-        } else {
-          message.error("ID sản phẩm không hợp lệ");
+          return;
         }
       } catch (error) {
-        console.error("Error parsing product ID:", error);
-        message.error("Không thể xem chi tiết sản phẩm");
+        console.error("Error parsing productId:", error);
       }
-    } else {
-      message.error("Không thể xem chi tiết sản phẩm");
     }
+
+    // Fallback to id field if productId not available
+    if (product && product.id) {
+      const productId = product.id;
+      console.log("Falling back to id field:", productId);
+
+      try {
+        const parsedId = parseInt(productId);
+        if (!isNaN(parsedId)) {
+          console.log("Successfully parsed id field:", parsedId);
+          navigate(`/product/${parsedId}`);
+          return;
+        }
+      } catch (error) {
+        console.error("Error parsing id field:", error);
+      }
+    }
+
+    // Last resort: check for possible numeric IDs in the product object
+    if (product) {
+      console.log("Looking for any numeric ID in the product object:");
+      const possibleIdFields = ["productId", "id", "itemId", "goodsId"];
+
+      for (const field of possibleIdFields) {
+        if (product[field] && !isNaN(parseInt(product[field]))) {
+          const parsedId = parseInt(product[field]);
+          console.log(`Found usable ID in field '${field}':`, parsedId);
+          navigate(`/product/${parsedId}`);
+          return;
+        }
+      }
+    }
+
+    // If we get here, we couldn't find a valid product ID
+    console.error(
+      "Could not find a valid product ID in product object:",
+      product
+    );
+    message.error("Không thể xem chi tiết sản phẩm - không tìm thấy ID hợp lệ");
   };
 
   // Add a single product to cart
-  const handleAddToCart = (product) => {
+  const handleAddToCart = async (product) => {
     try {
       // Log the original product object
       console.log("Adding to cart product:", JSON.stringify(product, null, 2));
@@ -866,6 +938,55 @@ const OrdersHistoryPage = () => {
       if (!product) {
         message.warning("Sản phẩm không hợp lệ");
         return;
+      }
+
+      // Check if we have a valid product ID to fetch stock information
+      const productId = product.productId || product.id;
+      let currentStock = 0;
+
+      if (productId && !isNaN(parseInt(productId))) {
+        try {
+          // Show loading message
+          message.loading({
+            content: "Đang kiểm tra tồn kho...",
+            key: "addToCart",
+          });
+
+          // Fetch the latest product information including stock
+          const productResponse = await axios.get(
+            `${API_BASE_URL}/api/Product/${parseInt(productId)}`,
+            {
+              headers: {
+                accept: "*/*",
+              },
+            }
+          );
+
+          if (productResponse.data) {
+            currentStock = productResponse.data.stock || 0;
+            console.log(
+              `Fetched current stock for product ${productId}: ${currentStock}`
+            );
+          }
+
+          message.success({
+            content:
+              currentStock > 0
+                ? `Sản phẩm còn ${currentStock} trong kho`
+                : "Sản phẩm đã hết hàng",
+            key: "addToCart",
+          });
+        } catch (error) {
+          console.error(
+            `Error fetching stock for product ${productId}:`,
+            error
+          );
+          message.error({
+            content:
+              "Không thể kiểm tra tồn kho, sẽ thêm vào giỏ hàng với tồn kho không xác định",
+            key: "addToCart",
+          });
+        }
       }
 
       // Store order information if it exists
@@ -922,6 +1043,15 @@ const OrdersHistoryPage = () => {
                   Số lượng: {existingProduct.quantity + quantity} (
                   {quantity > 1 ? `+${quantity}` : "+1"})
                 </div>
+                {currentStock > 0 ? (
+                  <div className="text-sm text-green-600 mt-1">
+                    Còn {currentStock} sản phẩm trong kho
+                  </div>
+                ) : (
+                  <div className="text-sm text-red-600 mt-1">
+                    Sản phẩm đã hết hàng
+                  </div>
+                )}
                 <div className="mt-2">
                   <button
                     onClick={() => navigate("/cart")}
@@ -955,7 +1085,7 @@ const OrdersHistoryPage = () => {
           brand: product.brandName || product.brand || "",
           brandName: product.brandName || product.brand || "",
           category: product.category || "",
-          stock: true,
+          stock: currentStock, // Use the actual stock value from API
           discount: parseInt(product.discount) || 0,
           description: product.description || "",
           originalPrice:
@@ -967,7 +1097,9 @@ const OrdersHistoryPage = () => {
         };
 
         // Add the product to cart
-        console.log(`Adding new product to cart: ${name}`);
+        console.log(
+          `Adding new product to cart: ${name} with stock: ${currentStock}`
+        );
         dispatch(addToCart(cartItem));
 
         // Show success message with enhanced UI
@@ -989,6 +1121,15 @@ const OrdersHistoryPage = () => {
                 <div className="text-sm text-gray-500 mt-1">
                   {formatPrice(cartItem.price)}
                 </div>
+                {currentStock > 0 ? (
+                  <div className="text-sm text-green-600 mt-1">
+                    Còn {currentStock} sản phẩm trong kho
+                  </div>
+                ) : (
+                  <div className="text-sm text-red-600 mt-1">
+                    Sản phẩm đã hết hàng
+                  </div>
+                )}
                 <div className="mt-2">
                   <button
                     onClick={() => navigate("/cart")}
@@ -1012,7 +1153,7 @@ const OrdersHistoryPage = () => {
   };
 
   // Add all products from an order to cart
-  const buyAllAgain = (order) => {
+  const buyAllAgain = async (order) => {
     try {
       // Validate order has products
       if (!order.products || order.products.length === 0) {
@@ -1023,6 +1164,12 @@ const OrdersHistoryPage = () => {
       console.log("Order products:", JSON.stringify(order.products, null, 2));
       console.log("Order status:", order.status);
 
+      // Show loading message
+      message.loading({
+        content: "Đang kiểm tra tồn kho...",
+        key: "buyAllAgain",
+      });
+
       // Get current cart items to check for existing products
       const currentCart = store.getState().cart.items || [];
       console.log("Current cart before adding:", currentCart);
@@ -1030,58 +1177,126 @@ const OrdersHistoryPage = () => {
       let addedProducts = 0;
       const productMap = {}; // To track products we're adding in this operation
 
-      // First, process all products to be added
-      order.products.forEach((product, index) => {
-        // Skip invalid products
-        if (!product) {
-          console.warn("Skipping undefined product");
-          return;
-        }
+      // First, fetch stock information for all products
+      await Promise.all(
+        order.products.map(async (product) => {
+          if (!product) return;
 
-        // Extract essential product info
-        const name =
-          product.productName || product.name || "Sản phẩm không xác định";
-        const price = parseFloat(product.price) || 0;
-        const quantity = parseInt(product.quantity) || 1;
+          const productId = product.productId || product.id;
+          if (productId && !isNaN(parseInt(productId))) {
+            try {
+              const productResponse = await axios.get(
+                `${API_BASE_URL}/api/Product/${parseInt(productId)}`,
+                {
+                  headers: {
+                    accept: "*/*",
+                  },
+                }
+              );
 
-        // Create a product key based on name and price to identify similar products
-        // This key helps us group identical products
-        const productKey = `${name}_${price}`;
+              if (productResponse.data) {
+                const currentStock = productResponse.data.stock || 0;
+                console.log(
+                  `Fetched current stock for product ${productId}: ${currentStock}`
+                );
 
-        if (productMap[productKey]) {
-          // If we've already processed this product in this order, just increase quantity
-          productMap[productKey].quantity += quantity;
-        } else {
-          // Otherwise create a new entry with a consistent ID
-          const originalId = product.id || product.productId || null;
-          const tempId = Date.now() + index;
+                // Extract essential product info
+                const name =
+                  product.productName ||
+                  product.name ||
+                  "Sản phẩm không xác định";
+                const price = parseFloat(product.price) || 0;
+                const quantity = parseInt(product.quantity) || 1;
 
-          productMap[productKey] = {
-            id: originalId || tempId,
-            productId: originalId || tempId,
-            name: name,
-            productName: name,
-            price: price,
-            quantity: quantity,
-            image: product.productImages || product.image || "",
-            productImages: product.productImages || product.image || "",
-            brand: product.brandName || product.brand || "",
-            brandName: product.brandName || product.brand || "",
-            category: product.category || "",
-            stock: true,
-            discount: parseInt(product.discount) || 0,
-            description: product.description || "",
-            originalPrice:
-              parseFloat(product.originalPrice) ||
-              parseFloat(product.price) ||
-              0,
-            // Add metadata to identify this product
-            fromOrder: order.id || order.orderId,
-            productKey: productKey,
-            // Thêm thông tin order status để biết xử lý lúc thanh toán
-            parentOrderStatus: order.status,
-          };
-        }
+                // Create a product key based on name and price to identify similar products
+                const productKey = `${name}_${price}`;
+
+                if (productMap[productKey]) {
+                  // If we've already processed this product in this order, just increase quantity
+                  productMap[productKey].quantity += quantity;
+                } else {
+                  // Otherwise create a new entry with a consistent ID
+                  const originalId = product.id || product.productId || null;
+                  const tempId = Date.now() + Object.keys(productMap).length;
+
+                  productMap[productKey] = {
+                    id: originalId || tempId,
+                    productId: originalId || tempId,
+                    name: name,
+                    productName: name,
+                    price: price,
+                    quantity: quantity,
+                    image: product.productImages || product.image || "",
+                    productImages: product.productImages || product.image || "",
+                    brand: product.brandName || product.brand || "",
+                    brandName: product.brandName || product.brand || "",
+                    category: product.category || "",
+                    stock: currentStock, // Use the actual stock from API
+                    discount: parseInt(product.discount) || 0,
+                    description: product.description || "",
+                    originalPrice:
+                      parseFloat(product.originalPrice) ||
+                      parseFloat(product.price) ||
+                      0,
+                    // Add metadata to identify this product
+                    fromOrder: order.id || order.orderId,
+                    productKey: productKey,
+                    // Thêm thông tin order status để biết xử lý lúc thanh toán
+                    parentOrderStatus: order.status,
+                  };
+                }
+              }
+            } catch (error) {
+              console.error(
+                `Error fetching stock for product ${productId}:`,
+                error
+              );
+
+              // Still add to cart but with unknown stock
+              const name =
+                product.productName ||
+                product.name ||
+                "Sản phẩm không xác định";
+              const price = parseFloat(product.price) || 0;
+              const quantity = parseInt(product.quantity) || 1;
+              const productKey = `${name}_${price}`;
+
+              if (!productMap[productKey]) {
+                const originalId = product.id || product.productId || null;
+                const tempId = Date.now() + Object.keys(productMap).length;
+
+                productMap[productKey] = {
+                  id: originalId || tempId,
+                  productId: originalId || tempId,
+                  name: name,
+                  productName: name,
+                  price: price,
+                  quantity: quantity,
+                  image: product.productImages || product.image || "",
+                  productImages: product.productImages || product.image || "",
+                  brand: product.brandName || product.brand || "",
+                  brandName: product.brandName || product.brand || "",
+                  category: product.category || "",
+                  stock: 0, // Assume out of stock if we can't verify
+                  discount: parseInt(product.discount) || 0,
+                  description: product.description || "",
+                  originalPrice:
+                    parseFloat(product.originalPrice) ||
+                    parseFloat(product.price) ||
+                    0,
+                  fromOrder: order.id || order.orderId,
+                  productKey: productKey,
+                  parentOrderStatus: order.status,
+                };
+              }
+            }
+          }
+        })
+      );
+
+      message.success({
+        content: "Đã kiểm tra tồn kho xong",
+        key: "buyAllAgain",
       });
 
       // Now process each product against the existing cart
@@ -1139,7 +1354,9 @@ const OrdersHistoryPage = () => {
           );
         } else {
           // If product doesn't exist or has different characteristics, add it as new
-          console.log(`Adding new product to cart: ${newProduct.name}`);
+          console.log(
+            `Adding new product to cart: ${newProduct.name} with stock: ${newProduct.stock}`
+          );
           // Add a unique timestamp to ensure each new item is distinct
           const uniqueNewProduct = {
             ...newProduct,
@@ -1679,15 +1896,23 @@ const OrdersHistoryPage = () => {
                                       )}
                                     </div>
                                     <div className="flex-1">
-                                      <h5
-                                        className="font-medium text-lg text-gray-800 hover:text-purple-600 transition-colors cursor-pointer"
-                                        onClick={() =>
-                                          navigateToProductDetail(product)
-                                        }
-                                      >
-                                        {product.productName ||
-                                          `Sản phẩm #${index + 1}`}
-                                      </h5>
+                                      {order.status === "cancelled" &&
+                                      order.isPaid ? (
+                                        <h5 className="font-medium text-lg text-gray-500">
+                                          {product.productName ||
+                                            `Sản phẩm #${index + 1}`}
+                                        </h5>
+                                      ) : (
+                                        <h5
+                                          className="font-medium text-lg text-gray-800 hover:text-purple-600 transition-colors cursor-pointer"
+                                          onClick={() =>
+                                            navigateToProductDetail(product)
+                                          }
+                                        >
+                                          {product.productName ||
+                                            `Sản phẩm #${index + 1}`}
+                                        </h5>
+                                      )}
                                       <div className="text-sm text-gray-500 mt-2 flex flex-wrap gap-2">
                                         {product.brandName && (
                                           <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full text-xs">
@@ -1776,21 +2001,24 @@ const OrdersHistoryPage = () => {
                                         )}
                                       </div>
                                     </div>
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        // Thêm thông tin order cho product
-                                        const productWithOrderInfo = {
-                                          ...product,
-                                          parentOrder: order,
-                                        };
-                                        handleAddToCart(productWithOrderInfo);
-                                      }}
-                                      className="mt-4 flex items-center justify-center bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-300"
-                                    >
-                                      <ShoppingOutlined className="mr-2" />
-                                      Mua lại
-                                    </button>
+                                    {/* Only show "Mua lại" button for unpaid orders */}
+                                    {!order.isPaid && (
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          // Thêm thông tin order cho product
+                                          const productWithOrderInfo = {
+                                            ...product,
+                                            parentOrder: order,
+                                          };
+                                          handleAddToCart(productWithOrderInfo);
+                                        }}
+                                        className="mt-4 flex items-center justify-center bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-300"
+                                      >
+                                        <ShoppingOutlined className="mr-2" />
+                                        Mua lại
+                                      </button>
+                                    )}
                                   </div>
                                 </div>
                               ))
@@ -1798,234 +2026,170 @@ const OrdersHistoryPage = () => {
                               <div className="py-6 text-center text-gray-500 italic bg-gray-50 rounded-xl">
                                 <ShoppingOutlined className="text-2xl mb-2 text-gray-400" />
                                 <p>Không có thông tin chi tiết sản phẩm</p>
-                                <Button
-                                  type="primary"
-                                  className="mt-4 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 border-0"
-                                  onClick={() => {
-                                    // Set loading state for this order
-                                    setOrders((prevOrders) =>
-                                      prevOrders.map((o) =>
-                                        o.id === order.id
-                                          ? { ...o, productsLoading: true }
-                                          : o
-                                      )
-                                    );
-
-                                    // Fetch products and update the order
-                                    fetchOrderProducts(order.id).then(
-                                      (products) => {
-                                        setOrders((prevOrders) =>
-                                          prevOrders.map((o) =>
-                                            o.id === order.id
-                                              ? {
-                                                  ...o,
-                                                  products,
-                                                  productsLoading: false,
-                                                }
-                                              : o
-                                          )
-                                        );
-                                      }
-                                    );
-                                  }}
-                                >
-                                  Lấy thông tin sản phẩm
-                                </Button>
                               </div>
                             )}
+                          </div>
 
-                            {/* Order Summary Section */}
-                            <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                              <h4 className="font-medium text-gray-700 mb-4">
-                                Tóm tắt đơn hàng
-                              </h4>
-                              <div className="space-y-2">
-                                <div className="flex justify-between text-gray-600">
-                                  <span>Tổng tiền sản phẩm:</span>
-                                  <span>{formatPrice(order.total)}</span>
-                                </div>
-                                <div className="flex justify-between text-gray-600">
-                                  <span>Giảm giá:</span>
-                                  <span className="text-green-600">
-                                    -
-                                    {formatPrice(
-                                      order.products &&
-                                        order.products.length > 0
-                                        ? order.products.reduce(
-                                            (sum, product) =>
-                                              sum +
-                                              parseFloat(product.price || 0) *
-                                                (product.quantity || 1),
-                                            0
-                                          ) - order.total
-                                        : 0
-                                    )}
-                                  </span>
-                                </div>
-                                <div className="border-t border-gray-200 my-2 pt-2 flex justify-between font-bold">
-                                  <span>Tổng thanh toán:</span>
-                                  <span className="text-xl text-pink-600">
-                                    {formatPrice(order.total)}
-                                  </span>
-                                </div>
-                                {/* Only show "Mua lại tất cả" button when there are more than 1 products */}
-                                {order.products &&
-                                  order.products.length > 1 && (
-                                    <div className="mt-4 flex justify-end">
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          buyAllAgain(order);
-                                        }}
-                                        className="flex items-center justify-center bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 border-0 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 py-2 px-4 text-white font-semibold"
-                                      >
-                                        Mua lại tất cả
-                                      </button>
-                                    </div>
-                                  )}
+                          {/* Order Summary Section */}
+                          <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                            <h4 className="font-medium text-gray-700 mb-4">
+                              Tóm tắt đơn hàng
+                            </h4>
+                            <div className="space-y-2">
+                              <div className="flex justify-between text-gray-600">
+                                <span>Tổng tiền sản phẩm:</span>
+                                <span>{formatPrice(order.total)}</span>
                               </div>
+                              <div className="flex justify-between text-gray-600">
+                                <span>Giảm giá:</span>
+                                <span className="text-green-600">
+                                  -
+                                  {order.products && order.products.length > 0
+                                    ? order.products.reduce(
+                                        (sum, product) =>
+                                          sum +
+                                          parseFloat(product.price || 0) *
+                                            (product.quantity || 1),
+                                        0
+                                      ) - order.total
+                                    : 0}{" "}
+                                  đ
+                                </span>
+                              </div>
+                              <div className="border-t border-gray-200 my-2 pt-2 flex justify-between font-bold">
+                                <span>Tổng thanh toán:</span>
+                                <span className="text-xl text-pink-600">
+                                  {formatPrice(order.total)}
+                                </span>
+                              </div>
+                              {/* Only show "Mua lại tất cả" button for unpaid orders with multiple products */}
+                              {order.products &&
+                                order.products.length > 1 &&
+                                !order.isPaid && (
+                                  <div className="mt-4 flex justify-end">
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        buyAllAgain(order);
+                                      }}
+                                      className="flex items-center justify-center bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 border-0 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 py-2 px-4 text-white font-semibold"
+                                    >
+                                      Mua lại tất cả
+                                    </button>
+                                  </div>
+                                )}
                             </div>
+                          </div>
 
-                            {/* Order Timeline */}
-                            <div className="mt-6">
-                              <div className="relative pl-6 ml-2 space-y-6 before:absolute before:top-0 before:bottom-0 before:left-0 before:w-[2px] before:bg-gray-200">
-                                {/* Unpaid Status - show for unpaid orders */}
-                                {order.status === "unpaid" && (
-                                  <div className="relative flex items-center gap-4">
-                                    <div className="absolute left-[-22px] w-5 h-5 rounded-full bg-orange-500 border-4 border-orange-100"></div>
-                                    <div className="flex-1 bg-orange-50 p-3 rounded-lg shadow-sm">
-                                      <div className="flex justify-between items-center">
-                                        <span className="font-medium text-orange-700">
-                                          Chưa thanh toán
-                                        </span>
-                                        <span className="text-xs text-gray-500">
-                                          {formatDate(order.date)}
-                                        </span>
-                                      </div>
-                                      <p className="text-sm text-gray-600 mt-1">
-                                        Đơn hàng của bạn đang chờ thanh toán
+                          {/* Order Timeline */}
+                          <div className="mt-6">
+                            <div className="relative pl-6 ml-2 space-y-6 before:absolute before:top-0 before:bottom-0 before:left-0 before:w-[2px] before:bg-gray-200">
+                              {/* Unpaid Status - show for unpaid orders */}
+                              {order.status === "unpaid" && (
+                                <div className="relative flex items-center gap-4">
+                                  <div className="absolute left-[-22px] w-5 h-5 rounded-full bg-orange-500 border-4 border-orange-100"></div>
+                                  <div className="flex-1 bg-orange-50 p-3 rounded-lg shadow-sm">
+                                    <div className="flex justify-between items-center">
+                                      <span className="font-medium text-orange-700">
+                                        Chưa thanh toán
+                                      </span>
+                                      <span className="text-xs text-gray-500">
+                                        {formatDate(order.date)}
+                                      </span>
+                                    </div>
+                                    <p className="text-sm text-gray-600 mt-1">
+                                      Đơn hàng của bạn đang chờ thanh toán
+                                    </p>
+                                    <div className="mt-3 bg-white p-2 rounded-lg border border-orange-100">
+                                      <p className="text-sm text-gray-700 mb-2">
+                                        <InfoCircleOutlined className="text-blue-500 mr-2" />
+                                        Bạn có thể tiếp tục thanh toán hoặc mua
+                                        lại sản phẩm trong đơn hàng này.
                                       </p>
-                                      {order.products &&
-                                        order.products.length > 0 && (
-                                          <div className="mt-3 bg-white p-2 rounded-lg border border-orange-100">
-                                            <p className="text-sm text-gray-700 mb-2">
-                                              <InfoCircleOutlined className="text-blue-500 mr-2" />
-                                              Bạn có thể tiếp tục thanh toán
-                                              hoặc
-                                              {order.products.length > 1
-                                                ? " mua lại các sản phẩm"
-                                                : " mua lại sản phẩm"}
-                                              trong đơn hàng này.
-                                            </p>
-                                            <div className="flex gap-2">
-                                              <Button
-                                                type="primary"
-                                                size="small"
-                                                onClick={() =>
-                                                  navigate(
-                                                    `/payment/${order.id}`
-                                                  )
-                                                }
-                                                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 border-0"
-                                              >
-                                                Tiếp tục thanh toán
-                                              </Button>
-                                            </div>
-                                          </div>
-                                        )}
+                                      <div className="flex gap-2">
+                                        <Button
+                                          type="primary"
+                                          size="small"
+                                          onClick={() =>
+                                            navigate(`/payment/${order.id}`)
+                                          }
+                                          className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 border-0"
+                                        >
+                                          Tiếp tục thanh toán
+                                        </Button>
+                                      </div>
                                     </div>
                                   </div>
-                                )}
+                                </div>
+                              )}
 
-                                {/* Shipping Status - show only if relevant */}
-                                {(order.status === "shipping" ||
-                                  orderStatusUpdates[order.trackingCode] ===
-                                    "shipping") && (
-                                  <div className="relative flex items-center gap-4">
-                                    <div className="absolute left-[-22px] w-5 h-5 rounded-full bg-blue-500 border-4 border-blue-100"></div>
-                                    <div className="flex-1 bg-blue-50 p-3 rounded-lg shadow-sm">
-                                      <div className="flex justify-between items-center">
-                                        <span className="font-medium text-blue-700">
-                                          Đang giao hàng
-                                        </span>
-                                        <span className="text-xs text-gray-500">
-                                          {formatDate(new Date())}
-                                        </span>
-                                      </div>
-                                      <p className="text-sm text-gray-600 mt-1">
-                                        Đơn hàng đang được vận chuyển đến bạn
-                                      </p>
+                              {/* Shipping Status - show only if relevant */}
+                              {(order.status === "shipping" ||
+                                orderStatusUpdates[order.trackingCode] ===
+                                  "shipping") && (
+                                <div className="relative flex items-center gap-4">
+                                  <div className="absolute left-[-22px] w-5 h-5 rounded-full bg-blue-500 border-4 border-blue-100"></div>
+                                  <div className="flex-1 bg-blue-50 p-3 rounded-lg shadow-sm">
+                                    <div className="flex justify-between items-center">
+                                      <span className="font-medium text-blue-700">
+                                        Đang giao hàng
+                                      </span>
+                                      <span className="text-xs text-gray-500">
+                                        {formatDate(new Date())}
+                                      </span>
                                     </div>
+                                    <p className="text-sm text-gray-600 mt-1">
+                                      Đơn hàng đang được vận chuyển đến bạn
+                                      trong vòng 3 - 5 ngày làm việc
+                                    </p>
                                   </div>
-                                )}
+                                </div>
+                              )}
 
-                                {/* Delivered Status - show only if relevant */}
-                                {(order.status === "delivered" ||
-                                  orderStatusUpdates[order.trackingCode] ===
-                                    "delivered") && (
-                                  <div className="relative flex items-center gap-4">
-                                    <div className="absolute left-[-22px] w-5 h-5 rounded-full bg-purple-500 border-4 border-purple-100"></div>
-                                    <div className="flex-1 bg-purple-50 p-3 rounded-lg shadow-sm">
-                                      <div className="flex justify-between items-center">
-                                        <span className="font-medium text-purple-700">
-                                          Đã giao hàng
-                                        </span>
-                                        <span className="text-xs text-gray-500">
-                                          {formatDate(new Date())}
-                                        </span>
-                                      </div>
-                                      <p className="text-sm text-gray-600 mt-1">
-                                        Đơn hàng đã được giao thành công
-                                      </p>
+                              {/* Delivered Status - show only if relevant */}
+                              {(order.status === "delivered" ||
+                                orderStatusUpdates[order.trackingCode] ===
+                                  "delivered") && (
+                                <div className="relative flex items-center gap-4">
+                                  <div className="absolute left-[-22px] w-5 h-5 rounded-full bg-purple-500 border-4 border-purple-100"></div>
+                                  <div className="flex-1 bg-purple-50 p-3 rounded-lg shadow-sm">
+                                    <div className="flex justify-between items-center">
+                                      <span className="font-medium text-purple-700">
+                                        Đã giao hàng
+                                      </span>
+                                      <span className="text-xs text-gray-500">
+                                        {formatDate(new Date())}
+                                      </span>
                                     </div>
+                                    <p className="text-sm text-gray-600 mt-1">
+                                      Đơn hàng đã được giao thành công
+                                    </p>
                                   </div>
-                                )}
+                                </div>
+                              )}
 
-                                {/* Cancelled Status - show only if relevant */}
-                                {(order.status === "cancelled" ||
-                                  orderStatusUpdates[order.trackingCode] ===
-                                    "cancelled") && (
-                                  <div className="relative flex items-center gap-4">
-                                    <div className="absolute left-[-22px] w-5 h-5 rounded-full bg-red-500 border-4 border-red-100"></div>
-                                    <div className="flex-1 bg-red-50 p-3 rounded-lg shadow-sm">
-                                      <div className="flex justify-between items-center">
-                                        <span className="font-medium text-red-700">
-                                          Đã hủy
-                                        </span>
-                                        <span className="text-xs text-gray-500">
-                                          {formatDate(new Date())}
-                                        </span>
-                                      </div>
-                                      <p className="text-sm text-gray-600 mt-1">
-                                        Đơn hàng đã bị hủy
-                                      </p>
-                                      {order.products &&
-                                        order.products.length > 0 && (
-                                          <div className="mt-3 bg-white p-2 rounded-lg border border-red-100">
-                                            <p className="text-sm text-gray-700">
-                                              <InfoCircleOutlined className="text-blue-500 mr-2" />
-                                              {order.products.length > 1 ? (
-                                                <>
-                                                  Bạn vẫn có thể mua lại các sản
-                                                  phẩm trong đơn hàng này bằng
-                                                  cách nhấn nút "Mua lại tất cả"
-                                                  bên dưới.
-                                                </>
-                                              ) : (
-                                                <>
-                                                  Bạn vẫn có thể mua lại sản
-                                                  phẩm trong đơn hàng này bằng
-                                                  cách nhấn nút "Mua lại".
-                                                </>
-                                              )}
-                                            </p>
-                                          </div>
-                                        )}
+                              {/* Cancelled Status - show only if relevant */}
+                              {(order.status === "cancelled" ||
+                                orderStatusUpdates[order.trackingCode] ===
+                                  "cancelled") && (
+                                <div className="relative flex items-center gap-4">
+                                  <div className="absolute left-[-22px] w-5 h-5 rounded-full bg-red-500 border-4 border-red-100"></div>
+                                  <div className="flex-1 bg-red-50 p-3 rounded-lg shadow-sm">
+                                    <div className="flex justify-between items-center">
+                                      <span className="font-medium text-red-700">
+                                        Đã hủy
+                                      </span>
+                                      <span className="text-xs text-gray-500">
+                                        {formatDate(new Date())}
+                                      </span>
                                     </div>
+                                    <p className="text-sm text-gray-600 mt-1">
+                                      Đơn hàng đã bị hủy
+                                    </p>
                                   </div>
-                                )}
-                              </div>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>

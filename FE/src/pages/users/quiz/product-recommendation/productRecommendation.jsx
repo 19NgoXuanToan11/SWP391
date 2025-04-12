@@ -172,7 +172,7 @@ export default function ProductRecommendationPage() {
               price: product.price,
               rating: product.rating || 4.5,
               reviews: product.reviewCount || 0,
-              image: product.imageUrls,
+              image: product.imageUrls?.[0] || "https://via.placeholder.com/300x300.png?text=Sản+phẩm",
               matchScore: Math.min(matchScore, 100), // Giới hạn điểm tối đa là 100
               description: product.description,
               benefits: [product.mainIngredients], // Chuyển thành array nếu cần
@@ -353,10 +353,7 @@ export default function ProductRecommendationPage() {
                 >
                   <div className="relative">
                     <img
-                      src={
-                        product.image[0] ||
-                        "https://via.placeholder.com/300x300"
-                      }
+                      src={product.image}
                       alt={product.name}
                       className="w-full h-64 object-cover"
                     />

@@ -49,7 +49,7 @@ const ProductPage = () => {
   const [viewMode, setViewMode] = useState("grid");
   const [filterStatus, setFilterStatus] = useState("all");
   const [existingImages, setExistingImages] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);  
 
   // Queries
   const {
@@ -130,6 +130,9 @@ const ProductPage = () => {
       skinTypeId: product.skinTypeId,
     });
 
+    // Clear existing images first to avoid duplication
+    setExistingImages([]);
+
     // Display existing images in the Upload component if available
     if (product.imageUrls && product.imageUrls.length > 0) {
       // Format existing images for Upload component
@@ -140,7 +143,7 @@ const ProductPage = () => {
         url: url,
       }));
 
-      // Set files to state if needed for preview
+      // Set files to state for preview
       setExistingImages(fileList);
     }
 
@@ -151,38 +154,67 @@ const ProductPage = () => {
   const handleFormSubmit = async (values) => {
     try {
       setLoading(true);
+      console.log("Form values:", values);
+      console.log("Existing images state:", existingImages);
 
       // Handle image uploads
       let imageUrlsArray = [];
 
-      // If we have upload files
+      // Check if we have product images in the form values
       if (
         values.productImage &&
         values.productImage.fileList &&
         values.productImage.fileList.length > 0
       ) {
-        // Upload each file and collect URLs
+        console.log("Processing file uploads:", values.productImage.fileList);
+
+        // Process each file in the upload list
         const uploadPromises = values.productImage.fileList
-          .map((file) => {
+          .map(async (file) => {
+            console.log("Processing file:", file);
+
+            // If it's a new file (has originFileObj), upload it
             if (file.originFileObj) {
+              console.log("Uploading new file:", file.originFileObj.name);
               return uploadFile(file.originFileObj, "products");
-            } else if (file.url) {
-              return Promise.resolve(file.url);
             }
-            return Promise.resolve(null);
+            // If it's an existing file (has url but no originFileObj), keep the URL
+            else if (file.url) {
+              console.log("Keeping existing file URL:", file.url);
+              return file.url;
+            }
+            return null;
           })
           .filter((p) => p !== null);
 
+        // Wait for all uploads to complete
         imageUrlsArray = await Promise.all(uploadPromises);
-        console.log("Uploaded images:", imageUrlsArray);
+        console.log("Final image URLs array:", imageUrlsArray);
       }
-      // If editing product and no new images uploaded, use existing URLs
-      else if (editingProduct && editingProduct.imageUrls) {
-        imageUrlsArray = editingProduct.imageUrls;
-      } else if (editingProduct && editingProduct.imageUrl) {
-        // Fallback to single imageUrl if imageUrls is not available
-        imageUrlsArray = [editingProduct.imageUrl];
+      // If no images in form but we have existing images in state, use those
+      else if (existingImages && existingImages.length > 0) {
+        console.log("Using existing images from state");
+        imageUrlsArray = existingImages
+          .map((file) => file.url)
+          .filter((url) => url);
+        console.log("Existing image URLs:", imageUrlsArray);
       }
+      // If editing product but no images selected in form or state, use original URLs
+      else if (
+        editingProduct &&
+        editingProduct.imageUrls &&
+        editingProduct.imageUrls.length > 0
+      ) {
+        console.log("Fallback to original product images");
+        imageUrlsArray = [...editingProduct.imageUrls];
+        console.log("Original image URLs:", imageUrlsArray);
+      }
+
+      // Ensure we have valid image URLs
+      imageUrlsArray = imageUrlsArray.filter(
+        (url) => url && typeof url === "string"
+      );
+      console.log("Final filtered image URLs:", imageUrlsArray);
 
       const productData = {
         productName: values.productName,
@@ -194,7 +226,7 @@ const ProductPage = () => {
         volumeId: parseInt(values.volumeId),
         skinTypeId: parseInt(values.skinTypeId),
         categoryId: parseInt(values.categoryId),
-        // Đồng bộ cả hai trường dữ liệu - cần thiết cho API
+        // Always include imageUrls in the data sent to the backend
         imageUrls: imageUrlsArray,
         imageUrl: imageUrlsArray.length > 0 ? imageUrlsArray[0] : "",
       };
@@ -517,12 +549,21 @@ const ProductPage = () => {
                   name="productImage"
                   listType="picture-card"
                   showUploadList={true}
-                  beforeUpload={() => false}
+                  beforeUpload={() => false} // Prevent auto-upload
                   maxCount={5}
                   multiple={true}
                   fileList={existingImages}
+                  onRemove={(file) => {
+                    // Handle removing files from the list
+                    const updatedFileList = existingImages.filter(
+                      (item) => item.uid !== file.uid
+                    );
+                    setExistingImages(updatedFileList);
+                    return false; // Let Upload component handle the UI removal
+                  }}
                   onChange={(info) => {
-                    // Update file list when changed
+                    console.log("Upload onChange event:", info);
+                    // Keep track of both existing and new files
                     setExistingImages(info.fileList);
                   }}
                 >

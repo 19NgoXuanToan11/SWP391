@@ -93,7 +93,6 @@ export function PaymentPage() {
             email: addresses[0].email,
           });
         }
-
         return addresses;
       }
     } catch (error) {
@@ -157,28 +156,42 @@ export function PaymentPage() {
 
         // If order details don't have images, you might need to fetch them separately
         const orderData = res.data;
-        
+
         // Retrieve cart data from localStorage to get promotion information
         try {
           // Get order info from sessionStorage if available (set during checkout)
-          const orderSessionData = sessionStorage.getItem(`order_info_${orderId}`);
+          const orderSessionData = sessionStorage.getItem(
+            `order_info_${orderId}`
+          );
           if (orderSessionData) {
             const parsedOrderData = JSON.parse(orderSessionData);
-            console.log("Retrieved order info from sessionStorage:", parsedOrderData);
+            console.log(
+              "Retrieved order info from sessionStorage:",
+              parsedOrderData
+            );
             // Update order data with promotion info from session storage
-            if (parsedOrderData.promotionId && parsedOrderData.promotionDiscount) {
+            if (
+              parsedOrderData.promotionId &&
+              parsedOrderData.promotionDiscount
+            ) {
               orderData.promotionId = parsedOrderData.promotionId;
               orderData.promotionDiscount = parsedOrderData.promotionDiscount;
               orderData.subtotal = parsedOrderData.subtotal;
               // If the API subtotal doesn't match what we had in the cart,
               // ensure we use the correct one with the discount applied
-              if (parsedOrderData.total && orderData.totalAmount !== parsedOrderData.total) {
+              if (
+                parsedOrderData.total &&
+                orderData.totalAmount !== parsedOrderData.total
+              ) {
                 orderData.totalAmount = parsedOrderData.total;
               }
             }
           }
         } catch (sessionError) {
-          console.error("Error retrieving order info from session:", sessionError);
+          console.error(
+            "Error retrieving order info from session:",
+            sessionError
+          );
         }
 
         // Check if we need to fetch product images separately
@@ -295,18 +308,20 @@ export function PaymentPage() {
     try {
       // Kiểm tra giỏ hàng xem có sản phẩm nào từ đơn hàng đã thanh toán không
       const hasItemsFromPaidOrders = cartItems.some(
-        item => item.parentOrderStatus === "paid" || 
-                item.parentOrderStatus === "Paid" || 
-                item.parentOrderStatus === "delivered" ||
-                item.parentOrderStatus === "completed"
+        (item) =>
+          item.parentOrderStatus === "paid" ||
+          item.parentOrderStatus === "Paid" ||
+          item.parentOrderStatus === "delivered" ||
+          item.parentOrderStatus === "completed"
       );
-      
+
       if (hasItemsFromPaidOrders) {
         console.log("Giỏ hàng có chứa sản phẩm từ đơn hàng đã thanh toán");
         // Hiển thị thông báo cho người dùng
         Modal.confirm({
           title: "Xác nhận thanh toán",
-          content: "Trong giỏ hàng của bạn có sản phẩm từ đơn hàng đã thanh toán trước đó. Bạn có muốn tiếp tục đặt hàng?",
+          content:
+            "Trong giỏ hàng của bạn có sản phẩm từ đơn hàng đã thanh toán trước đó. Bạn có muốn tiếp tục đặt hàng?",
           okText: "Tiếp tục thanh toán",
           cancelText: "Hủy",
           onOk: () => {
@@ -316,7 +331,7 @@ export function PaymentPage() {
           onCancel: () => {
             setIsProcessing(false);
             setLoading(false);
-          }
+          },
         });
       } else {
         // Nếu không có sản phẩm từ đơn hàng đã thanh toán, tiếp tục bình thường

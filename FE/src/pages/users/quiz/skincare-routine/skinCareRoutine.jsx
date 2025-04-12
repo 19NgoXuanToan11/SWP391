@@ -879,6 +879,7 @@ export default function SkinCareRoutinePage() {
     });
   };
 
+  // Trả về danh sách sản phẩm khuyến nghị cho một bước cụ thể
   const getProductsForStep = (step, limit = 2) => {
     // Nếu chưa có sản phẩm từ API, trả về mảng rỗng
     if (!allProducts || allProducts.length === 0) {
@@ -961,6 +962,7 @@ export default function SkinCareRoutinePage() {
     return allSuitableProducts.slice(0, Math.max(limit, 2));
   };
 
+  // Hiển thị một bước trong quy trình với giao diện chi tiết
   const renderEnhancedRoutineStep = (step, index, isLast, timing) => {
     const details = productDetails[step] || {
       purpose: "Chăm sóc da chuyên sâu",
@@ -1068,7 +1070,7 @@ export default function SkinCareRoutinePage() {
                       >
                         <img
                           src={
-                            product.imageUrls ||
+                            product.imageUrls?.[0] ||
                             "https://via.placeholder.com/100x100.png?text=Sản+phẩm"
                           }
                           alt={product.productName}
@@ -1198,7 +1200,7 @@ export default function SkinCareRoutinePage() {
                         <img
                           alt={product.productName}
                           src={
-                            product.imageUrls ||
+                            product.imageUrls?.[0] ||
                             "https://via.placeholder.com/300x300.png?text=Sản+phẩm"
                           }
                           className="h-full w-full object-cover object-center hover:scale-105 transition-transform duration-300"
